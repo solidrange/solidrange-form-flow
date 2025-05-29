@@ -45,17 +45,28 @@ export const FieldPalette = ({ onAddField }: FieldPaletteProps) => {
     onAddField(newField as FormField);
   };
 
+  const handleDragStart = (e: React.DragEvent, type: FormField['type']) => {
+    e.dataTransfer.setData('application/json', JSON.stringify({
+      source: 'palette',
+      fieldType: type
+    }));
+    e.dataTransfer.effectAllowed = 'copy';
+  };
+
   return (
     <Card className="h-full">
       <CardHeader>
         <CardTitle className="text-lg">Form Fields</CardTitle>
+        <p className="text-sm text-gray-500">Drag fields to the canvas to add them</p>
       </CardHeader>
       <CardContent className="space-y-2">
         {fieldTypes.map(({ type, label, icon: Icon }) => (
           <Button
             key={type}
             variant="outline"
-            className="w-full justify-start gap-3 h-12"
+            className="w-full justify-start gap-3 h-12 cursor-grab active:cursor-grabbing"
+            draggable
+            onDragStart={(e) => handleDragStart(e, type)}
             onClick={() => handleAddField(type)}
           >
             <Icon className="h-4 w-4" />

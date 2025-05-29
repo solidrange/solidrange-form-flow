@@ -1,8 +1,9 @@
 
+import { useState } from "react";
 import { FormField } from "@/types/form";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trash2, Edit } from "lucide-react";
+import { Trash2, Edit, GripVertical } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FormCanvasProps {
@@ -11,6 +12,8 @@ interface FormCanvasProps {
   onSelectField: (fieldId: string | null) => void;
   onUpdateField: (fieldId: string, updates: Partial<FormField>) => void;
   onRemoveField: (fieldId: string) => void;
+  onAddField: (field: FormField) => void;
+  onReorderFields: (dragIndex: number, hoverIndex: number) => void;
 }
 
 export const FormCanvas = ({
@@ -18,10 +21,88 @@ export const FormCanvas = ({
   selectedField,
   onSelectField,
   onRemoveField,
+  onAddField,
+  onReorderFields,
 }: FormCanvasProps) => {
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const createFieldFromType = (type: FormField['type']): FormField => {
+    const baseField = {
+      id: Date.now().toString(),
+      type,
+      label: `New ${type} field`,
+      required: false,
+    };
+
+    if (type === 'select' || type === 'radio' || type === 'checkbox') {
+      return { ...baseField, options: ['Option 1', 'Option 2'] };
+    }
+
+    return baseField;
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsDragOver(false);
+      setDragOverIndex(null);
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    setDragOverIndex(null);
+
+    try {
+      const data = JSON.parse(e.dataTransfer.getData('application/json'));
+      
+      if (data.source === 'palette') {
+        const newField = createFieldFromType(data.fieldType);
+        onAddField(newField);
+      } else if (data.source === 'field') {
+        // Handle field reordering
+        const dragIndex = fields.findIndex(f => f.id === data.fieldId);
+        if (dragIndex !== -1 && dragOverIndex !== null && dragIndex !== dragOverIndex) {
+          onReorderFields(dragIndex, dragOverIndex);
+        }
+      }
+    } catch (error) {
+      console.error('Error parsing drag data:', error);
+    }
+  };
+
+  const handleFieldDragStart = (e: React.DragEvent, fieldId: string) => {
+    e.dataTransfer.setData('application/json', JSON.stringify({
+      source: 'field',
+      fieldId
+    }));
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleFieldDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragOverIndex(index);
+  };
+
   if (fields.length === 0) {
     return (
-      <div className="h-64 flex items-center justify-center border-2 border-dashed border-gray-300 rounded-lg">
+      <div 
+        className={cn(
+          "h-64 flex items-center justify-center border-2 border-dashed rounded-lg transition-colors",
+          isDragOver ? "border-indigo-500 bg-indigo-50" : "border-gray-300"
+        )}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
         <div className="text-center">
           <p className="text-gray-500 text-lg mb-2">No fields added yet</p>
           <p className="text-gray-400 text-sm">Drag fields from the palette to start building your form</p>
@@ -31,18 +112,31 @@ export const FormCanvas = ({
   }
 
   return (
-    <div className="space-y-4">
-      {fields.map((field) => (
+    <div 
+      className={cn(
+        "space-y-4 min-h-[200px] p-2 rounded-lg transition-colors",
+        isDragOver && "bg-indigo-50"
+      )}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
+      {fields.map((field, index) => (
         <Card
           key={field.id}
           className={cn(
-            "p-4 cursor-pointer transition-all",
-            selectedField === field.id && "ring-2 ring-indigo-500 bg-indigo-50"
+            "p-4 cursor-pointer transition-all group",
+            selectedField === field.id && "ring-2 ring-indigo-500 bg-indigo-50",
+            dragOverIndex === index && "border-t-2 border-indigo-500"
           )}
+          draggable
+          onDragStart={(e) => handleFieldDragStart(e, field.id)}
+          onDragOver={(e) => handleFieldDragOver(e, index)}
           onClick={() => onSelectField(field.id)}
         >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
+              <GripVertical className="h-4 w-4 text-gray-400 cursor-grab group-hover:text-gray-600" />
               <span className="font-medium">{field.label}</span>
               {field.required && <span className="text-red-500">*</span>}
             </div>

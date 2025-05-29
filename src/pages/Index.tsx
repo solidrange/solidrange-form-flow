@@ -32,6 +32,14 @@ const Index = () => {
     setFormFields(fields => fields.filter(field => field.id !== fieldId));
   };
 
+  const reorderFields = (dragIndex: number, hoverIndex: number) => {
+    const draggedField = formFields[dragIndex];
+    const newFields = [...formFields];
+    newFields.splice(dragIndex, 1);
+    newFields.splice(hoverIndex, 0, draggedField);
+    setFormFields(newFields);
+  };
+
   const saveForm = () => {
     console.log("Saving form:", { formTitle, formDescription, formFields });
     // Here you would integrate with your .NET backend
@@ -95,6 +103,7 @@ const Index = () => {
               onRemoveField={removeField}
               onUpdateTitle={setFormTitle}
               onUpdateDescription={setFormDescription}
+              onReorderFields={reorderFields}
             />
           </TabsContent>
 

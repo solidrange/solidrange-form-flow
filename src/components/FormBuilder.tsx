@@ -18,6 +18,7 @@ interface FormBuilderProps {
   onRemoveField: (fieldId: string) => void;
   onUpdateTitle: (title: string) => void;
   onUpdateDescription: (description: string) => void;
+  onReorderFields: (dragIndex: number, hoverIndex: number) => void;
 }
 
 export const FormBuilder = ({
@@ -29,6 +30,7 @@ export const FormBuilder = ({
   onRemoveField,
   onUpdateTitle,
   onUpdateDescription,
+  onReorderFields,
 }: FormBuilderProps) => {
   const [selectedField, setSelectedField] = useState<string | null>(null);
 
@@ -74,6 +76,8 @@ export const FormBuilder = ({
               onSelectField={setSelectedField}
               onUpdateField={onUpdateField}
               onRemoveField={onRemoveField}
+              onAddField={onAddField}
+              onReorderFields={onReorderFields}
             />
           </CardContent>
         </Card>
