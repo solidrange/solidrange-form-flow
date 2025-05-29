@@ -1,155 +1,177 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BarChart3, Users, Eye, TrendingUp, Clock, CheckCircle } from "lucide-react";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
+import { TrendingUp, Users, FileText, Clock, Eye, CheckCircle } from "lucide-react";
+
+const submissionData = [
+  { name: 'Mon', submissions: 12, views: 45 },
+  { name: 'Tue', submissions: 19, views: 52 },
+  { name: 'Wed', submissions: 15, views: 38 },
+  { name: 'Thu', submissions: 22, views: 61 },
+  { name: 'Fri', submissions: 18, views: 55 },
+  { name: 'Sat', submissions: 8, views: 25 },
+  { name: 'Sun', submissions: 10, views: 30 },
+];
+
+const formData = [
+  { name: 'Employee Onboarding', submissions: 45, completionRate: 85 },
+  { name: 'Customer Survey', submissions: 32, completionRate: 92 },
+  { name: 'Event Registration', submissions: 28, completionRate: 78 },
+  { name: 'Incident Report', submissions: 15, completionRate: 95 },
+  { name: 'Risk Assessment', submissions: 22, completionRate: 88 },
+];
+
+const deviceData = [
+  { name: 'Desktop', value: 65, color: '#8884d8' },
+  { name: 'Mobile', value: 25, color: '#82ca9d' },
+  { name: 'Tablet', value: 10, color: '#ffc658' },
+];
 
 export const Analytics = () => {
-  // Mock analytics data
-  const analytics = {
-    totalForms: 12,
-    totalSubmissions: 248,
-    totalViews: 1432,
-    avgCompletionRate: 73,
-    recentForms: [
-      { name: "Vendor Risk Assessment", submissions: 45, views: 234, completionRate: 82 },
-      { name: "Employee Training Quiz", submissions: 89, views: 156, completionRate: 91 },
-      { name: "Incident Report", submissions: 23, views: 78, completionRate: 67 },
-      { name: "Compliance Survey", submissions: 67, views: 189, completionRate: 71 },
-    ]
-  };
+  const totalSubmissions = submissionData.reduce((acc, day) => acc + day.submissions, 0);
+  const totalViews = submissionData.reduce((acc, day) => acc + day.views, 0);
+  const conversionRate = ((totalSubmissions / totalViews) * 100).toFixed(1);
+  const avgCompletionRate = (formData.reduce((acc, form) => acc + form.completionRate, 0) / formData.length).toFixed(1);
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Analytics Dashboard</h2>
-        <Badge variant="outline">Last 30 days</Badge>
-      </div>
-
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Forms</CardTitle>
-            <BarChart3 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{analytics.totalForms}</div>
-            <p className="text-xs text-muted-foreground">
-              +2 from last month
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Submissions</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analytics.totalSubmissions}</div>
+            <div className="text-2xl font-bold">{totalSubmissions}</div>
             <p className="text-xs text-muted-foreground">
-              +18% from last month
+              <TrendingUp className="h-3 w-3 inline mr-1" />
+              +12% from last week
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Views</CardTitle>
+            <CardTitle className="text-sm font-medium">Form Views</CardTitle>
             <Eye className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analytics.totalViews}</div>
+            <div className="text-2xl font-bold">{totalViews}</div>
             <p className="text-xs text-muted-foreground">
-              +12% from last month
+              <TrendingUp className="h-3 w-3 inline mr-1" />
+              +8% from last week
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Avg Completion Rate</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
+            <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analytics.avgCompletionRate}%</div>
+            <div className="text-2xl font-bold">{conversionRate}%</div>
             <p className="text-xs text-muted-foreground">
-              +5% from last month
+              <TrendingUp className="h-3 w-3 inline mr-1" />
+              +2.1% from last week
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Avg. Completion Rate</CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{avgCompletionRate}%</div>
+            <p className="text-xs text-muted-foreground">
+              <TrendingUp className="h-3 w-3 inline mr-1" />
+              +1.5% from last week
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Recent Forms Performance */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Submissions Over Time */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Submissions & Views This Week</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={submissionData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Bar dataKey="submissions" fill="#8884d8" name="Submissions" />
+                <Bar dataKey="views" fill="#82ca9d" name="Views" />
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Device Usage */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Device Usage</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <PieChart>
+                <Pie
+                  data={deviceData}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {deviceData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Form Performance */}
       <Card>
         <CardHeader>
           <CardTitle>Form Performance</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {analytics.recentForms.map((form, index) => (
+            {formData.map((form, index) => (
               <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
-                <div className="flex items-center gap-4">
-                  <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-                    <BarChart3 className="h-4 w-4 text-indigo-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-medium">{form.name}</h4>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <span className="flex items-center gap-1">
-                        <Users className="h-3 w-3" />
-                        {form.submissions} submissions
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Eye className="h-3 w-3" />
-                        {form.views} views
-                      </span>
-                    </div>
+                <div className="flex-1">
+                  <h3 className="font-medium">{form.name}</h3>
+                  <div className="flex items-center gap-4 mt-2">
+                    <span className="text-sm text-gray-600">{form.submissions} submissions</span>
+                    <Badge variant={form.completionRate >= 90 ? "default" : form.completionRate >= 80 ? "secondary" : "destructive"}>
+                      {form.completionRate}% completion
+                    </Badge>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span className="font-medium">{form.completionRate}%</span>
+                  <div className="w-32 bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-blue-600 h-2 rounded-full" 
+                      style={{ width: `${form.completionRate}%` }}
+                    ></div>
                   </div>
-                  <p className="text-xs text-gray-500">completion rate</p>
                 </div>
               </div>
             ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Clock className="h-5 w-5" />
-            Recent Activity
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-3">
-            <div className="flex items-center gap-3 text-sm">
-              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-              <span>New submission for "Vendor Risk Assessment"</span>
-              <span className="text-gray-500 ml-auto">2 minutes ago</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span>Form "Employee Training Quiz" published</span>
-              <span className="text-gray-500 ml-auto">1 hour ago</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm">
-              <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
-              <span>High priority submission needs review</span>
-              <span className="text-gray-500 ml-auto">3 hours ago</span>
-            </div>
-            <div className="flex items-center gap-3 text-sm">
-              <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-              <span>Weekly compliance report generated</span>
-              <span className="text-gray-500 ml-auto">1 day ago</span>
-            </div>
           </div>
         </CardContent>
       </Card>

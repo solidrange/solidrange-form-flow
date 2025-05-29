@@ -203,7 +203,7 @@ export const FormCanvas = ({
             ) : field.type === 'rating' ? (
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <span key={star} className="text-gray-300 text-xl">★</span>
+                  <span key={star} className="text-gray-300 text-xl cursor-pointer hover:text-yellow-400">★</span>
                 ))}
               </div>
             ) : field.type === 'signature' ? (

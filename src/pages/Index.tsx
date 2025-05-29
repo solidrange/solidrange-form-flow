@@ -6,9 +6,9 @@ import { FormLibrary } from "@/components/FormLibrary";
 import { Analytics } from "@/components/Analytics";
 import { Settings, BarChart3, Library, Plus, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FormField } from "@/types/form";
+import { FormField, FormTemplate } from "@/types/form";
+import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("builder");
@@ -42,7 +42,25 @@ const Index = () => {
 
   const saveForm = () => {
     console.log("Saving form:", { formTitle, formDescription, formFields });
-    // Here you would integrate with your .NET backend
+    toast({
+      title: "Form Saved",
+      description: "Your form has been saved successfully.",
+    });
+  };
+
+  const useTemplate = (template: FormTemplate) => {
+    setFormTitle(template.name);
+    setFormDescription(template.description);
+    const fieldsWithIds = template.fields.map(field => ({
+      ...field,
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+    }));
+    setFormFields(fieldsWithIds);
+    setActiveTab("builder");
+    toast({
+      title: "Template Applied",
+      description: `${template.name} template has been applied to your form.`,
+    });
   };
 
   return (
@@ -116,7 +134,7 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="library" className="mt-6">
-            <FormLibrary />
+            <FormLibrary onUseTemplate={useTemplate} />
           </TabsContent>
 
           <TabsContent value="analytics" className="mt-6">
