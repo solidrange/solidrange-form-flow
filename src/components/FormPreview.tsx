@@ -1,4 +1,3 @@
-
 import { FormField, Form } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -86,16 +85,16 @@ export const FormPreview = ({ formTitle, formDescription, formFields, formSettin
                 
                 {field.scoring?.enabled && (
                   <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <Badge variant="outline" size="sm">
+                    <Badge variant="outline" className="text-xs">
                       {(field.scoring.maxPoints || 10) * (field.scoring.weightMultiplier || 1)} pts
                     </Badge>
                     {field.scoring.weightMultiplier && field.scoring.weightMultiplier > 1 && (
-                      <Badge variant="secondary" size="sm">
+                      <Badge variant="secondary" className="text-xs">
                         {field.scoring.weightMultiplier}x
                       </Badge>
                     )}
                     {field.scoring.requiresManualReview && (
-                      <Badge variant="destructive" size="sm">
+                      <Badge variant="destructive" className="text-xs">
                         Manual Review
                       </Badge>
                     )}
