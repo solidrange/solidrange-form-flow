@@ -6,10 +6,11 @@ import { FormLibrary } from "@/components/FormLibrary";
 import { Analytics } from "@/components/Analytics";
 import { ScoringSettings } from "@/components/ScoringSettings";
 import { WeightageEditor } from "@/components/WeightageEditor";
-import { Settings, BarChart3, Library, Plus, Save, Target, Scale } from "lucide-react";
+import { EmailTracking } from "@/components/EmailTracking";
+import { Settings, BarChart3, Library, Plus, Save, Target, Scale, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FormField, FormTemplate, Form } from "@/types/form";
+import { FormField, FormTemplate, Form, EmailRecipient } from "@/types/form";
 import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -25,10 +26,22 @@ const Index = () => {
     scoring: {
       enabled: false,
       maxTotalPoints: 100,
-      showScoreToUser: false
+      showScoreToUser: false,
+      riskThresholds: {
+        low: 80,
+        medium: 60,
+        high: 40
+      }
     },
     expiration: {
       enabled: false
+    },
+    emailDistribution: {
+      enabled: false,
+      recipients: [],
+      reminderEnabled: true,
+      reminderIntervalDays: 7,
+      maxReminders: 3
     }
   });
 
@@ -60,6 +73,30 @@ const Index = () => {
     setFormSettings(prev => ({ ...prev, ...updates }));
   };
 
+  const updateEmailRecipients = (recipients: EmailRecipient[]) => {
+    setFormSettings(prev => ({
+      ...prev,
+      emailDistribution: {
+        ...prev.emailDistribution!,
+        recipients
+      }
+    }));
+  };
+
+  const updateEmailSettings = (emailSettings: {
+    reminderEnabled: boolean;
+    reminderIntervalDays: number;
+    maxReminders: number;
+  }) => {
+    setFormSettings(prev => ({
+      ...prev,
+      emailDistribution: {
+        ...prev.emailDistribution!,
+        ...emailSettings
+      }
+    }));
+  };
+
   const saveForm = () => {
     console.log("Saving form:", { formTitle, formDescription, formFields, formSettings });
     toast({
@@ -76,6 +113,23 @@ const Index = () => {
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
     }));
     setFormFields(fieldsWithIds);
+    
+    // Enable scoring for vendor risk templates
+    if (template.category === 'vendor-risk') {
+      setFormSettings(prev => ({
+        ...prev,
+        scoring: {
+          ...prev.scoring!,
+          enabled: true,
+          riskThresholds: {
+            low: 80,
+            medium: 60,
+            high: 40
+          }
+        }
+      }));
+    }
+    
     setActiveTab("builder");
     toast({
       title: "Template Applied",
@@ -112,7 +166,7 @@ const Index = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="builder" className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
               Builder
@@ -128,6 +182,10 @@ const Index = () => {
             <TabsTrigger value="weightage" className="flex items-center gap-2">
               <Scale className="h-4 w-4" />
               Weightage
+            </TabsTrigger>
+            <TabsTrigger value="email" className="flex items-center gap-2">
+              <Mail className="h-4 w-4" />
+              Email
             </TabsTrigger>
             <TabsTrigger value="library" className="flex items-center gap-2">
               <Library className="h-4 w-4" />
@@ -173,6 +231,18 @@ const Index = () => {
             <WeightageEditor
               fields={formFields}
               onUpdateField={updateField}
+            />
+          </TabsContent>
+
+          <TabsContent value="email" className="mt-6">
+            <EmailTracking
+              recipients={formSettings.emailDistribution?.recipients || []}
+              onUpdateRecipients={updateEmailRecipients}
+              formTitle={formTitle}
+              reminderEnabled={formSettings.emailDistribution?.reminderEnabled || true}
+              reminderIntervalDays={formSettings.emailDistribution?.reminderIntervalDays || 7}
+              maxReminders={formSettings.emailDistribution?.maxReminders || 3}
+              onUpdateEmailSettings={updateEmailSettings}
             />
           </TabsContent>
 
