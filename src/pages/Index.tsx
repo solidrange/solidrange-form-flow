@@ -4,10 +4,12 @@ import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
 import { FormLibrary } from "@/components/FormLibrary";
 import { Analytics } from "@/components/Analytics";
-import { Settings, BarChart3, Library, Plus, Save } from "lucide-react";
+import { ScoringSettings } from "@/components/ScoringSettings";
+import { WeightageEditor } from "@/components/WeightageEditor";
+import { Settings, BarChart3, Library, Plus, Save, Target, Scale } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FormField, FormTemplate } from "@/types/form";
+import { FormField, FormTemplate, Form } from "@/types/form";
 import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -15,6 +17,20 @@ const Index = () => {
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
+  const [formSettings, setFormSettings] = useState<Form['settings']>({
+    allowMultipleSubmissions: false,
+    requireLogin: false,
+    showProgressBar: true,
+    theme: 'light',
+    scoring: {
+      enabled: false,
+      maxTotalPoints: 100,
+      showScoreToUser: false
+    },
+    expiration: {
+      enabled: false
+    }
+  });
 
   const addField = (field: FormField) => {
     setFormFields([...formFields, { ...field, id: Date.now().toString() }]);
@@ -40,8 +56,12 @@ const Index = () => {
     setFormFields(newFields);
   };
 
+  const updateFormSettings = (updates: Partial<Form['settings']>) => {
+    setFormSettings(prev => ({ ...prev, ...updates }));
+  };
+
   const saveForm = () => {
-    console.log("Saving form:", { formTitle, formDescription, formFields });
+    console.log("Saving form:", { formTitle, formDescription, formFields, formSettings });
     toast({
       title: "Form Saved",
       description: "Your form has been saved successfully.",
@@ -92,14 +112,22 @@ const Index = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="builder" className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
-              Form Builder
+              Builder
             </TabsTrigger>
             <TabsTrigger value="preview" className="flex items-center gap-2">
               <Settings className="h-4 w-4" />
               Preview
+            </TabsTrigger>
+            <TabsTrigger value="scoring" className="flex items-center gap-2">
+              <Target className="h-4 w-4" />
+              Scoring
+            </TabsTrigger>
+            <TabsTrigger value="weightage" className="flex items-center gap-2">
+              <Scale className="h-4 w-4" />
+              Weightage
             </TabsTrigger>
             <TabsTrigger value="library" className="flex items-center gap-2">
               <Library className="h-4 w-4" />
@@ -130,6 +158,21 @@ const Index = () => {
               formTitle={formTitle}
               formDescription={formDescription}
               formFields={formFields}
+              formSettings={formSettings}
+            />
+          </TabsContent>
+
+          <TabsContent value="scoring" className="mt-6">
+            <ScoringSettings
+              formSettings={formSettings}
+              onUpdateSettings={updateFormSettings}
+            />
+          </TabsContent>
+
+          <TabsContent value="weightage" className="mt-6">
+            <WeightageEditor
+              fields={formFields}
+              onUpdateField={updateField}
             />
           </TabsContent>
 

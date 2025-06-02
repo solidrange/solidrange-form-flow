@@ -20,6 +20,10 @@ export interface FormField {
   scoring?: {
     enabled: boolean;
     weights?: Record<string, number>;
+    correctAnswers?: string[];
+    requiresManualReview?: boolean;
+    weightMultiplier?: number; // 1x, 2x, 3x, 4x, 5x
+    maxPoints?: number;
   };
 }
 
@@ -34,6 +38,17 @@ export interface Form {
     showProgressBar: boolean;
     theme: 'light' | 'dark' | 'custom';
     customCss?: string;
+    scoring?: {
+      enabled: boolean;
+      maxTotalPoints: number;
+      passingScore?: number;
+      showScoreToUser: boolean;
+    };
+    expiration?: {
+      enabled: boolean;
+      expirationDate?: Date;
+      message?: string;
+    };
   };
   createdAt: Date;
   updatedAt: Date;
@@ -53,4 +68,21 @@ export interface FormTemplate {
   category: 'survey' | 'assessment' | 'registration' | 'feedback' | 'compliance' | 'risk';
   fields: Omit<FormField, 'id'>[];
   preview: string;
+}
+
+export interface FormSubmission {
+  id: string;
+  formId: string;
+  responses: Record<string, any>;
+  score?: {
+    total: number;
+    maxTotal: number;
+    percentage: number;
+    passed: boolean;
+    manualReviewRequired: boolean;
+    reviewedBy?: string;
+    reviewedAt?: Date;
+  };
+  submittedAt: Date;
+  status: 'submitted' | 'under_review' | 'reviewed' | 'approved' | 'rejected';
 }

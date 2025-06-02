@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, X } from "lucide-react";
 
 interface FieldEditorProps {
@@ -33,6 +34,16 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
     onUpdateField(selectedField.id, updates);
   };
 
+  const updateScoring = (updates: Partial<NonNullable<FormField['scoring']>>) => {
+    updateField({
+      scoring: {
+        ...selectedField.scoring,
+        enabled: selectedField.scoring?.enabled || false,
+        ...updates
+      }
+    });
+  };
+
   const addOption = () => {
     const currentOptions = selectedField.options || [];
     updateField({ options: [...currentOptions, `Option ${currentOptions.length + 1}`] });
@@ -49,8 +60,24 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
     updateField({ options: newOptions });
   };
 
+  const addCorrectAnswer = () => {
+    const currentAnswers = selectedField.scoring?.correctAnswers || [];
+    updateScoring({ correctAnswers: [...currentAnswers, ''] });
+  };
+
+  const updateCorrectAnswer = (index: number, value: string) => {
+    const newAnswers = [...(selectedField.scoring?.correctAnswers || [])];
+    newAnswers[index] = value;
+    updateScoring({ correctAnswers: newAnswers });
+  };
+
+  const removeCorrectAnswer = (index: number) => {
+    const newAnswers = selectedField.scoring?.correctAnswers?.filter((_, idx) => idx !== index);
+    updateScoring({ correctAnswers: newAnswers });
+  };
+
   return (
-    <Card className="h-full">
+    <Card className="h-full overflow-auto">
       <CardHeader>
         <CardTitle className="text-lg">Field Properties</CardTitle>
       </CardHeader>
@@ -117,25 +144,103 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
           </div>
         )}
 
-        {selectedField.type === 'rating' && (
-          <div>
-            <Label>Scoring</Label>
-            <div className="flex items-center space-x-2 mt-2">
-              <Checkbox
-                checked={selectedField.scoring?.enabled || false}
-                onCheckedChange={(checked) => 
-                  updateField({ 
-                    scoring: { 
-                      ...selectedField.scoring, 
-                      enabled: !!checked 
-                    } 
-                  })
-                }
-              />
-              <Label>Enable scoring for this field</Label>
-            </div>
+        {/* Scoring Configuration */}
+        <div className="border-t pt-4">
+          <div className="flex items-center space-x-2 mb-4">
+            <Checkbox
+              id="enable-scoring"
+              checked={selectedField.scoring?.enabled || false}
+              onCheckedChange={(checked) => updateScoring({ enabled: !!checked })}
+            />
+            <Label htmlFor="enable-scoring">Enable scoring for this field</Label>
           </div>
-        )}
+
+          {selectedField.scoring?.enabled && (
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="max-points">Maximum Points</Label>
+                <Input
+                  id="max-points"
+                  type="number"
+                  value={selectedField.scoring.maxPoints || 10}
+                  onChange={(e) => updateScoring({ maxPoints: parseInt(e.target.value) || 10 })}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="weight-multiplier">Weight Multiplier</Label>
+                <Select
+                  value={selectedField.scoring.weightMultiplier?.toString() || "1"}
+                  onValueChange={(value) => updateScoring({ weightMultiplier: parseInt(value) })}
+                >
+                  <SelectTrigger className="mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1">1x (Normal)</SelectItem>
+                    <SelectItem value="2">2x (Double)</SelectItem>
+                    <SelectItem value="3">3x (Triple)</SelectItem>
+                    <SelectItem value="4">4x (Quadruple)</SelectItem>
+                    <SelectItem value="5">5x (Quintuple)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {(selectedField.type === 'select' || selectedField.type === 'radio' || selectedField.type === 'checkbox') && (
+                <div>
+                  <Label>Correct Answers</Label>
+                  <div className="space-y-2 mt-2">
+                    {selectedField.scoring.correctAnswers?.map((answer, index) => (
+                      <div key={index} className="flex gap-2">
+                        <Select
+                          value={answer}
+                          onValueChange={(value) => updateCorrectAnswer(index, value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select correct answer" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {selectedField.options?.map((option, optIndex) => (
+                              <SelectItem key={optIndex} value={option}>
+                                {option}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => removeCorrectAnswer(index)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={addCorrectAnswer}
+                      className="w-full"
+                    >
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Correct Answer
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="manual-review"
+                  checked={selectedField.scoring.requiresManualReview || false}
+                  onCheckedChange={(checked) => updateScoring({ requiresManualReview: !!checked })}
+                />
+                <Label htmlFor="manual-review">Requires manual review</Label>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div>
           <Label htmlFor="validation-message">Validation Message</Label>
