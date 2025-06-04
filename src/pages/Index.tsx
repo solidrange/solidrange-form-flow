@@ -11,7 +11,7 @@ import { SubmissionReview } from "@/components/SubmissionReview";
 import { Settings, BarChart3, Library, Plus, Save, Target, Scale, Mail, FileCheck, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FormField, FormTemplate, Form, EmailRecipient, FormSubmission } from "@/types/form";
+import { FormField, FormTemplate, Form, EmailRecipient, FormSubmission, DocumentAttachment } from "@/types/form";
 import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -19,6 +19,8 @@ const Index = () => {
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
+  const [formAttachments, setFormAttachments] = useState<DocumentAttachment[]>([]);
+  
   const [formSettings, setFormSettings] = useState<Form['settings']>({
     allowMultipleSubmissions: false,
     requireLogin: false,
@@ -58,7 +60,6 @@ const Index = () => {
     }
   });
 
-  // Mock submissions data for demonstration
   const [submissions] = useState<FormSubmission[]>([
     {
       id: '1',
@@ -138,7 +139,13 @@ const Index = () => {
   };
 
   const saveForm = () => {
-    console.log("Saving form:", { formTitle, formDescription, formFields, formSettings });
+    console.log("Saving form:", { 
+      formTitle, 
+      formDescription, 
+      formFields, 
+      formSettings, 
+      attachments: formAttachments 
+    });
     toast({
       title: "Form Saved",
       description: "Your form has been saved successfully.",
@@ -183,7 +190,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <div className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -207,7 +213,6 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-9">
@@ -260,6 +265,10 @@ const Index = () => {
               onUpdateTitle={setFormTitle}
               onUpdateDescription={setFormDescription}
               onReorderFields={reorderFields}
+              attachments={formAttachments}
+              onUpdateAttachments={setFormAttachments}
+              allowedFileTypes={formSettings.documents?.allowedTypes || ['pdf', 'doc', 'docx']}
+              maxFileSize={formSettings.documents?.maxSize || 10}
             />
           </TabsContent>
 
@@ -269,6 +278,7 @@ const Index = () => {
               formDescription={formDescription}
               formFields={formFields}
               formSettings={formSettings}
+              attachments={formAttachments}
             />
           </TabsContent>
 

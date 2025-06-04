@@ -1,13 +1,15 @@
 
 import { useState } from "react";
-import { FormField } from "@/types/form";
+import { FormField, DocumentAttachment } from "@/types/form";
 import { FieldPalette } from "./FieldPalette";
 import { FieldEditor } from "./FieldEditor";
 import { FormCanvas } from "./FormCanvas";
+import { FileAttachmentManager } from "./FileAttachmentManager";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface FormBuilderProps {
   formFields: FormField[];
@@ -19,6 +21,10 @@ interface FormBuilderProps {
   onUpdateTitle: (title: string) => void;
   onUpdateDescription: (description: string) => void;
   onReorderFields: (dragIndex: number, hoverIndex: number) => void;
+  attachments?: DocumentAttachment[];
+  onUpdateAttachments?: (attachments: DocumentAttachment[]) => void;
+  allowedFileTypes?: string[];
+  maxFileSize?: number;
 }
 
 export const FormBuilder = ({
@@ -31,6 +37,10 @@ export const FormBuilder = ({
   onUpdateTitle,
   onUpdateDescription,
   onReorderFields,
+  attachments = [],
+  onUpdateAttachments = () => {},
+  allowedFileTypes = ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png'],
+  maxFileSize = 10
 }: FormBuilderProps) => {
   const [selectedField, setSelectedField] = useState<string | null>(null);
 
@@ -70,15 +80,33 @@ export const FormBuilder = ({
             </div>
           </CardHeader>
           <CardContent className="flex-1 overflow-auto">
-            <FormCanvas
-              fields={formFields}
-              selectedField={selectedField}
-              onSelectField={setSelectedField}
-              onUpdateField={onUpdateField}
-              onRemoveField={onRemoveField}
-              onAddField={onAddField}
-              onReorderFields={onReorderFields}
-            />
+            <Tabs defaultValue="fields" className="h-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="fields">Form Fields</TabsTrigger>
+                <TabsTrigger value="attachments">File Attachments</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="fields" className="mt-4 h-[calc(100%-60px)]">
+                <FormCanvas
+                  fields={formFields}
+                  selectedField={selectedField}
+                  onSelectField={setSelectedField}
+                  onUpdateField={onUpdateField}
+                  onRemoveField={onRemoveField}
+                  onAddField={onAddField}
+                  onReorderFields={onReorderFields}
+                />
+              </TabsContent>
+              
+              <TabsContent value="attachments" className="mt-4">
+                <FileAttachmentManager
+                  attachments={attachments}
+                  onUpdateAttachments={onUpdateAttachments}
+                  allowedTypes={allowedFileTypes}
+                  maxSize={maxFileSize}
+                />
+              </TabsContent>
+            </Tabs>
           </CardContent>
         </Card>
       </div>

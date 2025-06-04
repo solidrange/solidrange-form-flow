@@ -1,4 +1,4 @@
-import { FormField, Form } from "@/types/form";
+import { FormField, Form, DocumentAttachment } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,16 +7,23 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { AlertCircle, Clock, Target } from "lucide-react";
+import { AlertCircle, Clock, Target, Download, FileText } from "lucide-react";
 
 interface FormPreviewProps {
   formTitle: string;
   formDescription: string;
   formFields: FormField[];
   formSettings?: Form['settings'];
+  attachments?: DocumentAttachment[];
 }
 
-export const FormPreview = ({ formTitle, formDescription, formFields, formSettings }: FormPreviewProps) => {
+export const FormPreview = ({ 
+  formTitle, 
+  formDescription, 
+  formFields, 
+  formSettings,
+  attachments = []
+}: FormPreviewProps) => {
   const isExpired = formSettings?.expiration?.enabled && 
     formSettings.expiration.expirationDate && 
     new Date() > new Date(formSettings.expiration.expirationDate);
@@ -27,6 +34,23 @@ export const FormPreview = ({ formTitle, formDescription, formFields, formSettin
       const points = (field.scoring?.maxPoints || 10) * (field.scoring?.weightMultiplier || 1);
       return sum + points;
     }, 0);
+
+  const downloadFile = (attachment: DocumentAttachment) => {
+    const link = document.createElement('a');
+    link.href = attachment.url;
+    link.download = attachment.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
 
   if (isExpired) {
     return (
@@ -75,6 +99,42 @@ export const FormPreview = ({ formTitle, formDescription, formFields, formSettin
         </CardHeader>
         
         <CardContent className="space-y-6">
+          {/* File Attachments Section */}
+          {attachments.length > 0 && (
+            <div className="border-b pb-6">
+              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                <FileText className="h-5 w-5" />
+                Reference Documents
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Download and review these documents before filling out the form:
+              </p>
+              <div className="grid gap-3">
+                {attachments.map((attachment) => (
+                  <div key={attachment.id} className="flex items-center justify-between p-3 border rounded-lg bg-gray-50">
+                    <div className="flex items-center gap-3 flex-1">
+                      <FileText className="h-4 w-4 text-gray-500" />
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">{attachment.name}</p>
+                        <p className="text-sm text-gray-500">{formatFileSize(attachment.size)}</p>
+                      </div>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => downloadFile(attachment)}
+                      className="flex items-center gap-2"
+                    >
+                      <Download className="h-4 w-4" />
+                      Download
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Form Fields */}
           {formFields.map((field) => (
             <div key={field.id} className="space-y-2">
               <div className="flex items-center justify-between">
