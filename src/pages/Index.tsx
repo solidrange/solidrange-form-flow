@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
@@ -8,7 +9,19 @@ import { WeightageEditor } from "@/components/WeightageEditor";
 import { EmailTracking } from "@/components/EmailTracking";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { SubmissionReview } from "@/components/SubmissionReview";
-import { Settings, BarChart3, Library, Plus, Save, Target, Scale, Mail, FileCheck } from "lucide-react";
+import { 
+  Settings, 
+  BarChart3, 
+  Library, 
+  Plus, 
+  Save, 
+  Target, 
+  Scale, 
+  Mail, 
+  FileCheck, 
+  Eye,
+  FileText
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FormField, FormTemplate, Form, EmailRecipient, DocumentAttachment } from "@/types/form";
@@ -160,10 +173,6 @@ const Index = () => {
     });
   };
 
-  const handleSettingsClick = () => {
-    setActiveTab("settings");
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-white border-b shadow-sm">
@@ -175,30 +184,24 @@ const Index = () => {
               </div>
               <h1 className="text-xl font-semibold text-gray-900">Solidrange Form Builder</h1>
             </div>
-            <div className="flex items-center gap-3">
-              <Button onClick={saveForm} className="flex items-center gap-2">
-                <Save className="h-4 w-4" />
-                Save Form
-              </Button>
-              <Button variant="outline" className="flex items-center gap-2" onClick={handleSettingsClick}>
-                <Settings className="h-4 w-4" />
-                Settings
-              </Button>
-            </div>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-9">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="builder" className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
               Builder
             </TabsTrigger>
-            <TabsTrigger value="preview" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Preview
+            <TabsTrigger value="library" className="flex items-center gap-2">
+              <Library className="h-4 w-4" />
+              Library
+            </TabsTrigger>
+            <TabsTrigger value="email" className="flex items-center gap-2">
+              <Mail className="h-4 w-4" />
+              Email
             </TabsTrigger>
             <TabsTrigger value="scoring" className="flex items-center gap-2">
               <Target className="h-4 w-4" />
@@ -208,21 +211,13 @@ const Index = () => {
               <Scale className="h-4 w-4" />
               Weightage
             </TabsTrigger>
-            <TabsTrigger value="email" className="flex items-center gap-2">
-              <Mail className="h-4 w-4" />
-              Email
+            <TabsTrigger value="preview" className="flex items-center gap-2">
+              <Eye className="h-4 w-4" />
+              Preview
             </TabsTrigger>
             <TabsTrigger value="submissions" className="flex items-center gap-2">
               <FileCheck className="h-4 w-4" />
               Submissions
-            </TabsTrigger>
-            <TabsTrigger value="settings" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Settings
-            </TabsTrigger>
-            <TabsTrigger value="library" className="flex items-center gap-2">
-              <Library className="h-4 w-4" />
-              Library
             </TabsTrigger>
             <TabsTrigger value="analytics" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
@@ -231,6 +226,19 @@ const Index = () => {
           </TabsList>
 
           <TabsContent value="builder" className="mt-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">Form Creation</h2>
+              <div className="flex items-center gap-3">
+                <Button onClick={saveForm} className="flex items-center gap-2">
+                  <Save className="h-4 w-4" />
+                  Save Form
+                </Button>
+                <Button variant="outline" className="flex items-center gap-2" onClick={() => setActiveTab("settings")}>
+                  <Settings className="h-4 w-4" />
+                  Settings
+                </Button>
+              </div>
+            </div>
             <FormBuilder
               formFields={formFields}
               formTitle={formTitle}
@@ -246,15 +254,40 @@ const Index = () => {
               allowedFileTypes={formSettings.documents?.allowedTypes || ['pdf', 'doc', 'docx']}
               maxFileSize={formSettings.documents?.maxSize || 10}
             />
+            
+            <Tabs defaultValue="settings" className="mt-6">
+              <TabsList>
+                <TabsTrigger value="settings">Form Settings</TabsTrigger>
+                <TabsTrigger value="drafts">Draft Forms</TabsTrigger>
+              </TabsList>
+              <TabsContent value="settings">
+                <SettingsPanel
+                  formSettings={formSettings}
+                  onUpdateSettings={updateFormSettings}
+                />
+              </TabsContent>
+              <TabsContent value="drafts">
+                <div className="text-center py-8 text-gray-500">
+                  <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                  <p>No draft forms available</p>
+                </div>
+              </TabsContent>
+            </Tabs>
           </TabsContent>
 
-          <TabsContent value="preview" className="mt-6">
-            <FormPreview
+          <TabsContent value="library" className="mt-6">
+            <FormLibrary onUseTemplate={useTemplate} />
+          </TabsContent>
+
+          <TabsContent value="email" className="mt-6">
+            <EmailTracking
+              recipients={formSettings.emailDistribution?.recipients || []}
+              onUpdateRecipients={updateEmailRecipients}
               formTitle={formTitle}
-              formDescription={formDescription}
-              formFields={formFields}
-              formSettings={formSettings}
-              attachments={formAttachments}
+              reminderEnabled={formSettings.emailDistribution?.reminderEnabled || true}
+              reminderIntervalDays={formSettings.emailDistribution?.reminderIntervalDays || 7}
+              maxReminders={formSettings.emailDistribution?.maxReminders || 3}
+              onUpdateEmailSettings={updateEmailSettings}
             />
           </TabsContent>
 
@@ -272,15 +305,13 @@ const Index = () => {
             />
           </TabsContent>
 
-          <TabsContent value="email" className="mt-6">
-            <EmailTracking
-              recipients={formSettings.emailDistribution?.recipients || []}
-              onUpdateRecipients={updateEmailRecipients}
+          <TabsContent value="preview" className="mt-6">
+            <FormPreview
               formTitle={formTitle}
-              reminderEnabled={formSettings.emailDistribution?.reminderEnabled || true}
-              reminderIntervalDays={formSettings.emailDistribution?.reminderIntervalDays || 7}
-              maxReminders={formSettings.emailDistribution?.maxReminders || 3}
-              onUpdateEmailSettings={updateEmailSettings}
+              formDescription={formDescription}
+              formFields={formFields}
+              formSettings={formSettings}
+              attachments={formAttachments}
             />
           </TabsContent>
 
@@ -315,17 +346,6 @@ const Index = () => {
                 });
               }}
             />
-          </TabsContent>
-
-          <TabsContent value="settings" className="mt-6">
-            <SettingsPanel
-              formSettings={formSettings}
-              onUpdateSettings={updateFormSettings}
-            />
-          </TabsContent>
-
-          <TabsContent value="library" className="mt-6">
-            <FormLibrary onUseTemplate={useTemplate} />
           </TabsContent>
 
           <TabsContent value="analytics" className="mt-6">

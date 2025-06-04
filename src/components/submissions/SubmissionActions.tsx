@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, XCircle, Eye, RefreshCw, Send } from "lucide-react";
+import { CheckCircle, XCircle, Eye, RefreshCw, AlertTriangle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface SubmissionActionsProps {
@@ -17,7 +17,7 @@ interface SubmissionActionsProps {
 export const SubmissionActions = ({ submission, onUpdateSubmission, onResendForm }: SubmissionActionsProps) => {
   const [reviewComments, setReviewComments] = useState("");
 
-  const handleApproval = (status: 'approved' | 'rejected') => {
+  const handleStatusChange = (status: 'approved' | 'rejected' | 'under_review') => {
     onUpdateSubmission(submission.id, {
       status,
       score: {
@@ -28,9 +28,15 @@ export const SubmissionActions = ({ submission, onUpdateSubmission, onResendForm
       } as any
     });
     
+    const statusMessages = {
+      approved: "Submission Approved",
+      rejected: "Submission Rejected", 
+      under_review: "Submission Under Review"
+    };
+    
     toast({
-      title: status === 'approved' ? "Submission Approved" : "Submission Rejected",
-      description: `The submission has been ${status}.`,
+      title: statusMessages[status],
+      description: `The submission has been marked as ${status.replace('_', ' ')}.`,
     });
 
     setReviewComments("");
@@ -47,12 +53,101 @@ export const SubmissionActions = ({ submission, onUpdateSubmission, onResendForm
     }
 
     onResendForm(submission.id, reviewComments);
+    onUpdateSubmission(submission.id, { status: 'under_review' });
+    
     toast({
       title: "Form Resent",
       description: "The form has been resent to the user with your comments.",
     });
 
     setReviewComments("");
+  };
+
+  const renderActionButtons = () => {
+    switch (submission.status) {
+      case 'approved':
+        return (
+          <div className="flex items-center gap-3 flex-wrap">
+            <Button 
+              onClick={() => handleStatusChange('rejected')}
+              variant="destructive"
+            >
+              <XCircle className="h-4 w-4 mr-2" />
+              Reject
+            </Button>
+            <Button 
+              onClick={() => handleStatusChange('under_review')}
+              variant="outline"
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              Request More Info
+            </Button>
+            <Button 
+              onClick={handleResendForm}
+              variant="outline"
+              className="bg-blue-50 hover:bg-blue-100"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Resend Form
+            </Button>
+          </div>
+        );
+        
+      case 'rejected':
+        return (
+          <div className="flex items-center gap-3 flex-wrap">
+            <Button 
+              onClick={() => handleStatusChange('approved')}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Approve
+            </Button>
+            <Button 
+              onClick={() => handleStatusChange('under_review')}
+              variant="outline"
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              Request More Info
+            </Button>
+            <Button 
+              onClick={handleResendForm}
+              variant="outline"
+              className="bg-blue-50 hover:bg-blue-100"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Resend Form
+            </Button>
+          </div>
+        );
+        
+      default: // submitted, under_review
+        return (
+          <div className="flex items-center gap-3 flex-wrap">
+            <Button 
+              onClick={() => handleStatusChange('approved')}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Approve
+            </Button>
+            <Button 
+              onClick={() => handleStatusChange('rejected')}
+              variant="destructive"
+            >
+              <XCircle className="h-4 w-4 mr-2" />
+              Reject
+            </Button>
+            <Button 
+              onClick={() => handleStatusChange('under_review')}
+              variant="outline"
+            >
+              <Eye className="h-4 w-4 mr-2" />
+              Request More Info
+            </Button>
+          </div>
+        );
+    }
   };
 
   return (
@@ -73,36 +168,7 @@ export const SubmissionActions = ({ submission, onUpdateSubmission, onResendForm
           />
         </div>
         
-        <div className="flex items-center gap-3 flex-wrap">
-          <Button 
-            onClick={() => handleApproval('approved')}
-            className="bg-green-600 hover:bg-green-700"
-          >
-            <CheckCircle className="h-4 w-4 mr-2" />
-            Approve
-          </Button>
-          <Button 
-            onClick={() => handleApproval('rejected')}
-            variant="destructive"
-          >
-            <XCircle className="h-4 w-4 mr-2" />
-            Reject
-          </Button>
-          <Button variant="outline">
-            <Eye className="h-4 w-4 mr-2" />
-            Request More Info
-          </Button>
-          {submission.status === 'rejected' && (
-            <Button 
-              onClick={handleResendForm}
-              variant="outline"
-              className="bg-blue-50 hover:bg-blue-100"
-            >
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Resend Form
-            </Button>
-          )}
-        </div>
+        {renderActionButtons()}
       </CardContent>
     </Card>
   );

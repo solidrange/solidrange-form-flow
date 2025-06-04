@@ -1,3 +1,4 @@
+
 export interface FormField {
   id: string;
   type: 'text' | 'email' | 'number' | 'textarea' | 'select' | 'radio' | 'checkbox' | 'date' | 'file' | 'rating' | 'signature';
@@ -32,6 +33,7 @@ export interface EmailRecipient {
   id: string;
   email: string;
   name?: string;
+  companyName?: string;
   sentAt?: Date;
   completedAt?: Date;
   status: 'pending' | 'sent' | 'opened' | 'completed' | 'expired';
@@ -137,6 +139,8 @@ export interface FormSubmission {
   id: string;
   formId: string;
   recipientId?: string;
+  companyName?: string;
+  submissionType: 'vendor' | 'internal';
   responses: Record<string, any>;
   attachments?: DocumentAttachment[];
   completionPercentage: number;

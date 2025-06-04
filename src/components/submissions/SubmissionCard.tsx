@@ -3,7 +3,7 @@ import { FormSubmission, Form } from "@/types/form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { User, CheckCircle, XCircle, Clock } from "lucide-react";
+import { User, CheckCircle, XCircle, Clock, Building } from "lucide-react";
 
 interface SubmissionCardProps {
   submission: FormSubmission;
@@ -63,10 +63,19 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
       <CardContent className="p-4">
         <div className="flex items-start justify-between mb-2">
           <div className="flex items-center gap-2">
-            <User className="h-4 w-4 text-gray-500" />
-            <span className="text-sm font-medium">
-              {submission.recipientId || 'Anonymous'}
-            </span>
+            {submission.submissionType === 'vendor' ? (
+              <Building className="h-4 w-4 text-gray-500" />
+            ) : (
+              <User className="h-4 w-4 text-gray-500" />
+            )}
+            <div className="flex flex-col">
+              <span className="text-sm font-medium">
+                {submission.companyName || submission.recipientId || 'Anonymous'}
+              </span>
+              {submission.submissionType === 'vendor' && submission.companyName && (
+                <span className="text-xs text-gray-500">{submission.recipientId}</span>
+              )}
+            </div>
           </div>
           <div className="flex items-center gap-1">
             {getStatusIcon(submission.status)}
@@ -96,6 +105,12 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
             <span className="text-xs text-gray-500">
               {new Date(submission.submittedAt).toLocaleDateString()}
             </span>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <Badge variant="outline" className="text-xs">
+              {submission.submissionType === 'vendor' ? 'Vendor' : 'Internal'}
+            </Badge>
           </div>
         </div>
       </CardContent>
