@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { FormSubmission, Form } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,13 +22,15 @@ export const SubmissionReview = ({ submissions, form, onUpdateSubmission }: Subm
   const [filterStatus, setFilterStatus] = useState<string>("all");
 
   const calculateCompletionPercentage = (submission: FormSubmission) => {
-    const totalFields = form.fields.length;
-    const completedFields = Object.keys(submission.responses).filter(key => {
-      const value = submission.responses[key];
-      return value !== null && value !== undefined && value !== '';
+    if (form.fields.length === 0) return 0;
+    
+    const completedFields = form.fields.filter(field => {
+      const value = submission.responses[field.id];
+      return value !== null && value !== undefined && value !== '' && 
+             !(Array.isArray(value) && value.length === 0);
     }).length;
     
-    return Math.round((completedFields / totalFields) * 100);
+    return Math.min(100, Math.round((completedFields / form.fields.length) * 100));
   };
 
   const getStatusIcon = (status: FormSubmission['status']) => {
@@ -63,7 +64,7 @@ export const SubmissionReview = ({ submissions, form, onUpdateSubmission }: Subm
       status,
       score: {
         ...submissions.find(s => s.id === submissionId)?.score,
-        reviewedBy: 'Current User', // In a real app, this would be the current user
+        reviewedBy: 'Current User',
         reviewedAt: new Date()
       } as any
     });
