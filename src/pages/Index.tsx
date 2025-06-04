@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
@@ -7,10 +6,12 @@ import { Analytics } from "@/components/Analytics";
 import { ScoringSettings } from "@/components/ScoringSettings";
 import { WeightageEditor } from "@/components/WeightageEditor";
 import { EmailTracking } from "@/components/EmailTracking";
-import { Settings, BarChart3, Library, Plus, Save, Target, Scale, Mail } from "lucide-react";
+import { SettingsPanel } from "@/components/SettingsPanel";
+import { SubmissionReview } from "@/components/SubmissionReview";
+import { Settings, BarChart3, Library, Plus, Save, Target, Scale, Mail, FileCheck, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { FormField, FormTemplate, Form, EmailRecipient } from "@/types/form";
+import { FormField, FormTemplate, Form, EmailRecipient, FormSubmission } from "@/types/form";
 import { toast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -42,8 +43,47 @@ const Index = () => {
       reminderEnabled: true,
       reminderIntervalDays: 7,
       maxReminders: 3
+    },
+    approval: {
+      enabled: false,
+      requireApproval: false,
+      approvers: []
+    },
+    documents: {
+      enabled: false,
+      allowedTypes: ['pdf', 'doc', 'docx'],
+      maxSize: 10,
+      requiredDocuments: [],
+      allowUserUploads: true
     }
   });
+
+  // Mock submissions data for demonstration
+  const [submissions] = useState<FormSubmission[]>([
+    {
+      id: '1',
+      formId: 'form1',
+      recipientId: 'user@example.com',
+      responses: {
+        field1: 'Sample response',
+        field2: 'Another response'
+      },
+      completionPercentage: 85,
+      timeSpent: 300,
+      score: {
+        total: 85,
+        maxTotal: 100,
+        percentage: 85,
+        passed: true,
+        riskLevel: 'low',
+        riskScore: 15,
+        manualReviewRequired: false
+      },
+      submittedAt: new Date(),
+      lastModifiedAt: new Date(),
+      status: 'submitted'
+    }
+  ]);
 
   const addField = (field: FormField) => {
     setFormFields([...formFields, { ...field, id: Date.now().toString() }]);
@@ -137,6 +177,10 @@ const Index = () => {
     });
   };
 
+  const handleSettingsClick = () => {
+    setActiveTab("settings");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -154,7 +198,7 @@ const Index = () => {
                 <Save className="h-4 w-4" />
                 Save Form
               </Button>
-              <Button variant="outline" className="flex items-center gap-2">
+              <Button variant="outline" className="flex items-center gap-2" onClick={handleSettingsClick}>
                 <Settings className="h-4 w-4" />
                 Settings
               </Button>
@@ -166,7 +210,7 @@ const Index = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="builder" className="flex items-center gap-2">
               <Plus className="h-4 w-4" />
               Builder
@@ -186,6 +230,14 @@ const Index = () => {
             <TabsTrigger value="email" className="flex items-center gap-2">
               <Mail className="h-4 w-4" />
               Email
+            </TabsTrigger>
+            <TabsTrigger value="submissions" className="flex items-center gap-2">
+              <FileCheck className="h-4 w-4" />
+              Submissions
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Settings
             </TabsTrigger>
             <TabsTrigger value="library" className="flex items-center gap-2">
               <Library className="h-4 w-4" />
@@ -243,6 +295,46 @@ const Index = () => {
               reminderIntervalDays={formSettings.emailDistribution?.reminderIntervalDays || 7}
               maxReminders={formSettings.emailDistribution?.maxReminders || 3}
               onUpdateEmailSettings={updateEmailSettings}
+            />
+          </TabsContent>
+
+          <TabsContent value="submissions" className="mt-6">
+            <SubmissionReview
+              submissions={submissions}
+              form={{
+                id: 'current-form',
+                title: formTitle,
+                description: formDescription,
+                fields: formFields,
+                settings: formSettings,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                status: 'draft',
+                submissions: submissions.length,
+                analytics: {
+                  views: 0,
+                  submissions: submissions.length,
+                  completionRate: 0,
+                  emailsSent: 0,
+                  emailsCompleted: 0,
+                  averageCompletionTime: 0,
+                  dropoffRate: 0
+                }
+              }}
+              onUpdateSubmission={(submissionId, updates) => {
+                console.log('Updating submission:', submissionId, updates);
+                toast({
+                  title: "Submission Updated",
+                  description: "The submission has been updated successfully.",
+                });
+              }}
+            />
+          </TabsContent>
+
+          <TabsContent value="settings" className="mt-6">
+            <SettingsPanel
+              formSettings={formSettings}
+              onUpdateSettings={updateFormSettings}
             />
           </TabsContent>
 

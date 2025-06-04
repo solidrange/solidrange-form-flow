@@ -1,4 +1,3 @@
-
 export interface FormField {
   id: string;
   type: 'text' | 'email' | 'number' | 'textarea' | 'select' | 'radio' | 'checkbox' | 'date' | 'file' | 'rating' | 'signature';
@@ -40,6 +39,15 @@ export interface EmailRecipient {
   lastReminderAt?: Date;
 }
 
+export interface DocumentAttachment {
+  id: string;
+  name: string;
+  type: string;
+  size: number;
+  url: string;
+  uploadedAt: Date;
+}
+
 export interface Form {
   id: string;
   title: string;
@@ -75,6 +83,29 @@ export interface Form {
       maxReminders: number;
       customEmailTemplate?: string;
     };
+    approval?: {
+      enabled: boolean;
+      requireApproval: boolean;
+      approvers: string[];
+      autoApproveScore?: number;
+      escalationRules?: {
+        timeLimit: number;
+        escalateTo: string;
+      };
+    };
+    documents?: {
+      enabled: boolean;
+      allowedTypes: string[];
+      maxSize: number;
+      requiredDocuments: DocumentAttachment[];
+      allowUserUploads: boolean;
+    };
+    notifications?: {
+      onSubmission: boolean;
+      onApproval: boolean;
+      emailRecipients: string[];
+      webhookUrl?: string;
+    };
   };
   createdAt: Date;
   updatedAt: Date;
@@ -86,6 +117,8 @@ export interface Form {
     completionRate: number;
     emailsSent: number;
     emailsCompleted: number;
+    averageCompletionTime: number;
+    dropoffRate: number;
   };
 }
 
@@ -105,6 +138,9 @@ export interface FormSubmission {
   formId: string;
   recipientId?: string;
   responses: Record<string, any>;
+  attachments?: DocumentAttachment[];
+  completionPercentage: number;
+  timeSpent: number;
   score?: {
     total: number;
     maxTotal: number;
@@ -116,7 +152,11 @@ export interface FormSubmission {
     manualReviewRequired: boolean;
     reviewedBy?: string;
     reviewedAt?: Date;
+    reviewComments?: string;
   };
   submittedAt: Date;
   status: 'submitted' | 'under_review' | 'reviewed' | 'approved' | 'rejected';
+  lastModifiedAt: Date;
+  ipAddress?: string;
+  userAgent?: string;
 }
