@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
@@ -9,10 +10,10 @@ import { EmailTracking } from "@/components/EmailTracking";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { ReportGeneration } from "@/components/ReportGeneration";
+import { FormCategoryManager } from "@/components/FormCategoryManager";
 import { 
   Settings, 
   BarChart3, 
-  Library, 
   Plus, 
   Save, 
   Target, 
@@ -23,7 +24,9 @@ import {
   FileText,
   Wrench,
   BookOpen,
-  ClipboardList
+  ClipboardList,
+  Send,
+  FolderPlus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -39,6 +42,9 @@ const Index = () => {
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
   const [formAttachments, setFormAttachments] = useState<DocumentAttachment[]>([]);
+  const [formStatus, setFormStatus] = useState<'draft' | 'published'>('draft');
+  const [formCategory, setFormCategory] = useState<string>('');
+  const [customCategory, setCustomCategory] = useState<string>('');
   
   const [formSettings, setFormSettings] = useState<Form['settings']>({
     allowMultipleSubmissions: false,
@@ -139,11 +145,31 @@ const Index = () => {
       formDescription, 
       formFields, 
       formSettings, 
-      attachments: formAttachments 
+      attachments: formAttachments,
+      status: formStatus,
+      category: formCategory || customCategory
     });
     toast({
       title: "Form Saved",
       description: "Your form has been saved successfully.",
+    });
+  };
+
+  const publishForm = () => {
+    if (formFields.length === 0) {
+      toast({
+        title: "Cannot Publish",
+        description: "Please add at least one field before publishing.",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setFormStatus('published');
+    saveForm();
+    toast({
+      title: "Form Published",
+      description: "Your form is now live and ready to receive submissions.",
     });
   };
 
@@ -171,11 +197,20 @@ const Index = () => {
       }));
     }
     
-    setActiveBuildTab("builder");
     toast({
       title: "Template Applied",
       description: `${template.name} template has been applied to your form.`,
     });
+  };
+
+  const handleCategoryUpdate = (category: string, isCustom: boolean = false) => {
+    if (isCustom) {
+      setCustomCategory(category);
+      setFormCategory('');
+    } else {
+      setFormCategory(category);
+      setCustomCategory('');
+    }
   };
 
   return (
@@ -209,18 +244,10 @@ const Index = () => {
           <TabsContent value="build-form" className="mt-6">
             <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
               <div className="flex items-center justify-between mb-4">
-                <TabsList className="grid w-auto grid-cols-8">
+                <TabsList className="grid w-auto grid-cols-6">
                   <TabsTrigger value="builder" className="flex items-center gap-2">
                     <Plus className="h-4 w-4" />
                     Builder
-                  </TabsTrigger>
-                  <TabsTrigger value="library" className="flex items-center gap-2">
-                    <Library className="h-4 w-4" />
-                    Library
-                  </TabsTrigger>
-                  <TabsTrigger value="email" className="flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
-                    Email
                   </TabsTrigger>
                   <TabsTrigger value="scoring" className="flex items-center gap-2">
                     <Target className="h-4 w-4" />
@@ -234,20 +261,26 @@ const Index = () => {
                     <Eye className="h-4 w-4" />
                     Preview
                   </TabsTrigger>
-                  <TabsTrigger value="drafts" className="flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
-                    Drafts
+                  <TabsTrigger value="category" className="flex items-center gap-2">
+                    <FolderPlus className="h-4 w-4" />
+                    Category
                   </TabsTrigger>
-                  <TabsTrigger value="published" className="flex items-center gap-2">
-                    <BookOpen className="h-4 w-4" />
-                    Published
-                  </TabsTrigger>
+                  {formStatus === 'published' && (
+                    <TabsTrigger value="email" className="flex items-center gap-2">
+                      <Mail className="h-4 w-4" />
+                      Email
+                    </TabsTrigger>
+                  )}
                 </TabsList>
                 
                 <div className="flex items-center gap-3">
-                  <Button onClick={saveForm} className="flex items-center gap-2">
+                  <Button onClick={saveForm} variant="outline" className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
-                    Save Form
+                    Save Draft
+                  </Button>
+                  <Button onClick={publishForm} className="flex items-center gap-2">
+                    <Send className="h-4 w-4" />
+                    Publish Form
                   </Button>
                   <Button variant="outline" className="flex items-center gap-2" onClick={() => setActiveBuildTab("settings")}>
                     <Settings className="h-4 w-4" />
@@ -271,22 +304,7 @@ const Index = () => {
                   onUpdateAttachments={setFormAttachments}
                   allowedFileTypes={formSettings.documents?.allowedTypes || ['pdf', 'doc', 'docx']}
                   maxFileSize={formSettings.documents?.maxSize || 10}
-                />
-              </TabsContent>
-
-              <TabsContent value="library" className="mt-4">
-                <FormLibrary onUseTemplate={useTemplate} />
-              </TabsContent>
-
-              <TabsContent value="email" className="mt-4">
-                <EmailTracking
-                  recipients={formSettings.emailDistribution?.recipients || []}
-                  onUpdateRecipients={updateEmailRecipients}
-                  formTitle={formTitle}
-                  reminderEnabled={formSettings.emailDistribution?.reminderEnabled || true}
-                  reminderIntervalDays={formSettings.emailDistribution?.reminderIntervalDays || 7}
-                  maxReminders={formSettings.emailDistribution?.maxReminders || 3}
-                  onUpdateEmailSettings={updateEmailSettings}
+                  onUseTemplate={useTemplate}
                 />
               </TabsContent>
 
@@ -314,19 +332,28 @@ const Index = () => {
                 />
               </TabsContent>
 
-              <TabsContent value="drafts" className="mt-4">
-                <div className="text-center py-8 text-gray-500">
-                  <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>No draft forms available</p>
-                </div>
+              <TabsContent value="category" className="mt-4">
+                <FormCategoryManager
+                  currentCategory={formCategory}
+                  customCategory={customCategory}
+                  onCategoryUpdate={handleCategoryUpdate}
+                  formTitle={formTitle}
+                />
               </TabsContent>
 
-              <TabsContent value="published" className="mt-4">
-                <div className="text-center py-8 text-gray-500">
-                  <BookOpen className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>No published forms available</p>
-                </div>
-              </TabsContent>
+              {formStatus === 'published' && (
+                <TabsContent value="email" className="mt-4">
+                  <EmailTracking
+                    recipients={formSettings.emailDistribution?.recipients || []}
+                    onUpdateRecipients={updateEmailRecipients}
+                    formTitle={formTitle}
+                    reminderEnabled={formSettings.emailDistribution?.reminderEnabled || true}
+                    reminderIntervalDays={formSettings.emailDistribution?.reminderIntervalDays || 7}
+                    maxReminders={formSettings.emailDistribution?.maxReminders || 3}
+                    onUpdateEmailSettings={updateEmailSettings}
+                  />
+                </TabsContent>
+              )}
 
               <TabsContent value="settings" className="mt-4">
                 <SettingsPanel
@@ -365,7 +392,7 @@ const Index = () => {
                     settings: formSettings,
                     createdAt: new Date(),
                     updatedAt: new Date(),
-                    status: 'draft',
+                    status: formStatus,
                     submissions: submissions.length,
                     analytics: {
                       views: 0,
