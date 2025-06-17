@@ -88,175 +88,152 @@ export const ReportCustomization = ({ submissions, onGenerateReport }: ReportCus
     }));
   };
 
+  const sectionOptions = [
+    { key: 'overview', label: 'Overview' },
+    { key: 'submissionStats', label: 'Submission Stats' },
+    { key: 'riskAnalysis', label: 'Risk Analysis' },
+    { key: 'complianceStatus', label: 'Compliance Status' },
+    { key: 'detailedResponses', label: 'Detailed Responses' },
+    { key: 'recommendations', label: 'Recommendations' },
+  ];
+
+  const chartOptions = [
+    { key: 'submissionTrends', label: 'Submission Trends', options: ['bar', 'line', 'pie'] },
+    { key: 'riskDistribution', label: 'Risk Distribution', options: ['bar', 'pie', 'donut'] },
+    { key: 'complianceStatus', label: 'Compliance Status', options: ['bar', 'pie'] },
+  ];
+
+  const filterOptions = [
+    { key: 'submissionType', label: 'Submission Type', options: ['all', 'vendor', 'internal'] },
+    { key: 'status', label: 'Status', options: ['all', 'submitted', 'approved', 'rejected', 'under_review'] },
+    { key: 'riskLevel', label: 'Risk Level', options: ['all', 'low', 'medium', 'high', 'critical'] },
+  ];
+
   return (
-    <div className="space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Report Customization</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Basic Information */}
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="report-title">Report Title</Label>
-              <Input
-                id="report-title"
-                value={config.title}
-                onChange={(e) => setConfig(prev => ({ ...prev, title: e.target.value }))}
-              />
-            </div>
-            <div>
-              <Label htmlFor="report-description">Description</Label>
-              <Textarea
-                id="report-description"
-                value={config.description}
-                onChange={(e) => setConfig(prev => ({ ...prev, description: e.target.value }))}
-              />
-            </div>
-          </div>
-
-          {/* Report Sections */}
+    <Card>
+      <CardHeader>
+        <CardTitle>Report Customization</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Basic Information */}
+        <div className="space-y-4">
           <div>
-            <Label className="text-base font-semibold">Include Sections</Label>
-            <div className="grid grid-cols-2 gap-4 mt-2">
-              {Object.entries(config.includeSections).map(([key, value]) => (
-                <div key={key} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={key}
-                    checked={value}
-                    onCheckedChange={(checked) => updateSection(key as keyof ReportConfig['includeSections'], !!checked)}
-                  />
-                  <Label htmlFor={key} className="capitalize">
-                    {key.replace(/([A-Z])/g, ' $1').trim()}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Chart Types */}
-          <div>
-            <Label className="text-base font-semibold">Chart Types</Label>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-              <div>
-                <Label htmlFor="submission-trends">Submission Trends</Label>
-                <Select value={config.chartTypes.submissionTrends} onValueChange={(value) => updateChartType('submissionTrends', value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="bar">Bar Chart</SelectItem>
-                    <SelectItem value="line">Line Chart</SelectItem>
-                    <SelectItem value="pie">Pie Chart</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="risk-distribution">Risk Distribution</Label>
-                <Select value={config.chartTypes.riskDistribution} onValueChange={(value) => updateChartType('riskDistribution', value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="bar">Bar Chart</SelectItem>
-                    <SelectItem value="pie">Pie Chart</SelectItem>
-                    <SelectItem value="donut">Donut Chart</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="compliance-status">Compliance Status</Label>
-                <Select value={config.chartTypes.complianceStatus} onValueChange={(value) => updateChartType('complianceStatus', value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="bar">Bar Chart</SelectItem>
-                    <SelectItem value="pie">Pie Chart</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-
-          {/* Filters */}
-          <div>
-            <Label className="text-base font-semibold">Filters</Label>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-2">
-              <div>
-                <Label htmlFor="submission-type">Submission Type</Label>
-                <Select value={config.filterBy.submissionType} onValueChange={(value) => updateFilter('submissionType', value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="vendor">Vendor</SelectItem>
-                    <SelectItem value="internal">Internal</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="status">Status</Label>
-                <Select value={config.filterBy.status} onValueChange={(value) => updateFilter('status', value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="submitted">Submitted</SelectItem>
-                    <SelectItem value="approved">Approved</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
-                    <SelectItem value="under_review">Under Review</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="risk-level">Risk Level</Label>
-                <Select value={config.filterBy.riskLevel} onValueChange={(value) => updateFilter('riskLevel', value)}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All</SelectItem>
-                    <SelectItem value="low">Low</SelectItem>
-                    <SelectItem value="medium">Medium</SelectItem>
-                    <SelectItem value="high">High</SelectItem>
-                    <SelectItem value="critical">Critical</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="format">Export Format</Label>
-                <Select value={config.format} onValueChange={(value) => setConfig(prev => ({ ...prev, format: value as 'pdf' | 'excel' }))}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pdf">PDF</SelectItem>
-                    <SelectItem value="excel">Excel</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-          </div>
-
-          {/* Custom Recommendations */}
-          <div>
-            <Label htmlFor="custom-recommendations">Custom Recommendations</Label>
-            <Textarea
-              id="custom-recommendations"
-              placeholder="Add custom recommendations for this report..."
-              value={config.customRecommendations}
-              onChange={(e) => setConfig(prev => ({ ...prev, customRecommendations: e.target.value }))}
+            <Label htmlFor="report-title">Report Title</Label>
+            <Input
+              id="report-title"
+              value={config.title}
+              onChange={(e) => setConfig(prev => ({ ...prev, title: e.target.value }))}
             />
           </div>
+          <div>
+            <Label htmlFor="report-description">Description</Label>
+            <Textarea
+              id="report-description"
+              value={config.description}
+              onChange={(e) => setConfig(prev => ({ ...prev, description: e.target.value }))}
+            />
+          </div>
+        </div>
 
-          <Button onClick={() => onGenerateReport(config)} className="w-full">
-            Generate {config.format.toUpperCase()} Report
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
+        {/* Report Sections */}
+        <div>
+          <Label className="text-base font-semibold">Include Sections</Label>
+          <div className="grid grid-cols-2 gap-4 mt-2">
+            {sectionOptions.map(({ key, label }) => (
+              <div key={key} className="flex items-center space-x-2">
+                <Checkbox
+                  id={key}
+                  checked={config.includeSections[key as keyof ReportConfig['includeSections']]}
+                  onCheckedChange={(checked) => updateSection(key as keyof ReportConfig['includeSections'], !!checked)}
+                />
+                <Label htmlFor={key}>{label}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Chart Types */}
+        <div>
+          <Label className="text-base font-semibold">Chart Types</Label>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+            {chartOptions.map(({ key, label, options }) => (
+              <div key={key}>
+                <Label>{label}</Label>
+                <Select 
+                  value={config.chartTypes[key as keyof ReportConfig['chartTypes']]} 
+                  onValueChange={(value) => updateChartType(key as keyof ReportConfig['chartTypes'], value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {options.map(option => (
+                      <SelectItem key={option} value={option}>
+                        {option.charAt(0).toUpperCase() + option.slice(1)} Chart
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Filters */}
+        <div>
+          <Label className="text-base font-semibold">Filters</Label>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
+            {filterOptions.map(({ key, label, options }) => (
+              <div key={key}>
+                <Label>{label}</Label>
+                <Select 
+                  value={config.filterBy[key as keyof ReportConfig['filterBy']] as string} 
+                  onValueChange={(value) => updateFilter(key as keyof ReportConfig['filterBy'], value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {options.map(option => (
+                      <SelectItem key={option} value={option}>
+                        {option.charAt(0).toUpperCase() + option.slice(1).replace('_', ' ')}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            ))}
+            
+            <div>
+              <Label>Export Format</Label>
+              <Select value={config.format} onValueChange={(value) => setConfig(prev => ({ ...prev, format: value as 'pdf' | 'excel' }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pdf">PDF</SelectItem>
+                  <SelectItem value="excel">Excel</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+
+        {/* Custom Recommendations */}
+        <div>
+          <Label htmlFor="custom-recommendations">Custom Recommendations</Label>
+          <Textarea
+            id="custom-recommendations"
+            placeholder="Add custom recommendations for this report..."
+            value={config.customRecommendations}
+            onChange={(e) => setConfig(prev => ({ ...prev, customRecommendations: e.target.value }))}
+          />
+        </div>
+
+        <Button onClick={() => onGenerateReport(config)} className="w-full">
+          Generate {config.format.toUpperCase()} Report
+        </Button>
+      </CardContent>
+    </Card>
   );
 };

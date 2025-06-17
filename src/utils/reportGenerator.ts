@@ -23,22 +23,15 @@ export class ReportGenerator {
 
   private filterSubmissions(submissions: FormSubmission[], filters: ReportConfig['filterBy']): FormSubmission[] {
     return submissions.filter(submission => {
-      // Filter by submission type
       if (filters.submissionType !== 'all' && submission.submissionType !== filters.submissionType) {
         return false;
       }
-
-      // Filter by status
       if (filters.status !== 'all' && submission.status !== filters.status) {
         return false;
       }
-
-      // Filter by risk level
       if (filters.riskLevel !== 'all' && submission.score?.riskLevel !== filters.riskLevel) {
         return false;
       }
-
-      // Filter by date range
       if (filters.dateRange.start || filters.dateRange.end) {
         const submissionDate = new Date(submission.submittedAt);
         if (filters.dateRange.start && submissionDate < new Date(filters.dateRange.start)) {
@@ -48,7 +41,6 @@ export class ReportGenerator {
           return false;
         }
       }
-
       return true;
     });
   }
@@ -87,7 +79,6 @@ export class ReportGenerator {
   async generatePDF(): Promise<void> {
     const pdf = new jsPDF();
     const pageWidth = pdf.internal.pageSize.width;
-    const pageHeight = pdf.internal.pageSize.height;
     let yPosition = 20;
 
     // Title
@@ -114,8 +105,6 @@ export class ReportGenerator {
       pdf.text('Executive Summary', 20, yPosition);
       yPosition += 10;
 
-      pdf.setFontSize(10);
-      pdf.setFont('helvetica', 'normal');
       const overviewData = [
         ['Total Submissions', stats.total.toString()],
         ['Approved', `${stats.approved} (${stats.approvalRate}%)`],
@@ -138,16 +127,6 @@ export class ReportGenerator {
 
     // Risk Analysis Section
     if (this.config.includeSections.riskAnalysis) {
-      if (yPosition > pageHeight - 50) {
-        pdf.addPage();
-        yPosition = 20;
-      }
-
-      pdf.setFontSize(16);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Risk Analysis', 20, yPosition);
-      yPosition += 10;
-
       const riskData = Object.entries(stats.riskLevels).map(([risk, count]) => [
         risk.charAt(0).toUpperCase() + risk.slice(1),
         count.toString(),
@@ -167,16 +146,6 @@ export class ReportGenerator {
 
     // Detailed Responses Section
     if (this.config.includeSections.detailedResponses) {
-      if (yPosition > pageHeight - 50) {
-        pdf.addPage();
-        yPosition = 20;
-      }
-
-      pdf.setFontSize(16);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Detailed Submissions', 20, yPosition);
-      yPosition += 10;
-
       const detailedData = this.submissions.slice(0, 10).map(submission => [
         submission.companyName || 'N/A',
         submission.submissionType,
@@ -193,35 +162,6 @@ export class ReportGenerator {
         theme: 'striped',
         headStyles: { fillColor: [40, 167, 69] },
         styles: { fontSize: 8 },
-      });
-
-      yPosition = (pdf as any).lastAutoTable.finalY + 15;
-    }
-
-    // Recommendations Section
-    if (this.config.includeSections.recommendations) {
-      if (yPosition > pageHeight - 50) {
-        pdf.addPage();
-        yPosition = 20;
-      }
-
-      pdf.setFontSize(16);
-      pdf.setFont('helvetica', 'bold');
-      pdf.text('Recommendations', 20, yPosition);
-      yPosition += 10;
-
-      pdf.setFontSize(10);
-      pdf.setFont('helvetica', 'normal');
-
-      const recommendations = this.generateRecommendations(stats);
-      if (this.config.customRecommendations) {
-        recommendations.push(this.config.customRecommendations);
-      }
-
-      recommendations.forEach((rec, index) => {
-        const splitRec = pdf.splitTextToSize(`${index + 1}. ${rec}`, pageWidth - 40);
-        pdf.text(splitRec, 20, yPosition);
-        yPosition += splitRec.length * 5 + 5;
       });
     }
 
@@ -259,11 +199,11 @@ export class ReportGenerator {
         submission.submissionType,
         submission.status,
         submission.score?.riskLevel || 'N/A',
-        submission.score?.percentage || 0,
-        submission.score?.riskScore || 0,
+        submission.score?.percentage?.toString() || '0',
+        submission.score?.riskScore?.toString() || '0',
         new Date(submission.submittedAt).toLocaleDateString(),
-        submission.completionPercentage,
-        Math.round(submission.timeSpent / 60)
+        submission.completionPercentage?.toString() || '0',
+        Math.round(submission.timeSpent / 60).toString()
       ]);
     });
 
@@ -275,8 +215,8 @@ export class ReportGenerator {
     Object.entries(stats.riskLevels).forEach(([risk, count]) => {
       riskData.push([
         risk.charAt(0).toUpperCase() + risk.slice(1),
-        count,
-        Math.round((count / stats.total) * 100)
+        count.toString(),
+        Math.round((count / stats.total) * 100).toString()
       ]);
     });
 
@@ -304,10 +244,6 @@ export class ReportGenerator {
 
     if (stats.averageScore < 75) {
       recommendations.push("Average submission score is below acceptable threshold. Consider providing vendor training resources.");
-    }
-
-    if (stats.submissionTypes.vendor > stats.submissionTypes.internal * 3) {
-      recommendations.push("High volume of vendor submissions. Consider implementing automated pre-screening tools.");
     }
 
     return recommendations;

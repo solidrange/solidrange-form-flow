@@ -393,7 +393,7 @@ const Index = () => {
               </TabsContent>
 
               <TabsContent value="reports" className="mt-4">
-                <ReportGeneration />
+                <ReportGeneration submissions={submissions} />
               </TabsContent>
             </Tabs>
           </TabsContent>
