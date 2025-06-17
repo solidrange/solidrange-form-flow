@@ -34,7 +34,6 @@ import { sampleSubmissions } from "@/data/sampleSubmissions";
 const Index = () => {
   const [activeTab, setActiveTab] = useState("build-form");
   const [activeBuildTab, setActiveBuildTab] = useState("builder");
-  const [activeReviewTab, setActiveReviewTab] = useState("submissions");
   
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [formTitle, setFormTitle] = useState("Untitled Form");
@@ -339,7 +338,7 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="review-submissions" className="mt-6">
-            <Tabs value={activeReviewTab} onValueChange={setActiveReviewTab} className="w-full">
+            <Tabs defaultValue="submissions" className="w-full">
               <TabsList className="grid w-auto grid-cols-3">
                 <TabsTrigger value="submissions" className="flex items-center gap-2">
                   <FileCheck className="h-4 w-4" />

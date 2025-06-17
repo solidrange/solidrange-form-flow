@@ -1,16 +1,10 @@
 
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import * as XLSX from 'xlsx';
 import html2canvas from 'html2canvas';
 import { FormSubmission } from '@/types/form';
 import { ReportConfig } from '@/components/reports/ReportCustomization';
-
-declare module 'jspdf' {
-  interface jsPDF {
-    autoTable: (options: any) => jsPDF;
-  }
-}
 
 export class ReportGenerator {
   private submissions: FormSubmission[];
@@ -114,7 +108,7 @@ export class ReportGenerator {
         ['Average Risk Score', stats.averageRiskScore.toString()],
       ];
 
-      pdf.autoTable({
+      autoTable(pdf, {
         startY: yPosition,
         head: [['Metric', 'Value']],
         body: overviewData,
@@ -133,7 +127,7 @@ export class ReportGenerator {
         `${Math.round((count / stats.total) * 100)}%`
       ]);
 
-      pdf.autoTable({
+      autoTable(pdf, {
         startY: yPosition,
         head: [['Risk Level', 'Count', 'Percentage']],
         body: riskData,
@@ -155,7 +149,7 @@ export class ReportGenerator {
         new Date(submission.submittedAt).toLocaleDateString()
       ]);
 
-      pdf.autoTable({
+      autoTable(pdf, {
         startY: yPosition,
         head: [['Company', 'Type', 'Status', 'Risk Level', 'Score', 'Submitted']],
         body: detailedData,
@@ -225,28 +219,6 @@ export class ReportGenerator {
 
     // Save the Excel file
     XLSX.writeFile(workbook, `${this.config.title.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.xlsx`);
-  }
-
-  private generateRecommendations(stats: any): string[] {
-    const recommendations: string[] = [];
-
-    if (stats.approvalRate < 70) {
-      recommendations.push("Consider reviewing and improving vendor screening criteria as the approval rate is below 70%.");
-    }
-
-    if (stats.riskLevels.high > stats.total * 0.2) {
-      recommendations.push("High number of high-risk submissions detected. Implement additional due diligence procedures.");
-    }
-
-    if (stats.riskLevels.critical > 0) {
-      recommendations.push("Critical risk submissions require immediate attention and enhanced monitoring.");
-    }
-
-    if (stats.averageScore < 75) {
-      recommendations.push("Average submission score is below acceptable threshold. Consider providing vendor training resources.");
-    }
-
-    return recommendations;
   }
 
   async generate(): Promise<void> {
