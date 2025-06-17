@@ -63,6 +63,7 @@ export const SubmissionReview = ({ submissions, form, onUpdateSubmission }: Subm
               <SubmissionDetails submission={selectedSub} form={form} />
               <SubmissionActions 
                 submission={selectedSub} 
+                form={form}
                 onUpdateSubmission={onUpdateSubmission}
                 onResendForm={handleResendForm}
               />

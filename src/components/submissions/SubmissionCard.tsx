@@ -3,7 +3,7 @@ import { FormSubmission, Form } from "@/types/form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { User, CheckCircle, XCircle, Clock, Building } from "lucide-react";
+import { User, CheckCircle, XCircle, Clock, Building, AlertTriangle } from "lucide-react";
 
 interface SubmissionCardProps {
   submission: FormSubmission;
@@ -16,16 +16,37 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
   const calculateCompletionPercentage = (submission: FormSubmission) => {
     if (form.fields.length === 0) return 0;
     
-    const completedFields = form.fields.filter(field => {
+    // If approved or under review, show 100% completion
+    if (submission.status === 'approved' || submission.status === 'under_review') {
+      return 100;
+    }
+    
+    const requiredFields = form.fields.filter(field => field.required);
+    if (requiredFields.length === 0) return 100;
+    
+    const completedRequiredFields = requiredFields.filter(field => {
       const value = submission.responses[field.id];
       return value !== null && value !== undefined && value !== '' && 
              !(Array.isArray(value) && value.length === 0);
     }).length;
     
-    return Math.round((completedFields / form.fields.length) * 100);
+    return Math.round((completedRequiredFields / requiredFields.length) * 100);
   };
 
-  const getStatusIcon = (status: FormSubmission['status']) => {
+  const getCompletionStatus = (submission: FormSubmission) => {
+    const percentage = calculateCompletionPercentage(submission);
+    
+    if (submission.status === 'approved') return 'Completed';
+    if (submission.status === 'under_review') return 'Under Processing';
+    if (percentage < 100) return 'Not Completed';
+    return 'Completed';
+  };
+
+  const getStatusIcon = (status: FormSubmission['status'], completionPercentage: number) => {
+    if (completionPercentage < 100 && status === 'submitted') {
+      return <AlertTriangle className="h-4 w-4 text-orange-500" />;
+    }
+    
     switch (status) {
       case 'approved':
         return <CheckCircle className="h-4 w-4 text-green-500" />;
@@ -38,7 +59,11 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
     }
   };
 
-  const getStatusColor = (status: FormSubmission['status']) => {
+  const getStatusColor = (status: FormSubmission['status'], completionPercentage: number) => {
+    if (completionPercentage < 100 && status === 'submitted') {
+      return 'bg-orange-100 text-orange-800';
+    }
+    
     switch (status) {
       case 'approved':
         return 'bg-green-100 text-green-800';
@@ -52,6 +77,7 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
   };
 
   const completionPercentage = calculateCompletionPercentage(submission);
+  const completionStatus = getCompletionStatus(submission);
 
   return (
     <Card 
@@ -78,7 +104,7 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
             </div>
           </div>
           <div className="flex items-center gap-1">
-            {getStatusIcon(submission.status)}
+            {getStatusIcon(submission.status, completionPercentage)}
           </div>
         </div>
         
@@ -88,6 +114,13 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
             <span className="text-xs font-medium">{completionPercentage}%</span>
           </div>
           <Progress value={completionPercentage} className="h-2" />
+          
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-gray-500">Status</span>
+            <Badge variant="outline" className="text-xs">
+              {completionStatus}
+            </Badge>
+          </div>
           
           {submission.score && (
             <div className="flex items-center justify-between">
@@ -99,7 +132,7 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
           )}
           
           <div className="flex items-center justify-between">
-            <Badge className={getStatusColor(submission.status)}>
+            <Badge className={getStatusColor(submission.status, completionPercentage)}>
               {submission.status.replace('_', ' ')}
             </Badge>
             <span className="text-xs text-gray-500">
