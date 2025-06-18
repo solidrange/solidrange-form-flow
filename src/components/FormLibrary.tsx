@@ -8,7 +8,6 @@ import { Search, Plus, Shield, AlertTriangle, Building } from "lucide-react";
 
 interface FormLibraryProps {
   onUseTemplate?: (template: FormTemplate) => void;
-  compact?: boolean;
 }
 
 const formTemplates: FormTemplate[] = [
@@ -542,7 +541,7 @@ const formTemplates: FormTemplate[] = [
   }
 ];
 
-export const FormLibrary = ({ onUseTemplate, compact = false }: FormLibraryProps) => {
+export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
@@ -587,68 +586,6 @@ export const FormLibrary = ({ onUseTemplate, compact = false }: FormLibraryProps
         return 'bg-gray-100 text-gray-800';
     }
   };
-
-  if (compact) {
-    return (
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Input
-            placeholder="Search templates..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="h-8"
-          />
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md bg-white"
-          >
-            {categories.map(category => (
-              <option key={category} value={category}>
-                {category === "all" ? "All" : 
-                 category === "vendor-risk" ? "Vendor Risk" :
-                 category.charAt(0).toUpperCase() + category.slice(1)}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div className="space-y-2 max-h-96 overflow-y-auto">
-          {filteredTemplates.slice(0, 6).map((template) => (
-            <Card key={template.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleUseTemplate(template)}>
-              <CardContent className="p-3">
-                <div className="space-y-2">
-                  <h4 className="text-sm font-medium truncate">{template.name}</h4>
-                  <Badge 
-                    variant="secondary" 
-                    className={`${getCategoryColor(template.category)} text-xs`}
-                  >
-                    {template.category === "vendor-risk" ? "Vendor Risk" : template.category}
-                  </Badge>
-                  <p className="text-xs text-gray-600 line-clamp-2">{template.description}</p>
-                  <Button size="sm" className="w-full text-xs">
-                    Use Template
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {filteredTemplates.length > 6 && (
-          <p className="text-xs text-gray-500 text-center">
-            {filteredTemplates.length - 6} more templates available
-          </p>
-        )}
-
-        {filteredTemplates.length === 0 && (
-          <div className="text-center py-4">
-            <p className="text-sm text-gray-500">No templates found.</p>
-          </div>
-        )}
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6">
