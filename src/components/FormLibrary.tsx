@@ -8,6 +8,7 @@ import { Search, Plus, Shield, AlertTriangle, Building } from "lucide-react";
 
 interface FormLibraryProps {
   onUseTemplate?: (template: FormTemplate) => void;
+  compact?: boolean;
 }
 
 const formTemplates: FormTemplate[] = [
@@ -541,7 +542,7 @@ const formTemplates: FormTemplate[] = [
   }
 ];
 
-export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
+export const FormLibrary = ({ onUseTemplate, compact = false }: FormLibraryProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
@@ -588,21 +589,23 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
+    <div className="space-y-4">
+      {/* Search and Filter */}
+      <div className="space-y-3">
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
             placeholder="Search templates..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
+            size="sm"
           />
         </div>
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-md bg-white"
+          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white"
         >
           {categories.map(category => (
             <option key={category} value={category}>
@@ -614,69 +617,73 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
         </select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Templates Grid */}
+      <div className={`grid gap-3 ${compact ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
         {filteredTemplates.map((template) => (
-          <Card key={template.id} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="text-lg">{template.name}</CardTitle>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Badge 
-                      variant="secondary" 
-                      className={`${getCategoryColor(template.category)} flex items-center gap-1`}
-                    >
-                      {getCategoryIcon(template.category)}
-                      {template.category === "vendor-risk" ? "Vendor Risk" : template.category}
+          <Card key={template.id} className="hover:shadow-md transition-shadow">
+            <CardHeader className="pb-2">
+              <div className="space-y-2">
+                <CardTitle className="text-sm font-medium leading-tight">{template.name}</CardTitle>
+                <div className="flex flex-wrap gap-1">
+                  <Badge 
+                    variant="secondary" 
+                    className={`${getCategoryColor(template.category)} text-xs flex items-center gap-1`}
+                  >
+                    {getCategoryIcon(template.category)}
+                    {template.category === "vendor-risk" ? "Vendor Risk" : template.category}
+                  </Badge>
+                  {template.scoringModel && (
+                    <Badge variant="outline" className="text-xs">
+                      {template.scoringModel}
                     </Badge>
-                    {template.scoringModel && (
-                      <Badge variant="outline" className="text-xs">
-                        {template.scoringModel}
-                      </Badge>
-                    )}
-                  </div>
+                  )}
                 </div>
               </div>
-              <p className="text-sm text-gray-600 mt-2">{template.description}</p>
-              {template.riskCategories && (
-                <div className="mt-2">
-                  <p className="text-xs font-medium text-gray-700">Risk Categories:</p>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {template.riskCategories.map((category, idx) => (
-                      <Badge key={idx} variant="outline" className="text-xs">
-                        {category}
-                      </Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
             </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
+            <CardContent className="pt-0">
+              <div className="space-y-2">
+                <p className="text-xs text-gray-600 line-clamp-2">{template.description}</p>
+                
+                {template.riskCategories && (
+                  <div>
+                    <p className="text-xs font-medium text-gray-700">Risk Categories:</p>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {template.riskCategories.slice(0, 2).map((category, idx) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {category}
+                        </Badge>
+                      ))}
+                      {template.riskCategories.length > 2 && (
+                        <Badge variant="outline" className="text-xs">
+                          +{template.riskCategories.length - 2}
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                )}
+                
                 <div>
-                  <p className="text-sm font-medium text-gray-700">Preview:</p>
-                  <p className="text-sm text-gray-500">{template.preview}</p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-700">Fields ({template.fields.length}):</p>
+                  <p className="text-xs font-medium text-gray-700">Fields ({template.fields.length}):</p>
                   <div className="flex flex-wrap gap-1 mt-1">
-                    {template.fields.slice(0, 3).map((field, idx) => (
+                    {template.fields.slice(0, 2).map((field, idx) => (
                       <Badge key={idx} variant="outline" className="text-xs">
                         {field.type}
                       </Badge>
                     ))}
-                    {template.fields.length > 3 && (
+                    {template.fields.length > 2 && (
                       <Badge variant="outline" className="text-xs">
-                        +{template.fields.length - 3} more
+                        +{template.fields.length - 2}
                       </Badge>
                     )}
                   </div>
                 </div>
+                
                 <Button 
-                  className="w-full mt-4" 
+                  size="sm"
+                  className="w-full mt-3" 
                   onClick={() => handleUseTemplate(template)}
                 >
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="h-3 w-3 mr-1" />
                   Use Template
                 </Button>
               </div>
@@ -687,7 +694,7 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
 
       {filteredTemplates.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-gray-500">No templates found matching your criteria.</p>
+          <p className="text-sm text-gray-500">No templates found matching your criteria.</p>
         </div>
       )}
     </div>

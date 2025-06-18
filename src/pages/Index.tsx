@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
-import { FormLibrary } from "@/components/FormLibrary";
 import { Analytics } from "@/components/Analytics";
 import { ScoringSettings } from "@/components/ScoringSettings";
 import { WeightageEditor } from "@/components/WeightageEditor";
@@ -9,10 +8,10 @@ import { EmailTracking } from "@/components/EmailTracking";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { ReportGeneration } from "@/components/ReportGeneration";
+import { useFormStatus } from "@/hooks/useFormStatus";
 import { 
   Settings, 
   BarChart3, 
-  Library, 
   Plus, 
   Save, 
   Target, 
@@ -23,7 +22,9 @@ import {
   FileText,
   Wrench,
   BookOpen,
-  ClipboardList
+  ClipboardList,
+  Upload,
+  CheckCircle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -35,10 +36,15 @@ const Index = () => {
   const [activeTab, setActiveTab] = useState("build-form");
   const [activeBuildTab, setActiveBuildTab] = useState("builder");
   
+  // Form status management
+  const { status, publishForm, saveToDraft, isDraft, isPublished } = useFormStatus();
+  
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
   const [formAttachments, setFormAttachments] = useState<DocumentAttachment[]>([]);
+  const [formCategory, setFormCategory] = useState<string>("");
+  const [saveToLibrary, setSaveToLibrary] = useState(false);
   
   const [formSettings, setFormSettings] = useState<Form['settings']>({
     allowMultipleSubmissions: false,
@@ -81,6 +87,7 @@ const Index = () => {
 
   const [submissions] = useState(sampleSubmissions);
 
+  // Form field management functions
   const addField = (field: FormField) => {
     setFormFields([...formFields, { ...field, id: Date.now().toString() }]);
   };
@@ -105,6 +112,7 @@ const Index = () => {
     setFormFields(newFields);
   };
 
+  // Settings management
   const updateFormSettings = (updates: Partial<Form['settings']>) => {
     setFormSettings(prev => ({ ...prev, ...updates }));
   };
@@ -133,17 +141,39 @@ const Index = () => {
     }));
   };
 
+  // Form actions
   const saveForm = () => {
     console.log("Saving form:", { 
       formTitle, 
       formDescription, 
       formFields, 
       formSettings, 
-      attachments: formAttachments 
+      attachments: formAttachments,
+      category: formCategory,
+      saveToLibrary,
+      status
     });
+    
     toast({
       title: "Form Saved",
-      description: "Your form has been saved successfully.",
+      description: `Your form has been saved as ${status}.`,
+    });
+  };
+
+  const handlePublishForm = () => {
+    if (formFields.length === 0) {
+      toast({
+        title: "Cannot Publish",
+        description: "Please add at least one field to your form before publishing.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    publishForm();
+    toast({
+      title: "Form Published",
+      description: "Your form is now published and ready for distribution.",
     });
   };
 
@@ -178,8 +208,26 @@ const Index = () => {
     });
   };
 
+  // Dynamic tabs based on form status
+  const getBuildFormTabs = () => {
+    const baseTabs = [
+      { value: "builder", label: "Builder", icon: Plus },
+      { value: "scoring", label: "Scoring", icon: Target },
+      { value: "weightage", label: "Weightage", icon: Scale },
+      { value: "preview", label: "Preview", icon: Eye },
+    ];
+
+    // Add Email tab only for published forms
+    if (isPublished) {
+      baseTabs.splice(-1, 0, { value: "email", label: "Email", icon: Mail });
+    }
+
+    return baseTabs;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Header */}
       <div className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -188,6 +236,23 @@ const Index = () => {
                 <span className="text-white font-bold text-sm">SF</span>
               </div>
               <h1 className="text-xl font-semibold text-gray-900">Solidrange Form Builder</h1>
+            </div>
+            
+            {/* Form Status Indicator */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                {isDraft ? (
+                  <span className="flex items-center gap-1 text-sm text-orange-600">
+                    <FileText className="h-4 w-4" />
+                    Draft
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1 text-sm text-green-600">
+                    <CheckCircle className="h-4 w-4" />
+                    Published
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -209,46 +274,33 @@ const Index = () => {
           <TabsContent value="build-form" className="mt-6">
             <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
               <div className="flex items-center justify-between mb-4">
-                <TabsList className="grid w-auto grid-cols-8">
-                  <TabsTrigger value="builder" className="flex items-center gap-2">
-                    <Plus className="h-4 w-4" />
-                    Builder
-                  </TabsTrigger>
-                  <TabsTrigger value="library" className="flex items-center gap-2">
-                    <Library className="h-4 w-4" />
-                    Library
-                  </TabsTrigger>
-                  <TabsTrigger value="email" className="flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
-                    Email
-                  </TabsTrigger>
-                  <TabsTrigger value="scoring" className="flex items-center gap-2">
-                    <Target className="h-4 w-4" />
-                    Scoring
-                  </TabsTrigger>
-                  <TabsTrigger value="weightage" className="flex items-center gap-2">
-                    <Scale className="h-4 w-4" />
-                    Weightage
-                  </TabsTrigger>
-                  <TabsTrigger value="preview" className="flex items-center gap-2">
-                    <Eye className="h-4 w-4" />
-                    Preview
-                  </TabsTrigger>
-                  <TabsTrigger value="drafts" className="flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
-                    Drafts
-                  </TabsTrigger>
-                  <TabsTrigger value="published" className="flex items-center gap-2">
-                    <BookOpen className="h-4 w-4" />
-                    Published
-                  </TabsTrigger>
+                <TabsList className="grid w-auto grid-flow-col">
+                  {getBuildFormTabs().map(tab => (
+                    <TabsTrigger key={tab.value} value={tab.value} className="flex items-center gap-2">
+                      <tab.icon className="h-4 w-4" />
+                      {tab.label}
+                    </TabsTrigger>
+                  ))}
                 </TabsList>
                 
                 <div className="flex items-center gap-3">
-                  <Button onClick={saveForm} className="flex items-center gap-2">
+                  <Button onClick={saveForm} variant="outline" className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
-                    Save Form
+                    Save {isDraft ? 'Draft' : 'Form'}
                   </Button>
+                  
+                  {isDraft ? (
+                    <Button onClick={handlePublishForm} className="flex items-center gap-2">
+                      <Upload className="h-4 w-4" />
+                      Publish Form
+                    </Button>
+                  ) : (
+                    <Button onClick={saveToDraft} variant="outline" className="flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Move to Draft
+                    </Button>
+                  )}
+                  
                   <Button variant="outline" className="flex items-center gap-2" onClick={() => setActiveBuildTab("settings")}>
                     <Settings className="h-4 w-4" />
                     Settings
@@ -271,24 +323,27 @@ const Index = () => {
                   onUpdateAttachments={setFormAttachments}
                   allowedFileTypes={formSettings.documents?.allowedTypes || ['pdf', 'doc', 'docx']}
                   maxFileSize={formSettings.documents?.maxSize || 10}
+                  onUseTemplate={useTemplate}
+                  formCategory={formCategory}
+                  onCategoryChange={setFormCategory}
+                  saveToLibrary={saveToLibrary}
+                  onSaveToLibraryChange={setSaveToLibrary}
                 />
               </TabsContent>
 
-              <TabsContent value="library" className="mt-4">
-                <FormLibrary onUseTemplate={useTemplate} />
-              </TabsContent>
-
-              <TabsContent value="email" className="mt-4">
-                <EmailTracking
-                  recipients={formSettings.emailDistribution?.recipients || []}
-                  onUpdateRecipients={updateEmailRecipients}
-                  formTitle={formTitle}
-                  reminderEnabled={formSettings.emailDistribution?.reminderEnabled || true}
-                  reminderIntervalDays={formSettings.emailDistribution?.reminderIntervalDays || 7}
-                  maxReminders={formSettings.emailDistribution?.maxReminders || 3}
-                  onUpdateEmailSettings={updateEmailSettings}
-                />
-              </TabsContent>
+              {isPublished && (
+                <TabsContent value="email" className="mt-4">
+                  <EmailTracking
+                    recipients={formSettings.emailDistribution?.recipients || []}
+                    onUpdateRecipients={updateEmailRecipients}
+                    formTitle={formTitle}
+                    reminderEnabled={formSettings.emailDistribution?.reminderEnabled || true}
+                    reminderIntervalDays={formSettings.emailDistribution?.reminderIntervalDays || 7}
+                    maxReminders={formSettings.emailDistribution?.maxReminders || 3}
+                    onUpdateEmailSettings={updateEmailSettings}
+                  />
+                </TabsContent>
+              )}
 
               <TabsContent value="scoring" className="mt-4">
                 <ScoringSettings
@@ -312,20 +367,6 @@ const Index = () => {
                   formSettings={formSettings}
                   attachments={formAttachments}
                 />
-              </TabsContent>
-
-              <TabsContent value="drafts" className="mt-4">
-                <div className="text-center py-8 text-gray-500">
-                  <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>No draft forms available</p>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="published" className="mt-4">
-                <div className="text-center py-8 text-gray-500">
-                  <BookOpen className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>No published forms available</p>
-                </div>
               </TabsContent>
 
               <TabsContent value="settings" className="mt-4">
@@ -365,7 +406,7 @@ const Index = () => {
                     settings: formSettings,
                     createdAt: new Date(),
                     updatedAt: new Date(),
-                    status: 'draft',
+                    status: status,
                     submissions: submissions.length,
                     analytics: {
                       views: 0,

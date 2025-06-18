@@ -1,15 +1,19 @@
 
 import { useState } from "react";
-import { FormField, DocumentAttachment } from "@/types/form";
+import { FormField, DocumentAttachment, FormTemplate } from "@/types/form";
 import { FieldPalette } from "./FieldPalette";
 import { FieldEditor } from "./FieldEditor";
 import { FormCanvas } from "./FormCanvas";
 import { FileAttachmentManager } from "./FileAttachmentManager";
+import { FormLibrary } from "./FormLibrary";
+import { FormCategoryManager, FormCategory } from "./FormCategoryManager";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Library, Layers, Settings } from "lucide-react";
 
 interface FormBuilderProps {
   formFields: FormField[];
@@ -25,6 +29,11 @@ interface FormBuilderProps {
   onUpdateAttachments?: (attachments: DocumentAttachment[]) => void;
   allowedFileTypes?: string[];
   maxFileSize?: number;
+  onUseTemplate?: (template: FormTemplate) => void;
+  formCategory?: string;
+  onCategoryChange?: (categoryId: string) => void;
+  saveToLibrary?: boolean;
+  onSaveToLibraryChange?: (shouldSave: boolean) => void;
 }
 
 export const FormBuilder = ({
@@ -40,15 +49,52 @@ export const FormBuilder = ({
   attachments = [],
   onUpdateAttachments = () => {},
   allowedFileTypes = ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png'],
-  maxFileSize = 10
+  maxFileSize = 10,
+  onUseTemplate,
+  formCategory,
+  onCategoryChange = () => {},
+  saveToLibrary = false,
+  onSaveToLibraryChange = () => {}
 }: FormBuilderProps) => {
   const [selectedField, setSelectedField] = useState<string | null>(null);
+  const [categories, setCategories] = useState<FormCategory[]>([
+    { id: 'survey', name: 'Survey', color: 'bg-blue-100 text-blue-800' },
+    { id: 'assessment', name: 'Assessment', color: 'bg-green-100 text-green-800' },
+    { id: 'registration', name: 'Registration', color: 'bg-purple-100 text-purple-800' },
+    { id: 'feedback', name: 'Feedback', color: 'bg-orange-100 text-orange-800' },
+    { id: 'compliance', name: 'Compliance', color: 'bg-red-100 text-red-800' },
+    { id: 'vendor-risk', name: 'Vendor Risk', color: 'bg-yellow-100 text-yellow-800' },
+    { id: 'others', name: 'Others', color: 'bg-gray-100 text-gray-800' }
+  ]);
+
+  const handleAddCategory = (newCategory: FormCategory) => {
+    setCategories(prev => [...prev, newCategory]);
+  };
 
   return (
     <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
       {/* Field Palette */}
       <div className="col-span-3">
-        <FieldPalette onAddField={onAddField} />
+        <Tabs defaultValue="palette" className="h-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="palette" className="flex items-center gap-1">
+              <Layers className="h-4 w-4" />
+              Fields
+            </TabsTrigger>
+            <TabsTrigger value="library" className="flex items-center gap-1">
+              <Library className="h-4 w-4" />
+              Library
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="palette" className="mt-4 h-[calc(100%-60px)]">
+            <FieldPalette onAddField={onAddField} />
+          </TabsContent>
+          
+          <TabsContent value="library" className="mt-4 h-[calc(100%-60px)] overflow-auto">
+            <FormLibrary onUseTemplate={onUseTemplate} />
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Form Canvas */}
@@ -81,9 +127,13 @@ export const FormBuilder = ({
           </CardHeader>
           <CardContent className="flex-1 overflow-auto">
             <Tabs defaultValue="fields" className="h-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="fields">Form Fields</TabsTrigger>
                 <TabsTrigger value="attachments">File Attachments</TabsTrigger>
+                <TabsTrigger value="category">
+                  <Settings className="h-4 w-4 mr-1" />
+                  Category
+                </TabsTrigger>
               </TabsList>
               
               <TabsContent value="fields" className="mt-4 h-[calc(100%-60px)]">
@@ -104,6 +154,17 @@ export const FormBuilder = ({
                   onUpdateAttachments={onUpdateAttachments}
                   allowedTypes={allowedFileTypes}
                   maxSize={maxFileSize}
+                />
+              </TabsContent>
+
+              <TabsContent value="category" className="mt-4">
+                <FormCategoryManager
+                  selectedCategory={formCategory}
+                  onCategoryChange={onCategoryChange}
+                  onSaveToLibrary={onSaveToLibraryChange}
+                  saveToLibrary={saveToLibrary}
+                  categories={categories}
+                  onAddCategory={handleAddCategory}
                 />
               </TabsContent>
             </Tabs>
