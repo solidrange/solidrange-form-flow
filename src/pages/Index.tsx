@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
@@ -28,7 +29,10 @@ import {
   Send,
   ExternalLink,
   Code,
-  Globe
+  Globe,
+  Trash2,
+  Edit,
+  ArrowLeft
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -36,6 +40,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { FormField, FormTemplate, Form, EmailRecipient, DocumentAttachment } from "@/types/form";
 import { toast } from "@/hooks/use-toast";
 import { sampleSubmissions } from "@/data/sampleSubmissions";
@@ -51,6 +56,7 @@ const Index = () => {
   const [formCategory, setFormCategory] = useState<string>("");
   const [savedDrafts, setSavedDrafts] = useState<Form[]>([]);
   const [publishedForms, setPublishedForms] = useState<Form[]>([]);
+  const [currentFormId, setCurrentFormId] = useState<string | null>(null);
   
   const { status, isPublished, isDraft, publishForm, setToDraft } = useFormStatus();
   
@@ -147,6 +153,41 @@ const Index = () => {
     }));
   };
 
+  const createNewForm = () => {
+    setFormFields([]);
+    setFormTitle("Untitled Form");
+    setFormDescription("");
+    setFormCategory("");
+    setFormAttachments([]);
+    setCurrentFormId(null);
+    setToDraft();
+    setActiveBuildTab("builder");
+    toast({
+      title: "New Form Created",
+      description: "Started with a blank form.",
+    });
+  };
+
+  const loadForm = (form: Form) => {
+    setFormFields(form.fields);
+    setFormTitle(form.title);
+    setFormDescription(form.description);
+    setFormSettings(form.settings);
+    setCurrentFormId(form.id);
+    
+    if (form.status === 'published') {
+      publishForm();
+    } else {
+      setToDraft();
+    }
+    
+    setActiveBuildTab("builder");
+    toast({
+      title: "Form Loaded",
+      description: `"${form.title}" has been loaded for editing.`,
+    });
+  };
+
   const saveForm = () => {
     if (!formTitle.trim()) {
       toast({
@@ -158,7 +199,7 @@ const Index = () => {
     }
 
     const formData: Form = {
-      id: Date.now().toString(),
+      id: currentFormId || Date.now().toString(),
       title: formTitle,
       description: formDescription,
       fields: formFields,
@@ -179,13 +220,27 @@ const Index = () => {
     };
 
     if (isDraft) {
-      setSavedDrafts(prev => [...prev, formData]);
+      if (currentFormId) {
+        setSavedDrafts(prev => prev.map(draft => 
+          draft.id === currentFormId ? formData : draft
+        ));
+      } else {
+        setSavedDrafts(prev => [...prev, formData]);
+        setCurrentFormId(formData.id);
+      }
       toast({
         title: "Draft Saved",
         description: "Your form has been saved as a draft.",
       });
     } else {
-      setPublishedForms(prev => [...prev, formData]);
+      if (currentFormId) {
+        setPublishedForms(prev => prev.map(form => 
+          form.id === currentFormId ? formData : form
+        ));
+      } else {
+        setPublishedForms(prev => [...prev, formData]);
+        setCurrentFormId(formData.id);
+      }
       toast({
         title: "Form Saved",
         description: "Your published form has been saved.",
@@ -193,8 +248,11 @@ const Index = () => {
     }
   };
 
-  const handlePublishForm = () => {
-    if (!formTitle.trim()) {
+  const handlePublishForm = (formToPublish?: Form) => {
+    const titleToCheck = formToPublish?.title || formTitle;
+    const fieldsToCheck = formToPublish?.fields || formFields;
+
+    if (!titleToCheck.trim()) {
       toast({
         title: "Title Required",
         description: "Please add a title before publishing the form.",
@@ -203,7 +261,7 @@ const Index = () => {
       return;
     }
 
-    if (formFields.length === 0) {
+    if (fieldsToCheck.length === 0) {
       toast({
         title: "Fields Required",
         description: "Please add at least one field before publishing the form.",
@@ -212,35 +270,92 @@ const Index = () => {
       return;
     }
 
-    publishForm();
-    
-    // Save to published forms
-    const formData: Form = {
-      id: Date.now().toString(),
-      title: formTitle,
-      description: formDescription,
-      fields: formFields,
-      settings: formSettings,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      status: 'published',
-      submissions: 0,
-      analytics: {
-        views: 0,
+    if (formToPublish) {
+      // Publishing from drafts tab
+      const publishedForm = { ...formToPublish, status: 'published' as const, updatedAt: new Date() };
+      setPublishedForms(prev => [...prev, publishedForm]);
+      setSavedDrafts(prev => prev.filter(draft => draft.id !== formToPublish.id));
+    } else {
+      // Publishing current form
+      publishForm();
+      const formData: Form = {
+        id: currentFormId || Date.now().toString(),
+        title: formTitle,
+        description: formDescription,
+        fields: formFields,
+        settings: formSettings,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        status: 'published',
         submissions: 0,
-        completionRate: 0,
-        emailsSent: 0,
-        emailsCompleted: 0,
-        averageCompletionTime: 0,
-        dropoffRate: 0
+        analytics: {
+          views: 0,
+          submissions: 0,
+          completionRate: 0,
+          emailsSent: 0,
+          emailsCompleted: 0,
+          averageCompletionTime: 0,
+          dropoffRate: 0
+        }
+      };
+      
+      if (currentFormId) {
+        // Remove from drafts if it was there
+        setSavedDrafts(prev => prev.filter(draft => draft.id !== currentFormId));
+        setPublishedForms(prev => [...prev.filter(form => form.id !== currentFormId), formData]);
+      } else {
+        setPublishedForms(prev => [...prev, formData]);
+        setCurrentFormId(formData.id);
       }
-    };
-    
-    setPublishedForms(prev => [...prev, formData]);
+    }
     
     toast({
       title: "Form Published",
       description: "Your form has been published successfully and can now receive email distributions.",
+    });
+  };
+
+  const handleMoveToDraft = (form: Form) => {
+    const draftForm = { ...form, status: 'draft' as const, updatedAt: new Date() };
+    setSavedDrafts(prev => [...prev, draftForm]);
+    setPublishedForms(prev => prev.filter(published => published.id !== form.id));
+    
+    // If this is the current form, update its status
+    if (currentFormId === form.id) {
+      setToDraft();
+    }
+    
+    toast({
+      title: "Moved to Draft",
+      description: `"${form.title}" has been moved to drafts.`,
+    });
+  };
+
+  const handleDeleteDraft = (draftId: string) => {
+    setSavedDrafts(prev => prev.filter(draft => draft.id !== draftId));
+    
+    // If this is the current form, create a new one
+    if (currentFormId === draftId) {
+      createNewForm();
+    }
+    
+    toast({
+      title: "Draft Deleted",
+      description: "The draft form has been deleted.",
+    });
+  };
+
+  const handleDeletePublished = (formId: string) => {
+    setPublishedForms(prev => prev.filter(form => form.id !== formId));
+    
+    // If this is the current form, create a new one
+    if (currentFormId === formId) {
+      createNewForm();
+    }
+    
+    toast({
+      title: "Published Form Deleted",
+      description: "The published form has been deleted.",
     });
   };
 
@@ -298,6 +413,15 @@ const Index = () => {
     });
   };
 
+  // Check if current form is published (either the loaded form or current form state)
+  const currentFormIsPublished = () => {
+    if (currentFormId) {
+      const publishedForm = publishedForms.find(form => form.id === currentFormId);
+      return !!publishedForm;
+    }
+    return isPublished;
+  };
+
   // Create tabs array based on form status
   const buildTabs = [
     { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" /> },
@@ -307,7 +431,7 @@ const Index = () => {
     { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" /> },
     { id: "drafts", label: "Drafts", icon: <FileText className="h-4 w-4" /> },
     { id: "published", label: "Published", icon: <BookOpen className="h-4 w-4" /> },
-    ...(isPublished ? [{ id: "email", label: "Email", icon: <Mail className="h-4 w-4" /> }] : [])
+    ...(currentFormIsPublished() ? [{ id: "email", label: "Email", icon: <Mail className="h-4 w-4" /> }] : [])
   ];
 
   return (
@@ -334,7 +458,12 @@ const Index = () => {
                 </Badge>
               </div>
               
-              {isPublished && (
+              <Button onClick={createNewForm} variant="outline" size="sm">
+                <Plus className="h-4 w-4 mr-1" />
+                New Form
+              </Button>
+              
+              {currentFormIsPublished() && (
                 <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="outline" size="sm" className="flex items-center gap-2">
@@ -351,14 +480,14 @@ const Index = () => {
                         <label className="text-sm font-medium text-gray-700">Form URL</label>
                         <div className="flex gap-2 mt-1">
                           <Input 
-                            value={generateFormUrl('current-form')} 
+                            value={generateFormUrl(currentFormId || 'current-form')} 
                             readOnly 
                             className="flex-1"
                           />
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => handleCopyToClipboard(generateFormUrl('current-form'), 'Form URL')}
+                            onClick={() => handleCopyToClipboard(generateFormUrl(currentFormId || 'current-form'), 'Form URL')}
                           >
                             <ExternalLink className="h-4 w-4" />
                           </Button>
@@ -369,14 +498,14 @@ const Index = () => {
                         <label className="text-sm font-medium text-gray-700">Embed Code</label>
                         <div className="flex gap-2 mt-1">
                           <textarea 
-                            value={generateEmbedCode('current-form')} 
+                            value={generateEmbedCode(currentFormId || 'current-form')} 
                             readOnly 
                             className="flex-1 min-h-[100px] p-2 border border-gray-300 rounded-md resize-none text-sm font-mono"
                           />
                           <Button 
                             variant="outline" 
                             size="sm"
-                            onClick={() => handleCopyToClipboard(generateEmbedCode('current-form'), 'Embed code')}
+                            onClick={() => handleCopyToClipboard(generateEmbedCode(currentFormId || 'current-form'), 'Embed code')}
                           >
                             <Code className="h-4 w-4" />
                           </Button>
@@ -424,7 +553,7 @@ const Index = () => {
                     Save Form
                   </Button>
                   {isDraft && (
-                    <Button onClick={handlePublishForm} className="flex items-center gap-2">
+                    <Button onClick={() => handlePublishForm()} className="flex items-center gap-2">
                       <Send className="h-4 w-4" />
                       Publish Form
                     </Button>
@@ -454,7 +583,7 @@ const Index = () => {
                   formCategory={formCategory}
                   onCategoryChange={setFormCategory}
                   onSaveToLibrary={handleSaveToLibrary}
-                  isPublished={isPublished}
+                  isPublished={currentFormIsPublished()}
                 />
               </TabsContent>
 
@@ -462,7 +591,7 @@ const Index = () => {
                 <FormLibrary onUseTemplate={useTemplate} />
               </TabsContent>
 
-              {isPublished && (
+              {currentFormIsPublished() && (
                 <TabsContent value="email" className="mt-4">
                   <EmailTracking
                     recipients={formSettings.emailDistribution?.recipients || []}
@@ -525,12 +654,45 @@ const Index = () => {
                               </div>
                             </div>
                             <div className="flex gap-2">
-                              <Button size="sm" variant="outline">
-                                Load Draft
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => loadForm(draft)}
+                              >
+                                <Edit className="h-4 w-4 mr-1" />
+                                Load
                               </Button>
-                              <Button size="sm">
+                              <Button 
+                                size="sm"
+                                onClick={() => handlePublishForm(draft)}
+                              >
+                                <Send className="h-4 w-4 mr-1" />
                                 Publish
                               </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button size="sm" variant="destructive">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Delete Draft</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Are you sure you want to delete "{draft.title}"? This action cannot be undone.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => handleDeleteDraft(draft.id)}
+                                      className="bg-red-600 hover:bg-red-700"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
                             </div>
                           </div>
                         </CardContent>
@@ -569,6 +731,14 @@ const Index = () => {
                               </div>
                             </div>
                             <div className="flex gap-2">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => loadForm(form)}
+                              >
+                                <Edit className="h-4 w-4 mr-1" />
+                                Load
+                              </Button>
                               <Dialog>
                                 <DialogTrigger asChild>
                                   <Button size="sm" variant="outline">
@@ -614,9 +784,38 @@ const Index = () => {
                                   </div>
                                 </DialogContent>
                               </Dialog>
-                              <Button size="sm">
-                                Manage
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => handleMoveToDraft(form)}
+                              >
+                                <ArrowLeft className="h-4 w-4 mr-1" />
+                                To Draft
                               </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button size="sm" variant="destructive">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Delete Published Form</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Are you sure you want to delete "{form.title}"? This will remove the form and all its data permanently.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => handleDeletePublished(form.id)}
+                                      className="bg-red-600 hover:bg-red-700"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
                             </div>
                           </div>
                         </CardContent>
@@ -656,7 +855,7 @@ const Index = () => {
                 <SubmissionReview
                   submissions={submissions}
                   form={{
-                    id: 'current-form',
+                    id: currentFormId || 'current-form',
                     title: formTitle,
                     description: formDescription,
                     fields: formFields,
