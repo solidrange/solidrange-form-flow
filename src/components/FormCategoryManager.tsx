@@ -16,7 +16,11 @@ interface FormCategoryManagerProps {
   formTitle: string;
 }
 
-const defaultCategories = [
+/**
+ * Predefined categories for form organization
+ * These categories help users organize forms by their purpose
+ */
+const DEFAULT_CATEGORIES = [
   'survey',
   'assessment', 
   'registration',
@@ -24,18 +28,49 @@ const defaultCategories = [
   'compliance',
   'risk',
   'vendor-risk'
-];
+] as const;
 
+/**
+ * Category guidelines for user reference
+ * Helps users understand when to use each category
+ */
+const CATEGORY_GUIDELINES = {
+  survey: 'Customer feedback, satisfaction surveys',
+  assessment: 'Skills testing, evaluations',
+  registration: 'Event sign-ups, onboarding',
+  'vendor-risk': 'Risk assessment forms for vendors',
+  compliance: 'Regulatory and policy compliance',
+  feedback: 'General feedback collection',
+  risk: 'Risk assessment and management'
+} as const;
+
+/**
+ * FormCategoryManager Component
+ * 
+ * Manages form categorization for library organization.
+ * Allows users to assign forms to predefined categories or create custom ones.
+ * 
+ * Features:
+ * - Predefined category selection
+ * - Custom category creation and management
+ * - Category guidelines and descriptions
+ * - Real-time category assignment
+ */
 export const FormCategoryManager = ({
   currentCategory,
   customCategory,
   onCategoryUpdate,
   formTitle
 }: FormCategoryManagerProps) => {
+  // Local state for managing custom categories and UI interactions
   const [newCategoryName, setNewCategoryName] = useState("");
   const [customCategories, setCustomCategories] = useState<string[]>([]);
   const [showAddCategory, setShowAddCategory] = useState(false);
 
+  /**
+   * Handles category selection from dropdown
+   * Updates the form's category and shows success feedback
+   */
   const handleCategorySelect = (category: string) => {
     onCategoryUpdate(category, false);
     toast({
@@ -44,6 +79,10 @@ export const FormCategoryManager = ({
     });
   };
 
+  /**
+   * Validates and adds a new custom category
+   * Prevents duplicates and empty names
+   */
   const handleAddCustomCategory = () => {
     if (!newCategoryName.trim()) {
       toast({
@@ -56,7 +95,8 @@ export const FormCategoryManager = ({
 
     const trimmedName = newCategoryName.trim().toLowerCase();
     
-    if (defaultCategories.includes(trimmedName) || customCategories.includes(trimmedName)) {
+    // Check for duplicates in both default and custom categories
+    if (DEFAULT_CATEGORIES.includes(trimmedName as any) || customCategories.includes(trimmedName)) {
       toast({
         title: "Category Exists",
         description: "This category already exists.",
@@ -65,6 +105,7 @@ export const FormCategoryManager = ({
       return;
     }
 
+    // Add new category and assign it to the current form
     setCustomCategories(prev => [...prev, trimmedName]);
     onCategoryUpdate(trimmedName, true);
     setNewCategoryName("");
@@ -76,6 +117,10 @@ export const FormCategoryManager = ({
     });
   };
 
+  /**
+   * Removes a custom category
+   * Resets form category if it was using the removed category
+   */
   const removeCustomCategory = (category: string) => {
     setCustomCategories(prev => prev.filter(cat => cat !== category));
     if (customCategory === category) {
@@ -87,7 +132,17 @@ export const FormCategoryManager = ({
     });
   };
 
-  const allCategories = [...defaultCategories, ...customCategories];
+  /**
+   * Formats category name for display
+   * Handles special cases like 'vendor-risk'
+   */
+  const formatCategoryName = (category: string): string => {
+    if (category === 'vendor-risk') return 'Vendor Risk';
+    return category.charAt(0).toUpperCase() + category.slice(1);
+  };
+
+  // Combine all available categories
+  const allCategories = [...DEFAULT_CATEGORIES, ...customCategories];
   const selectedCategory = currentCategory || customCategory;
 
   return (
@@ -100,11 +155,13 @@ export const FormCategoryManager = ({
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* Current Form Display */}
           <div>
             <Label className="text-base font-medium">Current Form</Label>
             <p className="text-sm text-gray-600 mt-1">{formTitle}</p>
           </div>
 
+          {/* Category Selection */}
           <div>
             <Label htmlFor="category-select" className="text-base font-medium">
               Select Category
@@ -117,8 +174,7 @@ export const FormCategoryManager = ({
                 <SelectItem value="">No Category</SelectItem>
                 {allCategories.map((category) => (
                   <SelectItem key={category} value={category}>
-                    {category === 'vendor-risk' ? 'Vendor Risk' : 
-                     category.charAt(0).toUpperCase() + category.slice(1)}
+                    {formatCategoryName(category)}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -126,13 +182,13 @@ export const FormCategoryManager = ({
             {selectedCategory && (
               <div className="mt-2">
                 <Badge variant="secondary">
-                  Currently in: {selectedCategory === 'vendor-risk' ? 'Vendor Risk' : 
-                                selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}
+                  Currently in: {formatCategoryName(selectedCategory)}
                 </Badge>
               </div>
             )}
           </div>
 
+          {/* Custom Category Management */}
           <div>
             <div className="flex items-center justify-between mb-3">
               <Label className="text-base font-medium">Custom Categories</Label>
@@ -146,6 +202,7 @@ export const FormCategoryManager = ({
               </Button>
             </div>
 
+            {/* Add New Category Form */}
             {showAddCategory && (
               <div className="flex gap-2 mb-4">
                 <Input
@@ -167,13 +224,14 @@ export const FormCategoryManager = ({
               </div>
             )}
 
+            {/* Custom Categories List */}
             {customCategories.length > 0 && (
               <div>
                 <p className="text-sm text-gray-600 mb-2">Custom categories:</p>
                 <div className="flex flex-wrap gap-2">
                   {customCategories.map((category) => (
                     <Badge key={category} variant="outline" className="flex items-center gap-1">
-                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                      {formatCategoryName(category)}
                       <Button
                         variant="ghost"
                         size="sm"
@@ -189,14 +247,15 @@ export const FormCategoryManager = ({
             )}
           </div>
 
+          {/* Category Guidelines */}
           <div className="border-t pt-4">
             <h4 className="font-medium mb-2">Category Guidelines</h4>
             <div className="text-sm text-gray-600 space-y-1">
-              <p><strong>Survey:</strong> Customer feedback, satisfaction surveys</p>
-              <p><strong>Assessment:</strong> Skills testing, evaluations</p>
-              <p><strong>Registration:</strong> Event sign-ups, onboarding</p>
-              <p><strong>Vendor Risk:</strong> Risk assessment forms for vendors</p>
-              <p><strong>Compliance:</strong> Regulatory and policy compliance</p>
+              {Object.entries(CATEGORY_GUIDELINES).map(([category, description]) => (
+                <p key={category}>
+                  <strong>{formatCategoryName(category)}:</strong> {description}
+                </p>
+              ))}
             </div>
           </div>
         </CardContent>
