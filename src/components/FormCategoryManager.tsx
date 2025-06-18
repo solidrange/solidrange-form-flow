@@ -72,10 +72,14 @@ export const FormCategoryManager = ({
    * Updates the form's category and shows success feedback
    */
   const handleCategorySelect = (category: string) => {
-    onCategoryUpdate(category, false);
+    // Handle the special "no-category" value
+    const actualCategory = category === "no-category" ? "" : category;
+    onCategoryUpdate(actualCategory, false);
     toast({
       title: "Category Updated",
-      description: `Form "${formTitle}" assigned to ${category} category.`,
+      description: category === "no-category" 
+        ? `Form "${formTitle}" removed from all categories.`
+        : `Form "${formTitle}" assigned to ${category} category.`,
     });
   };
 
@@ -143,7 +147,7 @@ export const FormCategoryManager = ({
 
   // Combine all available categories
   const allCategories = [...DEFAULT_CATEGORIES, ...customCategories];
-  const selectedCategory = currentCategory || customCategory;
+  const selectedCategory = currentCategory || customCategory || "no-category";
 
   return (
     <div className="space-y-6">
@@ -171,7 +175,7 @@ export const FormCategoryManager = ({
                 <SelectValue placeholder="Choose a category for this form" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">No Category</SelectItem>
+                <SelectItem value="no-category">No Category</SelectItem>
                 {allCategories.map((category) => (
                   <SelectItem key={category} value={category}>
                     {formatCategoryName(category)}
@@ -179,7 +183,7 @@ export const FormCategoryManager = ({
                 ))}
               </SelectContent>
             </Select>
-            {selectedCategory && (
+            {selectedCategory && selectedCategory !== "no-category" && (
               <div className="mt-2">
                 <Badge variant="secondary">
                   Currently in: {formatCategoryName(selectedCategory)}
