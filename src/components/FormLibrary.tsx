@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { FormTemplate } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -599,7 +600,6 @@ export const FormLibrary = ({ onUseTemplate, compact = false }: FormLibraryProps
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
-            size="sm"
           />
         </div>
         <select
