@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
@@ -8,7 +9,7 @@ import { EmailTracking } from "@/components/EmailTracking";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { ReportGeneration } from "@/components/ReportGeneration";
-import { useFormStatus } from "@/hooks/useFormStatus";
+import { FormCategoryManager } from "@/components/FormCategoryManager";
 import { 
   Settings, 
   BarChart3, 
@@ -21,10 +22,9 @@ import {
   Eye,
   FileText,
   Wrench,
-  BookOpen,
   ClipboardList,
-  Upload,
-  CheckCircle
+  Send,
+  FolderPlus
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -32,20 +32,38 @@ import { FormField, FormTemplate, Form, EmailRecipient, DocumentAttachment } fro
 import { toast } from "@/hooks/use-toast";
 import { sampleSubmissions } from "@/data/sampleSubmissions";
 
+/**
+ * Main Application Component
+ * 
+ * Provides a comprehensive form building and management interface.
+ * Handles form creation, editing, categorization, email distribution,
+ * submissions review, and analytics.
+ * 
+ * Key Features:
+ * - Form Builder with drag-and-drop interface
+ * - Template library with categorization
+ * - Email distribution for published forms
+ * - Scoring and weightage systems
+ * - Submissions review and analytics
+ * - Report generation
+ */
 const Index = () => {
+  // Main navigation state
   const [activeTab, setActiveTab] = useState("build-form");
   const [activeBuildTab, setActiveBuildTab] = useState("builder");
   
-  // Form status management
-  const { status, publishForm, saveToDraft, isDraft, isPublished } = useFormStatus();
-  
+  // Form data state
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
   const [formAttachments, setFormAttachments] = useState<DocumentAttachment[]>([]);
-  const [formCategory, setFormCategory] = useState<string>("");
-  const [saveToLibrary, setSaveToLibrary] = useState(false);
+  const [formStatus, setFormStatus] = useState<'draft' | 'published'>('draft');
   
+  // Form categorization state
+  const [formCategory, setFormCategory] = useState<string>('');
+  const [customCategory, setCustomCategory] = useState<string>('');
+  
+  // Form settings with comprehensive defaults
   const [formSettings, setFormSettings] = useState<Form['settings']>({
     allowMultipleSubmissions: false,
     requireLogin: false,
@@ -85,9 +103,13 @@ const Index = () => {
     }
   });
 
+  // Sample submissions for demonstration
   const [submissions] = useState(sampleSubmissions);
 
-  // Form field management functions
+  /**
+   * Form Field Management Functions
+   */
+  
   const addField = (field: FormField) => {
     setFormFields([...formFields, { ...field, id: Date.now().toString() }]);
   };
@@ -112,7 +134,10 @@ const Index = () => {
     setFormFields(newFields);
   };
 
-  // Settings management
+  /**
+   * Form Settings Management
+   */
+  
   const updateFormSettings = (updates: Partial<Form['settings']>) => {
     setFormSettings(prev => ({ ...prev, ...updates }));
   };
@@ -141,7 +166,10 @@ const Index = () => {
     }));
   };
 
-  // Form actions
+  /**
+   * Form Actions
+   */
+  
   const saveForm = () => {
     console.log("Saving form:", { 
       formTitle, 
@@ -149,43 +177,50 @@ const Index = () => {
       formFields, 
       formSettings, 
       attachments: formAttachments,
-      category: formCategory,
-      saveToLibrary,
-      status
+      status: formStatus,
+      category: formCategory || customCategory
     });
-    
     toast({
       title: "Form Saved",
-      description: `Your form has been saved as ${status}.`,
+      description: "Your form has been saved successfully.",
     });
   };
 
-  const handlePublishForm = () => {
+  const publishForm = () => {
+    // Validation before publishing
     if (formFields.length === 0) {
       toast({
         title: "Cannot Publish",
-        description: "Please add at least one field to your form before publishing.",
-        variant: "destructive",
+        description: "Please add at least one field before publishing.",
+        variant: "destructive"
       });
       return;
     }
-
-    publishForm();
+    
+    setFormStatus('published');
+    saveForm();
     toast({
       title: "Form Published",
-      description: "Your form is now published and ready for distribution.",
+      description: "Your form is now live and ready to receive submissions.",
     });
   };
 
+  /**
+   * Template Management
+   */
+  
   const useTemplate = (template: FormTemplate) => {
     setFormTitle(template.name);
     setFormDescription(template.description);
+    
+    // Generate unique IDs for template fields
     const fieldsWithIds = template.fields.map(field => ({
       ...field,
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
     }));
     setFormFields(fieldsWithIds);
     
+    // Enable scoring for vendor risk forms
     if (template.category === 'vendor-risk') {
       setFormSettings(prev => ({
         ...prev,
@@ -201,33 +236,41 @@ const Index = () => {
       }));
     }
     
-    setActiveBuildTab("builder");
     toast({
       title: "Template Applied",
       description: `${template.name} template has been applied to your form.`,
     });
   };
 
-  // Dynamic tabs based on form status
-  const getBuildFormTabs = () => {
-    const baseTabs = [
-      { value: "builder", label: "Builder", icon: Plus },
-      { value: "scoring", label: "Scoring", icon: Target },
-      { value: "weightage", label: "Weightage", icon: Scale },
-      { value: "preview", label: "Preview", icon: Eye },
-    ];
-
-    // Add Email tab only for published forms
-    if (isPublished) {
-      baseTabs.splice(-1, 0, { value: "email", label: "Email", icon: Mail });
+  /**
+   * Category Management
+   */
+  
+  const handleCategoryUpdate = (category: string, isCustom: boolean = false) => {
+    if (isCustom) {
+      setCustomCategory(category);
+      setFormCategory('');
+    } else {
+      setFormCategory(category);
+      setCustomCategory('');
     }
+  };
 
+  /**
+   * Get available tabs based on form status
+   * Email tab only available for published forms
+   */
+  const getAvailableBuildTabs = () => {
+    const baseTabs = ["builder", "scoring", "weightage", "preview", "category"];
+    if (formStatus === 'published') {
+      baseTabs.push("email");
+    }
     return baseTabs;
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      {/* Application Header */}
       <div className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -237,29 +280,14 @@ const Index = () => {
               </div>
               <h1 className="text-xl font-semibold text-gray-900">Solidrange Form Builder</h1>
             </div>
-            
-            {/* Form Status Indicator */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                {isDraft ? (
-                  <span className="flex items-center gap-1 text-sm text-orange-600">
-                    <FileText className="h-4 w-4" />
-                    Draft
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1 text-sm text-green-600">
-                    <CheckCircle className="h-4 w-4" />
-                    Published
-                  </span>
-                )}
-              </div>
-            </div>
           </div>
         </div>
       </div>
 
+      {/* Main Application Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          {/* Main Navigation Tabs */}
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="build-form" className="flex items-center gap-2">
               <Wrench className="h-4 w-4" />
@@ -271,36 +299,51 @@ const Index = () => {
             </TabsTrigger>
           </TabsList>
 
+          {/* Form Building Section */}
           <TabsContent value="build-form" className="mt-6">
             <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
               <div className="flex items-center justify-between mb-4">
-                <TabsList className="grid w-auto grid-flow-col">
-                  {getBuildFormTabs().map(tab => (
-                    <TabsTrigger key={tab.value} value={tab.value} className="flex items-center gap-2">
-                      <tab.icon className="h-4 w-4" />
-                      {tab.label}
+                {/* Build Form Sub-Navigation */}
+                <TabsList className="grid w-auto grid-cols-6">
+                  <TabsTrigger value="builder" className="flex items-center gap-2">
+                    <Plus className="h-4 w-4" />
+                    Builder
+                  </TabsTrigger>
+                  <TabsTrigger value="scoring" className="flex items-center gap-2">
+                    <Target className="h-4 w-4" />
+                    Scoring
+                  </TabsTrigger>
+                  <TabsTrigger value="weightage" className="flex items-center gap-2">
+                    <Scale className="h-4 w-4" />
+                    Weightage
+                  </TabsTrigger>
+                  <TabsTrigger value="preview" className="flex items-center gap-2">
+                    <Eye className="h-4 w-4" />
+                    Preview
+                  </TabsTrigger>
+                  <TabsTrigger value="category" className="flex items-center gap-2">
+                    <FolderPlus className="h-4 w-4" />
+                    Category
+                  </TabsTrigger>
+                  {/* Email tab only shown for published forms */}
+                  {formStatus === 'published' && (
+                    <TabsTrigger value="email" className="flex items-center gap-2">
+                      <Mail className="h-4 w-4" />
+                      Email
                     </TabsTrigger>
-                  ))}
+                  )}
                 </TabsList>
                 
+                {/* Form Action Buttons */}
                 <div className="flex items-center gap-3">
                   <Button onClick={saveForm} variant="outline" className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
-                    Save {isDraft ? 'Draft' : 'Form'}
+                    Save Draft
                   </Button>
-                  
-                  {isDraft ? (
-                    <Button onClick={handlePublishForm} className="flex items-center gap-2">
-                      <Upload className="h-4 w-4" />
-                      Publish Form
-                    </Button>
-                  ) : (
-                    <Button onClick={saveToDraft} variant="outline" className="flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      Move to Draft
-                    </Button>
-                  )}
-                  
+                  <Button onClick={publishForm} className="flex items-center gap-2">
+                    <Send className="h-4 w-4" />
+                    Publish Form
+                  </Button>
                   <Button variant="outline" className="flex items-center gap-2" onClick={() => setActiveBuildTab("settings")}>
                     <Settings className="h-4 w-4" />
                     Settings
@@ -308,6 +351,7 @@ const Index = () => {
                 </div>
               </div>
 
+              {/* Build Form Tab Content */}
               <TabsContent value="builder" className="mt-4">
                 <FormBuilder
                   formFields={formFields}
@@ -324,26 +368,8 @@ const Index = () => {
                   allowedFileTypes={formSettings.documents?.allowedTypes || ['pdf', 'doc', 'docx']}
                   maxFileSize={formSettings.documents?.maxSize || 10}
                   onUseTemplate={useTemplate}
-                  formCategory={formCategory}
-                  onCategoryChange={setFormCategory}
-                  saveToLibrary={saveToLibrary}
-                  onSaveToLibraryChange={setSaveToLibrary}
                 />
               </TabsContent>
-
-              {isPublished && (
-                <TabsContent value="email" className="mt-4">
-                  <EmailTracking
-                    recipients={formSettings.emailDistribution?.recipients || []}
-                    onUpdateRecipients={updateEmailRecipients}
-                    formTitle={formTitle}
-                    reminderEnabled={formSettings.emailDistribution?.reminderEnabled || true}
-                    reminderIntervalDays={formSettings.emailDistribution?.reminderIntervalDays || 7}
-                    maxReminders={formSettings.emailDistribution?.maxReminders || 3}
-                    onUpdateEmailSettings={updateEmailSettings}
-                  />
-                </TabsContent>
-              )}
 
               <TabsContent value="scoring" className="mt-4">
                 <ScoringSettings
@@ -369,6 +395,30 @@ const Index = () => {
                 />
               </TabsContent>
 
+              <TabsContent value="category" className="mt-4">
+                <FormCategoryManager
+                  currentCategory={formCategory}
+                  customCategory={customCategory}
+                  onCategoryUpdate={handleCategoryUpdate}
+                  formTitle={formTitle}
+                />
+              </TabsContent>
+
+              {/* Email tracking only available for published forms */}
+              {formStatus === 'published' && (
+                <TabsContent value="email" className="mt-4">
+                  <EmailTracking
+                    recipients={formSettings.emailDistribution?.recipients || []}
+                    onUpdateRecipients={updateEmailRecipients}
+                    formTitle={formTitle}
+                    reminderEnabled={formSettings.emailDistribution?.reminderEnabled || true}
+                    reminderIntervalDays={formSettings.emailDistribution?.reminderIntervalDays || 7}
+                    maxReminders={formSettings.emailDistribution?.maxReminders || 3}
+                    onUpdateEmailSettings={updateEmailSettings}
+                  />
+                </TabsContent>
+              )}
+
               <TabsContent value="settings" className="mt-4">
                 <SettingsPanel
                   formSettings={formSettings}
@@ -378,64 +428,38 @@ const Index = () => {
             </Tabs>
           </TabsContent>
 
+          {/* Submissions Review Section */}
           <TabsContent value="review-submissions" className="mt-6">
-            <Tabs defaultValue="submissions" className="w-full">
-              <TabsList className="grid w-auto grid-cols-3">
-                <TabsTrigger value="submissions" className="flex items-center gap-2">
-                  <FileCheck className="h-4 w-4" />
-                  Submissions
-                </TabsTrigger>
-                <TabsTrigger value="analytics" className="flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4" />
-                  Analytics
-                </TabsTrigger>
-                <TabsTrigger value="reports" className="flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
-                  Report Generation
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="submissions" className="mt-4">
-                <SubmissionReview
-                  submissions={submissions}
-                  form={{
-                    id: 'current-form',
-                    title: formTitle,
-                    description: formDescription,
-                    fields: formFields,
-                    settings: formSettings,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    status: status,
-                    submissions: submissions.length,
-                    analytics: {
-                      views: 0,
-                      submissions: submissions.length,
-                      completionRate: 0,
-                      emailsSent: 0,
-                      emailsCompleted: 0,
-                      averageCompletionTime: 0,
-                      dropoffRate: 0
-                    }
-                  }}
-                  onUpdateSubmission={(submissionId, updates) => {
-                    console.log('Updating submission:', submissionId, updates);
-                    toast({
-                      title: "Submission Updated",
-                      description: "The submission has been updated successfully.",
-                    });
-                  }}
-                />
-              </TabsContent>
-
-              <TabsContent value="analytics" className="mt-4">
-                <Analytics />
-              </TabsContent>
-
-              <TabsContent value="reports" className="mt-4">
-                <ReportGeneration submissions={submissions} />
-              </TabsContent>
-            </Tabs>
+            <SubmissionReview
+              submissions={submissions}
+              form={{
+                id: 'current-form',
+                title: formTitle,
+                description: formDescription,
+                fields: formFields,
+                settings: formSettings,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                status: formStatus,
+                submissions: submissions.length,
+                analytics: {
+                  views: 0,
+                  submissions: submissions.length,
+                  completionRate: 0,
+                  emailsSent: 0,
+                  emailsCompleted: 0,
+                  averageCompletionTime: 0,
+                  dropoffRate: 0
+                }
+              }}
+              onUpdateSubmission={(submissionId, updates) => {
+                console.log('Updating submission:', submissionId, updates);
+                toast({
+                  title: "Submission Updated",
+                  description: "The submission has been updated successfully.",
+                });
+              }}
+            />
           </TabsContent>
         </Tabs>
       </div>

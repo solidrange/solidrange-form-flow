@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { FormTemplate } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -589,11 +588,72 @@ export const FormLibrary = ({ onUseTemplate, compact = false }: FormLibraryProps
     }
   };
 
+  if (compact) {
+    return (
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <Input
+            placeholder="Search templates..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="h-8"
+          />
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="w-full px-2 py-1 text-sm border border-gray-300 rounded-md bg-white"
+          >
+            {categories.map(category => (
+              <option key={category} value={category}>
+                {category === "all" ? "All" : 
+                 category === "vendor-risk" ? "Vendor Risk" :
+                 category.charAt(0).toUpperCase() + category.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="space-y-2 max-h-96 overflow-y-auto">
+          {filteredTemplates.slice(0, 6).map((template) => (
+            <Card key={template.id} className="cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleUseTemplate(template)}>
+              <CardContent className="p-3">
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium truncate">{template.name}</h4>
+                  <Badge 
+                    variant="secondary" 
+                    className={`${getCategoryColor(template.category)} text-xs`}
+                  >
+                    {template.category === "vendor-risk" ? "Vendor Risk" : template.category}
+                  </Badge>
+                  <p className="text-xs text-gray-600 line-clamp-2">{template.description}</p>
+                  <Button size="sm" className="w-full text-xs">
+                    Use Template
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+
+        {filteredTemplates.length > 6 && (
+          <p className="text-xs text-gray-500 text-center">
+            {filteredTemplates.length - 6} more templates available
+          </p>
+        )}
+
+        {filteredTemplates.length === 0 && (
+          <div className="text-center py-4">
+            <p className="text-sm text-gray-500">No templates found.</p>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-4">
-      {/* Search and Filter */}
-      <div className="space-y-3">
-        <div className="relative">
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
             placeholder="Search templates..."
@@ -605,7 +665,7 @@ export const FormLibrary = ({ onUseTemplate, compact = false }: FormLibraryProps
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md bg-white"
+          className="px-3 py-2 border border-gray-300 rounded-md bg-white"
         >
           {categories.map(category => (
             <option key={category} value={category}>
@@ -617,73 +677,69 @@ export const FormLibrary = ({ onUseTemplate, compact = false }: FormLibraryProps
         </select>
       </div>
 
-      {/* Templates Grid */}
-      <div className={`grid gap-3 ${compact ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTemplates.map((template) => (
-          <Card key={template.id} className="hover:shadow-md transition-shadow">
-            <CardHeader className="pb-2">
-              <div className="space-y-2">
-                <CardTitle className="text-sm font-medium leading-tight">{template.name}</CardTitle>
-                <div className="flex flex-wrap gap-1">
-                  <Badge 
-                    variant="secondary" 
-                    className={`${getCategoryColor(template.category)} text-xs flex items-center gap-1`}
-                  >
-                    {getCategoryIcon(template.category)}
-                    {template.category === "vendor-risk" ? "Vendor Risk" : template.category}
-                  </Badge>
-                  {template.scoringModel && (
-                    <Badge variant="outline" className="text-xs">
-                      {template.scoringModel}
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="space-y-2">
-                <p className="text-xs text-gray-600 line-clamp-2">{template.description}</p>
-                
-                {template.riskCategories && (
-                  <div>
-                    <p className="text-xs font-medium text-gray-700">Risk Categories:</p>
-                    <div className="flex flex-wrap gap-1 mt-1">
-                      {template.riskCategories.slice(0, 2).map((category, idx) => (
-                        <Badge key={idx} variant="outline" className="text-xs">
-                          {category}
-                        </Badge>
-                      ))}
-                      {template.riskCategories.length > 2 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{template.riskCategories.length - 2}
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-                )}
-                
+          <Card key={template.id} className="hover:shadow-lg transition-shadow">
+            <CardHeader>
+              <div className="flex items-start justify-between">
                 <div>
-                  <p className="text-xs font-medium text-gray-700">Fields ({template.fields.length}):</p>
-                  <div className="flex flex-wrap gap-1 mt-1">
-                    {template.fields.slice(0, 2).map((field, idx) => (
-                      <Badge key={idx} variant="outline" className="text-xs">
-                        {field.type}
-                      </Badge>
-                    ))}
-                    {template.fields.length > 2 && (
+                  <CardTitle className="text-lg">{template.name}</CardTitle>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Badge 
+                      variant="secondary" 
+                      className={`${getCategoryColor(template.category)} flex items-center gap-1`}
+                    >
+                      {getCategoryIcon(template.category)}
+                      {template.category === "vendor-risk" ? "Vendor Risk" : template.category}
+                    </Badge>
+                    {template.scoringModel && (
                       <Badge variant="outline" className="text-xs">
-                        +{template.fields.length - 2}
+                        {template.scoringModel}
                       </Badge>
                     )}
                   </div>
                 </div>
-                
+              </div>
+              <p className="text-sm text-gray-600 mt-2">{template.description}</p>
+              {template.riskCategories && (
+                <div className="mt-2">
+                  <p className="text-xs font-medium text-gray-700">Risk Categories:</p>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {template.riskCategories.map((category, idx) => (
+                      <Badge key={idx} variant="outline" className="text-xs">
+                        {category}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Preview:</p>
+                  <p className="text-sm text-gray-500">{template.preview}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-700">Fields ({template.fields.length}):</p>
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {template.fields.slice(0, 3).map((field, idx) => (
+                      <Badge key={idx} variant="outline" className="text-xs">
+                        {field.type}
+                      </Badge>
+                    ))}
+                    {template.fields.length > 3 && (
+                      <Badge variant="outline" className="text-xs">
+                        +{template.fields.length - 3} more
+                      </Badge>
+                    )}
+                  </div>
+                </div>
                 <Button 
-                  size="sm"
-                  className="w-full mt-3" 
+                  className="w-full mt-4" 
                   onClick={() => handleUseTemplate(template)}
                 >
-                  <Plus className="h-3 w-3 mr-1" />
+                  <Plus className="h-4 w-4 mr-2" />
                   Use Template
                 </Button>
               </div>
@@ -694,7 +750,7 @@ export const FormLibrary = ({ onUseTemplate, compact = false }: FormLibraryProps
 
       {filteredTemplates.length === 0 && (
         <div className="text-center py-8">
-          <p className="text-sm text-gray-500">No templates found matching your criteria.</p>
+          <p className="text-gray-500">No templates found matching your criteria.</p>
         </div>
       )}
     </div>

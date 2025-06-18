@@ -6,14 +6,13 @@ import { FieldEditor } from "./FieldEditor";
 import { FormCanvas } from "./FormCanvas";
 import { FileAttachmentManager } from "./FileAttachmentManager";
 import { FormLibrary } from "./FormLibrary";
-import { FormCategoryManager, FormCategory } from "./FormCategoryManager";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Library, Layers, Settings } from "lucide-react";
+import { Library, Plus, Paperclip } from "lucide-react";
 
 interface FormBuilderProps {
   formFields: FormField[];
@@ -30,12 +29,20 @@ interface FormBuilderProps {
   allowedFileTypes?: string[];
   maxFileSize?: number;
   onUseTemplate?: (template: FormTemplate) => void;
-  formCategory?: string;
-  onCategoryChange?: (categoryId: string) => void;
-  saveToLibrary?: boolean;
-  onSaveToLibraryChange?: (shouldSave: boolean) => void;
 }
 
+/**
+ * FormBuilder Component
+ * 
+ * Main component for building forms with drag-and-drop functionality.
+ * Provides tools palette, form canvas, and field editor in a three-column layout.
+ * 
+ * Features:
+ * - Field palette with available form field types
+ * - Template library for quick form setup
+ * - File attachment management
+ * - Real-time form editing with preview
+ */
 export const FormBuilder = ({
   formFields,
   formTitle,
@@ -50,75 +57,84 @@ export const FormBuilder = ({
   onUpdateAttachments = () => {},
   allowedFileTypes = ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png'],
   maxFileSize = 10,
-  onUseTemplate,
-  formCategory,
-  onCategoryChange = () => {},
-  saveToLibrary = false,
-  onSaveToLibraryChange = () => {}
+  onUseTemplate
 }: FormBuilderProps) => {
+  // State for managing selected field and active tool tab
   const [selectedField, setSelectedField] = useState<string | null>(null);
-  const [categories, setCategories] = useState<FormCategory[]>([
-    { id: 'survey', name: 'Survey', color: 'bg-blue-100 text-blue-800' },
-    { id: 'assessment', name: 'Assessment', color: 'bg-green-100 text-green-800' },
-    { id: 'registration', name: 'Registration', color: 'bg-purple-100 text-purple-800' },
-    { id: 'feedback', name: 'Feedback', color: 'bg-orange-100 text-orange-800' },
-    { id: 'compliance', name: 'Compliance', color: 'bg-red-100 text-red-800' },
-    { id: 'vendor-risk', name: 'Vendor Risk', color: 'bg-yellow-100 text-yellow-800' },
-    { id: 'others', name: 'Others', color: 'bg-gray-100 text-gray-800' }
-  ]);
-
-  const handleAddCategory = (newCategory: FormCategory) => {
-    setCategories(prev => [...prev, newCategory]);
-  };
+  const [activeBuilderTab, setActiveBuilderTab] = useState("fields");
 
   return (
     <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
-      {/* Field Palette */}
+      {/* Left Panel: Tools (Field Palette & Template Library) */}
       <div className="col-span-3">
-        <Tabs defaultValue="palette" className="h-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="palette" className="flex items-center gap-1">
-              <Layers className="h-4 w-4" />
-              Fields
-            </TabsTrigger>
-            <TabsTrigger value="library" className="flex items-center gap-1">
-              <Library className="h-4 w-4" />
-              Library
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="palette" className="mt-4 h-[calc(100%-60px)]">
-            <FieldPalette onAddField={onAddField} />
-          </TabsContent>
-          
-          <TabsContent value="library" className="mt-4 h-[calc(100%-60px)] overflow-auto">
-            <FormLibrary onUseTemplate={onUseTemplate} />
-          </TabsContent>
-        </Tabs>
+        <Card className="h-full">
+          <CardHeader>
+            <CardTitle className="text-lg">Form Builder Tools</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Tabs value={activeBuilderTab} onValueChange={setActiveBuilderTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="fields" className="flex items-center gap-1">
+                  <Plus className="h-3 w-3" />
+                  Fields
+                </TabsTrigger>
+                <TabsTrigger value="library" className="flex items-center gap-1">
+                  <Library className="h-3 w-3" />
+                  Templates
+                </TabsTrigger>
+              </TabsList>
+              
+              {/* Field Palette Tab */}
+              <TabsContent value="fields" className="mt-4">
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-600">
+                    Drag and drop fields to build your form:
+                  </p>
+                  <FieldPalette onAddField={onAddField} />
+                </div>
+              </TabsContent>
+              
+              {/* Template Library Tab */}
+              <TabsContent value="library" className="mt-4">
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-600">
+                    Choose from pre-built templates to quickly set up your form:
+                  </p>
+                  <FormLibrary onUseTemplate={onUseTemplate} compact={true} />
+                </div>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Form Canvas */}
+      {/* Center Panel: Form Canvas & Attachments */}
       <div className="col-span-6">
         <Card className="h-full">
           <CardHeader>
+            {/* Form Title and Description Inputs */}
             <div className="space-y-4">
               <div>
-                <Label htmlFor="form-title">Form Title</Label>
+                <Label htmlFor="form-title" className="text-sm font-medium">
+                  Form Title
+                </Label>
                 <Input
                   id="form-title"
                   value={formTitle}
                   onChange={(e) => onUpdateTitle(e.target.value)}
-                  placeholder="Enter form title"
+                  placeholder="Enter a descriptive title for your form"
                   className="mt-1"
                 />
               </div>
               <div>
-                <Label htmlFor="form-description">Form Description</Label>
+                <Label htmlFor="form-description" className="text-sm font-medium">
+                  Form Description
+                </Label>
                 <Textarea
                   id="form-description"
                   value={formDescription}
                   onChange={(e) => onUpdateDescription(e.target.value)}
-                  placeholder="Enter form description"
+                  placeholder="Provide instructions or context for form users"
                   className="mt-1"
                   rows={2}
                 />
@@ -126,16 +142,17 @@ export const FormBuilder = ({
             </div>
           </CardHeader>
           <CardContent className="flex-1 overflow-auto">
+            {/* Form Canvas and Attachments Tabs */}
             <Tabs defaultValue="fields" className="h-full">
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="fields">Form Fields</TabsTrigger>
-                <TabsTrigger value="attachments">File Attachments</TabsTrigger>
-                <TabsTrigger value="category">
-                  <Settings className="h-4 w-4 mr-1" />
-                  Category
+                <TabsTrigger value="attachments" className="flex items-center gap-2">
+                  <Paperclip className="h-4 w-4" />
+                  Attachments
                 </TabsTrigger>
               </TabsList>
               
+              {/* Form Fields Canvas */}
               <TabsContent value="fields" className="mt-4 h-[calc(100%-60px)]">
                 <FormCanvas
                   fields={formFields}
@@ -148,6 +165,7 @@ export const FormBuilder = ({
                 />
               </TabsContent>
               
+              {/* File Attachments Manager */}
               <TabsContent value="attachments" className="mt-4">
                 <FileAttachmentManager
                   attachments={attachments}
@@ -156,23 +174,12 @@ export const FormBuilder = ({
                   maxSize={maxFileSize}
                 />
               </TabsContent>
-
-              <TabsContent value="category" className="mt-4">
-                <FormCategoryManager
-                  selectedCategory={formCategory}
-                  onCategoryChange={onCategoryChange}
-                  onSaveToLibrary={onSaveToLibraryChange}
-                  saveToLibrary={saveToLibrary}
-                  categories={categories}
-                  onAddCategory={handleAddCategory}
-                />
-              </TabsContent>
             </Tabs>
           </CardContent>
         </Card>
       </div>
 
-      {/* Field Editor */}
+      {/* Right Panel: Field Editor */}
       <div className="col-span-3">
         <FieldEditor
           selectedField={selectedField ? formFields.find(f => f.id === selectedField) : null}
