@@ -5,11 +5,13 @@ import { FieldPalette } from "./FieldPalette";
 import { FieldEditor } from "./FieldEditor";
 import { FormCanvas } from "./FormCanvas";
 import { FileAttachmentManager } from "./FileAttachmentManager";
+import { FormCategoryManager } from "./FormCategoryManager";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "@/hooks/use-toast";
 
 interface FormBuilderProps {
   formFields: FormField[];
@@ -25,6 +27,10 @@ interface FormBuilderProps {
   onUpdateAttachments?: (attachments: DocumentAttachment[]) => void;
   allowedFileTypes?: string[];
   maxFileSize?: number;
+  formCategory?: string;
+  onCategoryChange?: (category: string) => void;
+  onSaveToLibrary?: () => void;
+  isPublished?: boolean;
 }
 
 export const FormBuilder = ({
@@ -40,9 +46,39 @@ export const FormBuilder = ({
   attachments = [],
   onUpdateAttachments = () => {},
   allowedFileTypes = ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png'],
-  maxFileSize = 10
+  maxFileSize = 10,
+  formCategory = "",
+  onCategoryChange = () => {},
+  onSaveToLibrary = () => {},
+  isPublished = false
 }: FormBuilderProps) => {
   const [selectedField, setSelectedField] = useState<string | null>(null);
+
+  const handleSaveToLibrary = () => {
+    if (!formCategory) {
+      toast({
+        title: "Category Required",
+        description: "Please select a category before saving to library.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!formTitle.trim()) {
+      toast({
+        title: "Title Required", 
+        description: "Please add a title before saving to library.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    onSaveToLibrary();
+    toast({
+      title: "Saved to Library",
+      description: "Form has been saved to the library successfully.",
+    });
+  };
 
   return (
     <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
@@ -77,6 +113,13 @@ export const FormBuilder = ({
                   rows={2}
                 />
               </div>
+              
+              <FormCategoryManager
+                selectedCategory={formCategory}
+                onCategoryChange={onCategoryChange}
+                onSaveToLibrary={handleSaveToLibrary}
+                canSaveToLibrary={formFields.length > 0}
+              />
             </div>
           </CardHeader>
           <CardContent className="flex-1 overflow-auto">

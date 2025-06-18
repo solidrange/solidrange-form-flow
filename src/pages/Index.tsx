@@ -9,6 +9,7 @@ import { EmailTracking } from "@/components/EmailTracking";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { ReportGeneration } from "@/components/ReportGeneration";
+import { useFormStatus } from "@/hooks/useFormStatus";
 import { 
   Settings, 
   BarChart3, 
@@ -23,10 +24,12 @@ import {
   FileText,
   Wrench,
   BookOpen,
-  ClipboardList
+  ClipboardList,
+  Send
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { FormField, FormTemplate, Form, EmailRecipient, DocumentAttachment } from "@/types/form";
 import { toast } from "@/hooks/use-toast";
 import { sampleSubmissions } from "@/data/sampleSubmissions";
@@ -39,6 +42,11 @@ const Index = () => {
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
   const [formAttachments, setFormAttachments] = useState<DocumentAttachment[]>([]);
+  const [formCategory, setFormCategory] = useState<string>("");
+  const [savedDrafts, setSavedDrafts] = useState<Form[]>([]);
+  const [publishedForms, setPublishedForms] = useState<Form[]>([]);
+  
+  const { status, isPublished, isDraft, publishForm, setToDraft } = useFormStatus();
   
   const [formSettings, setFormSettings] = useState<Form['settings']>({
     allowMultipleSubmissions: false,
@@ -134,22 +142,86 @@ const Index = () => {
   };
 
   const saveForm = () => {
-    console.log("Saving form:", { 
-      formTitle, 
-      formDescription, 
-      formFields, 
-      formSettings, 
-      attachments: formAttachments 
-    });
+    if (!formTitle.trim()) {
+      toast({
+        title: "Title Required",
+        description: "Please add a title before saving the form.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const formData: Form = {
+      id: Date.now().toString(),
+      title: formTitle,
+      description: formDescription,
+      fields: formFields,
+      settings: formSettings,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      status: status,
+      submissions: 0,
+      analytics: {
+        views: 0,
+        submissions: 0,
+        completionRate: 0,
+        emailsSent: 0,
+        emailsCompleted: 0,
+        averageCompletionTime: 0,
+        dropoffRate: 0
+      }
+    };
+
+    if (isDraft) {
+      setSavedDrafts(prev => [...prev, formData]);
+      toast({
+        title: "Draft Saved",
+        description: "Your form has been saved as a draft.",
+      });
+    } else {
+      setPublishedForms(prev => [...prev, formData]);
+      toast({
+        title: "Form Saved",
+        description: "Your published form has been saved.",
+      });
+    }
+  };
+
+  const handlePublishForm = () => {
+    if (!formTitle.trim()) {
+      toast({
+        title: "Title Required",
+        description: "Please add a title before publishing the form.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (formFields.length === 0) {
+      toast({
+        title: "Fields Required",
+        description: "Please add at least one field before publishing the form.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    publishForm();
     toast({
-      title: "Form Saved",
-      description: "Your form has been saved successfully.",
+      title: "Form Published",
+      description: "Your form has been published successfully and can now receive email distributions.",
     });
+  };
+
+  const handleSaveToLibrary = () => {
+    console.log("Saving form to library with category:", formCategory);
+    // Implementation for saving to library would go here
   };
 
   const useTemplate = (template: FormTemplate) => {
     setFormTitle(template.name);
     setFormDescription(template.description);
+    setFormCategory(template.category);
     const fieldsWithIds = template.fields.map(field => ({
       ...field,
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
@@ -177,6 +249,18 @@ const Index = () => {
       description: `${template.name} template has been applied to your form.`,
     });
   };
+
+  // Create tabs array based on form status
+  const buildTabs = [
+    { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" /> },
+    { id: "library", label: "Library", icon: <Library className="h-4 w-4" /> },
+    { id: "scoring", label: "Scoring", icon: <Target className="h-4 w-4" /> },
+    { id: "weightage", label: "Weightage", icon: <Scale className="h-4 w-4" /> },
+    { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" /> },
+    { id: "drafts", label: "Drafts", icon: <FileText className="h-4 w-4" /> },
+    { id: "published", label: "Published", icon: <BookOpen className="h-4 w-4" /> },
+    ...(isPublished ? [{ id: "email", label: "Email", icon: <Mail className="h-4 w-4" /> }] : [])
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -209,46 +293,34 @@ const Index = () => {
           <TabsContent value="build-form" className="mt-6">
             <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
               <div className="flex items-center justify-between mb-4">
-                <TabsList className="grid w-auto grid-cols-8">
-                  <TabsTrigger value="builder" className="flex items-center gap-2">
-                    <Plus className="h-4 w-4" />
-                    Builder
-                  </TabsTrigger>
-                  <TabsTrigger value="library" className="flex items-center gap-2">
-                    <Library className="h-4 w-4" />
-                    Library
-                  </TabsTrigger>
-                  <TabsTrigger value="email" className="flex items-center gap-2">
-                    <Mail className="h-4 w-4" />
-                    Email
-                  </TabsTrigger>
-                  <TabsTrigger value="scoring" className="flex items-center gap-2">
-                    <Target className="h-4 w-4" />
-                    Scoring
-                  </TabsTrigger>
-                  <TabsTrigger value="weightage" className="flex items-center gap-2">
-                    <Scale className="h-4 w-4" />
-                    Weightage
-                  </TabsTrigger>
-                  <TabsTrigger value="preview" className="flex items-center gap-2">
-                    <Eye className="h-4 w-4" />
-                    Preview
-                  </TabsTrigger>
-                  <TabsTrigger value="drafts" className="flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
-                    Drafts
-                  </TabsTrigger>
-                  <TabsTrigger value="published" className="flex items-center gap-2">
-                    <BookOpen className="h-4 w-4" />
-                    Published
-                  </TabsTrigger>
-                </TabsList>
+                <div className="flex items-center gap-4">
+                  <TabsList className="grid w-auto" style={{ gridTemplateColumns: `repeat(${buildTabs.length}, minmax(0, 1fr))` }}>
+                    {buildTabs.map((tab) => (
+                      <TabsTrigger key={tab.id} value={tab.id} className="flex items-center gap-2">
+                        {tab.icon}
+                        {tab.label}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                  
+                  <div className="flex items-center gap-2">
+                    <Badge variant={isDraft ? "secondary" : "default"}>
+                      {isDraft ? "Draft" : "Published"}
+                    </Badge>
+                  </div>
+                </div>
                 
                 <div className="flex items-center gap-3">
                   <Button onClick={saveForm} className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
                     Save Form
                   </Button>
+                  {isDraft && (
+                    <Button onClick={handlePublishForm} className="flex items-center gap-2">
+                      <Send className="h-4 w-4" />
+                      Publish Form
+                    </Button>
+                  )}
                   <Button variant="outline" className="flex items-center gap-2" onClick={() => setActiveBuildTab("settings")}>
                     <Settings className="h-4 w-4" />
                     Settings
@@ -271,6 +343,10 @@ const Index = () => {
                   onUpdateAttachments={setFormAttachments}
                   allowedFileTypes={formSettings.documents?.allowedTypes || ['pdf', 'doc', 'docx']}
                   maxFileSize={formSettings.documents?.maxSize || 10}
+                  formCategory={formCategory}
+                  onCategoryChange={setFormCategory}
+                  onSaveToLibrary={handleSaveToLibrary}
+                  isPublished={isPublished}
                 />
               </TabsContent>
 
@@ -278,17 +354,19 @@ const Index = () => {
                 <FormLibrary onUseTemplate={useTemplate} />
               </TabsContent>
 
-              <TabsContent value="email" className="mt-4">
-                <EmailTracking
-                  recipients={formSettings.emailDistribution?.recipients || []}
-                  onUpdateRecipients={updateEmailRecipients}
-                  formTitle={formTitle}
-                  reminderEnabled={formSettings.emailDistribution?.reminderEnabled || true}
-                  reminderIntervalDays={formSettings.emailDistribution?.reminderIntervalDays || 7}
-                  maxReminders={formSettings.emailDistribution?.maxReminders || 3}
-                  onUpdateEmailSettings={updateEmailSettings}
-                />
-              </TabsContent>
+              {isPublished && (
+                <TabsContent value="email" className="mt-4">
+                  <EmailTracking
+                    recipients={formSettings.emailDistribution?.recipients || []}
+                    onUpdateRecipients={updateEmailRecipients}
+                    formTitle={formTitle}
+                    reminderEnabled={formSettings.emailDistribution?.reminderEnabled || true}
+                    reminderIntervalDays={formSettings.emailDistribution?.reminderIntervalDays || 7}
+                    maxReminders={formSettings.emailDistribution?.maxReminders || 3}
+                    onUpdateEmailSettings={updateEmailSettings}
+                  />
+                </TabsContent>
+              )}
 
               <TabsContent value="scoring" className="mt-4">
                 <ScoringSettings
@@ -315,17 +393,69 @@ const Index = () => {
               </TabsContent>
 
               <TabsContent value="drafts" className="mt-4">
-                <div className="text-center py-8 text-gray-500">
-                  <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>No draft forms available</p>
-                </div>
+                {savedDrafts.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <p>No draft forms available</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {savedDrafts.map((draft) => (
+                      <div key={draft.id} className="p-4 border rounded-lg bg-white">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="font-medium">{draft.title}</h3>
+                            <p className="text-sm text-gray-600">{draft.description}</p>
+                            <p className="text-xs text-gray-500">
+                              Created: {draft.createdAt.toLocaleDateString()}
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline">
+                              Load Draft
+                            </Button>
+                            <Button size="sm">
+                              Publish
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="published" className="mt-4">
-                <div className="text-center py-8 text-gray-500">
-                  <BookOpen className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                  <p>No published forms available</p>
-                </div>
+                {publishedForms.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <BookOpen className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <p>No published forms available</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {publishedForms.map((form) => (
+                      <div key={form.id} className="p-4 border rounded-lg bg-white">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h3 className="font-medium">{form.title}</h3>
+                            <p className="text-sm text-gray-600">{form.description}</p>
+                            <p className="text-xs text-gray-500">
+                              Published: {form.createdAt.toLocaleDateString()}
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button size="sm" variant="outline">
+                              View
+                            </Button>
+                            <Button size="sm">
+                              Manage
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="settings" className="mt-4">
@@ -365,7 +495,7 @@ const Index = () => {
                     settings: formSettings,
                     createdAt: new Date(),
                     updatedAt: new Date(),
-                    status: 'draft',
+                    status: status,
                     submissions: submissions.length,
                     analytics: {
                       views: 0,
