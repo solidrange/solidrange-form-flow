@@ -1,11 +1,13 @@
 
 import { useState } from "react";
-import { FormSubmission, Form } from "@/types/form";
+import { FormSubmission, Form, ReviewActivity } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, XCircle, Eye, RefreshCw, AlertTriangle, Mail } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { CheckCircle, XCircle, Eye, RefreshCw, AlertTriangle, Mail, Clock, FileText } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface SubmissionActionsProps {
@@ -17,6 +19,11 @@ interface SubmissionActionsProps {
 
 export const SubmissionActions = ({ submission, form, onUpdateSubmission, onResendForm }: SubmissionActionsProps) => {
   const [reviewComments, setReviewComments] = useState("");
+  const [actionType, setActionType] = useState<'simple' | 'advanced'>('simple');
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [urgencyLevel, setUrgencyLevel] = useState<'low' | 'medium' | 'high'>('medium');
+  const [requiredDocuments, setRequiredDocuments] = useState<string[]>([]);
+  const [specificFields, setSpecificFields] = useState<string[]>([]);
 
   const calculateCompletionPercentage = (submission: FormSubmission) => {
     if (form.fields.length === 0) return 0;
@@ -38,9 +45,44 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
     return completionPercentage === 100 || submission.status === 'approved' || submission.status === 'under_review';
   };
 
+  const addActivityLog = (action: ReviewActivity['action'], comments: string, metadata?: ReviewActivity['metadata']) => {
+    const newActivity: ReviewActivity = {
+      id: Date.now().toString(),
+      action,
+      comments,
+      reviewedBy: 'Current User',
+      reviewedAt: new Date(),
+      metadata
+    };
+
+    const updatedActivityLog = [...(submission.activityLog || []), newActivity];
+    return updatedActivityLog;
+  };
+
   const handleStatusChange = (status: 'approved' | 'rejected' | 'under_review') => {
+    if (!reviewComments.trim()) {
+      toast({
+        title: "Comments Required",
+        description: "Please add comments before changing the status.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const metadata = status === 'rejected' ? {
+      reason: rejectionReason,
+      urgency: urgencyLevel
+    } : status === 'under_review' ? {
+      urgency: urgencyLevel,
+      specificFields: specificFields.length > 0 ? specificFields : undefined,
+      requiredDocuments: requiredDocuments.length > 0 ? requiredDocuments : undefined
+    } : undefined;
+
+    const activityLog = addActivityLog(status, reviewComments, metadata);
+
     onUpdateSubmission(submission.id, {
       status,
+      activityLog,
       score: {
         ...submission.score,
         reviewedBy: 'Current User',
@@ -60,7 +102,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
       description: `The submission has been marked as ${status.replace('_', ' ')}.`,
     });
 
-    setReviewComments("");
+    resetForm();
   };
 
   const handleResendForm = () => {
@@ -73,26 +115,134 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
       return;
     }
 
+    const metadata = {
+      urgency: urgencyLevel,
+      specificFields: specificFields.length > 0 ? specificFields : undefined,
+      requiredDocuments: requiredDocuments.length > 0 ? requiredDocuments : undefined
+    };
+
+    const activityLog = addActivityLog('resent', reviewComments, metadata);
+
     onResendForm(submission.id, reviewComments);
-    onUpdateSubmission(submission.id, { status: 'under_review' });
+    onUpdateSubmission(submission.id, { 
+      status: 'under_review',
+      activityLog
+    });
     
     toast({
       title: "Form Resent",
       description: "The form has been resent to the user with your comments.",
     });
 
-    setReviewComments("");
+    resetForm();
   };
 
   const handleSendReminder = () => {
+    if (!reviewComments.trim()) {
+      toast({
+        title: "Message Required",
+        description: "Please add a reminder message.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const activityLog = addActivityLog('reminder_sent', reviewComments, { urgency: urgencyLevel });
+    
+    onUpdateSubmission(submission.id, { activityLog });
+
     toast({
       title: "Reminder Sent",
       description: "A reminder email has been sent to complete the form.",
     });
+
+    resetForm();
+  };
+
+  const resetForm = () => {
+    setReviewComments("");
+    setRejectionReason("");
+    setUrgencyLevel('medium');
+    setRequiredDocuments([]);
+    setSpecificFields([]);
+    setActionType('simple');
+  };
+
+  const renderAdvancedOptions = () => {
+    if (actionType !== 'advanced') return null;
+
+    return (
+      <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+        <div>
+          <Label htmlFor="urgency-select">Urgency Level</Label>
+          <Select value={urgencyLevel} onValueChange={(value: 'low' | 'medium' | 'high') => setUrgencyLevel(value)}>
+            <SelectTrigger className="mt-1">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="low">Low Priority</SelectItem>
+              <SelectItem value="medium">Medium Priority</SelectItem>
+              <SelectItem value="high">High Priority</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <Label htmlFor="rejection-reason">Rejection Reason (if applicable)</Label>
+          <Select value={rejectionReason} onValueChange={setRejectionReason}>
+            <SelectTrigger className="mt-1">
+              <SelectValue placeholder="Select reason..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="incomplete_information">Incomplete Information</SelectItem>
+              <SelectItem value="invalid_documents">Invalid Documents</SelectItem>
+              <SelectItem value="policy_violation">Policy Violation</SelectItem>
+              <SelectItem value="technical_issues">Technical Issues</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <Label>Specific Fields Needing Attention</Label>
+          <div className="mt-2 space-y-2 max-h-32 overflow-y-auto">
+            {form.fields.map((field) => (
+              <div key={field.id} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`field-${field.id}`}
+                  checked={specificFields.includes(field.id)}
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      setSpecificFields([...specificFields, field.id]);
+                    } else {
+                      setSpecificFields(specificFields.filter(id => id !== field.id));
+                    }
+                  }}
+                />
+                <Label htmlFor={`field-${field.id}`} className="text-sm">
+                  {field.label}
+                </Label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="required-docs">Required Documents</Label>
+          <Textarea
+            id="required-docs"
+            value={requiredDocuments.join('\n')}
+            onChange={(e) => setRequiredDocuments(e.target.value.split('\n').filter(doc => doc.trim()))}
+            placeholder="Enter required documents (one per line)"
+            className="mt-1"
+            rows={3}
+          />
+        </div>
+      </div>
+    );
   };
 
   const renderActionButtons = () => {
-    // If form is not complete, only show Send Reminder
     if (!isFormComplete() && submission.status === 'submitted') {
       return (
         <div className="flex items-center gap-3">
@@ -165,7 +315,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
           </div>
         );
         
-      default: // submitted, under_review (when complete)
+      default:
         return (
           <div className="flex items-center gap-3 flex-wrap">
             <Button 
@@ -194,42 +344,135 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
     }
   };
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg flex items-center gap-2">
-          Review Actions
-          {!isFormComplete() && submission.status === 'submitted' && (
-            <AlertTriangle className="h-5 w-5 text-orange-500" />
-          )}
-        </CardTitle>
-        {!isFormComplete() && submission.status === 'submitted' && (
-          <p className="text-sm text-orange-600">
-            This form is incomplete. Only reminder can be sent until all required fields are completed.
-          </p>
-        )}
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div>
-          <Label htmlFor="review-comments">
-            {!isFormComplete() && submission.status === 'submitted' ? 'Reminder Message' : 'Review Comments'}
-          </Label>
-          <Textarea
-            id="review-comments"
-            value={reviewComments}
-            onChange={(e) => setReviewComments(e.target.value)}
-            placeholder={
-              !isFormComplete() && submission.status === 'submitted' 
-                ? "Add a message to remind the user to complete the form..."
-                : "Add comments about this submission..."
-            }
-            className="mt-1"
-            rows={3}
-          />
+  const renderActivityLog = () => {
+    if (!submission.activityLog || submission.activityLog.length === 0) {
+      return (
+        <div className="text-center py-4 text-gray-500">
+          <Clock className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+          <p className="text-sm">No previous activity</p>
         </div>
-        
-        {renderActionButtons()}
-      </CardContent>
-    </Card>
+      );
+    }
+
+    return (
+      <div className="space-y-3 max-h-64 overflow-y-auto">
+        {submission.activityLog.map((activity) => (
+          <div key={activity.id} className="p-3 bg-gray-50 rounded-lg border">
+            <div className="flex items-start justify-between">
+              <div className="flex-1">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-sm font-medium capitalize">
+                    {activity.action.replace('_', ' ')}
+                  </span>
+                  {activity.metadata?.urgency && (
+                    <span className={`text-xs px-2 py-1 rounded ${
+                      activity.metadata.urgency === 'high' ? 'bg-red-100 text-red-800' :
+                      activity.metadata.urgency === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-green-100 text-green-800'
+                    }`}>
+                      {activity.metadata.urgency} priority
+                    </span>
+                  )}
+                </div>
+                <p className="text-sm text-gray-700 mb-2">{activity.comments}</p>
+                {activity.metadata?.reason && (
+                  <p className="text-xs text-gray-600">Reason: {activity.metadata.reason.replace('_', ' ')}</p>
+                )}
+                {activity.metadata?.specificFields && activity.metadata.specificFields.length > 0 && (
+                  <p className="text-xs text-gray-600">
+                    Fields: {activity.metadata.specificFields.map(fieldId => 
+                      form.fields.find(f => f.id === fieldId)?.label || fieldId
+                    ).join(', ')}
+                  </p>
+                )}
+                {activity.metadata?.requiredDocuments && activity.metadata.requiredDocuments.length > 0 && (
+                  <p className="text-xs text-gray-600">
+                    Required docs: {activity.metadata.requiredDocuments.join(', ')}
+                  </p>
+                )}
+              </div>
+              <div className="text-right text-xs text-gray-500">
+                <p>{activity.reviewedBy}</p>
+                <p>{activity.reviewedAt.toLocaleDateString()}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Activity Log */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Clock className="h-5 w-5" />
+            Activity Log
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {renderActivityLog()}
+        </CardContent>
+      </Card>
+
+      {/* Review Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            Review Actions
+            {!isFormComplete() && submission.status === 'submitted' && (
+              <AlertTriangle className="h-5 w-5 text-orange-500" />
+            )}
+          </CardTitle>
+          {!isFormComplete() && submission.status === 'submitted' && (
+            <p className="text-sm text-orange-600">
+              This form is incomplete. Only reminder can be sent until all required fields are completed.
+            </p>
+          )}
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center gap-4">
+            <Button
+              variant={actionType === 'simple' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setActionType('simple')}
+            >
+              Simple
+            </Button>
+            <Button
+              variant={actionType === 'advanced' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setActionType('advanced')}
+            >
+              Advanced Options
+            </Button>
+          </div>
+
+          {renderAdvancedOptions()}
+
+          <div>
+            <Label htmlFor="review-comments">
+              {!isFormComplete() && submission.status === 'submitted' ? 'Reminder Message' : 'Review Comments'}
+            </Label>
+            <Textarea
+              id="review-comments"
+              value={reviewComments}
+              onChange={(e) => setReviewComments(e.target.value)}
+              placeholder={
+                !isFormComplete() && submission.status === 'submitted' 
+                  ? "Add a message to remind the user to complete the form..."
+                  : "Add comments about this submission..."
+              }
+              className="mt-1"
+              rows={3}
+            />
+          </div>
+          
+          {renderActionButtons()}
+        </CardContent>
+      </Card>
+    </div>
   );
 };

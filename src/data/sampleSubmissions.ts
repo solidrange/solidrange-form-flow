@@ -3,269 +3,203 @@ import { FormSubmission } from "@/types/form";
 
 export const sampleSubmissions: FormSubmission[] = [
   {
-    id: "1",
-    formId: "vendor-risk-assessment",
-    recipientId: "vendor@techcorp.com",
-    companyName: "TechCorp Solutions",
-    submissionType: "vendor",
+    id: "sub-001",
+    formId: "form-001",
     responses: {
       "company_name": "TechCorp Solutions",
-      "primary_contact": "John Smith",
-      "email": "vendor@techcorp.com",
-      "data_handling": "We encrypt all data using AES-256",
-      "security_certifications": ["SOC 2", "ISO 27001"],
-      "backup_procedures": "Daily automated backups with 30-day retention",
-      "incident_response": "24/7 incident response team with 2-hour SLA"
+      "contact_email": "john.doe@techcorp.com",
+      "company_size": "100-500",
+      "industry": "Technology",
+      "risk_assessment": "Medium"
     },
-    attachments: [],
-    completionPercentage: 100,
-    timeSpent: 1800,
+    submittedAt: new Date("2024-01-15T10:30:00Z"),
+    submittedBy: "john.doe@techcorp.com",
+    status: "under_review",
+    score: {
+      total: 75,
+      maxTotal: 100,
+      riskLevel: "medium",
+      reviewedBy: "Admin User",
+      reviewedAt: new Date("2024-01-16T09:15:00Z"),
+      reviewComments: "Initial review completed, needs additional documentation"
+    },
+    activityLog: [
+      {
+        id: "act-001",
+        action: "under_review",
+        comments: "Initial review completed, needs additional documentation for security compliance",
+        reviewedBy: "Admin User",
+        reviewedAt: new Date("2024-01-16T09:15:00Z"),
+        metadata: {
+          urgency: "medium",
+          specificFields: ["security_compliance", "data_handling"],
+          requiredDocuments: ["Security Certificate", "Data Privacy Policy"]
+        }
+      }
+    ]
+  },
+  {
+    id: "sub-002",
+    formId: "form-001",
+    responses: {
+      "company_name": "StartupInc",
+      "contact_email": "sarah@startupinc.com",
+      "company_size": "1-50",
+      "industry": "Fintech",
+      "risk_assessment": "High"
+    },
+    submittedAt: new Date("2024-01-14T14:20:00Z"),
+    submittedBy: "sarah@startupinc.com",
+    status: "approved",
+    score: {
+      total: 90,
+      maxTotal: 100,
+      riskLevel: "low",
+      reviewedBy: "Admin User",
+      reviewedAt: new Date("2024-01-15T11:30:00Z"),
+      reviewComments: "Excellent compliance record, approved for partnership"
+    },
+    activityLog: [
+      {
+        id: "act-002",
+        action: "under_review",
+        comments: "Reviewing fintech compliance requirements",
+        reviewedBy: "Compliance Officer",
+        reviewedAt: new Date("2024-01-14T16:00:00Z"),
+        metadata: {
+          urgency: "high",
+          specificFields: ["financial_licenses"]
+        }
+      },
+      {
+        id: "act-003",
+        action: "approved",
+        comments: "All requirements met, excellent compliance record",
+        reviewedBy: "Admin User",
+        reviewedAt: new Date("2024-01-15T11:30:00Z"),
+        metadata: {
+          urgency: "medium"
+        }
+      }
+    ]
+  },
+  {
+    id: "sub-003",
+    formId: "form-001",
+    responses: {
+      "company_name": "Global Enterprises",
+      "contact_email": "mike@globalent.com",
+      "company_size": "1000+",
+      "industry": "Manufacturing"
+    },
+    submittedAt: new Date("2024-01-13T09:45:00Z"),
+    submittedBy: "mike@globalent.com",
+    status: "rejected",
+    score: {
+      total: 45,
+      maxTotal: 100,
+      riskLevel: "high",
+      reviewedBy: "Risk Manager",
+      reviewedAt: new Date("2024-01-14T08:20:00Z"),
+      reviewComments: "High risk profile, multiple compliance issues identified"
+    },
+    activityLog: [
+      {
+        id: "act-004",
+        action: "under_review",
+        comments: "Reviewing large enterprise compliance requirements",
+        reviewedBy: "Risk Manager",
+        reviewedAt: new Date("2024-01-13T15:00:00Z"),
+        metadata: {
+          urgency: "medium",
+          specificFields: ["environmental_compliance", "safety_records"]
+        }
+      },
+      {
+        id: "act-005",
+        action: "rejected",
+        comments: "Multiple compliance violations found in environmental and safety records",
+        reviewedBy: "Risk Manager",
+        reviewedAt: new Date("2024-01-14T08:20:00Z"),
+        metadata: {
+          reason: "policy_violation",
+          urgency: "high",
+          specificFields: ["environmental_compliance", "safety_records"],
+          requiredDocuments: ["Updated Environmental Certificate", "Safety Audit Report"]
+        }
+      }
+    ]
+  },
+  {
+    id: "sub-004",
+    formId: "form-001",
+    responses: {
+      "company_name": "HealthTech Pro",
+      "contact_email": "anna@healthtech.com",
+      "company_size": "50-100"
+    },
+    submittedAt: new Date("2024-01-12T16:15:00Z"),
+    submittedBy: "anna@healthtech.com",
+    status: "submitted",
+    activityLog: [
+      {
+        id: "act-006",
+        action: "reminder_sent",
+        comments: "Reminder sent to complete missing required fields",
+        reviewedBy: "System",
+        reviewedAt: new Date("2024-01-13T10:00:00Z"),
+        metadata: {
+          urgency: "low",
+          specificFields: ["industry", "risk_assessment"]
+        }
+      }
+    ]
+  },
+  {
+    id: "sub-005",
+    formId: "form-001",
+    responses: {
+      "company_name": "EcoSolutions Ltd",
+      "contact_email": "david@ecosolutions.com",
+      "company_size": "200-500",
+      "industry": "Environmental Services",
+      "risk_assessment": "Low"
+    },
+    submittedAt: new Date("2024-01-11T11:30:00Z"),
+    submittedBy: "david@ecosolutions.com",
+    status: "under_review",
     score: {
       total: 85,
       maxTotal: 100,
-      percentage: 85,
-      passed: true,
       riskLevel: "low",
-      riskScore: 15,
-      categoryScores: {
-        "Security": 90,
-        "Financial": 80,
-        "Compliance": 85
+      reviewedBy: "Environmental Specialist",
+      reviewedAt: new Date("2024-01-12T14:45:00Z"),
+      reviewComments: "Strong environmental compliance, reviewing operational procedures"
+    },
+    activityLog: [
+      {
+        id: "act-007",
+        action: "under_review",
+        comments: "Excellent environmental compliance record, reviewing operational procedures",
+        reviewedBy: "Environmental Specialist",
+        reviewedAt: new Date("2024-01-12T14:45:00Z"),
+        metadata: {
+          urgency: "low",
+          specificFields: ["operational_procedures"]
+        }
       },
-      manualReviewRequired: false,
-      reviewedBy: "Security Team",
-      reviewedAt: new Date('2024-12-01T10:30:00Z'),
-      reviewComments: "Strong security posture with proper certifications."
-    },
-    submittedAt: new Date('2024-12-01T09:15:00Z'),
-    status: "approved",
-    lastModifiedAt: new Date('2024-12-01T10:30:00Z'),
-    ipAddress: "192.168.1.100",
-    userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-  },
-  {
-    id: "2",
-    formId: "employee-feedback",
-    recipientId: "internal@company.com",
-    companyName: "Internal",
-    submissionType: "internal",
-    responses: {
-      "employee_name": "Sarah Johnson",
-      "department": "Marketing",
-      "satisfaction_rating": "4",
-      "work_environment": "The office environment is collaborative and supportive",
-      "improvement_suggestions": "Better coffee in the break room and more flexible working hours",
-      "manager_feedback": "My manager provides clear guidance and regular feedback"
-    },
-    attachments: [],
-    completionPercentage: 85,
-    timeSpent: 900,
-    score: {
-      total: 78,
-      maxTotal: 100,
-      percentage: 78,
-      passed: true,
-      riskLevel: "low",
-      riskScore: 22,
-      manualReviewRequired: false
-    },
-    submittedAt: new Date('2024-12-02T14:20:00Z'),
-    status: "under_review",
-    lastModifiedAt: new Date('2024-12-02T14:20:00Z'),
-    ipAddress: "10.0.0.45",
-    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
-  },
-  {
-    id: "3",
-    formId: "vendor-onboarding",
-    recipientId: "vendor@datacorp.com",
-    companyName: "DataCorp Analytics",
-    submissionType: "vendor",
-    responses: {
-      "company_name": "DataCorp Analytics",
-      "business_license": "Yes, valid until 2025",
-      "insurance_coverage": "General liability $2M, Professional liability $1M",
-      "references": ["Reference 1: ABC Corp", "Reference 2: XYZ Inc"],
-      "payment_terms": "Net 30 days",
-      "service_description": "Data analytics and business intelligence services"
-    },
-    attachments: [],
-    completionPercentage: 90,
-    timeSpent: 1200,
-    submittedAt: new Date('2024-12-03T11:45:00Z'),
-    status: "submitted",
-    lastModifiedAt: new Date('2024-12-03T11:45:00Z'),
-    ipAddress: "203.0.113.45",
-    userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-  },
-  {
-    id: "4",
-    formId: "compliance-assessment",
-    recipientId: "vendor@securetech.com",
-    companyName: "SecureTech Industries",
-    submissionType: "vendor",
-    responses: {
-      "company_name": "SecureTech Industries",
-      "gdpr_compliance": "Partially compliant",
-      "data_retention": "We retain data for 5 years",
-      "privacy_policy": "Available on our website",
-      "employee_training": "Annual security training for all employees"
-    },
-    attachments: [],
-    completionPercentage: 60,
-    timeSpent: 600,
-    score: {
-      total: 25,
-      maxTotal: 100,
-      percentage: 25,
-      passed: false,
-      riskLevel: "critical",
-      riskScore: 75,
-      categoryScores: {
-        "Security": 10,
-        "Financial": 40,
-        "Compliance": 25
-      },
-      manualReviewRequired: true,
-      reviewedBy: "Compliance Team",
-      reviewedAt: new Date('2024-12-04T16:00:00Z'),
-      reviewComments: "Multiple compliance gaps identified. Requires immediate attention."
-    },
-    submittedAt: new Date('2024-12-04T15:30:00Z'),
-    status: "rejected",
-    lastModifiedAt: new Date('2024-12-04T16:00:00Z'),
-    ipAddress: "198.51.100.23",
-    userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36"
-  },
-  {
-    id: "5",
-    formId: "customer-satisfaction",
-    recipientId: "internal@company.com",
-    companyName: "Internal",
-    submissionType: "internal",
-    responses: {
-      "customer_name": "Michael Chen",
-      "service_rating": "5",
-      "product_quality": "Excellent",
-      "support_experience": "Very responsive and helpful",
-      "recommendation_likelihood": "10",
-      "additional_comments": "Outstanding service, will definitely recommend to others"
-    },
-    attachments: [],
-    completionPercentage: 100,
-    timeSpent: 450,
-    score: {
-      total: 95,
-      maxTotal: 100,
-      percentage: 95,
-      passed: true,
-      riskLevel: "low",
-      riskScore: 5,
-      manualReviewRequired: false
-    },
-    submittedAt: new Date('2024-12-05T09:12:00Z'),
-    status: "approved",
-    lastModifiedAt: new Date('2024-12-05T09:12:00Z'),
-    ipAddress: "172.16.0.100",
-    userAgent: "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15"
-  },
-  {
-    id: "6",
-    formId: "it-security-assessment",
-    recipientId: "vendor@cloudprovider.com",
-    companyName: "CloudProvider Inc",
-    submissionType: "vendor",
-    responses: {
-      "company_name": "CloudProvider Inc",
-      "network_security": "Multi-layered firewall and intrusion detection",
-      "access_controls": "Role-based access with multi-factor authentication",
-      "vulnerability_management": "Monthly vulnerability scans and quarterly penetration testing",
-      "incident_procedures": "Documented incident response plan with 1-hour notification SLA"
-    },
-    attachments: [],
-    completionPercentage: 95,
-    timeSpent: 2100,
-    score: {
-      total: 88,
-      maxTotal: 100,
-      percentage: 88,
-      passed: true,
-      riskLevel: "low",
-      riskScore: 12,
-      categoryScores: {
-        "Security": 92,
-        "Compliance": 85,
-        "Operations": 87
-      },
-      manualReviewRequired: false
-    },
-    submittedAt: new Date('2024-12-06T13:25:00Z'),
-    status: "under_review",
-    lastModifiedAt: new Date('2024-12-06T13:25:00Z'),
-    ipAddress: "203.0.113.67",
-    userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-  },
-  {
-    id: "7",
-    formId: "event-registration",
-    recipientId: "internal@company.com",
-    companyName: "Internal",
-    submissionType: "internal",
-    responses: {
-      "participant_name": "Emily Rodriguez",
-      "department": "Human Resources",
-      "event_preference": "Virtual",
-      "dietary_restrictions": "Vegetarian",
-      "accessibility_needs": "None",
-      "emergency_contact": "555-0123"
-    },
-    attachments: [],
-    completionPercentage: 100,
-    timeSpent: 300,
-    submittedAt: new Date('2024-12-07T10:45:00Z'),
-    status: "submitted",
-    lastModifiedAt: new Date('2024-12-07T10:45:00Z'),
-    ipAddress: "10.0.0.78",
-    userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
-  },
-  {
-    id: "8",
-    formId: "financial-assessment",
-    recipientId: "vendor@financetech.com",
-    companyName: "FinanceTech Solutions",
-    submissionType: "vendor",
-    responses: {
-      "company_name": "FinanceTech Solutions",
-      "annual_revenue": "$5-10 million",
-      "years_in_business": "8 years",
-      "financial_statements": "Audited statements available",
-      "credit_rating": "A-",
-      "insurance_coverage": "Professional liability and cyber insurance"
-    },
-    attachments: [],
-    completionPercentage: 75,
-    timeSpent: 1800,
-    score: {
-      total: 72,
-      maxTotal: 100,
-      percentage: 72,
-      passed: true,
-      riskLevel: "medium",
-      riskScore: 28,
-      categoryScores: {
-        "Financial": 75,
-        "Stability": 70,
-        "Risk": 71
-      },
-      manualReviewRequired: true,
-      reviewedBy: "Finance Team",
-      reviewedAt: new Date('2024-12-08T14:30:00Z'),
-      reviewComments: "Good financial standing but requires additional documentation."
-    },
-    submittedAt: new Date('2024-12-08T12:15:00Z'),
-    status: "under_review",
-    lastModifiedAt: new Date('2024-12-08T14:30:00Z'),
-    ipAddress: "198.51.100.89",
-    userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+      {
+        id: "act-008",
+        action: "resent",
+        comments: "Please provide additional details about waste management procedures",
+        reviewedBy: "Environmental Specialist",
+        reviewedAt: new Date("2024-01-13T09:30:00Z"),
+        metadata: {
+          urgency: "medium",
+          specificFields: ["waste_management"],
+          requiredDocuments: ["Waste Management Plan", "Environmental Impact Assessment"]
+        }
+      }
+    ]
   }
 ];

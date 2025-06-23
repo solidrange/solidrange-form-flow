@@ -1,44 +1,23 @@
-
 export interface FormField {
   id: string;
-  type: 'text' | 'email' | 'number' | 'textarea' | 'select' | 'radio' | 'checkbox' | 'date' | 'file' | 'rating' | 'signature';
+  type: string;
   label: string;
-  placeholder?: string;
   required: boolean;
   options?: string[];
-  validation?: {
-    min?: number;
-    max?: number;
-    pattern?: string;
-    message?: string;
-  };
-  conditionalLogic?: {
-    dependsOn: string;
-    condition: 'equals' | 'not_equals' | 'contains';
-    value: string;
-  };
-  scoring?: {
-    enabled: boolean;
-    weights?: Record<string, number>;
-    correctAnswers?: string[];
-    requiresManualReview?: boolean;
-    weightMultiplier?: number;
-    maxPoints?: number;
-    riskLevel?: 'low' | 'medium' | 'high' | 'critical';
-    scoringCriteria?: Record<string, number>;
-  };
+  defaultValue?: string | boolean | number | string[];
+  placeholder?: string;
+  description?: string;
+  validationRegex?: string;
+  errorMessage?: string;
+  weightage?: number;
 }
 
-export interface EmailRecipient {
+export interface FormTemplate {
   id: string;
-  email: string;
-  name?: string;
-  companyName?: string;
-  sentAt?: Date;
-  completedAt?: Date;
-  status: 'pending' | 'sent' | 'opened' | 'completed' | 'expired';
-  remindersSent: number;
-  lastReminderAt?: Date;
+  name: string;
+  description: string;
+  category: string;
+  fields: FormField[];
 }
 
 export interface DocumentAttachment {
@@ -50,68 +29,70 @@ export interface DocumentAttachment {
   uploadedAt: Date;
 }
 
+export interface SubmissionScore {
+  total: number;
+  maxTotal: number;
+  riskLevel: 'low' | 'medium' | 'high';
+  reviewedBy: string;
+  reviewedAt: Date;
+  reviewComments: string;
+}
+
+export interface EmailRecipient {
+  id: string;
+  email: string;
+  name: string;
+}
+
+export interface FormSettings {
+  allowMultipleSubmissions: boolean;
+  requireLogin: boolean;
+  showProgressBar: boolean;
+  theme: 'light' | 'dark';
+  scoring?: {
+    enabled: boolean;
+    maxTotalPoints: number;
+    showScoreToUser: boolean;
+    riskThresholds: {
+      low: number;
+      medium: number;
+      high: number;
+    };
+  };
+  expiration?: {
+    enabled: boolean;
+    expirationDate?: Date;
+  };
+  emailDistribution?: {
+    enabled: boolean;
+    recipients: EmailRecipient[];
+    reminderEnabled: boolean;
+    reminderIntervalDays: number;
+    maxReminders: number;
+  };
+  approval?: {
+    enabled: boolean;
+    requireApproval: boolean;
+    approvers: string[];
+  };
+  documents?: {
+    enabled: boolean;
+    allowedTypes: string[];
+    maxSize: number;
+    requiredDocuments: string[];
+    allowUserUploads: boolean;
+  };
+}
+
 export interface Form {
   id: string;
   title: string;
   description: string;
   fields: FormField[];
-  settings: {
-    allowMultipleSubmissions: boolean;
-    requireLogin: boolean;
-    showProgressBar: boolean;
-    theme: 'light' | 'dark' | 'custom';
-    customCss?: string;
-    scoring?: {
-      enabled: boolean;
-      maxTotalPoints: number;
-      passingScore?: number;
-      showScoreToUser: boolean;
-      riskThresholds?: {
-        low: number;
-        medium: number;
-        high: number;
-      };
-    };
-    expiration?: {
-      enabled: boolean;
-      expirationDate?: Date;
-      message?: string;
-    };
-    emailDistribution?: {
-      enabled: boolean;
-      recipients: EmailRecipient[];
-      reminderEnabled: boolean;
-      reminderIntervalDays: number;
-      maxReminders: number;
-      customEmailTemplate?: string;
-    };
-    approval?: {
-      enabled: boolean;
-      requireApproval: boolean;
-      approvers: string[];
-      autoApproveScore?: number;
-      escalationRules?: {
-        timeLimit: number;
-        escalateTo: string;
-      };
-    };
-    documents?: {
-      enabled: boolean;
-      allowedTypes: string[];
-      maxSize: number;
-      requiredDocuments: DocumentAttachment[];
-      allowUserUploads: boolean;
-    };
-    notifications?: {
-      onSubmission: boolean;
-      onApproval: boolean;
-      emailRecipients: string[];
-      webhookUrl?: string;
-    };
-  };
+  settings: FormSettings;
   createdAt: Date;
   updatedAt: Date;
-  status: 'draft' | 'published' | 'archived';
+  status: 'draft' | 'published';
   submissions: number;
   analytics: {
     views: number;
@@ -124,43 +105,28 @@ export interface Form {
   };
 }
 
-export interface FormTemplate {
+export interface ReviewActivity {
   id: string;
-  name: string;
-  description: string;
-  category: 'survey' | 'assessment' | 'registration' | 'feedback' | 'compliance' | 'risk' | 'vendor-risk';
-  fields: Omit<FormField, 'id'>[];
-  preview: string;
-  riskCategories?: string[];
-  scoringModel?: 'weighted' | 'percentage' | 'risk-matrix';
+  action: 'approved' | 'rejected' | 'under_review' | 'resent' | 'reminder_sent' | 'info_requested';
+  comments: string;
+  reviewedBy: string;
+  reviewedAt: Date;
+  metadata?: {
+    reason?: string;
+    urgency?: 'low' | 'medium' | 'high';
+    followUpDate?: Date;
+    requiredDocuments?: string[];
+    specificFields?: string[];
+  };
 }
 
 export interface FormSubmission {
   id: string;
   formId: string;
-  recipientId?: string;
-  companyName?: string;
-  submissionType: 'vendor' | 'internal';
   responses: Record<string, any>;
-  attachments?: DocumentAttachment[];
-  completionPercentage: number;
-  timeSpent: number;
-  score?: {
-    total: number;
-    maxTotal: number;
-    percentage: number;
-    passed: boolean;
-    riskLevel?: 'low' | 'medium' | 'high' | 'critical';
-    riskScore: number;
-    categoryScores?: Record<string, number>;
-    manualReviewRequired: boolean;
-    reviewedBy?: string;
-    reviewedAt?: Date;
-    reviewComments?: string;
-  };
   submittedAt: Date;
-  status: 'submitted' | 'under_review' | 'reviewed' | 'approved' | 'rejected';
-  lastModifiedAt: Date;
-  ipAddress?: string;
-  userAgent?: string;
+  submittedBy: string;
+  status: 'submitted' | 'under_review' | 'approved' | 'rejected';
+  score?: SubmissionScore;
+  activityLog: ReviewActivity[];
 }

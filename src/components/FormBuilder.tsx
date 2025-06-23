@@ -12,8 +12,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { Lock } from "lucide-react";
+import { Lock, ArrowLeft } from "lucide-react";
 
 interface FormBuilderProps {
   formFields: FormField[];
@@ -33,6 +34,7 @@ interface FormBuilderProps {
   onCategoryChange?: (category: string) => void;
   onSaveToLibrary?: () => void;
   isPublished?: boolean;
+  onMoveToDraft?: () => void;
 }
 
 export const FormBuilder = ({
@@ -52,7 +54,8 @@ export const FormBuilder = ({
   formCategory = "",
   onCategoryChange = () => {},
   onSaveToLibrary = () => {},
-  isPublished = false
+  isPublished = false,
+  onMoveToDraft = () => {}
 }: FormBuilderProps) => {
   const [selectedField, setSelectedField] = useState<string | null>(null);
 
@@ -85,7 +88,7 @@ export const FormBuilder = ({
   const handleReadOnlyAction = () => {
     toast({
       title: "Form is Published",
-      description: "Move this form to draft state to make changes.",
+      description: "This published form is in read-only mode. Move it to draft to enable editing.",
       variant: "destructive",
     });
   };
@@ -106,14 +109,23 @@ export const FormBuilder = ({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Lock className="h-4 w-4" />
-                Read Only
+                Published Form
               </CardTitle>
             </CardHeader>
-            <CardContent className="flex items-center justify-center h-full">
+            <CardContent className="flex flex-col items-center justify-center h-full space-y-4">
               <div className="text-center text-gray-500">
                 <Lock className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                <p className="text-sm">Form is published</p>
-                <p className="text-xs mt-1">Move to draft to edit</p>
+                <p className="text-sm font-medium mb-2">Form is Published</p>
+                <p className="text-xs text-gray-400 mb-4">This form is in read-only mode and cannot be edited</p>
+                <Button 
+                  onClick={onMoveToDraft}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Move to Draft
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -128,11 +140,22 @@ export const FormBuilder = ({
           <CardHeader>
             <div className="space-y-4">
               {isPublished && (
-                <div className="flex items-center gap-2 p-2 bg-blue-50 rounded-md">
-                  <Lock className="h-4 w-4 text-blue-600" />
-                  <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                    Published - Read Only
-                  </Badge>
+                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-md border border-blue-200">
+                  <div className="flex items-center gap-2">
+                    <Lock className="h-4 w-4 text-blue-600" />
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                      Published - Read Only
+                    </Badge>
+                  </div>
+                  <Button 
+                    onClick={onMoveToDraft}
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-2"
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    Move to Draft
+                  </Button>
                 </div>
               )}
               

@@ -314,20 +314,34 @@ const Index = () => {
     });
   };
 
-  const handleMoveToDraft = (form: Form) => {
-    const draftForm = { ...form, status: 'draft' as const, updatedAt: new Date() };
-    setSavedDrafts(prev => [...prev, draftForm]);
-    setPublishedForms(prev => prev.filter(published => published.id !== form.id));
-    
-    // If this is the current form, update its status
-    if (currentFormId === form.id) {
+  const handleMoveToDraft = (form?: Form) => {
+    if (form) {
+      // Moving from published tab
+      const draftForm = { ...form, status: 'draft' as const, updatedAt: new Date() };
+      setSavedDrafts(prev => [...prev, draftForm]);
+      setPublishedForms(prev => prev.filter(published => published.id !== form.id));
+      
+      toast({
+        title: "Moved to Draft",
+        description: `"${form.title}" has been moved to drafts.`,
+      });
+    } else {
+      // Moving current form to draft
       setToDraft();
+      if (currentFormId) {
+        const currentForm = publishedForms.find(f => f.id === currentFormId);
+        if (currentForm) {
+          const draftForm = { ...currentForm, status: 'draft' as const, updatedAt: new Date() };
+          setSavedDrafts(prev => [...prev, draftForm]);
+          setPublishedForms(prev => prev.filter(f => f.id !== currentFormId));
+        }
+      }
+      
+      toast({
+        title: "Moved to Draft",
+        description: "Current form has been moved to draft state and can now be edited.",
+      });
     }
-    
-    toast({
-      title: "Moved to Draft",
-      description: `"${form.title}" has been moved to drafts.`,
-    });
   };
 
   const handleDeleteDraft = (draftId: string) => {
@@ -549,14 +563,8 @@ const Index = () => {
                 <div className="flex items-center gap-3">
                   <Button onClick={saveForm} className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
-                    Save Form
+                    Save to Draft
                   </Button>
-                  {isDraft && (
-                    <Button onClick={() => handlePublishForm()} className="flex items-center gap-2">
-                      <Send className="h-4 w-4" />
-                      Publish Form
-                    </Button>
-                  )}
                   <Button variant="outline" className="flex items-center gap-2" onClick={() => setActiveBuildTab("settings")}>
                     <Settings className="h-4 w-4" />
                     Settings
@@ -583,6 +591,7 @@ const Index = () => {
                   onCategoryChange={setFormCategory}
                   onSaveToLibrary={handleSaveToLibrary}
                   isPublished={currentFormIsPublished()}
+                  onMoveToDraft={() => handleMoveToDraft()}
                 />
               </TabsContent>
 
