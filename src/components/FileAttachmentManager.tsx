@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Upload, FileText, Download, Eye } from "lucide-react";
+import { Trash2, Upload, FileText, Download, Eye, Lock } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface FileAttachmentManagerProps {
@@ -14,17 +14,32 @@ interface FileAttachmentManagerProps {
   onUpdateAttachments: (attachments: DocumentAttachment[]) => void;
   allowedTypes: string[];
   maxSize: number;
+  readOnly?: boolean;
 }
 
 export const FileAttachmentManager = ({
   attachments,
   onUpdateAttachments,
   allowedTypes,
-  maxSize
+  maxSize,
+  readOnly = false
 }: FileAttachmentManagerProps) => {
   const [uploading, setUploading] = useState(false);
 
+  const handleReadOnlyAction = () => {
+    toast({
+      title: "Form is Published",
+      description: "Move this form to draft state to make changes.",
+      variant: "destructive",
+    });
+  };
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (readOnly) {
+      handleReadOnlyAction();
+      return;
+    }
+
     const files = event.target.files;
     if (!files) return;
 
@@ -83,6 +98,11 @@ export const FileAttachmentManager = ({
   };
 
   const removeAttachment = (attachmentId: string) => {
+    if (readOnly) {
+      handleReadOnlyAction();
+      return;
+    }
+
     const attachment = attachments.find(a => a.id === attachmentId);
     if (attachment) {
       // Revoke object URL to free memory
@@ -117,27 +137,34 @@ export const FileAttachmentManager = ({
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
+          {readOnly && <Lock className="h-4 w-4" />}
           <FileText className="h-5 w-5" />
           File Attachments
+          {readOnly && <Badge variant="secondary" className="ml-auto">Read Only</Badge>}
         </CardTitle>
         <p className="text-sm text-gray-600">
-          Attach files that form users can download and view. 
-          Allowed types: {allowedTypes.join(', ')} | Max size: {maxSize}MB per file
+          {readOnly 
+            ? "View attached files. Move form to draft to make changes."
+            : `Attach files that form users can download and view. 
+               Allowed types: ${allowedTypes.join(', ')} | Max size: ${maxSize}MB per file`
+          }
         </p>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div>
-          <Label htmlFor="file-upload">Upload Files</Label>
-          <Input
-            id="file-upload"
-            type="file"
-            multiple
-            onChange={handleFileUpload}
-            disabled={uploading}
-            className="mt-1"
-            accept={allowedTypes.map(type => `.${type}`).join(',')}
-          />
-        </div>
+        {!readOnly && (
+          <div>
+            <Label htmlFor="file-upload">Upload Files</Label>
+            <Input
+              id="file-upload"
+              type="file"
+              multiple
+              onChange={handleFileUpload}
+              disabled={uploading}
+              className="mt-1"
+              accept={allowedTypes.map(type => `.${type}`).join(',')}
+            />
+          </div>
+        )}
 
         {attachments.length > 0 && (
           <div className="space-y-3">
@@ -166,14 +193,16 @@ export const FileAttachmentManager = ({
                   >
                     <Download className="h-4 w-4" />
                   </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => removeAttachment(attachment.id)}
-                    title="Remove file"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  {!readOnly && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => removeAttachment(attachment.id)}
+                      title="Remove file"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               </div>
             ))}
@@ -184,6 +213,13 @@ export const FileAttachmentManager = ({
           <div className="flex items-center gap-2 text-sm text-gray-600">
             <Upload className="h-4 w-4 animate-pulse" />
             Uploading files...
+          </div>
+        )}
+
+        {readOnly && attachments.length === 0 && (
+          <div className="text-center py-8 text-gray-500">
+            <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+            <p>No files attached to this form</p>
           </div>
         )}
       </CardContent>
