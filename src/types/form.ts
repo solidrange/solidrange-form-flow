@@ -1,3 +1,4 @@
+
 export interface FormField {
   id: string;
   type: string;
@@ -10,6 +11,19 @@ export interface FormField {
   validationRegex?: string;
   errorMessage?: string;
   weightage?: number;
+  scoring?: {
+    enabled: boolean;
+    maxPoints?: number;
+    weightMultiplier?: number;
+    correctAnswers?: string[];
+    scoringCriteria?: Record<string, number>;
+    requiresManualReview?: boolean;
+    riskLevel?: 'low' | 'medium' | 'high' | 'critical';
+  };
+  validation?: {
+    message?: string;
+    regex?: string;
+  };
 }
 
 export interface FormTemplate {
@@ -18,6 +32,9 @@ export interface FormTemplate {
   description: string;
   category: string;
   fields: FormField[];
+  preview?: string;
+  riskCategories?: string[];
+  scoringModel?: string;
 }
 
 export interface DocumentAttachment {
@@ -41,7 +58,12 @@ export interface SubmissionScore {
 export interface EmailRecipient {
   id: string;
   email: string;
-  name: string;
+  name?: string;
+  status: 'pending' | 'sent' | 'opened' | 'completed' | 'expired';
+  remindersSent: number;
+  sentAt?: Date;
+  completedAt?: Date;
+  lastReminderAt?: Date;
 }
 
 export interface FormSettings {
@@ -117,6 +139,9 @@ export interface ReviewActivity {
     followUpDate?: Date;
     requiredDocuments?: string[];
     specificFields?: string[];
+    rejectionReason?: string;
+    infoRequestType?: string;
+    customInstructions?: string;
   };
 }
 

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { FormTemplate } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,12 +19,12 @@ const formTemplates: FormTemplate[] = [
     category: "registration",
     preview: "Personal details, emergency contacts, documents",
     fields: [
-      { type: "text", label: "Full Name", required: true },
-      { type: "email", label: "Email Address", required: true },
-      { type: "text", label: "Phone Number", required: true },
-      { type: "date", label: "Start Date", required: true },
-      { type: "select", label: "Department", required: true, options: ["HR", "IT", "Finance", "Operations"] },
-      { type: "textarea", label: "Additional Notes", required: false }
+      { id: "1", type: "text", label: "Full Name", required: true },
+      { id: "2", type: "email", label: "Email Address", required: true },
+      { id: "3", type: "text", label: "Phone Number", required: true },
+      { id: "4", type: "date", label: "Start Date", required: true },
+      { id: "5", type: "select", label: "Department", required: true, options: ["HR", "IT", "Finance", "Operations"] },
+      { id: "6", type: "textarea", label: "Additional Notes", required: false }
     ]
   },
   {
@@ -33,10 +34,10 @@ const formTemplates: FormTemplate[] = [
     category: "survey",
     preview: "Rating scales, feedback questions, recommendations",
     fields: [
-      { type: "rating", label: "Overall Satisfaction", required: true },
-      { type: "radio", label: "Would you recommend us?", required: true, options: ["Yes", "No", "Maybe"] },
-      { type: "select", label: "How did you hear about us?", required: false, options: ["Social Media", "Website", "Referral", "Advertisement"] },
-      { type: "textarea", label: "Additional Comments", required: false }
+      { id: "1", type: "rating", label: "Overall Satisfaction", required: true },
+      { id: "2", type: "radio", label: "Would you recommend us?", required: true, options: ["Yes", "No", "Maybe"] },
+      { id: "3", type: "select", label: "How did you hear about us?", required: false, options: ["Social Media", "Website", "Referral", "Advertisement"] },
+      { id: "4", type: "textarea", label: "Additional Comments", required: false }
     ]
   },
 
@@ -51,11 +52,11 @@ const formTemplates: FormTemplate[] = [
     scoringModel: "weighted",
     fields: [
       // Company Information
-      { type: "text", label: "Vendor Company Name", required: true },
-      { type: "text", label: "Primary Contact Name", required: true },
-      { type: "email", label: "Primary Contact Email", required: true },
-      { type: "text", label: "Vendor Address", required: true },
-      { type: "select", label: "Company Size", required: true, 
+      { id: "1", type: "text", label: "Vendor Company Name", required: true },
+      { id: "2", type: "text", label: "Primary Contact Name", required: true },
+      { id: "3", type: "email", label: "Primary Contact Email", required: true },
+      { id: "4", type: "text", label: "Vendor Address", required: true },
+      { id: "5", type: "select", label: "Company Size", required: true, 
         options: ["< 50 employees", "50-200 employees", "200-1000 employees", "> 1000 employees"],
         scoring: { 
           enabled: true, 
@@ -66,7 +67,7 @@ const formTemplates: FormTemplate[] = [
       },
       
       // Financial Stability (25% weight)
-      { type: "select", label: "Annual Revenue", required: true, 
+      { id: "6", type: "select", label: "Annual Revenue", required: true, 
         options: ["< $1M", "$1M-$10M", "$10M-$50M", "$50M-$100M", "> $100M"],
         scoring: { 
           enabled: true, 
@@ -76,7 +77,7 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { type: "radio", label: "Financial Audited Statements Available?", required: true, 
+      { id: "7", type: "radio", label: "Financial Audited Statements Available?", required: true, 
         options: ["Yes - Current Year", "Yes - Prior Year Only", "No"],
         scoring: { 
           enabled: true, 
@@ -86,7 +87,7 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { type: "select", label: "Credit Rating", required: true, 
+      { id: "8", type: "select", label: "Credit Rating", required: true, 
         options: ["AAA/Aaa", "AA/Aa", "A", "BBB/Baa", "Below BBB", "Not Rated"],
         scoring: { 
           enabled: true, 
@@ -96,7 +97,7 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "critical"
         }
       },
-      { type: "radio", label: "Any bankruptcy or financial distress in last 5 years?", required: true, 
+      { id: "9", type: "radio", label: "Any bankruptcy or financial distress in last 5 years?", required: true, 
         options: ["No", "Yes"],
         scoring: { 
           enabled: true, 
@@ -108,7 +109,7 @@ const formTemplates: FormTemplate[] = [
       },
 
       // Security & Privacy (30% weight)
-      { type: "checkbox", label: "Security Certifications", required: true, 
+      { id: "10", type: "checkbox", label: "Security Certifications", required: true, 
         options: ["ISO 27001", "SOC 2 Type II", "ISO 22301", "NIST Cybersecurity Framework", "None"],
         scoring: { 
           enabled: true, 
@@ -118,7 +119,7 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "critical"
         }
       },
-      { type: "radio", label: "Data encryption at rest and in transit?", required: true, 
+      { id: "11", type: "radio", label: "Data encryption at rest and in transit?", required: true, 
         options: ["Yes - Both", "Yes - Transit Only", "Yes - Rest Only", "No"],
         scoring: { 
           enabled: true, 
@@ -128,7 +129,7 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "critical"
         }
       },
-      { type: "radio", label: "Regular penetration testing conducted?", required: true, 
+      { id: "12", type: "radio", label: "Regular penetration testing conducted?", required: true, 
         options: ["Quarterly", "Bi-annually", "Annually", "As needed", "Never"],
         scoring: { 
           enabled: true, 
@@ -138,7 +139,7 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { type: "radio", label: "Incident response plan in place?", required: true, 
+      { id: "13", type: "radio", label: "Incident response plan in place?", required: true, 
         options: ["Yes - Documented and Tested", "Yes - Documented Only", "Informal", "No"],
         scoring: { 
           enabled: true, 
@@ -148,7 +149,7 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { type: "radio", label: "Security incidents in last 12 months?", required: true, 
+      { id: "14", type: "radio", label: "Security incidents in last 12 months?", required: true, 
         options: ["None", "1-2 Minor", "3+ Minor", "1+ Major"],
         scoring: { 
           enabled: true, 
@@ -160,7 +161,7 @@ const formTemplates: FormTemplate[] = [
       },
 
       // Compliance (20% weight)
-      { type: "checkbox", label: "Regulatory Compliance", required: true, 
+      { id: "15", type: "checkbox", label: "Regulatory Compliance", required: true, 
         options: ["GDPR", "CCPA", "HIPAA", "SOX", "PCI DSS", "Not Applicable"],
         scoring: { 
           enabled: true, 
@@ -170,7 +171,7 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { type: "radio", label: "Regular compliance audits conducted?", required: true, 
+      { id: "16", type: "radio", label: "Regular compliance audits conducted?", required: true, 
         options: ["Quarterly", "Bi-annually", "Annually", "As required", "Never"],
         scoring: { 
           enabled: true, 
@@ -182,7 +183,7 @@ const formTemplates: FormTemplate[] = [
       },
 
       // Operational Risk (15% weight)
-      { type: "radio", label: "Business continuity plan exists?", required: true, 
+      { id: "17", type: "radio", label: "Business continuity plan exists?", required: true, 
         options: ["Yes - Tested regularly", "Yes - Not tested", "In development", "No"],
         scoring: { 
           enabled: true, 
@@ -192,7 +193,7 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { type: "select", label: "Service availability SLA", required: true, 
+      { id: "18", type: "select", label: "Service availability SLA", required: true, 
         options: ["99.9%+", "99.5-99.9%", "99-99.5%", "95-99%", "< 95%", "No SLA"],
         scoring: { 
           enabled: true, 
@@ -202,7 +203,7 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "medium"
         }
       },
-      { type: "radio", label: "Geographic location of primary operations", required: true, 
+      { id: "19", type: "radio", label: "Geographic location of primary operations", required: true, 
         options: ["Domestic", "Allied countries", "Non-allied countries", "Restricted countries"],
         scoring: { 
           enabled: true, 
@@ -214,7 +215,7 @@ const formTemplates: FormTemplate[] = [
       },
 
       // Additional Risk Factors
-      { type: "radio", label: "Key person dependency risk", required: true, 
+      { id: "20", type: "radio", label: "Key person dependency risk", required: true, 
         options: ["Low", "Medium", "High"],
         scoring: { 
           enabled: true, 
@@ -223,7 +224,7 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "medium"
         }
       },
-      { type: "textarea", label: "Additional Risk Considerations", required: false,
+      { id: "21", type: "textarea", label: "Additional Risk Considerations", required: false,
         scoring: { 
           enabled: true, 
           requiresManualReview: true,
