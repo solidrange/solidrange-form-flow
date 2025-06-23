@@ -69,8 +69,8 @@ export default function Index() {
    * Updates the form in the forms list and closes the settings panel
    * @param updatedSettings - The updated form object with new settings
    */
-  const handleSettingsUpdate = (updatedSettings: Form) => {
-    setForms(forms.map(form => form.id === updatedSettings.id ? updatedSettings : form));
+  const handleSettingsUpdate = (updatedForm: Form) => {
+    setForms(forms.map(form => form.id === updatedForm.id ? updatedForm : form));
     setFormSettings(null);
   };
 
