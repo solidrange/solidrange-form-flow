@@ -1,141 +1,989 @@
 
-import { useState, useEffect } from 'react';
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import { Form } from '@/types/form';
-import { mockForms } from '@/data/mock-data';
-import { FormTable } from '@/components/FormTable';
-import { FormDetails } from '@/components/FormDetails';
-import { SettingsPanel } from '@/components/SettingsPanel';
-import { ReportGeneration } from '@/components/ReportGeneration';
+import { useState } from "react";
+import { FormBuilder } from "@/components/FormBuilder";
+import { FormPreview } from "@/components/FormPreview";
+import { FormLibrary } from "@/components/FormLibrary";
+import { FormInvitations } from "@/components/FormInvitations";
+import { Analytics } from "@/components/Analytics";
+import { ScoringSettings } from "@/components/ScoringSettings";
+import { WeightageEditor } from "@/components/WeightageEditor";
+import { SettingsPanel } from "@/components/SettingsPanel";
+import { SubmissionReview } from "@/components/SubmissionReview";
+import { ReportGeneration } from "@/components/ReportGeneration";
+import { useFormStatus } from "@/hooks/useFormStatus";
+import { 
+  Settings, 
+  BarChart3, 
+  Library, 
+  Plus, 
+  Save, 
+  Target, 
+  Scale, 
+  Mail, 
+  FileCheck, 
+  Eye,
+  FileText,
+  Wrench,
+  BookOpen,
+  ClipboardList,
+  Send,
+  ExternalLink,
+  Code,
+  Globe,
+  Trash2,
+  Edit,
+  ArrowLeft
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { FormField, FormTemplate, Form, EmailRecipient, DocumentAttachment } from "@/types/form";
+import { toast } from "@/hooks/use-toast";
+import { sampleSubmissions } from "@/data/sampleSubmissions";
 
 /**
- * Main Index page component that manages the form management application
- * Handles form listing, selection, settings, and navigation between different tabs
+ * Main Index Component
+ * Manages the entire form builder application state and navigation
+ * Handles form creation, editing, publishing, and submission review
  */
-export default function Index() {
-  // State for managing forms data
-  const [forms, setForms] = useState<Form[]>([]);
+const Index = () => {
+  // Tab navigation state
+  const [activeTab, setActiveTab] = useState("build-form");
+  const [activeBuildTab, setActiveBuildTab] = useState("builder");
   
-  // State for tracking selected form for details view
-  const [selectedFormId, setSelectedFormId] = useState<string | null>(null);
+  // Form state management
+  const [formFields, setFormFields] = useState<FormField[]>([]);
+  const [formTitle, setFormTitle] = useState("Untitled Form");
+  const [formDescription, setFormDescription] = useState("");
+  const [formAttachments, setFormAttachments] = useState<DocumentAttachment[]>([]);
+  const [formCategory, setFormCategory] = useState<string>("");
+  const [savedDrafts, setSavedDrafts] = useState<Form[]>([]);
+  const [publishedForms, setPublishedForms] = useState<Form[]>([]);
+  const [currentFormId, setCurrentFormId] = useState<string | null>(null);
   
-  // State for controlling form details modal/panel visibility
-  const [isFormDetailsOpen, setIsFormDetailsOpen] = useState(false);
+  // Form status hook for managing published/draft state
+  const { status, isPublished, isDraft, publishForm, setToDraft } = useFormStatus();
   
-  // State for managing form settings - stores the form being configured
-  const [formSettings, setFormSettings] = useState<Form | null>(null);
+  // Form settings with comprehensive defaults
+  const [formSettings, setFormSettings] = useState<Form['settings']>({
+    allowMultipleSubmissions: false,
+    requireLogin: false,
+    showProgressBar: true,
+    theme: 'light',
+    scoring: {
+      enabled: false,
+      maxTotalPoints: 100,
+      showScoreToUser: false,
+      passingScore: 70,
+      riskThresholds: {
+        low: 80,
+        medium: 60,
+        high: 40
+      }
+    },
+    expiration: {
+      enabled: false
+    },
+    emailDistribution: {
+      enabled: false,
+      recipients: [],
+      reminderEnabled: true,
+      reminderIntervalDays: 7,
+      maxReminders: 3
+    },
+    approval: {
+      enabled: false,
+      requireApproval: false,
+      approvers: []
+    },
+    documents: {
+      enabled: false,
+      allowedTypes: ['pdf', 'doc', 'docx'],
+      maxSize: 10,
+      requiredDocuments: [],
+      allowUserUploads: true
+    }
+  });
 
-  // Effect to load initial forms data (simulates API call)
-  useEffect(() => {
-    // Simulate fetching forms from an API
-    setForms(mockForms);
-  }, []);
+  // Sample submissions for testing
+  const [submissions] = useState(sampleSubmissions);
 
   /**
-   * Handler for when a form is selected from the forms table
-   * Opens the form details view for the selected form
-   * @param formId - ID of the selected form
+   * Add a new field to the current form
    */
-  const handleFormSelect = (formId: string) => {
-    setSelectedFormId(formId);
-    setIsFormDetailsOpen(true);
+  const addField = (field: FormField) => {
+    setFormFields([...formFields, { ...field, id: Date.now().toString() }]);
   };
 
   /**
-   * Handler for closing the form details view
-   * Clears the selected form and closes the details panel
+   * Update an existing field in the form
    */
-  const handleFormClose = () => {
-    setIsFormDetailsOpen(false);
-    setSelectedFormId(null);
+  const updateField = (fieldId: string, updates: Partial<FormField>) => {
+    setFormFields(fields => 
+      fields.map(field => 
+        field.id === fieldId ? { ...field, ...updates } : field
+      )
+    );
   };
 
   /**
-   * Handler for when settings button is clicked for a form
-   * Opens the settings panel for the specified form
-   * @param form - The form object to configure settings for
+   * Remove a field from the form
    */
-  const handleSettingsClick = (form: Form) => {
-    setFormSettings(form);
+  const removeField = (fieldId: string) => {
+    setFormFields(fields => fields.filter(field => field.id !== fieldId));
   };
 
   /**
-   * Handler for updating form settings
-   * Updates the form in the forms list and closes the settings panel
-   * @param updatedSettings - The updated form object with new settings
+   * Reorder fields in the form using drag and drop
    */
-  const handleSettingsUpdate = (updatedForm: Form) => {
-    setForms(forms.map(form => form.id === updatedForm.id ? updatedForm : form));
-    setFormSettings(null);
+  const reorderFields = (dragIndex: number, hoverIndex: number) => {
+    const draggedField = formFields[dragIndex];
+    const newFields = [...formFields];
+    newFields.splice(dragIndex, 1);
+    newFields.splice(hoverIndex, 0, draggedField);
+    setFormFields(newFields);
   };
 
-  // Find the currently selected form object
-  const selectedForm = forms.find(form => form.id === selectedFormId);
+  /**
+   * Update form settings with partial updates
+   */
+  const updateFormSettings = (updates: Partial<Form['settings']>) => {
+    setFormSettings(prev => ({ ...prev, ...updates }));
+  };
+
+  /**
+   * Create a new blank form and reset all state
+   */
+  const createNewForm = () => {
+    setFormFields([]);
+    setFormTitle("Untitled Form");
+    setFormDescription("");
+    setFormCategory("");
+    setFormAttachments([]);
+    setCurrentFormId(null);
+    setToDraft();
+    setActiveBuildTab("builder");
+    toast({
+      title: "New Form Created",
+      description: "Started with a blank form.",
+    });
+  };
+
+  /**
+   * Load an existing form for editing
+   */
+  const loadForm = (form: Form) => {
+    setFormFields(form.fields);
+    setFormTitle(form.title);
+    setFormDescription(form.description);
+    setFormSettings(form.settings);
+    setCurrentFormId(form.id);
+    
+    // Set appropriate form status
+    if (form.status === 'published') {
+      publishForm();
+    } else {
+      setToDraft();
+    }
+    
+    setActiveBuildTab("builder");
+    toast({
+      title: "Form Loaded",
+      description: `"${form.title}" has been loaded for editing.`,
+    });
+  };
+
+  /**
+   * Save the current form as a draft
+   */
+  const saveForm = () => {
+    if (!formTitle.trim()) {
+      toast({
+        title: "Title Required",
+        description: "Please add a title before saving the form.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const formData: Form = {
+      id: currentFormId || Date.now().toString(),
+      title: formTitle,
+      description: formDescription,
+      fields: formFields,
+      settings: formSettings,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      status: 'draft', // Always save as draft
+      submissions: 0,
+      analytics: {
+        views: 0,
+        submissions: 0,
+        completionRate: 0,
+        emailsSent: 0,
+        emailsCompleted: 0,
+        averageCompletionTime: 0,
+        dropoffRate: 0
+      }
+    };
+
+    if (currentFormId) {
+      // Update existing draft
+      setSavedDrafts(prev => prev.map(draft => 
+        draft.id === currentFormId ? formData : draft
+      ));
+    } else {
+      // Create new draft
+      setSavedDrafts(prev => [...prev, formData]);
+      setCurrentFormId(formData.id);
+    }
+    
+    setToDraft(); // Ensure we're in draft mode
+    
+    toast({
+      title: "Draft Saved",
+      description: "Your form has been saved as a draft.",
+    });
+  };
+
+  /**
+   * Publish a form from drafts
+   */
+  const handlePublishForm = (formToPublish?: Form) => {
+    const titleToCheck = formToPublish?.title || formTitle;
+    const fieldsToCheck = formToPublish?.fields || formFields;
+
+    if (!titleToCheck.trim()) {
+      toast({
+        title: "Title Required",
+        description: "Please add a title before publishing the form.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (fieldsToCheck.length === 0) {
+      toast({
+        title: "Fields Required",
+        description: "Please add at least one field before publishing the form.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (formToPublish) {
+      // Publishing from drafts tab
+      const publishedForm = { 
+        ...formToPublish, 
+        status: 'published' as const, 
+        updatedAt: new Date() 
+      };
+      setPublishedForms(prev => [...prev, publishedForm]);
+      setSavedDrafts(prev => prev.filter(draft => draft.id !== formToPublish.id));
+    } else {
+      // Publishing current form
+      publishForm();
+      const formData: Form = {
+        id: currentFormId || Date.now().toString(),
+        title: formTitle,
+        description: formDescription,
+        fields: formFields,
+        settings: formSettings,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        status: 'published',
+        submissions: 0,
+        analytics: {
+          views: 0,
+          submissions: 0,
+          completionRate: 0,
+          emailsSent: 0,
+          emailsCompleted: 0,
+          averageCompletionTime: 0,
+          dropoffRate: 0
+        }
+      };
+      
+      if (currentFormId) {
+        // Remove from drafts if it was there and add to published
+        setSavedDrafts(prev => prev.filter(draft => draft.id !== currentFormId));
+        setPublishedForms(prev => [...prev.filter(form => form.id !== currentFormId), formData]);
+      } else {
+        setPublishedForms(prev => [...prev, formData]);
+        setCurrentFormId(formData.id);
+      }
+    }
+    
+    toast({
+      title: "Form Published",
+      description: "Your form has been published successfully and is now available for invitations.",
+    });
+  };
+
+  /**
+   * Move a published form back to draft status
+   */
+  const handleMoveToDraft = (form?: Form) => {
+    if (form) {
+      // Moving from published tab
+      const draftForm = { ...form, status: 'draft' as const, updatedAt: new Date() };
+      setSavedDrafts(prev => [...prev, draftForm]);
+      setPublishedForms(prev => prev.filter(published => published.id !== form.id));
+      
+      toast({
+        title: "Moved to Draft",
+        description: `"${form.title}" has been moved to drafts.`,
+      });
+    } else {
+      // Moving current form to draft
+      setToDraft();
+      if (currentFormId) {
+        const currentForm = publishedForms.find(f => f.id === currentFormId);
+        if (currentForm) {
+          const draftForm = { ...currentForm, status: 'draft' as const, updatedAt: new Date() };
+          setSavedDrafts(prev => [...prev, draftForm]);
+          setPublishedForms(prev => prev.filter(f => f.id !== currentFormId));
+        }
+      }
+      
+      toast({
+        title: "Moved to Draft",
+        description: "Current form has been moved to draft state and can now be edited.",
+      });
+    }
+  };
+
+  /**
+   * Delete a draft form
+   */
+  const handleDeleteDraft = (draftId: string) => {
+    setSavedDrafts(prev => prev.filter(draft => draft.id !== draftId));
+    
+    // If this is the current form, create a new one
+    if (currentFormId === draftId) {
+      createNewForm();
+    }
+    
+    toast({
+      title: "Draft Deleted",
+      description: "The draft form has been deleted.",
+    });
+  };
+
+  /**
+   * Delete a published form
+   */
+  const handleDeletePublished = (formId: string) => {
+    setPublishedForms(prev => prev.filter(form => form.id !== formId));
+    
+    // If this is the current form, create a new one
+    if (currentFormId === formId) {
+      createNewForm();
+    }
+    
+    toast({
+      title: "Published Form Deleted",
+      description: "The published form has been deleted.",
+    });
+  };
+
+  /**
+   * Update a published form (used for invitations)
+   */
+  const updatePublishedForm = (formId: string, updates: Partial<Form>) => {
+    setPublishedForms(prev => prev.map(form => 
+      form.id === formId ? { ...form, ...updates, updatedAt: new Date() } : form
+    ));
+  };
+
+  /**
+   * Save form template to library
+   */
+  const handleSaveToLibrary = () => {
+    console.log("Saving form to library with category:", formCategory);
+    // Implementation for saving to library would go here
+  };
+
+  /**
+   * Apply a template to the current form
+   */
+  const useTemplate = (template: FormTemplate) => {
+    setFormTitle(template.name);
+    setFormDescription(template.description);
+    setFormCategory(template.category);
+    const fieldsWithIds = template.fields.map(field => ({
+      ...field,
+      id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
+    }));
+    setFormFields(fieldsWithIds);
+    
+    // Enable scoring for vendor risk templates
+    if (template.category === 'vendor-risk') {
+      setFormSettings(prev => ({
+        ...prev,
+        scoring: {
+          ...prev.scoring!,
+          enabled: true,
+          riskThresholds: {
+            low: 80,
+            medium: 60,
+            high: 40
+          }
+        }
+      }));
+    }
+    
+    setActiveBuildTab("builder");
+    toast({
+      title: "Template Applied",
+      description: `${template.name} template has been applied to your form.`,
+    });
+  };
+
+  /**
+   * Generate URLs and embed codes for sharing
+   */
+  const generateFormUrl = (formId: string) => {
+    return `${window.location.origin}/form/${formId}`;
+  };
+
+  const generateEmbedCode = (formId: string) => {
+    const formUrl = generateFormUrl(formId);
+    return `<iframe src="${formUrl}" width="100%" height="600" frameborder="0"></iframe>`;
+  };
+
+  const handleCopyToClipboard = (text: string, type: string) => {
+    navigator.clipboard.writeText(text);
+    toast({
+      title: "Copied!",
+      description: `${type} copied to clipboard.`,
+    });
+  };
+
+  /**
+   * Check if current form is published
+   */
+  const currentFormIsPublished = () => {
+    if (currentFormId) {
+      const publishedForm = publishedForms.find(form => form.id === currentFormId);
+      return !!publishedForm;
+    }
+    return isPublished;
+  };
+
+  /**
+   * Get current form data for invitations
+   */
+  const getCurrentForm = (): Form | null => {
+    if (currentFormId) {
+      return publishedForms.find(form => form.id === currentFormId) || null;
+    }
+    return null;
+  };
+
+  // Create tabs array for build section (removed email tab from here)
+  const buildTabs = [
+    { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" /> },
+    { id: "library", label: "Library", icon: <Library className="h-4 w-4" /> },
+    { id: "scoring", label: "Scoring", icon: <Target className="h-4 w-4" /> },
+    { id: "weightage", label: "Weightage", icon: <Scale className="h-4 w-4" /> },
+    { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" /> },
+    { id: "drafts", label: "Drafts", icon: <FileText className="h-4 w-4" /> },
+    { id: "published", label: "Published", icon: <BookOpen className="h-4 w-4" /> },
+    // Add invitations tab only for published forms
+    ...(currentFormIsPublished() ? [{ id: "invitations", label: "Invitations", icon: <Mail className="h-4 w-4" /> }] : [])
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Main header section */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Form Management
-          </h1>
+      {/* Header */}
+      <div className="bg-white border-b shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">SF</span>
+              </div>
+              <h1 className="text-xl font-semibold text-gray-900">Solidrange Form Builder</h1>
+            </div>
+            
+            {/* Form Status and Actions */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-gray-600">Current Form:</span>
+                <Badge 
+                  variant={isDraft ? "secondary" : "default"}
+                  className={isDraft ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}
+                >
+                  {isDraft ? "Draft" : "Published"}
+                </Badge>
+              </div>
+              
+              <Button onClick={createNewForm} variant="outline" size="sm">
+                <Plus className="h-4 w-4 mr-1" />
+                New Form
+              </Button>
+              
+              {/* Quick Share Button for Published Forms */}
+              {currentFormIsPublished() && (
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                      <Globe className="h-4 w-4" />
+                      Share Form
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="max-w-2xl">
+                    <DialogHeader>
+                      <DialogTitle>Share Published Form</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Form URL</label>
+                        <div className="flex gap-2 mt-1">
+                          <Input 
+                            value={generateFormUrl(currentFormId || 'current-form')} 
+                            readOnly 
+                            className="flex-1"
+                          />
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleCopyToClipboard(generateFormUrl(currentFormId || 'current-form'), 'Form URL')}
+                          >
+                            <ExternalLink className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <label className="text-sm font-medium text-gray-700">Embed Code</label>
+                        <div className="flex gap-2 mt-1">
+                          <textarea 
+                            value={generateEmbedCode(currentFormId || 'current-form')} 
+                            readOnly 
+                            className="flex-1 min-h-[100px] p-2 border border-gray-300 rounded-md resize-none text-sm font-mono"
+                          />
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleCopyToClipboard(generateEmbedCode(currentFormId || 'current-form'), 'Embed code')}
+                          >
+                            <Code className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
+            </div>
+          </div>
         </div>
-      </header>
-      
-      {/* Main content area */}
-      <main>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Tab navigation and content */}
-          <Tabs defaultValue="forms" className="w-full">
-            {/* Tab navigation buttons */}
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="forms">Forms</TabsTrigger>
-              <TabsTrigger value="details" disabled={!selectedFormId}>Details</TabsTrigger>
-              <TabsTrigger value="reports">Reports</TabsTrigger>
-              <TabsTrigger value="settings" disabled={!formSettings}>Settings</TabsTrigger>
-            </TabsList>
-            
-            {/* Forms list tab - displays all forms in a table */}
-            <TabsContent value="forms" className="space-y-6">
-              <FormTable 
-                forms={forms} 
-                onFormSelect={handleFormSelect} 
-                onSettingsClick={handleSettingsClick} 
-              />
-            </TabsContent>
-            
-            {/* Form details tab - shows detailed view of selected form */}
-            <TabsContent value="details" className="space-y-6">
-              {selectedForm && (
-                <FormDetails form={selectedForm} onClose={handleFormClose} />
-              )}
-            </TabsContent>
-            
-            {/* Reports tab - generates reports for selected form submissions */}
-            <TabsContent value="reports" className="space-y-6">
-              {selectedForm && selectedForm.submissions && (
-                <ReportGeneration submissions={selectedForm.submissions} />
-              )}
-            </TabsContent>
-            
-            {/* Settings tab - configure form settings */}
-            <TabsContent value="settings" className="space-y-6">
-              {formSettings && (
-                <SettingsPanel 
-                  form={formSettings}
-                  onUpdate={handleSettingsUpdate}
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="build-form" className="flex items-center gap-2">
+              <Wrench className="h-4 w-4" />
+              Build Form
+            </TabsTrigger>
+            <TabsTrigger value="review-submissions" className="flex items-center gap-2">
+              <ClipboardList className="h-4 w-4" />
+              Review Submissions
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Build Form Section */}
+          <TabsContent value="build-form" className="mt-6">
+            <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-4">
+                  <TabsList className="grid w-auto" style={{ gridTemplateColumns: `repeat(${buildTabs.length}, minmax(0, 1fr))` }}>
+                    {buildTabs.map((tab) => (
+                      <TabsTrigger key={tab.id} value={tab.id} className="flex items-center gap-2">
+                        {tab.icon}
+                        {tab.label}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="flex items-center gap-3">
+                  <Button onClick={saveForm} className="flex items-center gap-2">
+                    <Save className="h-4 w-4" />
+                    Save to Draft
+                  </Button>
+                  <Button variant="outline" className="flex items-center gap-2" onClick={() => setActiveBuildTab("settings")}>
+                    <Settings className="h-4 w-4" />
+                    Settings
+                  </Button>
+                </div>
+              </div>
+
+              {/* Form Builder Tab */}
+              <TabsContent value="builder" className="mt-4">
+                <FormBuilder
+                  formFields={formFields}
+                  formTitle={formTitle}
+                  formDescription={formDescription}
+                  onAddField={addField}
+                  onUpdateField={updateField}
+                  onRemoveField={removeField}
+                  onUpdateTitle={setFormTitle}
+                  onUpdateDescription={setFormDescription}
+                  onReorderFields={reorderFields}
+                  attachments={formAttachments}
+                  onUpdateAttachments={setFormAttachments}
+                  allowedFileTypes={formSettings.documents?.allowedTypes || ['pdf', 'doc', 'docx']}
+                  maxFileSize={formSettings.documents?.maxSize || 10}
+                  formCategory={formCategory}
+                  onCategoryChange={setFormCategory}
+                  onSaveToLibrary={handleSaveToLibrary}
+                  isPublished={currentFormIsPublished()}
+                  onMoveToDraft={() => handleMoveToDraft()}
                 />
+              </TabsContent>
+
+              {/* Template Library Tab */}
+              <TabsContent value="library" className="mt-4">
+                <FormLibrary onUseTemplate={useTemplate} />
+              </TabsContent>
+
+              {/* Form Invitations Tab (Only for Published Forms) */}
+              {currentFormIsPublished() && (
+                <TabsContent value="invitations" className="mt-4">
+                  {getCurrentForm() ? (
+                    <FormInvitations
+                      form={getCurrentForm()!}
+                      onUpdateForm={(updates) => updatePublishedForm(getCurrentForm()!.id, updates)}
+                    />
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <Mail className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <p>No published form selected</p>
+                    </div>
+                  )}
+                </TabsContent>
               )}
-            </TabsContent>
-          </Tabs>
-        </div>
-      </main>
+
+              {/* Scoring Settings Tab */}
+              <TabsContent value="scoring" className="mt-4">
+                <ScoringSettings
+                  formSettings={formSettings}
+                  onUpdateSettings={updateFormSettings}
+                />
+              </TabsContent>
+
+              {/* Weightage Editor Tab */}
+              <TabsContent value="weightage" className="mt-4">
+                <WeightageEditor
+                  fields={formFields}
+                  onUpdateField={updateField}
+                />
+              </TabsContent>
+
+              {/* Form Preview Tab */}
+              <TabsContent value="preview" className="mt-4">
+                <FormPreview
+                  formTitle={formTitle}
+                  formDescription={formDescription}
+                  formFields={formFields}
+                  formSettings={formSettings}
+                  attachments={formAttachments}
+                />
+              </TabsContent>
+
+              {/* Drafts Tab */}
+              <TabsContent value="drafts" className="mt-4">
+                {savedDrafts.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <p>No draft forms available</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {savedDrafts.map((draft) => (
+                      <Card key={draft.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-medium text-lg">{draft.title}</h3>
+                              <p className="text-sm text-gray-600 mt-1">{draft.description || "No description"}</p>
+                              <div className="flex items-center gap-4 mt-2">
+                                <p className="text-xs text-gray-500">
+                                  Created: {draft.createdAt.toLocaleDateString()}
+                                </p>
+                                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                                  Draft
+                                </Badge>
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => loadForm(draft)}
+                              >
+                                <Edit className="h-4 w-4 mr-1" />
+                                Load
+                              </Button>
+                              <Button 
+                                size="sm"
+                                onClick={() => handlePublishForm(draft)}
+                              >
+                                <Send className="h-4 w-4 mr-1" />
+                                Publish
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button size="sm" variant="destructive">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Delete Draft</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Are you sure you want to delete "{draft.title}"? This action cannot be undone.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => handleDeleteDraft(draft.id)}
+                                      className="bg-red-600 hover:bg-red-700"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* Published Forms Tab */}
+              <TabsContent value="published" className="mt-4">
+                {publishedForms.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <BookOpen className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <p>No published forms available</p>
+                    <p className="text-sm mt-2">Publish your first form to see it here</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {publishedForms.map((form) => (
+                      <Card key={form.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <h3 className="font-medium text-lg">{form.title}</h3>
+                              <p className="text-sm text-gray-600 mt-1">{form.description || "No description"}</p>
+                              <div className="flex items-center gap-4 mt-2">
+                                <p className="text-xs text-gray-500">
+                                  Published: {form.createdAt.toLocaleDateString()}
+                                </p>
+                                <Badge variant="default" className="bg-green-100 text-green-800">
+                                  Published
+                                </Badge>
+                                <p className="text-xs text-gray-500">
+                                  {form.submissions} submissions
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => loadForm(form)}
+                              >
+                                <Edit className="h-4 w-4 mr-1" />
+                                Load
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => {
+                                  loadForm(form);
+                                  setActiveBuildTab("invitations");
+                                }}
+                              >
+                                <Mail className="h-4 w-4 mr-1" />
+                                Invitations
+                              </Button>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button size="sm" variant="outline">
+                                    <Globe className="h-4 w-4 mr-1" />
+                                    Share
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent>
+                                  <DialogHeader>
+                                    <DialogTitle>Share Form: {form.title}</DialogTitle>
+                                  </DialogHeader>
+                                  <div className="space-y-4">
+                                    <div>
+                                      <label className="text-sm font-medium">Form URL</label>
+                                      <div className="flex gap-2 mt-1">
+                                        <Input value={generateFormUrl(form.id)} readOnly />
+                                        <Button 
+                                          size="sm" 
+                                          variant="outline"
+                                          onClick={() => handleCopyToClipboard(generateFormUrl(form.id), 'Form URL')}
+                                        >
+                                          Copy
+                                        </Button>
+                                      </div>
+                                    </div>
+                                    <div>
+                                      <label className="text-sm font-medium">Embed Code</label>
+                                      <div className="flex gap-2 mt-1">
+                                        <textarea 
+                                          value={generateEmbedCode(form.id)} 
+                                          readOnly 
+                                          className="flex-1 min-h-[80px] p-2 border rounded text-sm font-mono"
+                                        />
+                                        <Button 
+                                          size="sm" 
+                                          variant="outline"
+                                          onClick={() => handleCopyToClipboard(generateEmbedCode(form.id), 'Embed code')}
+                                        >
+                                          Copy
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => handleMoveToDraft(form)}
+                              >
+                                <ArrowLeft className="h-4 w-4 mr-1" />
+                                To Draft
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button size="sm" variant="destructive">
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Delete Published Form</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Are you sure you want to delete "{form.title}"? This will remove the form and all its data permanently.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => handleDeletePublished(form.id)}
+                                      className="bg-red-600 hover:bg-red-700"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              {/* Settings Tab */}
+              <TabsContent value="settings" className="mt-4">
+                <SettingsPanel
+                  formSettings={formSettings}
+                  onUpdateSettings={updateFormSettings}
+                />
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+
+          {/* Review Submissions Section */}
+          <TabsContent value="review-submissions" className="mt-6">
+            <Tabs defaultValue="submissions" className="w-full">
+              <TabsList className="grid w-auto grid-cols-3">
+                <TabsTrigger value="submissions" className="flex items-center gap-2">
+                  <FileCheck className="h-4 w-4" />
+                  Submissions
+                </TabsTrigger>
+                <TabsTrigger value="analytics" className="flex items-center gap-2">
+                  <BarChart3 className="h-4 w-4" />
+                  Analytics
+                </TabsTrigger>
+                <TabsTrigger value="reports" className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" />
+                  Report Generation
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="submissions" className="mt-4">
+                <SubmissionReview
+                  submissions={submissions}
+                  form={{
+                    id: currentFormId || 'current-form',
+                    title: formTitle,
+                    description: formDescription,
+                    fields: formFields,
+                    settings: formSettings,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    status: status,
+                    submissions: submissions.length,
+                    analytics: {
+                      views: 0,
+                      submissions: submissions.length,
+                      completionRate: 0,
+                      emailsSent: 0,
+                      emailsCompleted: 0,
+                      averageCompletionTime: 0,
+                      dropoffRate: 0
+                    }
+                  }}
+                  onUpdateSubmission={(submissionId, updates) => {
+                    console.log('Updating submission:', submissionId, updates);
+                    toast({
+                      title: "Submission Updated",
+                      description: "The submission has been updated successfully.",
+                    });
+                  }}
+                />
+              </TabsContent>
+
+              <TabsContent value="analytics" className="mt-4">
+                <Analytics />
+              </TabsContent>
+
+              <TabsContent value="reports" className="mt-4">
+                <ReportGeneration submissions={submissions} />
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
-}
+};
+
+export default Index;

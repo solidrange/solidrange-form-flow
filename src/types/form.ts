@@ -153,11 +153,30 @@ export interface FormSettings {
 }
 
 /**
- * Represents vendor information for a submission
+ * Represents a complete form with all its configuration
  */
-export interface VendorInfo {
-  isVendor: boolean;
-  companyName: string;
+export interface Form {
+  id: string;
+  title: string;
+  description: string;
+  fields: FormField[];
+  settings: FormSettings;
+  createdAt: Date;
+  updatedAt: Date;
+  status: 'draft' | 'published';
+  submissions: number;
+  /**
+   * Analytics data for the form
+   */
+  analytics: {
+    views: number;
+    submissions: number;
+    completionRate: number;
+    emailsSent: number;
+    emailsCompleted: number;
+    averageCompletionTime: number;
+    dropoffRate: number;
+  };
 }
 
 /**
@@ -192,60 +211,18 @@ export interface FormSubmission {
   formId: string;
   responses: Record<string, any>;
   submittedAt: Date;
+  submittedBy: string;
+  status: 'submitted' | 'under_review' | 'approved' | 'rejected';
+  score?: SubmissionScore;
+  activityLog: ReviewActivity[];
+  // Submitter information
   submitterEmail: string;
   submitterName: string;
-  /**
-   * Submission type - vendor or internal
-   */
-  submissionType: 'vendor' | 'internal';
-  /**
-   * Company name for vendor submissions
-   */
   companyName?: string;
-  /**
-   * Vendor information for the submission
-   */
-  vendorInfo: VendorInfo;
-  status: 'submitted' | 'under_review' | 'approved' | 'rejected' | 'pending';
-  /**
-   * Score object with detailed scoring information
-   */
-  score?: SubmissionScore;
-  /**
-   * Activity log for tracking review activities
-   */
-  activityLog?: ReviewActivity[];
+  recipientId?: string;
+  // Form type classification
+  submissionType: 'vendor' | 'internal';
   // Additional tracking fields
   completionPercentage?: number;
   timeSpent?: number;
-}
-
-/**
- * Represents a complete form with all its configuration
- */
-export interface Form {
-  id: string;
-  title: string;
-  description: string;
-  fields: FormField[];
-  settings: FormSettings;
-  createdAt: Date;
-  updatedAt: Date;
-  status: 'draft' | 'published';
-  /**
-   * Array of form submissions
-   */
-  submissions: FormSubmission[];
-  /**
-   * Analytics data for the form
-   */
-  analytics?: {
-    views: number;
-    submissions: number;
-    completionRate: number;
-    emailsSent: number;
-    emailsCompleted: number;
-    averageCompletionTime: number;
-    dropoffRate: number;
-  };
 }
