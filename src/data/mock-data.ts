@@ -85,6 +85,7 @@ export const mockForms: Form[] = [
         submittedAt: new Date('2024-01-21'),
         submitterEmail: 'john.doe@company.com',
         submitterName: 'John Doe',
+        submissionType: 'internal',
         vendorInfo: {
           isVendor: false,
           companyName: 'Internal'
@@ -95,7 +96,15 @@ export const mockForms: Form[] = [
           'field-003': 'Engineering'
         },
         status: 'pending',
-        score: 85
+        score: {
+          total: 85,
+          maxTotal: 100,
+          percentage: 85,
+          riskLevel: 'low',
+          reviewedBy: 'System',
+          reviewedAt: new Date('2024-01-21'),
+          reviewComments: 'Automated scoring'
+        }
       }
     ]
   },
@@ -178,6 +187,8 @@ export const mockForms: Form[] = [
         submittedAt: new Date('2024-01-19'),
         submitterEmail: 'contact@vendorcompany.com',
         submitterName: 'Vendor Company Inc.',
+        submissionType: 'vendor',
+        companyName: 'Vendor Company Inc.',
         vendorInfo: {
           isVendor: true,
           companyName: 'Vendor Company Inc.'
@@ -187,7 +198,15 @@ export const mockForms: Form[] = [
           'field-005': 'contact@vendorcompany.com'
         },
         status: 'approved',
-        score: 92
+        score: {
+          total: 92,
+          maxTotal: 100,
+          percentage: 92,
+          riskLevel: 'low',
+          reviewedBy: 'Manager',
+          reviewedAt: new Date('2024-01-19'),
+          reviewComments: 'Excellent vendor credentials'
+        }
       }
     ]
   },
