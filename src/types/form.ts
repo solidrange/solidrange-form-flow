@@ -49,10 +49,11 @@ export interface DocumentAttachment {
 export interface SubmissionScore {
   total: number;
   maxTotal: number;
-  riskLevel: 'low' | 'medium' | 'high';
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
   reviewedBy: string;
   reviewedAt: Date;
   reviewComments: string;
+  percentage: number;
 }
 
 export interface EmailRecipient {
@@ -75,6 +76,7 @@ export interface FormSettings {
     enabled: boolean;
     maxTotalPoints: number;
     showScoreToUser: boolean;
+    passingScore: number;
     riskThresholds: {
       low: number;
       medium: number;
@@ -84,6 +86,7 @@ export interface FormSettings {
   expiration?: {
     enabled: boolean;
     expirationDate?: Date;
+    message?: string;
   };
   emailDistribution?: {
     enabled: boolean;

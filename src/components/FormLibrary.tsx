@@ -11,6 +11,13 @@ interface FormLibraryProps {
   onUseTemplate?: (template: FormTemplate) => void;
 }
 
+// Helper function to generate unique IDs for form fields
+const generateFieldId = (index: number) => `field_${index}_${Date.now()}`;
+
+/**
+ * Form templates library containing predefined form structures
+ * Includes basic forms, risk assessments, and vendor evaluation templates
+ */
 const formTemplates: FormTemplate[] = [
   {
     id: "1",
@@ -19,12 +26,12 @@ const formTemplates: FormTemplate[] = [
     category: "registration",
     preview: "Personal details, emergency contacts, documents",
     fields: [
-      { id: "1", type: "text", label: "Full Name", required: true },
-      { id: "2", type: "email", label: "Email Address", required: true },
-      { id: "3", type: "text", label: "Phone Number", required: true },
-      { id: "4", type: "date", label: "Start Date", required: true },
-      { id: "5", type: "select", label: "Department", required: true, options: ["HR", "IT", "Finance", "Operations"] },
-      { id: "6", type: "textarea", label: "Additional Notes", required: false }
+      { id: generateFieldId(1), type: "text", label: "Full Name", required: true },
+      { id: generateFieldId(2), type: "email", label: "Email Address", required: true },
+      { id: generateFieldId(3), type: "text", label: "Phone Number", required: true },
+      { id: generateFieldId(4), type: "date", label: "Start Date", required: true },
+      { id: generateFieldId(5), type: "select", label: "Department", required: true, options: ["HR", "IT", "Finance", "Operations"] },
+      { id: generateFieldId(6), type: "textarea", label: "Additional Notes", required: false }
     ]
   },
   {
@@ -34,10 +41,10 @@ const formTemplates: FormTemplate[] = [
     category: "survey",
     preview: "Rating scales, feedback questions, recommendations",
     fields: [
-      { id: "1", type: "rating", label: "Overall Satisfaction", required: true },
-      { id: "2", type: "radio", label: "Would you recommend us?", required: true, options: ["Yes", "No", "Maybe"] },
-      { id: "3", type: "select", label: "How did you hear about us?", required: false, options: ["Social Media", "Website", "Referral", "Advertisement"] },
-      { id: "4", type: "textarea", label: "Additional Comments", required: false }
+      { id: generateFieldId(7), type: "rating", label: "Overall Satisfaction", required: true },
+      { id: generateFieldId(8), type: "radio", label: "Would you recommend us?", required: true, options: ["Yes", "No", "Maybe"] },
+      { id: generateFieldId(9), type: "select", label: "How did you hear about us?", required: false, options: ["Social Media", "Website", "Referral", "Advertisement"] },
+      { id: generateFieldId(10), type: "textarea", label: "Additional Comments", required: false }
     ]
   },
 
@@ -51,12 +58,16 @@ const formTemplates: FormTemplate[] = [
     riskCategories: ["Financial Stability", "Operational Risk", "Security & Privacy", "Compliance", "Business Continuity"],
     scoringModel: "weighted",
     fields: [
-      // Company Information
-      { id: "1", type: "text", label: "Vendor Company Name", required: true },
-      { id: "2", type: "text", label: "Primary Contact Name", required: true },
-      { id: "3", type: "email", label: "Primary Contact Email", required: true },
-      { id: "4", type: "text", label: "Vendor Address", required: true },
-      { id: "5", type: "select", label: "Company Size", required: true, 
+      // Company Information Section
+      { id: generateFieldId(11), type: "text", label: "Vendor Company Name", required: true },
+      { id: generateFieldId(12), type: "text", label: "Primary Contact Name", required: true },
+      { id: generateFieldId(13), type: "email", label: "Primary Contact Email", required: true },
+      { id: generateFieldId(14), type: "text", label: "Vendor Address", required: true },
+      { 
+        id: generateFieldId(15), 
+        type: "select", 
+        label: "Company Size", 
+        required: true, 
         options: ["< 50 employees", "50-200 employees", "200-1000 employees", "> 1000 employees"],
         scoring: { 
           enabled: true, 
@@ -66,8 +77,12 @@ const formTemplates: FormTemplate[] = [
         }
       },
       
-      // Financial Stability (25% weight)
-      { id: "6", type: "select", label: "Annual Revenue", required: true, 
+      // Financial Stability Section (25% weight)
+      { 
+        id: generateFieldId(16), 
+        type: "select", 
+        label: "Annual Revenue", 
+        required: true, 
         options: ["< $1M", "$1M-$10M", "$10M-$50M", "$50M-$100M", "> $100M"],
         scoring: { 
           enabled: true, 
@@ -77,7 +92,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { id: "7", type: "radio", label: "Financial Audited Statements Available?", required: true, 
+      { 
+        id: generateFieldId(17), 
+        type: "radio", 
+        label: "Financial Audited Statements Available?", 
+        required: true, 
         options: ["Yes - Current Year", "Yes - Prior Year Only", "No"],
         scoring: { 
           enabled: true, 
@@ -87,7 +106,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { id: "8", type: "select", label: "Credit Rating", required: true, 
+      { 
+        id: generateFieldId(18), 
+        type: "select", 
+        label: "Credit Rating", 
+        required: true, 
         options: ["AAA/Aaa", "AA/Aa", "A", "BBB/Baa", "Below BBB", "Not Rated"],
         scoring: { 
           enabled: true, 
@@ -97,7 +120,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "critical"
         }
       },
-      { id: "9", type: "radio", label: "Any bankruptcy or financial distress in last 5 years?", required: true, 
+      { 
+        id: generateFieldId(19), 
+        type: "radio", 
+        label: "Any bankruptcy or financial distress in last 5 years?", 
+        required: true, 
         options: ["No", "Yes"],
         scoring: { 
           enabled: true, 
@@ -108,8 +135,12 @@ const formTemplates: FormTemplate[] = [
         }
       },
 
-      // Security & Privacy (30% weight)
-      { id: "10", type: "checkbox", label: "Security Certifications", required: true, 
+      // Security & Privacy Section (30% weight)
+      { 
+        id: generateFieldId(20), 
+        type: "checkbox", 
+        label: "Security Certifications", 
+        required: true, 
         options: ["ISO 27001", "SOC 2 Type II", "ISO 22301", "NIST Cybersecurity Framework", "None"],
         scoring: { 
           enabled: true, 
@@ -119,7 +150,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "critical"
         }
       },
-      { id: "11", type: "radio", label: "Data encryption at rest and in transit?", required: true, 
+      { 
+        id: generateFieldId(21), 
+        type: "radio", 
+        label: "Data encryption at rest and in transit?", 
+        required: true, 
         options: ["Yes - Both", "Yes - Transit Only", "Yes - Rest Only", "No"],
         scoring: { 
           enabled: true, 
@@ -129,7 +164,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "critical"
         }
       },
-      { id: "12", type: "radio", label: "Regular penetration testing conducted?", required: true, 
+      { 
+        id: generateFieldId(22), 
+        type: "radio", 
+        label: "Regular penetration testing conducted?", 
+        required: true, 
         options: ["Quarterly", "Bi-annually", "Annually", "As needed", "Never"],
         scoring: { 
           enabled: true, 
@@ -139,7 +178,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { id: "13", type: "radio", label: "Incident response plan in place?", required: true, 
+      { 
+        id: generateFieldId(23), 
+        type: "radio", 
+        label: "Incident response plan in place?", 
+        required: true, 
         options: ["Yes - Documented and Tested", "Yes - Documented Only", "Informal", "No"],
         scoring: { 
           enabled: true, 
@@ -149,7 +192,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { id: "14", type: "radio", label: "Security incidents in last 12 months?", required: true, 
+      { 
+        id: generateFieldId(24), 
+        type: "radio", 
+        label: "Security incidents in last 12 months?", 
+        required: true, 
         options: ["None", "1-2 Minor", "3+ Minor", "1+ Major"],
         scoring: { 
           enabled: true, 
@@ -160,8 +207,12 @@ const formTemplates: FormTemplate[] = [
         }
       },
 
-      // Compliance (20% weight)
-      { id: "15", type: "checkbox", label: "Regulatory Compliance", required: true, 
+      // Compliance Section (20% weight)
+      { 
+        id: generateFieldId(25), 
+        type: "checkbox", 
+        label: "Regulatory Compliance", 
+        required: true, 
         options: ["GDPR", "CCPA", "HIPAA", "SOX", "PCI DSS", "Not Applicable"],
         scoring: { 
           enabled: true, 
@@ -171,7 +222,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { id: "16", type: "radio", label: "Regular compliance audits conducted?", required: true, 
+      { 
+        id: generateFieldId(26), 
+        type: "radio", 
+        label: "Regular compliance audits conducted?", 
+        required: true, 
         options: ["Quarterly", "Bi-annually", "Annually", "As required", "Never"],
         scoring: { 
           enabled: true, 
@@ -182,8 +237,12 @@ const formTemplates: FormTemplate[] = [
         }
       },
 
-      // Operational Risk (15% weight)
-      { id: "17", type: "radio", label: "Business continuity plan exists?", required: true, 
+      // Operational Risk Section (15% weight)
+      { 
+        id: generateFieldId(27), 
+        type: "radio", 
+        label: "Business continuity plan exists?", 
+        required: true, 
         options: ["Yes - Tested regularly", "Yes - Not tested", "In development", "No"],
         scoring: { 
           enabled: true, 
@@ -193,7 +252,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { id: "18", type: "select", label: "Service availability SLA", required: true, 
+      { 
+        id: generateFieldId(28), 
+        type: "select", 
+        label: "Service availability SLA", 
+        required: true, 
         options: ["99.9%+", "99.5-99.9%", "99-99.5%", "95-99%", "< 95%", "No SLA"],
         scoring: { 
           enabled: true, 
@@ -203,7 +266,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "medium"
         }
       },
-      { id: "19", type: "radio", label: "Geographic location of primary operations", required: true, 
+      { 
+        id: generateFieldId(29), 
+        type: "radio", 
+        label: "Geographic location of primary operations", 
+        required: true, 
         options: ["Domestic", "Allied countries", "Non-allied countries", "Restricted countries"],
         scoring: { 
           enabled: true, 
@@ -215,7 +282,11 @@ const formTemplates: FormTemplate[] = [
       },
 
       // Additional Risk Factors
-      { id: "20", type: "radio", label: "Key person dependency risk", required: true, 
+      { 
+        id: generateFieldId(30), 
+        type: "radio", 
+        label: "Key person dependency risk", 
+        required: true, 
         options: ["Low", "Medium", "High"],
         scoring: { 
           enabled: true, 
@@ -224,7 +295,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "medium"
         }
       },
-      { id: "21", type: "textarea", label: "Additional Risk Considerations", required: false,
+      { 
+        id: generateFieldId(31), 
+        type: "textarea", 
+        label: "Additional Risk Considerations", 
+        required: false,
         scoring: { 
           enabled: true, 
           requiresManualReview: true,
@@ -235,6 +310,7 @@ const formTemplates: FormTemplate[] = [
     ]
   },
 
+  // IT Vendor Security Assessment Template
   {
     id: "vra-2", 
     name: "IT Vendor Security Assessment",
@@ -244,11 +320,15 @@ const formTemplates: FormTemplate[] = [
     riskCategories: ["Technical Security", "Data Protection", "Access Management", "Infrastructure"],
     scoringModel: "risk-matrix",
     fields: [
-      { type: "text", label: "Vendor Name", required: true },
-      { type: "text", label: "Service Type", required: true },
+      { id: generateFieldId(32), type: "text", label: "Vendor Name", required: true },
+      { id: generateFieldId(33), type: "text", label: "Service Type", required: true },
       
-      // Technical Security
-      { type: "checkbox", label: "Security Frameworks Implemented", required: true, 
+      // Technical Security Section
+      { 
+        id: generateFieldId(34), 
+        type: "checkbox", 
+        label: "Security Frameworks Implemented", 
+        required: true, 
         options: ["NIST Cybersecurity Framework", "ISO 27001", "CIS Controls", "COBIT", "Custom Framework"],
         scoring: { 
           enabled: true, 
@@ -258,7 +338,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "critical"
         }
       },
-      { type: "radio", label: "Multi-factor authentication enforced?", required: true, 
+      { 
+        id: generateFieldId(35), 
+        type: "radio", 
+        label: "Multi-factor authentication enforced?", 
+        required: true, 
         options: ["Yes - All users", "Yes - Admin only", "Yes - Some users", "No"],
         scoring: { 
           enabled: true, 
@@ -268,7 +352,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "critical"
         }
       },
-      { type: "radio", label: "Vulnerability management program", required: true, 
+      { 
+        id: generateFieldId(36), 
+        type: "radio", 
+        label: "Vulnerability management program", 
+        required: true, 
         options: ["Automated with rapid patching", "Automated with scheduled patching", "Manual process", "Ad-hoc"],
         scoring: { 
           enabled: true, 
@@ -284,8 +372,12 @@ const formTemplates: FormTemplate[] = [
         }
       },
       
-      // Data Protection
-      { type: "radio", label: "Data classification system in place?", required: true, 
+      // Data Protection Section
+      { 
+        id: generateFieldId(37), 
+        type: "radio", 
+        label: "Data classification system in place?", 
+        required: true, 
         options: ["Yes - Comprehensive", "Yes - Basic", "In development", "No"],
         scoring: { 
           enabled: true, 
@@ -295,7 +387,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { type: "radio", label: "Data backup and recovery tested?", required: true, 
+      { 
+        id: generateFieldId(38), 
+        type: "radio", 
+        label: "Data backup and recovery tested?", 
+        required: true, 
         options: ["Monthly", "Quarterly", "Annually", "Never tested"],
         scoring: { 
           enabled: true, 
@@ -305,7 +401,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { type: "select", label: "Data retention policy", required: true, 
+      { 
+        id: generateFieldId(39), 
+        type: "select", 
+        label: "Data retention policy", 
+        required: true, 
         options: ["Documented and enforced", "Documented not enforced", "Informal", "None"],
         scoring: { 
           enabled: true, 
@@ -316,8 +416,12 @@ const formTemplates: FormTemplate[] = [
         }
       },
 
-      // Infrastructure
-      { type: "radio", label: "Cloud infrastructure used?", required: true, 
+      // Infrastructure Section
+      { 
+        id: generateFieldId(40), 
+        type: "radio", 
+        label: "Cloud infrastructure used?", 
+        required: true, 
         options: ["Major providers (AWS/Azure/GCP)", "Tier 1 providers", "Tier 2/3 providers", "On-premise only"],
         scoring: { 
           enabled: true, 
@@ -331,7 +435,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "medium"
         }
       },
-      { type: "radio", label: "Network monitoring and logging", required: true, 
+      { 
+        id: generateFieldId(41), 
+        type: "radio", 
+        label: "Network monitoring and logging", 
+        required: true, 
         options: ["24/7 SOC", "Business hours monitoring", "Automated alerts only", "Basic logging"],
         scoring: { 
           enabled: true, 
@@ -349,6 +457,7 @@ const formTemplates: FormTemplate[] = [
     ]
   },
 
+  // Financial Services Vendor Assessment Template
   {
     id: "vra-3",
     name: "Financial Services Vendor Assessment", 
@@ -358,8 +467,12 @@ const formTemplates: FormTemplate[] = [
     riskCategories: ["Regulatory Compliance", "Financial Health", "Operational Resilience", "Reputation Risk"],
     scoringModel: "weighted",
     fields: [
-      { type: "text", label: "Institution Name", required: true },
-      { type: "select", label: "Institution Type", required: true, 
+      { id: generateFieldId(42), type: "text", label: "Institution Name", required: true },
+      { 
+        id: generateFieldId(43), 
+        type: "select", 
+        label: "Institution Type", 
+        required: true, 
         options: ["Bank", "Credit Union", "Investment Firm", "Insurance Company", "Fintech", "Other"],
         scoring: { 
           enabled: true, 
@@ -368,8 +481,12 @@ const formTemplates: FormTemplate[] = [
         }
       },
       
-      // Regulatory Compliance (40% weight)
-      { type: "checkbox", label: "Regulatory Registrations", required: true, 
+      // Regulatory Compliance Section (40% weight)
+      { 
+        id: generateFieldId(44), 
+        type: "checkbox", 
+        label: "Regulatory Registrations", 
+        required: true, 
         options: ["FDIC Insured", "Fed Member", "State Licensed", "SEC Registered", "FINRA Member", "Not Applicable"],
         scoring: { 
           enabled: true, 
@@ -379,7 +496,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "critical"
         }
       },
-      { type: "radio", label: "Anti-Money Laundering (AML) program", required: true, 
+      { 
+        id: generateFieldId(45), 
+        type: "radio", 
+        label: "Anti-Money Laundering (AML) program", 
+        required: true, 
         options: ["Comprehensive with regular training", "Basic program", "In development", "Not applicable"],
         scoring: { 
           enabled: true, 
@@ -389,7 +510,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "critical"
         }
       },
-      { type: "radio", label: "Know Your Customer (KYC) procedures", required: true, 
+      { 
+        id: generateFieldId(46), 
+        type: "radio", 
+        label: "Know Your Customer (KYC) procedures", 
+        required: true, 
         options: ["Enhanced due diligence", "Standard procedures", "Basic checks", "Limited"],
         scoring: { 
           enabled: true, 
@@ -400,8 +525,12 @@ const formTemplates: FormTemplate[] = [
         }
       },
       
-      // Financial Health (25% weight)
-      { type: "select", label: "Capital Adequacy Ratio", required: true, 
+      // Financial Health Section (25% weight)
+      { 
+        id: generateFieldId(47), 
+        type: "select", 
+        label: "Capital Adequacy Ratio", 
+        required: true, 
         options: ["> 15%", "12-15%", "10-12%", "8-10%", "< 8%", "Not Applicable"],
         scoring: { 
           enabled: true, 
@@ -411,7 +540,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { type: "radio", label: "Regulatory enforcement actions in last 3 years?", required: true, 
+      { 
+        id: generateFieldId(48), 
+        type: "radio", 
+        label: "Regulatory enforcement actions in last 3 years?", 
+        required: true, 
         options: ["None", "Minor violations", "Significant violations", "Cease and desist"],
         scoring: { 
           enabled: true, 
@@ -424,6 +557,7 @@ const formTemplates: FormTemplate[] = [
     ]
   },
 
+  // Third-Party Data Processor Assessment Template
   {
     id: "vra-4",
     name: "Third-Party Data Processor Assessment",
@@ -433,11 +567,15 @@ const formTemplates: FormTemplate[] = [
     riskCategories: ["Data Protection", "Privacy Controls", "Cross-border Compliance"],
     scoringModel: "percentage",
     fields: [
-      { type: "text", label: "Data Processor Name", required: true },
-      { type: "textarea", label: "Type of Data Processing", required: true },
+      { id: generateFieldId(49), type: "text", label: "Data Processor Name", required: true },
+      { id: generateFieldId(50), type: "textarea", label: "Type of Data Processing", required: true },
       
-      // GDPR Compliance
-      { type: "radio", label: "GDPR Article 28 compliant Data Processing Agreement?", required: true, 
+      // GDPR Compliance Section
+      { 
+        id: generateFieldId(51), 
+        type: "radio", 
+        label: "GDPR Article 28 compliant Data Processing Agreement?", 
+        required: true, 
         options: ["Yes - Comprehensive DPA", "Yes - Basic DPA", "In negotiation", "No"],
         scoring: { 
           enabled: true, 
@@ -447,7 +585,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "critical"
         }
       },
-      { type: "checkbox", label: "Data Subject Rights Support", required: true, 
+      { 
+        id: generateFieldId(52), 
+        type: "checkbox", 
+        label: "Data Subject Rights Support", 
+        required: true, 
         options: ["Access", "Rectification", "Erasure", "Portability", "Restriction", "Objection"],
         scoring: { 
           enabled: true, 
@@ -457,7 +599,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "high"
         }
       },
-      { type: "radio", label: "Data breach notification procedures", required: true, 
+      { 
+        id: generateFieldId(53), 
+        type: "radio", 
+        label: "Data breach notification procedures", 
+        required: true, 
         options: ["< 24 hours", "24-48 hours", "48-72 hours", "> 72 hours", "No procedure"],
         scoring: { 
           enabled: true, 
@@ -468,8 +614,12 @@ const formTemplates: FormTemplate[] = [
         }
       },
       
-      // Cross-border transfers
-      { type: "select", label: "Data transfer mechanisms", required: true, 
+      // Cross-border transfers Section
+      { 
+        id: generateFieldId(54), 
+        type: "select", 
+        label: "Data transfer mechanisms", 
+        required: true, 
         options: ["Adequacy decisions", "Standard Contractual Clauses", "Binding Corporate Rules", "Derogations", "No transfers"],
         scoring: { 
           enabled: true, 
@@ -482,6 +632,7 @@ const formTemplates: FormTemplate[] = [
     ]
   },
 
+  // Critical Infrastructure Vendor Assessment Template
   {
     id: "vra-5",
     name: "Critical Infrastructure Vendor Assessment",
@@ -491,8 +642,12 @@ const formTemplates: FormTemplate[] = [
     riskCategories: ["National Security", "Supply Chain", "Operational Resilience"],
     scoringModel: "risk-matrix",
     fields: [
-      { type: "text", label: "Vendor Name", required: true },
-      { type: "select", label: "Critical Infrastructure Sector", required: true, 
+      { id: generateFieldId(55), type: "text", label: "Vendor Name", required: true },
+      { 
+        id: generateFieldId(56), 
+        type: "select", 
+        label: "Critical Infrastructure Sector", 
+        required: true, 
         options: ["Energy", "Water", "Transportation", "Communications", "Healthcare", "Financial", "Government", "Other"],
         scoring: { 
           enabled: true, 
@@ -502,8 +657,12 @@ const formTemplates: FormTemplate[] = [
         }
       },
       
-      // Supply Chain Security
-      { type: "radio", label: "Supply chain risk management program", required: true, 
+      // Supply Chain Security Section
+      { 
+        id: generateFieldId(57), 
+        type: "radio", 
+        label: "Supply chain risk management program", 
+        required: true, 
         options: ["Comprehensive program", "Basic assessments", "Limited oversight", "No program"],
         scoring: { 
           enabled: true, 
@@ -513,7 +672,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "critical"
         }
       },
-      { type: "radio", label: "Foreign ownership or control?", required: true, 
+      { 
+        id: generateFieldId(58), 
+        type: "radio", 
+        label: "Foreign ownership or control?", 
+        required: true, 
         options: ["No foreign involvement", "Minority foreign investment", "Majority foreign owned", "Foreign controlled"],
         scoring: { 
           enabled: true, 
@@ -528,7 +691,11 @@ const formTemplates: FormTemplate[] = [
           riskLevel: "critical"
         }
       },
-      { type: "checkbox", label: "Security clearances held", required: true, 
+      { 
+        id: generateFieldId(59), 
+        type: "checkbox", 
+        label: "Security clearances held", 
+        required: true, 
         options: ["Secret", "Top Secret", "TS/SCI", "None required", "None held"],
         scoring: { 
           enabled: true, 
@@ -542,12 +709,21 @@ const formTemplates: FormTemplate[] = [
   }
 ];
 
+/**
+ * FormLibrary Component
+ * Displays a searchable library of form templates categorized by type
+ * Allows users to filter and select templates for their forms
+ */
 export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
+  // Available categories for filtering templates
   const categories = ["all", "survey", "assessment", "registration", "feedback", "compliance", "risk", "vendor-risk"];
 
+  /**
+   * Filter templates based on search term and selected category
+   */
   const filteredTemplates = formTemplates.filter(template => {
     const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          template.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -555,6 +731,9 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
     return matchesSearch && matchesCategory;
   });
 
+  /**
+   * Handle template selection and notify parent component
+   */
   const handleUseTemplate = (template: FormTemplate) => {
     console.log("Using template:", template);
     if (onUseTemplate) {
@@ -562,6 +741,9 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
     }
   };
 
+  /**
+   * Get icon for specific category types
+   */
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'vendor-risk':
@@ -575,6 +757,9 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
     }
   };
 
+  /**
+   * Get color scheme for category badges
+   */
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'vendor-risk':
@@ -590,6 +775,7 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
 
   return (
     <div className="space-y-6">
+      {/* Search and Filter Controls */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
@@ -615,6 +801,7 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
         </select>
       </div>
 
+      {/* Template Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredTemplates.map((template) => (
           <Card key={template.id} className="hover:shadow-lg transition-shadow">
@@ -639,6 +826,7 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
                 </div>
               </div>
               <p className="text-sm text-gray-600 mt-2">{template.description}</p>
+              {/* Risk Categories Display */}
               {template.riskCategories && (
                 <div className="mt-2">
                   <p className="text-xs font-medium text-gray-700">Risk Categories:</p>
@@ -686,6 +874,7 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
         ))}
       </div>
 
+      {/* No Results Message */}
       {filteredTemplates.length === 0 && (
         <div className="text-center py-8">
           <p className="text-gray-500">No templates found matching your criteria.</p>

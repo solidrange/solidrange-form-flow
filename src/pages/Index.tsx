@@ -1,11 +1,12 @@
+
 import { useState } from "react";
 import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
 import { FormLibrary } from "@/components/FormLibrary";
+import { FormInvitations } from "@/components/FormInvitations";
 import { Analytics } from "@/components/Analytics";
 import { ScoringSettings } from "@/components/ScoringSettings";
 import { WeightageEditor } from "@/components/WeightageEditor";
-import { EmailTracking } from "@/components/EmailTracking";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { ReportGeneration } from "@/components/ReportGeneration";
@@ -44,10 +45,17 @@ import { FormField, FormTemplate, Form, EmailRecipient, DocumentAttachment } fro
 import { toast } from "@/hooks/use-toast";
 import { sampleSubmissions } from "@/data/sampleSubmissions";
 
+/**
+ * Main Index Component
+ * Manages the entire form builder application state and navigation
+ * Handles form creation, editing, publishing, and submission review
+ */
 const Index = () => {
+  // Tab navigation state
   const [activeTab, setActiveTab] = useState("build-form");
   const [activeBuildTab, setActiveBuildTab] = useState("builder");
   
+  // Form state management
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
@@ -57,8 +65,10 @@ const Index = () => {
   const [publishedForms, setPublishedForms] = useState<Form[]>([]);
   const [currentFormId, setCurrentFormId] = useState<string | null>(null);
   
+  // Form status hook for managing published/draft state
   const { status, isPublished, isDraft, publishForm, setToDraft } = useFormStatus();
   
+  // Form settings with comprehensive defaults
   const [formSettings, setFormSettings] = useState<Form['settings']>({
     allowMultipleSubmissions: false,
     requireLogin: false,
@@ -68,6 +78,7 @@ const Index = () => {
       enabled: false,
       maxTotalPoints: 100,
       showScoreToUser: false,
+      passingScore: 70,
       riskThresholds: {
         low: 80,
         medium: 60,
@@ -98,12 +109,19 @@ const Index = () => {
     }
   });
 
+  // Sample submissions for testing
   const [submissions] = useState(sampleSubmissions);
 
+  /**
+   * Add a new field to the current form
+   */
   const addField = (field: FormField) => {
     setFormFields([...formFields, { ...field, id: Date.now().toString() }]);
   };
 
+  /**
+   * Update an existing field in the form
+   */
   const updateField = (fieldId: string, updates: Partial<FormField>) => {
     setFormFields(fields => 
       fields.map(field => 
@@ -112,10 +130,16 @@ const Index = () => {
     );
   };
 
+  /**
+   * Remove a field from the form
+   */
   const removeField = (fieldId: string) => {
     setFormFields(fields => fields.filter(field => field.id !== fieldId));
   };
 
+  /**
+   * Reorder fields in the form using drag and drop
+   */
   const reorderFields = (dragIndex: number, hoverIndex: number) => {
     const draggedField = formFields[dragIndex];
     const newFields = [...formFields];
@@ -124,34 +148,16 @@ const Index = () => {
     setFormFields(newFields);
   };
 
+  /**
+   * Update form settings with partial updates
+   */
   const updateFormSettings = (updates: Partial<Form['settings']>) => {
     setFormSettings(prev => ({ ...prev, ...updates }));
   };
 
-  const updateEmailRecipients = (recipients: EmailRecipient[]) => {
-    setFormSettings(prev => ({
-      ...prev,
-      emailDistribution: {
-        ...prev.emailDistribution!,
-        recipients
-      }
-    }));
-  };
-
-  const updateEmailSettings = (emailSettings: {
-    reminderEnabled: boolean;
-    reminderIntervalDays: number;
-    maxReminders: number;
-  }) => {
-    setFormSettings(prev => ({
-      ...prev,
-      emailDistribution: {
-        ...prev.emailDistribution!,
-        ...emailSettings
-      }
-    }));
-  };
-
+  /**
+   * Create a new blank form and reset all state
+   */
   const createNewForm = () => {
     setFormFields([]);
     setFormTitle("Untitled Form");
@@ -167,6 +173,9 @@ const Index = () => {
     });
   };
 
+  /**
+   * Load an existing form for editing
+   */
   const loadForm = (form: Form) => {
     setFormFields(form.fields);
     setFormTitle(form.title);
@@ -174,6 +183,7 @@ const Index = () => {
     setFormSettings(form.settings);
     setCurrentFormId(form.id);
     
+    // Set appropriate form status
     if (form.status === 'published') {
       publishForm();
     } else {
@@ -187,6 +197,9 @@ const Index = () => {
     });
   };
 
+  /**
+   * Save the current form as a draft
+   */
   const saveForm = () => {
     if (!formTitle.trim()) {
       toast({
@@ -205,7 +218,7 @@ const Index = () => {
       settings: formSettings,
       createdAt: new Date(),
       updatedAt: new Date(),
-      status: status,
+      status: 'draft', // Always save as draft
       submissions: 0,
       analytics: {
         views: 0,
@@ -218,35 +231,28 @@ const Index = () => {
       }
     };
 
-    if (isDraft) {
-      if (currentFormId) {
-        setSavedDrafts(prev => prev.map(draft => 
-          draft.id === currentFormId ? formData : draft
-        ));
-      } else {
-        setSavedDrafts(prev => [...prev, formData]);
-        setCurrentFormId(formData.id);
-      }
-      toast({
-        title: "Draft Saved",
-        description: "Your form has been saved as a draft.",
-      });
+    if (currentFormId) {
+      // Update existing draft
+      setSavedDrafts(prev => prev.map(draft => 
+        draft.id === currentFormId ? formData : draft
+      ));
     } else {
-      if (currentFormId) {
-        setPublishedForms(prev => prev.map(form => 
-          form.id === currentFormId ? formData : form
-        ));
-      } else {
-        setPublishedForms(prev => [...prev, formData]);
-        setCurrentFormId(formData.id);
-      }
-      toast({
-        title: "Form Saved",
-        description: "Your published form has been saved.",
-      });
+      // Create new draft
+      setSavedDrafts(prev => [...prev, formData]);
+      setCurrentFormId(formData.id);
     }
+    
+    setToDraft(); // Ensure we're in draft mode
+    
+    toast({
+      title: "Draft Saved",
+      description: "Your form has been saved as a draft.",
+    });
   };
 
+  /**
+   * Publish a form from drafts
+   */
   const handlePublishForm = (formToPublish?: Form) => {
     const titleToCheck = formToPublish?.title || formTitle;
     const fieldsToCheck = formToPublish?.fields || formFields;
@@ -271,7 +277,11 @@ const Index = () => {
 
     if (formToPublish) {
       // Publishing from drafts tab
-      const publishedForm = { ...formToPublish, status: 'published' as const, updatedAt: new Date() };
+      const publishedForm = { 
+        ...formToPublish, 
+        status: 'published' as const, 
+        updatedAt: new Date() 
+      };
       setPublishedForms(prev => [...prev, publishedForm]);
       setSavedDrafts(prev => prev.filter(draft => draft.id !== formToPublish.id));
     } else {
@@ -299,7 +309,7 @@ const Index = () => {
       };
       
       if (currentFormId) {
-        // Remove from drafts if it was there
+        // Remove from drafts if it was there and add to published
         setSavedDrafts(prev => prev.filter(draft => draft.id !== currentFormId));
         setPublishedForms(prev => [...prev.filter(form => form.id !== currentFormId), formData]);
       } else {
@@ -310,10 +320,13 @@ const Index = () => {
     
     toast({
       title: "Form Published",
-      description: "Your form has been published successfully and can now receive email distributions.",
+      description: "Your form has been published successfully and is now available for invitations.",
     });
   };
 
+  /**
+   * Move a published form back to draft status
+   */
   const handleMoveToDraft = (form?: Form) => {
     if (form) {
       // Moving from published tab
@@ -344,6 +357,9 @@ const Index = () => {
     }
   };
 
+  /**
+   * Delete a draft form
+   */
   const handleDeleteDraft = (draftId: string) => {
     setSavedDrafts(prev => prev.filter(draft => draft.id !== draftId));
     
@@ -358,6 +374,9 @@ const Index = () => {
     });
   };
 
+  /**
+   * Delete a published form
+   */
   const handleDeletePublished = (formId: string) => {
     setPublishedForms(prev => prev.filter(form => form.id !== formId));
     
@@ -372,11 +391,26 @@ const Index = () => {
     });
   };
 
+  /**
+   * Update a published form (used for invitations)
+   */
+  const updatePublishedForm = (formId: string, updates: Partial<Form>) => {
+    setPublishedForms(prev => prev.map(form => 
+      form.id === formId ? { ...form, ...updates, updatedAt: new Date() } : form
+    ));
+  };
+
+  /**
+   * Save form template to library
+   */
   const handleSaveToLibrary = () => {
     console.log("Saving form to library with category:", formCategory);
     // Implementation for saving to library would go here
   };
 
+  /**
+   * Apply a template to the current form
+   */
   const useTemplate = (template: FormTemplate) => {
     setFormTitle(template.name);
     setFormDescription(template.description);
@@ -387,6 +421,7 @@ const Index = () => {
     }));
     setFormFields(fieldsWithIds);
     
+    // Enable scoring for vendor risk templates
     if (template.category === 'vendor-risk') {
       setFormSettings(prev => ({
         ...prev,
@@ -409,6 +444,9 @@ const Index = () => {
     });
   };
 
+  /**
+   * Generate URLs and embed codes for sharing
+   */
   const generateFormUrl = (formId: string) => {
     return `${window.location.origin}/form/${formId}`;
   };
@@ -426,7 +464,9 @@ const Index = () => {
     });
   };
 
-  // Check if current form is published (either the loaded form or current form state)
+  /**
+   * Check if current form is published
+   */
   const currentFormIsPublished = () => {
     if (currentFormId) {
       const publishedForm = publishedForms.find(form => form.id === currentFormId);
@@ -435,7 +475,17 @@ const Index = () => {
     return isPublished;
   };
 
-  // Create tabs array based on form status
+  /**
+   * Get current form data for invitations
+   */
+  const getCurrentForm = (): Form | null => {
+    if (currentFormId) {
+      return publishedForms.find(form => form.id === currentFormId) || null;
+    }
+    return null;
+  };
+
+  // Create tabs array for build section (removed email tab from here)
   const buildTabs = [
     { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" /> },
     { id: "library", label: "Library", icon: <Library className="h-4 w-4" /> },
@@ -444,11 +494,13 @@ const Index = () => {
     { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" /> },
     { id: "drafts", label: "Drafts", icon: <FileText className="h-4 w-4" /> },
     { id: "published", label: "Published", icon: <BookOpen className="h-4 w-4" /> },
-    ...(currentFormIsPublished() ? [{ id: "email", label: "Email", icon: <Mail className="h-4 w-4" /> }] : [])
+    // Add invitations tab only for published forms
+    ...(currentFormIsPublished() ? [{ id: "invitations", label: "Invitations", icon: <Mail className="h-4 w-4" /> }] : [])
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Header */}
       <div className="bg-white border-b shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -459,7 +511,7 @@ const Index = () => {
               <h1 className="text-xl font-semibold text-gray-900">Solidrange Form Builder</h1>
             </div>
             
-            {/* Form Status Display */}
+            {/* Form Status and Actions */}
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-gray-600">Current Form:</span>
@@ -476,6 +528,7 @@ const Index = () => {
                 New Form
               </Button>
               
+              {/* Quick Share Button for Published Forms */}
               {currentFormIsPublished() && (
                 <Dialog>
                   <DialogTrigger asChild>
@@ -533,6 +586,7 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
@@ -546,6 +600,7 @@ const Index = () => {
             </TabsTrigger>
           </TabsList>
 
+          {/* Build Form Section */}
           <TabsContent value="build-form" className="mt-6">
             <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
               <div className="flex items-center justify-between mb-4">
@@ -560,6 +615,7 @@ const Index = () => {
                   </TabsList>
                 </div>
                 
+                {/* Action Buttons */}
                 <div className="flex items-center gap-3">
                   <Button onClick={saveForm} className="flex items-center gap-2">
                     <Save className="h-4 w-4" />
@@ -572,6 +628,7 @@ const Index = () => {
                 </div>
               </div>
 
+              {/* Form Builder Tab */}
               <TabsContent value="builder" className="mt-4">
                 <FormBuilder
                   formFields={formFields}
@@ -595,24 +652,29 @@ const Index = () => {
                 />
               </TabsContent>
 
+              {/* Template Library Tab */}
               <TabsContent value="library" className="mt-4">
                 <FormLibrary onUseTemplate={useTemplate} />
               </TabsContent>
 
+              {/* Form Invitations Tab (Only for Published Forms) */}
               {currentFormIsPublished() && (
-                <TabsContent value="email" className="mt-4">
-                  <EmailTracking
-                    recipients={formSettings.emailDistribution?.recipients || []}
-                    onUpdateRecipients={updateEmailRecipients}
-                    formTitle={formTitle}
-                    reminderEnabled={formSettings.emailDistribution?.reminderEnabled || true}
-                    reminderIntervalDays={formSettings.emailDistribution?.reminderIntervalDays || 7}
-                    maxReminders={formSettings.emailDistribution?.maxReminders || 3}
-                    onUpdateEmailSettings={updateEmailSettings}
-                  />
+                <TabsContent value="invitations" className="mt-4">
+                  {getCurrentForm() ? (
+                    <FormInvitations
+                      form={getCurrentForm()!}
+                      onUpdateForm={(updates) => updatePublishedForm(getCurrentForm()!.id, updates)}
+                    />
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <Mail className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <p>No published form selected</p>
+                    </div>
+                  )}
                 </TabsContent>
               )}
 
+              {/* Scoring Settings Tab */}
               <TabsContent value="scoring" className="mt-4">
                 <ScoringSettings
                   formSettings={formSettings}
@@ -620,6 +682,7 @@ const Index = () => {
                 />
               </TabsContent>
 
+              {/* Weightage Editor Tab */}
               <TabsContent value="weightage" className="mt-4">
                 <WeightageEditor
                   fields={formFields}
@@ -627,6 +690,7 @@ const Index = () => {
                 />
               </TabsContent>
 
+              {/* Form Preview Tab */}
               <TabsContent value="preview" className="mt-4">
                 <FormPreview
                   formTitle={formTitle}
@@ -637,6 +701,7 @@ const Index = () => {
                 />
               </TabsContent>
 
+              {/* Drafts Tab */}
               <TabsContent value="drafts" className="mt-4">
                 {savedDrafts.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
@@ -710,6 +775,7 @@ const Index = () => {
                 )}
               </TabsContent>
 
+              {/* Published Forms Tab */}
               <TabsContent value="published" className="mt-4">
                 {publishedForms.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
@@ -746,6 +812,17 @@ const Index = () => {
                               >
                                 <Edit className="h-4 w-4 mr-1" />
                                 Load
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => {
+                                  loadForm(form);
+                                  setActiveBuildTab("invitations");
+                                }}
+                              >
+                                <Mail className="h-4 w-4 mr-1" />
+                                Invitations
                               </Button>
                               <Dialog>
                                 <DialogTrigger asChild>
@@ -833,6 +910,7 @@ const Index = () => {
                 )}
               </TabsContent>
 
+              {/* Settings Tab */}
               <TabsContent value="settings" className="mt-4">
                 <SettingsPanel
                   formSettings={formSettings}
@@ -842,6 +920,7 @@ const Index = () => {
             </Tabs>
           </TabsContent>
 
+          {/* Review Submissions Section */}
           <TabsContent value="review-submissions" className="mt-6">
             <Tabs defaultValue="submissions" className="w-full">
               <TabsList className="grid w-auto grid-cols-3">
