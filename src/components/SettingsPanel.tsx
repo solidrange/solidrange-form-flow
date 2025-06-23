@@ -1,363 +1,651 @@
-
 import { useState } from "react";
 import { Form } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Upload, Download, Trash2, Eye, FileText, Users, Settings2 } from "lucide-react";
-import { toast } from "@/hooks/use-toast";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from "@/components/ui/button";
 
 interface SettingsPanelProps {
-  formSettings: Form['settings'];
-  onUpdateSettings: (updates: Partial<Form['settings']>) => void;
+  form: Form;
+  onUpdate: (form: Form) => void;
 }
 
-export const SettingsPanel = ({ formSettings, onUpdateSettings }: SettingsPanelProps) => {
-  const [activeSection, setActiveSection] = useState("general");
+export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
+  const [isScoringEnabled, setIsScoringEnabled] = useState(form.settings.scoring?.enabled || false);
+  const [isExpirationEnabled, setIsExpirationEnabled] = useState(form.settings.expiration?.enabled || false);
+  const [isEmailDistributionEnabled, setIsEmailDistributionEnabled] = useState(form.settings.emailDistribution?.enabled || false);
+  const [isApprovalEnabled, setIsApprovalEnabled] = useState(form.settings.approval?.enabled || false);
+  const [isDocumentsEnabled, setIsDocumentsEnabled] = useState(form.settings.documents?.enabled || false);
 
-  const updateGeneralSettings = (updates: Partial<Form['settings']>) => {
-    onUpdateSettings(updates);
-  };
-
-  const updateApprovalSettings = (updates: Partial<NonNullable<Form['settings']['approval']>>) => {
-    onUpdateSettings({
-      approval: {
-        ...formSettings.approval,
-        enabled: formSettings.approval?.enabled || false,
-        requireApproval: formSettings.approval?.requireApproval || false,
-        approvers: formSettings.approval?.approvers || [],
-        autoApproveScore: formSettings.approval?.autoApproveScore || undefined,
-        ...updates
+  const handleSettingChange = (field: string, value: any) => {
+    onUpdate({
+      ...form,
+      settings: {
+        ...form.settings,
+        [field]: value
       }
     });
   };
 
-  const updateDocumentSettings = (updates: Partial<NonNullable<Form['settings']['documents']>>) => {
-    onUpdateSettings({
-      documents: {
-        ...formSettings.documents,
-        enabled: formSettings.documents?.enabled || false,
-        allowedTypes: formSettings.documents?.allowedTypes || ['pdf', 'doc', 'docx'],
-        maxSize: formSettings.documents?.maxSize || 10,
-        requiredDocuments: formSettings.documents?.requiredDocuments || [],
-        ...updates
+  const handleScoringChange = (field: string, value: any) => {
+    const currentScoring = form.settings.scoring || {
+      enabled: false,
+      maxTotalPoints: 100,
+      showScoreToUser: false,
+      passingScore: 70,
+      riskThresholds: {
+        low: 30,
+        medium: 60,
+        high: 90
+      }
+    };
+
+    onUpdate({
+      ...form,
+      settings: {
+        ...form.settings,
+        scoring: {
+          ...currentScoring,
+          [field]: value
+        }
       }
     });
   };
 
-  const sections = [
-    { id: "general", label: "General", icon: Settings2 },
-    { id: "approval", label: "Approval Process", icon: Users },
-    { id: "documents", label: "Documents", icon: FileText },
-    { id: "notifications", label: "Notifications", icon: FileText },
-  ];
+  const handleExpirationChange = (field: string, value: any) => {
+    const currentExpiration = form.settings.expiration || {
+      enabled: false,
+      expirationDate: new Date(),
+      message: 'This form has expired.'
+    };
+
+    onUpdate({
+      ...form,
+      settings: {
+        ...form.settings,
+        expiration: {
+          ...currentExpiration,
+          [field]: value
+        }
+      }
+    });
+  };
+
+  const handleEmailDistributionChange = (field: string, value: any) => {
+    const currentEmailDistribution = form.settings.emailDistribution || {
+      enabled: false,
+      recipients: [],
+      reminderEnabled: false,
+      reminderIntervalDays: 7,
+      maxReminders: 3
+    };
+
+    onUpdate({
+      ...form,
+      settings: {
+        ...form.settings,
+        emailDistribution: {
+          ...currentEmailDistribution,
+          [field]: value
+        }
+      }
+    });
+  };
+
+  const handleApprovalChange = (field: string, value: any) => {
+    const currentApproval = form.settings.approval || {
+      enabled: false,
+      requireApproval: false,
+      approvers: [],
+      autoApproveScore: 80
+    };
+
+    onUpdate({
+      ...form,
+      settings: {
+        ...form.settings,
+        approval: {
+          ...currentApproval,
+          [field]: value
+        }
+      }
+    });
+  };
+
+  const handleDocumentChange = (field: string, value: any) => {
+    const currentDocuments = form.settings.documents || {
+      enabled: false,
+      allowedTypes: [],
+      maxSize: 10,
+      requiredDocuments: [],
+      allowUserUploads: true
+    };
+
+    onUpdate({
+      ...form,
+      settings: {
+        ...form.settings,
+        documents: {
+          ...currentDocuments,
+          [field]: value
+        }
+      }
+    });
+  };
+
+  const handleThemeChange = (theme: 'light' | 'dark' | 'custom') => {
+    onUpdate({
+      ...form,
+      settings: {
+        ...form.settings,
+        theme
+      }
+    });
+  };
+
+  const handleCustomCssChange = (customCss: string) => {
+    if (form.settings.theme === 'custom') {
+      onUpdate({
+        ...form,
+        settings: {
+          ...form.settings,
+          customCss
+        }
+      });
+    }
+  };
 
   return (
-    <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
-      {/* Settings Navigation */}
-      <div className="col-span-3">
-        <Card className="h-full">
-          <CardHeader>
-            <CardTitle className="text-lg">Settings</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {sections.map((section) => (
-              <Button
-                key={section.id}
-                variant={activeSection === section.id ? "default" : "ghost"}
-                className="w-full justify-start"
-                onClick={() => setActiveSection(section.id)}
-              >
-                <section.icon className="h-4 w-4 mr-2" />
-                {section.label}
-              </Button>
-            ))}
-          </CardContent>
-        </Card>
-      </div>
+    <div className="space-y-6">
+      {/* Basic Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Basic Settings</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Multiple submissions toggle */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Label>Allow Multiple Submissions</Label>
+              <p className="text-sm text-gray-500">Allow users to submit the form multiple times</p>
+            </div>
+            <Switch
+              checked={form.settings.allowMultipleSubmissions}
+              onCheckedChange={(checked) => handleSettingChange('allowMultipleSubmissions', checked)}
+            />
+          </div>
 
-      {/* Settings Content */}
-      <div className="col-span-9">
-        <Card className="h-full">
-          <CardContent className="p-6 space-y-6 overflow-auto">
-            {activeSection === "general" && (
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">General Settings</h3>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="multiple-submissions"
-                        checked={formSettings.allowMultipleSubmissions}
-                        onCheckedChange={(checked) => updateGeneralSettings({ allowMultipleSubmissions: !!checked })}
-                      />
-                      <Label htmlFor="multiple-submissions">Allow multiple submissions per user</Label>
-                    </div>
+          {/* Login requirement toggle */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Label>Require Login</Label>
+              <p className="text-sm text-gray-500">Users must be logged in to access the form</p>
+            </div>
+            <Switch
+              checked={form.settings.requireLogin}
+              onCheckedChange={(checked) => handleSettingChange('requireLogin', checked)}
+            />
+          </div>
 
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="require-login"
-                        checked={formSettings.requireLogin}
-                        onCheckedChange={(checked) => updateGeneralSettings({ requireLogin: !!checked })}
-                      />
-                      <Label htmlFor="require-login">Require user login</Label>
-                    </div>
+          {/* Progress bar toggle */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Label>Show Progress Bar</Label>
+              <p className="text-sm text-gray-500">Display progress indicator to users</p>
+            </div>
+            <Switch
+              checked={form.settings.showProgressBar}
+              onCheckedChange={(checked) => handleSettingChange('showProgressBar', checked)}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="show-progress"
-                        checked={formSettings.showProgressBar}
-                        onCheckedChange={(checked) => updateGeneralSettings({ showProgressBar: !!checked })}
-                      />
-                      <Label htmlFor="show-progress">Show progress bar</Label>
-                    </div>
+      {/* Theme Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Theme & Appearance</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <Label>Theme</Label>
+            <Select value={form.settings.theme} onValueChange={handleThemeChange}>
+              <SelectTrigger className="mt-1">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="light">Light</SelectItem>
+                <SelectItem value="dark">Dark</SelectItem>
+                <SelectItem value="custom">Custom</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-                    <div>
-                      <Label htmlFor="theme">Theme</Label>
-                      <Select 
-                        value={formSettings.theme} 
-                        onValueChange={(value: 'light' | 'dark' | 'custom') => updateGeneralSettings({ theme: value })}
-                      >
-                        <SelectTrigger className="mt-1">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="light">Light</SelectItem>
-                          <SelectItem value="dark">Dark</SelectItem>
-                          <SelectItem value="custom">Custom</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+          {/* Custom CSS editor for custom theme */}
+          {form.settings.theme === 'custom' && (
+            <div>
+              <Label>Custom CSS</Label>
+              <Textarea
+                value={form.settings.customCss || ''}
+                onChange={(e) => handleCustomCssChange(e.target.value)}
+                placeholder="Enter custom CSS rules..."
+                className="mt-1 font-mono text-sm"
+                rows={6}
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Add custom CSS to style your form
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-                    {formSettings.theme === 'custom' && (
-                      <div>
-                        <Label htmlFor="custom-css">Custom CSS</Label>
-                        <Textarea
-                          id="custom-css"
-                          value={formSettings.customCss || ''}
-                          onChange={(e) => updateGeneralSettings({ customCss: e.target.value })}
-                          placeholder="Enter custom CSS..."
-                          className="mt-1 font-mono text-sm"
-                          rows={6}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
+      {/* Approval Workflow */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Approval Workflow</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Enable approval workflow */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Label>Enable Approval Workflow</Label>
+              <p className="text-sm text-gray-500">Require manual approval for submissions</p>
+            </div>
+            <Switch
+              checked={form.settings.approval?.enabled || false}
+              onCheckedChange={(checked) => handleApprovalChange('enabled', checked)}
+            />
+          </div>
+
+          {/* Auto-approve threshold */}
+          {form.settings.approval?.enabled && (
+            <>
+              <div>
+                <Label>Auto-Approve Score Threshold</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={form.settings.approval.autoApproveScore || 80}
+                  onChange={(e) => handleApprovalChange('autoApproveScore', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Submissions with scores above this threshold will be auto-approved
+                </p>
               </div>
-            )}
 
-            {activeSection === "approval" && (
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Approval Process</h3>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="enable-approval"
-                        checked={formSettings.approval?.enabled || false}
-                        onCheckedChange={(checked) => updateApprovalSettings({ enabled: !!checked })}
-                      />
-                      <Label htmlFor="enable-approval">Enable approval process for submissions</Label>
-                    </div>
-
-                    {formSettings.approval?.enabled && (
-                      <>
-                        <div className="flex items-center space-x-2">
-                          <Checkbox
-                            id="require-approval"
-                            checked={formSettings.approval.requireApproval || false}
-                            onCheckedChange={(checked) => updateApprovalSettings({ requireApproval: !!checked })}
-                          />
-                          <Label htmlFor="require-approval">All submissions require manual approval</Label>
-                        </div>
-
-                        <div>
-                          <Label htmlFor="auto-approve-score">Auto-approve if score is above (%)</Label>
-                          <Input
-                            id="auto-approve-score"
-                            type="number"
-                            min="0"
-                            max="100"
-                            value={formSettings.approval.autoApproveScore || ''}
-                            onChange={(e) => updateApprovalSettings({ 
-                              autoApproveScore: e.target.value ? parseInt(e.target.value) : undefined 
-                            })}
-                            placeholder="e.g., 80"
-                            className="mt-1"
-                          />
-                        </div>
-
-                        <div>
-                          <Label>Approvers</Label>
-                          <div className="mt-2 space-y-2">
-                            {formSettings.approval.approvers?.map((approver, index) => (
-                              <div key={index} className="flex items-center gap-2">
-                                <Input value={approver} readOnly />
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    const newApprovers = formSettings.approval?.approvers?.filter((_, i) => i !== index) || [];
-                                    updateApprovalSettings({ approvers: newApprovers });
-                                  }}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            ))}
-                            <div className="flex items-center gap-2">
-                              <Input 
-                                placeholder="Enter approver email"
-                                onKeyPress={(e) => {
-                                  if (e.key === 'Enter' && e.currentTarget.value) {
-                                    const newApprovers = [...(formSettings.approval?.approvers || []), e.currentTarget.value];
-                                    updateApprovalSettings({ approvers: newApprovers });
-                                    e.currentTarget.value = '';
-                                  }
-                                }}
-                              />
-                              <Button variant="outline" size="sm">Add</Button>
-                            </div>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeSection === "documents" && (
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Document Settings</h3>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="enable-documents"
-                        checked={formSettings.documents?.enabled || false}
-                        onCheckedChange={(checked) => updateDocumentSettings({ enabled: !!checked })}
-                      />
-                      <Label htmlFor="enable-documents">Allow document attachments</Label>
-                    </div>
-
-                    {formSettings.documents?.enabled && (
-                      <>
-                        <div>
-                          <Label htmlFor="max-file-size">Maximum file size (MB)</Label>
-                          <Input
-                            id="max-file-size"
-                            type="number"
-                            min="1"
-                            max="100"
-                            value={formSettings.documents.maxSize || 10}
-                            onChange={(e) => updateDocumentSettings({ 
-                              maxSize: parseInt(e.target.value) || 10 
-                            })}
-                            className="mt-1"
-                          />
-                        </div>
-
-                        <div>
-                          <Label>Allowed file types</Label>
-                          <div className="mt-2 flex flex-wrap gap-2">
-                            {['pdf', 'doc', 'docx', 'jpg', 'png', 'xlsx', 'txt'].map((type) => (
-                              <div key={type} className="flex items-center space-x-2">
-                                <Checkbox
-                                  id={`type-${type}`}
-                                  checked={formSettings.documents?.allowedTypes?.includes(type) || false}
-                                  onCheckedChange={(checked) => {
-                                    const currentTypes = formSettings.documents?.allowedTypes || [];
-                                    const newTypes = checked 
-                                      ? [...currentTypes, type]
-                                      : currentTypes.filter(t => t !== type);
-                                    updateDocumentSettings({ allowedTypes: newTypes });
-                                  }}
-                                />
-                                <Label htmlFor={`type-${type}`} className="text-sm">
-                                  .{type}
-                                </Label>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div>
-                          <Label>Required Documents (for submitters to view)</Label>
-                          <div className="mt-2 space-y-2">
-                            {formSettings.documents.requiredDocuments?.map((doc, index) => (
-                              <div key={index} className="flex items-center gap-2">
-                                <Input value={doc.name} readOnly />
-                                <Badge variant="outline">{doc.type}</Badge>
-                                <Button variant="outline" size="sm">
-                                  <Eye className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => {
-                                    const newDocs = formSettings.documents?.requiredDocuments?.filter((_, i) => i !== index) || [];
-                                    updateDocumentSettings({ requiredDocuments: newDocs });
-                                  }}
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </div>
-                            ))}
-                            <Button variant="outline" className="w-full">
-                              <Upload className="h-4 w-4 mr-2" />
-                              Upload Required Document
-                            </Button>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {activeSection === "notifications" && (
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Notification Settings</h3>
-                  
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="notify-submissions" />
-                      <Label htmlFor="notify-submissions">Notify on new submissions</Label>
-                    </div>
-
-                    <div className="flex items-center space-x-2">
-                      <Checkbox id="notify-approvals" />
-                      <Label htmlFor="notify-approvals">Notify on approval requests</Label>
-                    </div>
-
-                    <div>
-                      <Label htmlFor="notification-email">Notification email</Label>
+              {/* Approvers list */}
+              <div>
+                <Label>Approvers</Label>
+                <div className="space-y-2 mt-2">
+                  {(form.settings.approval.approvers || []).map((approver, index) => (
+                    <div key={index} className="flex items-center gap-2">
                       <Input
-                        id="notification-email"
-                        type="email"
-                        placeholder="admin@company.com"
-                        className="mt-1"
+                        value={approver}
+                        onChange={(e) => {
+                          const newApprovers = [...(form.settings.approval?.approvers || [])];
+                          newApprovers[index] = e.target.value;
+                          handleApprovalChange('approvers', newApprovers);
+                        }}
+                        placeholder="Enter approver email"
                       />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          const newApprovers = (form.settings.approval?.approvers || []).filter((_, i) => i !== index);
+                          handleApprovalChange('approvers', newApprovers);
+                        }}
+                      >
+                        Remove
+                      </Button>
                     </div>
+                  ))}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const newApprovers = [...(form.settings.approval?.approvers || []), ''];
+                      handleApprovalChange('approvers', newApprovers);
+                    }}
+                  >
+                    Add Approver
+                  </Button>
+                </div>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Document Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Document Attachments</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Enable document uploads */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Label>Enable Document Uploads</Label>
+              <p className="text-sm text-gray-500">Allow users to upload documents</p>
+            </div>
+            <Switch
+              checked={form.settings.documents?.enabled || false}
+              onCheckedChange={(checked) => handleDocumentChange('enabled', checked)}
+            />
+          </div>
+
+          {/* Document configuration */}
+          {form.settings.documents?.enabled && (
+            <>
+              {/* Allowed file types */}
+              <div>
+                <Label>Allowed File Types</Label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  {['pdf', 'doc', 'docx', 'jpg', 'png', 'xlsx'].map((type) => (
+                    <div key={type} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={type}
+                        checked={(form.settings.documents?.allowedTypes || []).includes(type)}
+                        onCheckedChange={(checked) => {
+                          const currentTypes = form.settings.documents?.allowedTypes || [];
+                          const newTypes = checked 
+                            ? [...currentTypes, type]
+                            : currentTypes.filter(t => t !== type);
+                          handleDocumentChange('allowedTypes', newTypes);
+                        }}
+                      />
+                      <Label htmlFor={type} className="text-sm uppercase">
+                        {type}
+                      </Label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Max file size */}
+              <div>
+                <Label>Maximum File Size (MB)</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  max="100"
+                  value={form.settings.documents.maxSize || 10}
+                  onChange={(e) => handleDocumentChange('maxSize', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+
+              {/* Required documents */}
+              <div>
+                <Label>Required Documents</Label>
+                <Textarea
+                  value={(form.settings.documents.requiredDocuments || []).join('\n')}
+                  onChange={(e) => handleDocumentChange('requiredDocuments', e.target.value.split('\n').filter(doc => doc.trim()))}
+                  placeholder="Enter required document names (one per line)"
+                  className="mt-1"
+                  rows={3}
+                />
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Scoring Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Scoring Settings</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Enable scoring */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Label>Enable Scoring</Label>
+              <p className="text-sm text-gray-500">Enable scoring for this form</p>
+            </div>
+            <Switch
+              checked={form.settings.scoring?.enabled || false}
+              onCheckedChange={(checked) => {
+                setIsScoringEnabled(checked);
+                handleScoringChange('enabled', checked);
+              }}
+            />
+          </div>
+
+          {/* Scoring configuration options */}
+          {isScoringEnabled && (
+            <>
+              {/* Max total points */}
+              <div>
+                <Label>Max Total Points</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  value={form.settings.scoring?.maxTotalPoints || 100}
+                  onChange={(e) => handleScoringChange('maxTotalPoints', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+
+              {/* Show score to user */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Show Score to User</Label>
+                  <p className="text-sm text-gray-500">Display the score to the user after submission</p>
+                </div>
+                <Switch
+                  checked={form.settings.scoring?.showScoreToUser || false}
+                  onCheckedChange={(checked) => handleScoringChange('showScoreToUser', checked)}
+                />
+              </div>
+
+              {/* Passing score */}
+              <div>
+                <Label>Passing Score (%)</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  max="100"
+                  value={form.settings.scoring?.passingScore || 70}
+                  onChange={(e) => handleScoringChange('passingScore', parseInt(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+
+              {/* Risk thresholds */}
+              <div>
+                <Label>Risk Thresholds</Label>
+                <div className="grid grid-cols-3 gap-2 mt-2">
+                  <div>
+                    <Label className="text-xs">Low</Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={form.settings.scoring?.riskThresholds?.low || 30}
+                      onChange={(e) => handleScoringChange('riskThresholds', {
+                        ...form.settings.scoring?.riskThresholds,
+                        low: parseInt(e.target.value)
+                      })}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs">Medium</Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={form.settings.scoring?.riskThresholds?.medium || 60}
+                      onChange={(e) => handleScoringChange('riskThresholds', {
+                        ...form.settings.scoring?.riskThresholds,
+                        medium: parseInt(e.target.value)
+                      })}
+                      className="mt-1"
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-xs">High</Label>
+                    <Input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={form.settings.scoring?.riskThresholds?.high || 90}
+                      onChange={(e) => handleScoringChange('riskThresholds', {
+                        ...form.settings.scoring?.riskThresholds,
+                        high: parseInt(e.target.value)
+                      })}
+                      className="mt-1"
+                    />
                   </div>
                 </div>
               </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Expiration Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Expiration Settings</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Enable expiration */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Label>Enable Expiration</Label>
+              <p className="text-sm text-gray-500">Set an expiration date for this form</p>
+            </div>
+            <Switch
+              checked={form.settings.expiration?.enabled || false}
+              onCheckedChange={(checked) => {
+                setIsExpirationEnabled(checked);
+                handleExpirationChange('enabled', checked);
+              }}
+            />
+          </div>
+
+          {/* Expiration configuration options */}
+          {isExpirationEnabled && (
+            <>
+              {/* Expiration date */}
+              <div>
+                <Label>Expiration Date</Label>
+                <Input
+                  type="date"
+                  value={(form.settings.expiration?.expirationDate || new Date()).toISOString().split('T')[0]}
+                  onChange={(e) => handleExpirationChange('expirationDate', new Date(e.target.value))}
+                  className="mt-1"
+                />
+              </div>
+
+              {/* Expiration message */}
+              <div>
+                <Label>Expiration Message</Label>
+                <Textarea
+                  value={form.settings.expiration?.message || 'This form has expired.'}
+                  onChange={(e) => handleExpirationChange('message', e.target.value)}
+                  placeholder="Enter expiration message..."
+                  className="mt-1"
+                  rows={3}
+                />
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Email Distribution Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Email Distribution</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Enable email distribution */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Label>Enable Email Distribution</Label>
+              <p className="text-sm text-gray-500">Distribute this form via email</p>
+            </div>
+            <Switch
+              checked={form.settings.emailDistribution?.enabled || false}
+              onCheckedChange={(checked) => {
+                setIsEmailDistributionEnabled(checked);
+                handleEmailDistributionChange('enabled', checked);
+              }}
+            />
+          </div>
+
+          {/* Email distribution configuration options */}
+          {isEmailDistributionEnabled && (
+            <>
+              {/* Reminder settings */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Enable Reminders</Label>
+                  <p className="text-sm text-gray-500">Send reminder emails to recipients</p>
+                </div>
+                <Switch
+                  checked={form.settings.emailDistribution?.reminderEnabled || false}
+                  onCheckedChange={(checked) => handleEmailDistributionChange('reminderEnabled', checked)}
+                />
+              </div>
+
+              {/* Reminder interval */}
+              {form.settings.emailDistribution?.reminderEnabled && (
+                <div>
+                  <Label>Reminder Interval (days)</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    value={form.settings.emailDistribution?.reminderIntervalDays || 7}
+                    onChange={(e) => handleEmailDistributionChange('reminderIntervalDays', parseInt(e.target.value))}
+                    className="mt-1"
+                  />
+                </div>
+              )}
+
+              {/* Max reminders */}
+              {form.settings.emailDistribution?.reminderEnabled && (
+                <div>
+                  <Label>Max Reminders</Label>
+                  <Input
+                    type="number"
+                    min="1"
+                    value={form.settings.emailDistribution?.maxReminders || 3}
+                    onChange={(e) => handleEmailDistributionChange('maxReminders', parseInt(e.target.value))}
+                    className="mt-1"
+                  />
+                </div>
+              )}
+
+              {/* Recipients list */}
+              <div>
+                <Label>Recipients</Label>
+                <Textarea
+                  value={(form.settings.emailDistribution?.recipients || []).map(r => r.email).join('\n')}
+                  onChange={(e) => {
+                    const newRecipients = e.target.value.split('\n').filter(email => email.trim() !== '').map(email => ({ id: Date.now().toString(), email, status: 'pending', remindersSent: 0 }));
+                    handleEmailDistributionChange('recipients', newRecipients);
+                  }}
+                  placeholder="Enter recipient emails (one per line)"
+                  className="mt-1"
+                  rows={3}
+                />
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };

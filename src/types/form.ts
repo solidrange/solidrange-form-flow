@@ -1,4 +1,7 @@
 
+/**
+ * Represents a single form field with all its configuration options
+ */
 export interface FormField {
   id: string;
   type: string;
@@ -11,6 +14,9 @@ export interface FormField {
   validationRegex?: string;
   errorMessage?: string;
   weightage?: number;
+  /**
+   * Scoring configuration for the field
+   */
   scoring?: {
     enabled: boolean;
     maxPoints?: number;
@@ -20,12 +26,18 @@ export interface FormField {
     requiresManualReview?: boolean;
     riskLevel?: 'low' | 'medium' | 'high' | 'critical';
   };
+  /**
+   * Validation rules for the field
+   */
   validation?: {
     message?: string;
     regex?: string;
   };
 }
 
+/**
+ * Represents a form template that can be used to create new forms
+ */
 export interface FormTemplate {
   id: string;
   name: string;
@@ -37,6 +49,9 @@ export interface FormTemplate {
   scoringModel?: string;
 }
 
+/**
+ * Represents a document attachment in a submission
+ */
 export interface DocumentAttachment {
   id: string;
   name: string;
@@ -46,16 +61,24 @@ export interface DocumentAttachment {
   uploadedAt: Date;
 }
 
+/**
+ * Represents the score assigned to a form submission
+ */
 export interface SubmissionScore {
   total: number;
   maxTotal: number;
+  percentage: number;
   riskLevel: 'low' | 'medium' | 'high' | 'critical';
+  riskScore?: number;
   reviewedBy: string;
   reviewedAt: Date;
   reviewComments: string;
-  percentage: number;
+  categoryScores?: Record<string, number>;
 }
 
+/**
+ * Represents an email recipient for form distribution
+ */
 export interface EmailRecipient {
   id: string;
   email: string;
@@ -67,11 +90,18 @@ export interface EmailRecipient {
   lastReminderAt?: Date;
 }
 
+/**
+ * Configuration settings for a form
+ */
 export interface FormSettings {
   allowMultipleSubmissions: boolean;
   requireLogin: boolean;
   showProgressBar: boolean;
-  theme: 'light' | 'dark';
+  theme: 'light' | 'dark' | 'custom';
+  customCss?: string;
+  /**
+   * Scoring configuration for the entire form
+   */
   scoring?: {
     enabled: boolean;
     maxTotalPoints: number;
@@ -83,11 +113,17 @@ export interface FormSettings {
       high: number;
     };
   };
+  /**
+   * Form expiration settings
+   */
   expiration?: {
     enabled: boolean;
     expirationDate?: Date;
     message?: string;
   };
+  /**
+   * Email distribution settings
+   */
   emailDistribution?: {
     enabled: boolean;
     recipients: EmailRecipient[];
@@ -95,11 +131,18 @@ export interface FormSettings {
     reminderIntervalDays: number;
     maxReminders: number;
   };
+  /**
+   * Approval workflow settings
+   */
   approval?: {
     enabled: boolean;
     requireApproval: boolean;
     approvers: string[];
+    autoApproveScore?: number;
   };
+  /**
+   * Document attachment settings
+   */
   documents?: {
     enabled: boolean;
     allowedTypes: string[];
@@ -109,6 +152,9 @@ export interface FormSettings {
   };
 }
 
+/**
+ * Represents a complete form with all its configuration
+ */
 export interface Form {
   id: string;
   title: string;
@@ -119,6 +165,9 @@ export interface Form {
   updatedAt: Date;
   status: 'draft' | 'published';
   submissions: number;
+  /**
+   * Analytics data for the form
+   */
   analytics: {
     views: number;
     submissions: number;
@@ -130,12 +179,18 @@ export interface Form {
   };
 }
 
+/**
+ * Represents a review activity performed on a submission
+ */
 export interface ReviewActivity {
   id: string;
   action: 'approved' | 'rejected' | 'under_review' | 'resent' | 'reminder_sent' | 'info_requested';
   comments: string;
   reviewedBy: string;
   reviewedAt: Date;
+  /**
+   * Additional metadata for the review action
+   */
   metadata?: {
     reason?: string;
     urgency?: 'low' | 'medium' | 'high';
@@ -148,6 +203,9 @@ export interface ReviewActivity {
   };
 }
 
+/**
+ * Represents a form submission with all related data
+ */
 export interface FormSubmission {
   id: string;
   formId: string;
@@ -157,4 +215,14 @@ export interface FormSubmission {
   status: 'submitted' | 'under_review' | 'approved' | 'rejected';
   score?: SubmissionScore;
   activityLog: ReviewActivity[];
+  // Submitter information
+  submitterEmail: string;
+  submitterName: string;
+  companyName?: string;
+  recipientId?: string;
+  // Form type classification
+  submissionType: 'vendor' | 'internal';
+  // Additional tracking fields
+  completionPercentage?: number;
+  timeSpent?: number;
 }

@@ -3,7 +3,7 @@ import { FormSubmission, Form } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
-import { CheckCircle, XCircle, AlertTriangle } from "lucide-react";
+import { CheckCircle, XCircle, AlertTriangle, Building, User } from "lucide-react";
 
 interface SubmissionDetailsProps {
   submission: FormSubmission;
@@ -11,6 +11,9 @@ interface SubmissionDetailsProps {
 }
 
 export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) => {
+  /**
+   * Calculate the completion percentage based on required fields
+   */
   const calculateCompletionPercentage = (submission: FormSubmission) => {
     if (form.fields.length === 0) return 0;
     
@@ -31,6 +34,9 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
     return Math.round((completedRequiredFields / requiredFields.length) * 100);
   };
 
+  /**
+   * Get user-friendly completion status text
+   */
   const getCompletionStatus = (submission: FormSubmission) => {
     const percentage = calculateCompletionPercentage(submission);
     
@@ -40,6 +46,9 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
     return 'Completed';
   };
 
+  /**
+   * Get appropriate styling for status badges
+   */
   const getStatusColor = (status: FormSubmission['status'], completionPercentage: number) => {
     if (completionPercentage < 100 && status === 'submitted') {
       return 'bg-orange-100 text-orange-800';
@@ -57,20 +66,78 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
     }
   };
 
+  /**
+   * Format submitter display name based on submission type
+   */
+  const getSubmitterDisplay = (submission: FormSubmission) => {
+    if (submission.submissionType === 'vendor') {
+      return {
+        name: submission.submitterName || 'Unknown User',
+        email: submission.submitterEmail,
+        company: submission.companyName || 'Unknown Company',
+        type: 'Vendor Submission'
+      };
+    } else {
+      return {
+        name: submission.submitterName || 'Internal User',
+        email: submission.submitterEmail,
+        company: 'Internal',
+        type: 'Internal Submission'
+      };
+    }
+  };
+
   const completionPercentage = calculateCompletionPercentage(submission);
   const completionStatus = getCompletionStatus(submission);
+  const submitterInfo = getSubmitterDisplay(submission);
 
   return (
     <div className="space-y-6">
-      {/* Submission Info */}
+      {/* Submitter Information */}
+      <Card className="border-blue-200 bg-blue-50">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            {submission.submissionType === 'vendor' ? (
+              <Building className="h-5 w-5 text-blue-600" />
+            ) : (
+              <User className="h-5 w-5 text-blue-600" />
+            )}
+            Submitter Information
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label className="text-sm font-medium text-gray-500">Name</Label>
+              <p className="text-sm font-medium">{submitterInfo.name}</p>
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-gray-500">Email</Label>
+              <p className="text-sm">{submitterInfo.email}</p>
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-gray-500">Organization</Label>
+              <p className="text-sm">{submitterInfo.company}</p>
+            </div>
+            <div>
+              <Label className="text-sm font-medium text-gray-500">Submission Type</Label>
+              <Badge variant={submission.submissionType === 'vendor' ? 'default' : 'secondary'}>
+                {submitterInfo.type}
+              </Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Submission Status Information */}
       <div className="grid grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg">
-        <div>
-          <Label className="text-sm font-medium text-gray-500">Submitted By</Label>
-          <p className="text-sm">{submission.companyName || submission.recipientId || 'Anonymous'}</p>
-        </div>
         <div>
           <Label className="text-sm font-medium text-gray-500">Submitted At</Label>
           <p className="text-sm">{new Date(submission.submittedAt).toLocaleString()}</p>
+        </div>
+        <div>
+          <Label className="text-sm font-medium text-gray-500">Time Spent</Label>
+          <p className="text-sm">{submission.timeSpent ? `${submission.timeSpent} minutes` : 'Not tracked'}</p>
         </div>
         <div>
           <Label className="text-sm font-medium text-gray-500">Completion</Label>
@@ -89,7 +156,7 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
         </div>
       </div>
 
-      {/* Completion Warning */}
+      {/* Completion Warning for incomplete submissions */}
       {completionPercentage < 100 && submission.status === 'submitted' && (
         <Card className="border-orange-200 bg-orange-50">
           <CardContent className="p-4">
@@ -133,6 +200,7 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
               </div>
             </div>
 
+            {/* Category Scores Display */}
             {submission.score.categoryScores && (
               <div>
                 <Label className="text-sm font-medium text-gray-500 mb-2 block">Category Scores</Label>
@@ -169,6 +237,7 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
                     {field.required && <span className="text-red-500">*</span>}
                   </Label>
                   <div className="flex items-center gap-2">
+                    {/* Response status indicator */}
                     {hasResponse ? (
                       <CheckCircle className="h-4 w-4 text-green-500" />
                     ) : field.required ? (
@@ -176,6 +245,7 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
                     ) : (
                       <div className="h-4 w-4" />
                     )}
+                    {/* Scoring information */}
                     {field.scoring?.enabled && (
                       <Badge variant="outline">
                         {field.scoring.maxPoints} pts

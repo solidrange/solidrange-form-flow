@@ -13,6 +13,9 @@ interface SubmissionCardProps {
 }
 
 export const SubmissionCard = ({ submission, form, isSelected, onClick }: SubmissionCardProps) => {
+  /**
+   * Calculate completion percentage based on required fields
+   */
   const calculateCompletionPercentage = (submission: FormSubmission) => {
     if (form.fields.length === 0) return 0;
     
@@ -33,6 +36,9 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
     return Math.round((completedRequiredFields / requiredFields.length) * 100);
   };
 
+  /**
+   * Get user-friendly completion status
+   */
   const getCompletionStatus = (submission: FormSubmission) => {
     const percentage = calculateCompletionPercentage(submission);
     
@@ -42,6 +48,9 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
     return 'Completed';
   };
 
+  /**
+   * Get appropriate icon for submission status
+   */
   const getStatusIcon = (status: FormSubmission['status'], completionPercentage: number) => {
     if (completionPercentage < 100 && status === 'submitted') {
       return <AlertTriangle className="h-4 w-4 text-orange-500" />;
@@ -59,6 +68,9 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
     }
   };
 
+  /**
+   * Get appropriate color styling for status badges
+   */
   const getStatusColor = (status: FormSubmission['status'], completionPercentage: number) => {
     if (completionPercentage < 100 && status === 'submitted') {
       return 'bg-orange-100 text-orange-800';
@@ -76,8 +88,28 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
     }
   };
 
+  /**
+   * Get display information for the submitter
+   */
+  const getSubmitterDisplay = (submission: FormSubmission) => {
+    if (submission.submissionType === 'vendor') {
+      return {
+        primary: submission.companyName || 'Unknown Company',
+        secondary: submission.submitterName || 'Unknown User',
+        email: submission.submitterEmail
+      };
+    } else {
+      return {
+        primary: submission.submitterName || 'Internal User',
+        secondary: submission.submitterEmail,
+        email: submission.submitterEmail
+      };
+    }
+  };
+
   const completionPercentage = calculateCompletionPercentage(submission);
   const completionStatus = getCompletionStatus(submission);
+  const submitterInfo = getSubmitterDisplay(submission);
 
   return (
     <Card 
@@ -87,6 +119,7 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
       onClick={onClick}
     >
       <CardContent className="p-4">
+        {/* Header with submitter info and status */}
         <div className="flex items-start justify-between mb-2">
           <div className="flex items-center gap-2">
             {submission.submissionType === 'vendor' ? (
@@ -96,10 +129,10 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
             )}
             <div className="flex flex-col">
               <span className="text-sm font-medium">
-                {submission.companyName || submission.recipientId || 'Anonymous'}
+                {submitterInfo.primary}
               </span>
-              {submission.submissionType === 'vendor' && submission.companyName && (
-                <span className="text-xs text-gray-500">{submission.recipientId}</span>
+              {submitterInfo.secondary && (
+                <span className="text-xs text-gray-500">{submitterInfo.secondary}</span>
               )}
             </div>
           </div>
@@ -108,13 +141,16 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
           </div>
         </div>
         
+        {/* Progress and status information */}
         <div className="space-y-2">
+          {/* Completion progress */}
           <div className="flex items-center justify-between">
             <span className="text-xs text-gray-500">Completion</span>
             <span className="text-xs font-medium">{completionPercentage}%</span>
           </div>
           <Progress value={completionPercentage} className="h-2" />
           
+          {/* Completion status */}
           <div className="flex items-center justify-between">
             <span className="text-xs text-gray-500">Status</span>
             <Badge variant="outline" className="text-xs">
@@ -122,6 +158,7 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
             </Badge>
           </div>
           
+          {/* Score display if available */}
           {submission.score && (
             <div className="flex items-center justify-between">
               <span className="text-xs text-gray-500">Score</span>
@@ -131,6 +168,7 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
             </div>
           )}
           
+          {/* Status badge and submission date */}
           <div className="flex items-center justify-between">
             <Badge className={getStatusColor(submission.status, completionPercentage)}>
               {submission.status.replace('_', ' ')}
@@ -140,10 +178,16 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
             </span>
           </div>
           
+          {/* Submission type indicator */}
           <div className="flex items-center justify-between">
             <Badge variant="outline" className="text-xs">
               {submission.submissionType === 'vendor' ? 'Vendor' : 'Internal'}
             </Badge>
+            {submission.timeSpent && (
+              <span className="text-xs text-gray-500">
+                {submission.timeSpent}min
+              </span>
+            )}
           </div>
         </div>
       </CardContent>

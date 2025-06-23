@@ -1,82 +1,55 @@
 
 import { FormSubmission } from "@/types/form";
 
+/**
+ * Sample form submissions for testing and demonstration purposes
+ * Includes both vendor and internal submission types with complete data
+ */
 export const sampleSubmissions: FormSubmission[] = [
   {
     id: "sub-001",
-    formId: "form-001",
-    responses: {
-      "company_name": "TechCorp Solutions",
-      "contact_email": "john.doe@techcorp.com",
-      "company_size": "100-500",
-      "industry": "Technology",
-      "risk_assessment": "Medium"
-    },
-    submittedAt: new Date("2024-01-15T10:30:00Z"),
-    submittedBy: "john.doe@techcorp.com",
+    formId: "form-001", 
+    submittedAt: new Date("2024-01-15T10:30:00"),
+    submittedBy: "vendor-001",
+    submitterEmail: "john.doe@acmecorp.com",
+    submitterName: "John Doe",
+    companyName: "ACME Corporation",
+    recipientId: "vendor-001",
+    submissionType: "vendor",
     status: "under_review",
+    completionPercentage: 95,
+    timeSpent: 25,
     score: {
-      total: 75,
+      total: 85,
       maxTotal: 100,
+      percentage: 85,
       riskLevel: "medium",
-      reviewedBy: "Admin User",
-      reviewedAt: new Date("2024-01-16T09:15:00Z"),
-      reviewComments: "Initial review completed, needs additional documentation"
-    },
-    activityLog: [
-      {
-        id: "act-001",
-        action: "under_review",
-        comments: "Initial review completed, needs additional documentation for security compliance",
-        reviewedBy: "Admin User",
-        reviewedAt: new Date("2024-01-16T09:15:00Z"),
-        metadata: {
-          urgency: "medium",
-          specificFields: ["security_compliance", "data_handling"],
-          requiredDocuments: ["Security Certificate", "Data Privacy Policy"]
-        }
+      riskScore: 65,
+      reviewedBy: "Sarah Wilson",
+      reviewedAt: new Date("2024-01-16T09:15:00"),
+      reviewComments: "Good overall compliance, minor issues with documentation.",
+      categoryScores: {
+        "Security": 90,
+        "Compliance": 80,
+        "Financial": 85
       }
-    ]
-  },
-  {
-    id: "sub-002",
-    formId: "form-001",
-    responses: {
-      "company_name": "StartupInc",
-      "contact_email": "sarah@startupinc.com",
-      "company_size": "1-50",
-      "industry": "Fintech",
-      "risk_assessment": "High"
     },
-    submittedAt: new Date("2024-01-14T14:20:00Z"),
-    submittedBy: "sarah@startupinc.com",
-    status: "approved",
-    score: {
-      total: 90,
-      maxTotal: 100,
-      riskLevel: "low",
-      reviewedBy: "Admin User",
-      reviewedAt: new Date("2024-01-15T11:30:00Z"),
-      reviewComments: "Excellent compliance record, approved for partnership"
+    responses: {
+      "company-name": "ACME Corporation",
+      "business-type": "Technology Services",
+      "annual-revenue": "$10M - $50M",
+      "employees": "100-500",
+      "security-certification": ["ISO 27001", "SOC 2"],
+      "data-handling": "Yes, we have comprehensive data handling procedures",
+      "insurance-coverage": "$5M General Liability"
     },
     activityLog: [
       {
-        id: "act-002",
+        id: "activity-001",
         action: "under_review",
-        comments: "Reviewing fintech compliance requirements",
-        reviewedBy: "Compliance Officer",
-        reviewedAt: new Date("2024-01-14T16:00:00Z"),
-        metadata: {
-          urgency: "high",
-          specificFields: ["financial_licenses"]
-        }
-      },
-      {
-        id: "act-003",
-        action: "approved",
-        comments: "All requirements met, excellent compliance record",
-        reviewedBy: "Admin User",
-        reviewedAt: new Date("2024-01-15T11:30:00Z"),
+        comments: "Starting initial review process",
+        reviewedBy: "Sarah Wilson",
+        reviewedAt: new Date("2024-01-16T09:15:00"),
         metadata: {
           urgency: "medium"
         }
@@ -84,120 +57,150 @@ export const sampleSubmissions: FormSubmission[] = [
     ]
   },
   {
-    id: "sub-003",
+    id: "sub-002",
     formId: "form-001",
-    responses: {
-      "company_name": "Global Enterprises",
-      "contact_email": "mike@globalent.com",
-      "company_size": "1000+",
-      "industry": "Manufacturing"
-    },
-    submittedAt: new Date("2024-01-13T09:45:00Z"),
-    submittedBy: "mike@globalent.com",
-    status: "rejected",
+    submittedAt: new Date("2024-01-14T14:20:00"),
+    submittedBy: "vendor-002",
+    submitterEmail: "mary.smith@techsolutions.com",
+    submitterName: "Mary Smith",
+    companyName: "Tech Solutions Ltd",
+    recipientId: "vendor-002",
+    submissionType: "vendor",
+    status: "approved",
+    completionPercentage: 100,
+    timeSpent: 32,
     score: {
-      total: 45,
+      total: 92,
       maxTotal: 100,
-      riskLevel: "high",
-      reviewedBy: "Risk Manager",
-      reviewedAt: new Date("2024-01-14T08:20:00Z"),
-      reviewComments: "High risk profile, multiple compliance issues identified"
+      percentage: 92,
+      riskLevel: "low",
+      riskScore: 15,
+      reviewedBy: "Mike Johnson",
+      reviewedAt: new Date("2024-01-15T11:30:00"),
+      reviewComments: "Excellent compliance record and documentation.",
+      categoryScores: {
+        "Security": 95,
+        "Compliance": 90,
+        "Financial": 91
+      }
+    },
+    responses: {
+      "company-name": "Tech Solutions Ltd",
+      "business-type": "Software Development",
+      "annual-revenue": "$5M - $10M",
+      "employees": "50-100",
+      "security-certification": ["ISO 27001", "SOC 2", "PCI DSS"],
+      "data-handling": "Yes, we maintain strict data handling protocols with regular audits",
+      "insurance-coverage": "$10M Professional Liability"
     },
     activityLog: [
       {
-        id: "act-004",
-        action: "under_review",
-        comments: "Reviewing large enterprise compliance requirements",
-        reviewedBy: "Risk Manager",
-        reviewedAt: new Date("2024-01-13T15:00:00Z"),
+        id: "activity-002",
+        action: "approved",
+        comments: "All requirements met, approved for vendor partnership",
+        reviewedBy: "Mike Johnson",
+        reviewedAt: new Date("2024-01-15T11:30:00"),
         metadata: {
-          urgency: "medium",
-          specificFields: ["environmental_compliance", "safety_records"]
+          urgency: "low"
         }
-      },
+      }
+    ]
+  },
+  {
+    id: "sub-003", 
+    formId: "form-001",
+    submittedAt: new Date("2024-01-13T16:45:00"),
+    submittedBy: "vendor-003",
+    submitterEmail: "bob.wilson@startupinc.com",
+    submitterName: "Bob Wilson",
+    companyName: "Startup Inc",
+    recipientId: "vendor-003",
+    submissionType: "vendor",
+    status: "rejected",
+    completionPercentage: 78,
+    timeSpent: 18,
+    score: {
+      total: 45,
+      maxTotal: 100,
+      percentage: 45,
+      riskLevel: "high",
+      riskScore: 85,
+      reviewedBy: "Sarah Wilson",
+      reviewedAt: new Date("2024-01-14T10:00:00"),
+      reviewComments: "Insufficient security measures and missing required certifications.",
+      categoryScores: {
+        "Security": 30,
+        "Compliance": 50,
+        "Financial": 55
+      }
+    },
+    responses: {
+      "company-name": "Startup Inc",
+      "business-type": "Consulting",
+      "annual-revenue": "$1M - $5M",
+      "employees": "10-50",
+      "security-certification": [],
+      "data-handling": "Basic procedures in place",
+      "insurance-coverage": "$1M General Liability"
+    },
+    activityLog: [
       {
-        id: "act-005",
+        id: "activity-003",
         action: "rejected",
-        comments: "Multiple compliance violations found in environmental and safety records",
-        reviewedBy: "Risk Manager",
-        reviewedAt: new Date("2024-01-14T08:20:00Z"),
+        comments: "Does not meet minimum security requirements",
+        reviewedBy: "Sarah Wilson", 
+        reviewedAt: new Date("2024-01-14T10:00:00"),
         metadata: {
-          reason: "policy_violation",
           urgency: "high",
-          specificFields: ["environmental_compliance", "safety_records"],
-          requiredDocuments: ["Updated Environmental Certificate", "Safety Audit Report"]
+          rejectionReason: "insufficient_security",
+          requiredDocuments: ["Security Audit Report", "ISO 27001 Certificate"]
         }
       }
     ]
   },
   {
     id: "sub-004",
-    formId: "form-001",
-    responses: {
-      "company_name": "HealthTech Pro",
-      "contact_email": "anna@healthtech.com",
-      "company_size": "50-100"
-    },
-    submittedAt: new Date("2024-01-12T16:15:00Z"),
-    submittedBy: "anna@healthtech.com",
-    status: "submitted",
-    activityLog: [
-      {
-        id: "act-006",
-        action: "reminder_sent",
-        comments: "Reminder sent to complete missing required fields",
-        reviewedBy: "System",
-        reviewedAt: new Date("2024-01-13T10:00:00Z"),
-        metadata: {
-          urgency: "low",
-          specificFields: ["industry", "risk_assessment"]
-        }
-      }
-    ]
-  },
-  {
-    id: "sub-005",
-    formId: "form-001",
-    responses: {
-      "company_name": "EcoSolutions Ltd",
-      "contact_email": "david@ecosolutions.com",
-      "company_size": "200-500",
-      "industry": "Environmental Services",
-      "risk_assessment": "Low"
-    },
-    submittedAt: new Date("2024-01-11T11:30:00Z"),
-    submittedBy: "david@ecosolutions.com",
-    status: "under_review",
+    formId: "form-002",
+    submittedAt: new Date("2024-01-12T09:15:00"),
+    submittedBy: "internal-001",
+    submitterEmail: "alice.brown@company.com",
+    submitterName: "Alice Brown",
+    submissionType: "internal",
+    status: "approved",
+    completionPercentage: 100,
+    timeSpent: 15,
     score: {
-      total: 85,
+      total: 88,
       maxTotal: 100,
+      percentage: 88,
       riskLevel: "low",
-      reviewedBy: "Environmental Specialist",
-      reviewedAt: new Date("2024-01-12T14:45:00Z"),
-      reviewComments: "Strong environmental compliance, reviewing operational procedures"
+      riskScore: 20,
+      reviewedBy: "HR Department",
+      reviewedAt: new Date("2024-01-12T14:30:00"),
+      reviewComments: "Internal assessment completed successfully.",
+      categoryScores: {
+        "Performance": 90,
+        "Compliance": 85,
+        "Training": 90
+      }
+    },
+    responses: {
+      "employee-id": "EMP-12345",
+      "department": "Engineering",
+      "role": "Senior Developer",
+      "training-completed": ["Security Awareness", "GDPR Training"],
+      "performance-rating": "Exceeds Expectations",
+      "compliance-status": "Compliant"
     },
     activityLog: [
       {
-        id: "act-007",
-        action: "under_review",
-        comments: "Excellent environmental compliance record, reviewing operational procedures",
-        reviewedBy: "Environmental Specialist",
-        reviewedAt: new Date("2024-01-12T14:45:00Z"),
+        id: "activity-004",
+        action: "approved",
+        comments: "Internal review completed, all requirements met",
+        reviewedBy: "HR Department",
+        reviewedAt: new Date("2024-01-12T14:30:00"),
         metadata: {
-          urgency: "low",
-          specificFields: ["operational_procedures"]
-        }
-      },
-      {
-        id: "act-008",
-        action: "resent",
-        comments: "Please provide additional details about waste management procedures",
-        reviewedBy: "Environmental Specialist",
-        reviewedAt: new Date("2024-01-13T09:30:00Z"),
-        metadata: {
-          urgency: "medium",
-          specificFields: ["waste_management"],
-          requiredDocuments: ["Waste Management Plan", "Environmental Impact Assessment"]
+          urgency: "low"
         }
       }
     ]
