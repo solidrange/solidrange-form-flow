@@ -1,41 +1,38 @@
 
 import { useState } from "react";
-import { Form, FormSubmission } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Download, FileText, BarChart3 } from "lucide-react";
+import { FileText, Download, TrendingUp, BarChart3 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ReportCustomization, ReportConfig } from "./reports/ReportCustomization";
+import { ReportCharts } from "./reports/ReportCharts";
+import { ReportGenerator } from "@/utils/reportGenerator";
+import { FormSubmission } from "@/types/form";
 import { toast } from "@/hooks/use-toast";
-import { generateSubmissionReport, generateFormAnalytics } from "@/utils/reportGenerator";
 
 interface ReportGenerationProps {
-  form: Form;
   submissions: FormSubmission[];
 }
 
-export const ReportGeneration = ({ form, submissions }: ReportGenerationProps) => {
-  const [reportType, setReportType] = useState<'submissions' | 'analytics'>('submissions');
+export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
   const [isGenerating, setIsGenerating] = useState(false);
+  const [previewConfig, setPreviewConfig] = useState<ReportConfig | null>(null);
 
-  const handleGenerateReport = async () => {
+  const handleGenerateReport = async (config: ReportConfig) => {
     setIsGenerating(true);
-    
     try {
-      if (reportType === 'submissions') {
-        await generateSubmissionReport(form, submissions);
-      } else {
-        await generateFormAnalytics(form, submissions);
-      }
+      const generator = new ReportGenerator(submissions, config);
+      await generator.generate();
       
       toast({
-        title: "Report Generated",
-        description: "Your report has been downloaded successfully.",
+        title: "Report Generated Successfully",
+        description: `Your ${config.format.toUpperCase()} report has been downloaded.`,
       });
     } catch (error) {
+      console.error('Error generating report:', error);
       toast({
-        title: "Error",
-        description: "Failed to generate report. Please try again.",
+        title: "Error Generating Report",
+        description: "There was an error generating your report. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -43,114 +40,408 @@ export const ReportGeneration = ({ form, submissions }: ReportGenerationProps) =
     }
   };
 
-  const getReportStats = () => {
-    const totalSubmissions = submissions.length;
-    const completedSubmissions = submissions.filter(s => s.status === 'approved' || s.status === 'submitted').length;
-    const averageScore = submissions.length > 0 
-      ? submissions.reduce((acc, sub) => acc + (sub.score?.percentage || 0), 0) / submissions.length 
-      : 0;
+  const getQuickReportStats = () => {
+    const total = submissions.length;
+    const approved = submissions.filter(s => s.status === 'approved').length;
+    const highRisk = submissions.filter(s => s.score?.riskLevel === 'high' || s.score?.riskLevel === 'critical').length;
+    const averageScore = submissions.reduce((sum, s) => sum + (s.score?.percentage || 0), 0) / total;
 
-    return {
-      totalSubmissions,
-      completedSubmissions,
-      averageScore: Math.round(averageScore)
-    };
+    return { total, approved, highRisk, averageScore: Math.round(averageScore) };
   };
 
-  const stats = getReportStats();
+  const stats = getQuickReportStats();
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-semibold">Report Generation</h2>
-          <p className="text-gray-600 mt-1">Generate detailed reports for form submissions and analytics</p>
-        </div>
-        <Badge variant="default" className="bg-green-100 text-green-800">
-          {stats.totalSubmissions} Submissions
-        </Badge>
-      </div>
-
-      {/* Report Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <FileText className="h-5 w-5 text-blue-500" />
-              <div>
-                <p className="text-sm text-gray-600">Total Submissions</p>
-                <p className="text-xl font-semibold">{stats.totalSubmissions}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-green-500" />
-              <div>
-                <p className="text-sm text-gray-600">Completed</p>
-                <p className="text-xl font-semibold">{stats.completedSubmissions}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <BarChart3 className="h-5 w-5 text-purple-500" />
-              <div>
-                <p className="text-sm text-gray-600">Average Score</p>
-                <p className="text-xl font-semibold">{stats.averageScore}%</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Report Generation */}
       <Card>
         <CardHeader>
-          <CardTitle>Generate Report</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <TrendingUp className="h-5 w-5" />
+            Report Generation Tool
+          </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-2">Report Type</label>
-            <Select value={reportType} onValueChange={(value: 'submissions' | 'analytics') => setReportType(value)}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="submissions">Submission Details Report</SelectItem>
-                <SelectItem value="analytics">Form Analytics Report</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <CardContent>
+          <Tabs defaultValue="quick-reports" className="w-full">
+            <TabsList className="grid w-full grid-cols-3">
+              <TabsTrigger value="quick-reports">Quick Reports</TabsTrigger>
+              <TabsTrigger value="custom-reports">Custom Reports</TabsTrigger>
+              <TabsTrigger value="analytics-preview">Analytics Preview</TabsTrigger>
+            </TabsList>
 
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-medium mb-2">
-              {reportType === 'submissions' ? 'Submission Details Report' : 'Form Analytics Report'}
-            </h4>
-            <p className="text-sm text-gray-600">
-              {reportType === 'submissions' 
-                ? 'Detailed breakdown of all submissions including responses, scores, and review status.'
-                : 'Statistical analysis including completion rates, average scores, and submission trends.'
-              }
-            </p>
-          </div>
+            <TabsContent value="quick-reports" className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Card className="p-4">
+                  <h3 className="font-semibold mb-2">Executive Summary Report</h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Comprehensive overview with key statistics, risk analysis, and executive recommendations.
+                  </p>
+                  <div className="text-sm space-y-1 mb-4">
+                    <div>Total Submissions: <span className="font-medium">{stats.total}</span></div>
+                    <div>Approved: <span className="font-medium">{stats.approved}</span></div>
+                    <div>High Risk: <span className="font-medium text-red-600">{stats.highRisk}</span></div>
+                    <div>Avg Score: <span className="font-medium">{stats.averageScore}%</span></div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      className="flex-1" 
+                      onClick={() => handleGenerateReport({
+                        title: "Executive Summary Report",
+                        description: "Comprehensive analysis of form submissions and risk assessment",
+                        includeSections: {
+                          overview: true,
+                          submissionStats: true,
+                          riskAnalysis: true,
+                          complianceStatus: true,
+                          detailedResponses: false,
+                          recommendations: true,
+                        },
+                        chartTypes: {
+                          submissionTrends: 'bar',
+                          riskDistribution: 'pie',
+                          complianceStatus: 'bar',
+                        },
+                        filterBy: {
+                          dateRange: { start: '', end: '' },
+                          submissionType: 'all',
+                          status: 'all',
+                          riskLevel: 'all',
+                        },
+                        customRecommendations: "",
+                        format: 'pdf',
+                      })}
+                      disabled={isGenerating}
+                    >
+                      <FileText className="h-4 w-4 mr-2" />
+                      PDF Report
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => handleGenerateReport({
+                        title: "Executive Summary Report",
+                        description: "Comprehensive analysis of form submissions and risk assessment",
+                        includeSections: {
+                          overview: true,
+                          submissionStats: true,
+                          riskAnalysis: true,
+                          complianceStatus: true,
+                          detailedResponses: true,
+                          recommendations: true,
+                        },
+                        chartTypes: {
+                          submissionTrends: 'bar',
+                          riskDistribution: 'pie',
+                          complianceStatus: 'bar',
+                        },
+                        filterBy: {
+                          dateRange: { start: '', end: '' },
+                          submissionType: 'all',
+                          status: 'all',
+                          riskLevel: 'all',
+                        },
+                        customRecommendations: "",
+                        format: 'excel',
+                      })}
+                      disabled={isGenerating}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Excel Report
+                    </Button>
+                  </div>
+                </Card>
 
-          <Button 
-            onClick={handleGenerateReport} 
-            disabled={isGenerating || submissions.length === 0}
-            className="w-full"
-          >
-            <Download className="h-4 w-4 mr-2" />
-            {isGenerating ? 'Generating...' : 'Generate Report'}
-          </Button>
+                <Card className="p-4">
+                  <h3 className="font-semibold mb-2">Risk Assessment Report</h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Detailed risk analysis with scoring breakdowns, compliance status, and actionable insights.
+                  </p>
+                  <div className="text-sm space-y-1 mb-4">
+                    <div>Risk Categories: <span className="font-medium">Data Security, Compliance, Operations</span></div>
+                    <div>Scoring Model: <span className="font-medium">Weighted Risk Matrix</span></div>
+                    <div>Assessment Framework: <span className="font-medium">ISO 27001, GDPR, SOC 2</span></div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      className="flex-1"
+                      onClick={() => handleGenerateReport({
+                        title: "Risk Assessment Report",
+                        description: "Detailed risk analysis and compliance assessment",
+                        includeSections: {
+                          overview: true,
+                          submissionStats: false,
+                          riskAnalysis: true,
+                          complianceStatus: true,
+                          detailedResponses: true,
+                          recommendations: true,
+                        },
+                        chartTypes: {
+                          submissionTrends: 'line',
+                          riskDistribution: 'donut',
+                          complianceStatus: 'bar',
+                        },
+                        filterBy: {
+                          dateRange: { start: '', end: '' },
+                          submissionType: 'all',
+                          status: 'all',
+                          riskLevel: 'all',
+                        },
+                        customRecommendations: "",
+                        format: 'pdf',
+                      })}
+                      disabled={isGenerating}
+                    >
+                      <FileText className="h-4 w-4 mr-2" />
+                      PDF Report
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => handleGenerateReport({
+                        title: "Risk Assessment Report",
+                        description: "Detailed risk analysis and compliance assessment",
+                        includeSections: {
+                          overview: true,
+                          submissionStats: true,
+                          riskAnalysis: true,
+                          complianceStatus: true,
+                          detailedResponses: true,
+                          recommendations: true,
+                        },
+                        chartTypes: {
+                          submissionTrends: 'line',
+                          riskDistribution: 'donut',
+                          complianceStatus: 'bar',
+                        },
+                        filterBy: {
+                          dateRange: { start: '', end: '' },
+                          submissionType: 'all',
+                          status: 'all',
+                          riskLevel: 'all',
+                        },
+                        customRecommendations: "",
+                        format: 'excel',
+                      })}
+                      disabled={isGenerating}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Excel Report
+                    </Button>
+                  </div>
+                </Card>
+
+                <Card className="p-4">
+                  <h3 className="font-semibold mb-2">Vendor Compliance Report</h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Compliance-focused report for vendor submissions with regulatory requirements analysis.
+                  </p>
+                  <div className="flex gap-2">
+                    <Button 
+                      className="flex-1"
+                      onClick={() => handleGenerateReport({
+                        title: "Vendor Compliance Report",
+                        description: "Compliance analysis for vendor submissions",
+                        includeSections: {
+                          overview: true,
+                          submissionStats: true,
+                          riskAnalysis: false,
+                          complianceStatus: true,
+                          detailedResponses: true,
+                          recommendations: true,
+                        },
+                        chartTypes: {
+                          submissionTrends: 'bar',
+                          riskDistribution: 'pie',
+                          complianceStatus: 'bar',
+                        },
+                        filterBy: {
+                          dateRange: { start: '', end: '' },
+                          submissionType: 'vendor',
+                          status: 'all',
+                          riskLevel: 'all',
+                        },
+                        customRecommendations: "",
+                        format: 'pdf',
+                      })}
+                      disabled={isGenerating}
+                    >
+                      <FileText className="h-4 w-4 mr-2" />
+                      PDF Report
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => handleGenerateReport({
+                        title: "Vendor Compliance Report",
+                        description: "Compliance analysis for vendor submissions",
+                        includeSections: {
+                          overview: true,
+                          submissionStats: true,
+                          riskAnalysis: true,
+                          complianceStatus: true,
+                          detailedResponses: true,
+                          recommendations: true,
+                        },
+                        chartTypes: {
+                          submissionTrends: 'bar',
+                          riskDistribution: 'pie',
+                          complianceStatus: 'bar',
+                        },
+                        filterBy: {
+                          dateRange: { start: '', end: '' },
+                          submissionType: 'vendor',
+                          status: 'all',
+                          riskLevel: 'all',
+                        },
+                        customRecommendations: "",
+                        format: 'excel',
+                      })}
+                      disabled={isGenerating}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Excel Report
+                    </Button>
+                  </div>
+                </Card>
+
+                <Card className="p-4">
+                  <h3 className="font-semibold mb-2">Management Dashboard</h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Executive summary with graphs, KPIs, and strategic recommendations for leadership.
+                  </p>
+                  <div className="flex gap-2">
+                    <Button 
+                      className="flex-1"
+                      onClick={() => handleGenerateReport({
+                        title: "Management Dashboard Report",
+                        description: "Executive dashboard with key performance indicators",
+                        includeSections: {
+                          overview: true,
+                          submissionStats: true,
+                          riskAnalysis: true,
+                          complianceStatus: true,
+                          detailedResponses: false,
+                          recommendations: true,
+                        },
+                        chartTypes: {
+                          submissionTrends: 'line',
+                          riskDistribution: 'pie',
+                          complianceStatus: 'bar',
+                        },
+                        filterBy: {
+                          dateRange: { start: '', end: '' },
+                          submissionType: 'all',
+                          status: 'all',
+                          riskLevel: 'all',
+                        },
+                        customRecommendations: "Focus on process automation and vendor relationship management to improve efficiency and reduce risk exposure.",
+                        format: 'pdf',
+                      })}
+                      disabled={isGenerating}
+                    >
+                      <TrendingUp className="h-4 w-4 mr-2" />
+                      PDF Dashboard
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={() => handleGenerateReport({
+                        title: "Management Dashboard Report",
+                        description: "Executive dashboard with key performance indicators",
+                        includeSections: {
+                          overview: true,
+                          submissionStats: true,
+                          riskAnalysis: true,
+                          complianceStatus: true,
+                          detailedResponses: true,
+                          recommendations: true,
+                        },
+                        chartTypes: {
+                          submissionTrends: 'line',
+                          riskDistribution: 'pie',
+                          complianceStatus: 'bar',
+                        },
+                        filterBy: {
+                          dateRange: { start: '', end: '' },
+                          submissionType: 'all',
+                          status: 'all',
+                          riskLevel: 'all',
+                        },
+                        customRecommendations: "Focus on process automation and vendor relationship management to improve efficiency and reduce risk exposure.",
+                        format: 'excel',
+                      })}
+                      disabled={isGenerating}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Excel Data
+                    </Button>
+                  </div>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="custom-reports" className="space-y-4">
+              <ReportCustomization 
+                submissions={submissions} 
+                onGenerateReport={handleGenerateReport}
+              />
+            </TabsContent>
+
+            <TabsContent value="analytics-preview" className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-sm">Submission Trends</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ReportCharts 
+                      submissions={submissions} 
+                      chartType="bar" 
+                      dataType="submissionTrends" 
+                    />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-sm">Risk Distribution</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ReportCharts 
+                      submissions={submissions} 
+                      chartType="pie" 
+                      dataType="riskDistribution" 
+                    />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-sm">Compliance Status</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ReportCharts 
+                      submissions={submissions} 
+                      chartType="bar" 
+                      dataType="complianceStatus" 
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
+
+      {isGenerating && (
+        <Card>
+          <CardContent className="flex items-center justify-center py-8">
+            <div className="text-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+              <p>Generating your report...</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 };
