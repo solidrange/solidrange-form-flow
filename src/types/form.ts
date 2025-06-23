@@ -195,11 +195,22 @@ export interface FormSubmission {
   submitterEmail: string;
   submitterName: string;
   /**
+   * Submission type - vendor or internal
+   */
+  submissionType: 'vendor' | 'internal';
+  /**
+   * Company name for vendor submissions
+   */
+  companyName?: string;
+  /**
    * Vendor information for the submission
    */
   vendorInfo: VendorInfo;
   status: 'submitted' | 'under_review' | 'approved' | 'rejected' | 'pending';
-  score?: number;
+  /**
+   * Score object with detailed scoring information
+   */
+  score?: SubmissionScore;
   /**
    * Activity log for tracking review activities
    */
@@ -222,7 +233,7 @@ export interface Form {
   updatedAt: Date;
   status: 'draft' | 'published';
   /**
-   * Array of form submissions - changed from number to FormSubmission[]
+   * Array of form submissions
    */
   submissions: FormSubmission[];
   /**

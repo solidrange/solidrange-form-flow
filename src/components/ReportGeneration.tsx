@@ -39,7 +39,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
         createdAt: new Date(),
         updatedAt: new Date(),
         status: 'published' as const,
-        submissions: submissions.length,
+        submissions: submissions, // Pass the actual submissions array
         analytics: {
           views: 0,
           submissions: submissions.length,
