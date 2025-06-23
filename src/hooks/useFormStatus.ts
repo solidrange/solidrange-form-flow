@@ -9,6 +9,7 @@ export interface FormStatusHook {
   isDraft: boolean;
   publishForm: () => void;
   setToDraft: () => void;
+  canEdit: boolean;
 }
 
 export const useFormStatus = (initialStatus: FormStatus = 'draft'): FormStatusHook => {
@@ -22,6 +23,7 @@ export const useFormStatus = (initialStatus: FormStatus = 'draft'): FormStatusHo
     isPublished: status === 'published',
     isDraft: status === 'draft',
     publishForm,
-    setToDraft
+    setToDraft,
+    canEdit: status === 'draft'
   };
 };

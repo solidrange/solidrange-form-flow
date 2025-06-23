@@ -11,7 +11,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
+import { Lock } from "lucide-react";
 
 interface FormBuilderProps {
   formFields: FormField[];
@@ -80,11 +82,44 @@ export const FormBuilder = ({
     });
   };
 
+  const handleReadOnlyAction = () => {
+    toast({
+      title: "Form is Published",
+      description: "Move this form to draft state to make changes.",
+      variant: "destructive",
+    });
+  };
+
+  const safeOnAddField = isPublished ? handleReadOnlyAction : onAddField;
+  const safeOnUpdateField = isPublished ? () => handleReadOnlyAction() : onUpdateField;
+  const safeOnRemoveField = isPublished ? () => handleReadOnlyAction() : onRemoveField;
+  const safeOnUpdateTitle = isPublished ? () => handleReadOnlyAction() : onUpdateTitle;
+  const safeOnUpdateDescription = isPublished ? () => handleReadOnlyAction() : onUpdateDescription;
+  const safeOnReorderFields = isPublished ? () => handleReadOnlyAction() : onReorderFields;
+
   return (
     <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
       {/* Field Palette */}
       <div className="col-span-3">
-        <FieldPalette onAddField={onAddField} />
+        {isPublished ? (
+          <Card className="h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Lock className="h-4 w-4" />
+                Read Only
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex items-center justify-center h-full">
+              <div className="text-center text-gray-500">
+                <Lock className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <p className="text-sm">Form is published</p>
+                <p className="text-xs mt-1">Move to draft to edit</p>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <FieldPalette onAddField={safeOnAddField} />
+        )}
       </div>
 
       {/* Form Canvas */}
@@ -92,14 +127,25 @@ export const FormBuilder = ({
         <Card className="h-full">
           <CardHeader>
             <div className="space-y-4">
+              {isPublished && (
+                <div className="flex items-center gap-2 p-2 bg-blue-50 rounded-md">
+                  <Lock className="h-4 w-4 text-blue-600" />
+                  <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                    Published - Read Only
+                  </Badge>
+                </div>
+              )}
+              
               <div>
                 <Label htmlFor="form-title">Form Title</Label>
                 <Input
                   id="form-title"
                   value={formTitle}
-                  onChange={(e) => onUpdateTitle(e.target.value)}
+                  onChange={(e) => safeOnUpdateTitle(e.target.value)}
                   placeholder="Enter form title"
                   className="mt-1"
+                  readOnly={isPublished}
+                  disabled={isPublished}
                 />
               </div>
               <div>
@@ -107,10 +153,12 @@ export const FormBuilder = ({
                 <Textarea
                   id="form-description"
                   value={formDescription}
-                  onChange={(e) => onUpdateDescription(e.target.value)}
+                  onChange={(e) => safeOnUpdateDescription(e.target.value)}
                   placeholder="Enter form description"
                   className="mt-1"
                   rows={2}
+                  readOnly={isPublished}
+                  disabled={isPublished}
                 />
               </div>
               
@@ -119,6 +167,7 @@ export const FormBuilder = ({
                 onCategoryChange={onCategoryChange}
                 onSaveToLibrary={handleSaveToLibrary}
                 canSaveToLibrary={formFields.length > 0}
+                readOnly={isPublished}
               />
             </div>
           </CardHeader>
@@ -134,19 +183,21 @@ export const FormBuilder = ({
                   fields={formFields}
                   selectedField={selectedField}
                   onSelectField={setSelectedField}
-                  onUpdateField={onUpdateField}
-                  onRemoveField={onRemoveField}
-                  onAddField={onAddField}
-                  onReorderFields={onReorderFields}
+                  onUpdateField={safeOnUpdateField}
+                  onRemoveField={safeOnRemoveField}
+                  onAddField={safeOnAddField}
+                  onReorderFields={safeOnReorderFields}
+                  readOnly={isPublished}
                 />
               </TabsContent>
               
               <TabsContent value="attachments" className="mt-4">
                 <FileAttachmentManager
                   attachments={attachments}
-                  onUpdateAttachments={onUpdateAttachments}
+                  onUpdateAttachments={isPublished ? () => handleReadOnlyAction() : onUpdateAttachments}
                   allowedTypes={allowedFileTypes}
                   maxSize={maxFileSize}
+                  readOnly={isPublished}
                 />
               </TabsContent>
             </Tabs>
@@ -158,7 +209,8 @@ export const FormBuilder = ({
       <div className="col-span-3">
         <FieldEditor
           selectedField={selectedField ? formFields.find(f => f.id === selectedField) : null}
-          onUpdateField={onUpdateField}
+          onUpdateField={safeOnUpdateField}
+          readOnly={isPublished}
         />
       </div>
     </div>

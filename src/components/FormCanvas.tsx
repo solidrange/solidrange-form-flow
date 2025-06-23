@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { FormField } from "@/types/form";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Trash2, Edit, GripVertical } from "lucide-react";
+import { Trash2, Edit, GripVertical, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface FormCanvasProps {
@@ -14,6 +13,7 @@ interface FormCanvasProps {
   onRemoveField: (fieldId: string) => void;
   onAddField: (field: FormField) => void;
   onReorderFields: (dragIndex: number, hoverIndex: number) => void;
+  readOnly?: boolean;
 }
 
 export const FormCanvas = ({
@@ -23,6 +23,7 @@ export const FormCanvas = ({
   onRemoveField,
   onAddField,
   onReorderFields,
+  readOnly = false,
 }: FormCanvasProps) => {
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -43,12 +44,14 @@ export const FormCanvas = ({
   };
 
   const handleDragOver = (e: React.DragEvent) => {
+    if (readOnly) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'copy';
     setIsDragOver(true);
   };
 
   const handleDragLeave = (e: React.DragEvent) => {
+    if (readOnly) return;
     if (!e.currentTarget.contains(e.relatedTarget as Node)) {
       setIsDragOver(false);
       setDragOverIndex(null);
@@ -56,6 +59,7 @@ export const FormCanvas = ({
   };
 
   const handleDrop = (e: React.DragEvent) => {
+    if (readOnly) return;
     e.preventDefault();
     setIsDragOver(false);
     setDragOverIndex(null);
@@ -79,6 +83,10 @@ export const FormCanvas = ({
   };
 
   const handleFieldDragStart = (e: React.DragEvent, fieldId: string) => {
+    if (readOnly) {
+      e.preventDefault();
+      return;
+    }
     e.dataTransfer.setData('application/json', JSON.stringify({
       source: 'field',
       fieldId
@@ -87,6 +95,7 @@ export const FormCanvas = ({
   };
 
   const handleFieldDragOver = (e: React.DragEvent, index: number) => {
+    if (readOnly) return;
     e.preventDefault();
     e.stopPropagation();
     setDragOverIndex(index);
@@ -97,15 +106,25 @@ export const FormCanvas = ({
       <div 
         className={cn(
           "h-64 flex items-center justify-center border-2 border-dashed rounded-lg transition-colors",
-          isDragOver ? "border-indigo-500 bg-indigo-50" : "border-gray-300"
+          readOnly ? "border-gray-200" : (isDragOver ? "border-indigo-500 bg-indigo-50" : "border-gray-300")
         )}
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
+        onDragOver={!readOnly ? handleDragOver : undefined}
+        onDragLeave={!readOnly ? handleDragLeave : undefined}
+        onDrop={!readOnly ? handleDrop : undefined}
       >
         <div className="text-center">
-          <p className="text-gray-500 text-lg mb-2">No fields added yet</p>
-          <p className="text-gray-400 text-sm">Drag fields from the palette to start building your form</p>
+          {readOnly ? (
+            <>
+              <Lock className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+              <p className="text-gray-500 text-lg mb-2">Published Form</p>
+              <p className="text-gray-400 text-sm">No fields to display</p>
+            </>
+          ) : (
+            <>
+              <p className="text-gray-500 text-lg mb-2">No fields added yet</p>
+              <p className="text-gray-400 text-sm">Drag fields from the palette to start building your form</p>
+            </>
+          )}
         </div>
       </div>
     );
@@ -115,11 +134,11 @@ export const FormCanvas = ({
     <div 
       className={cn(
         "space-y-4 min-h-[200px] p-2 rounded-lg transition-colors",
-        isDragOver && "bg-indigo-50"
+        !readOnly && isDragOver && "bg-indigo-50"
       )}
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
+      onDragOver={!readOnly ? handleDragOver : undefined}
+      onDragLeave={!readOnly ? handleDragLeave : undefined}
+      onDrop={!readOnly ? handleDrop : undefined}
     >
       {fields.map((field, index) => (
         <Card
@@ -127,16 +146,21 @@ export const FormCanvas = ({
           className={cn(
             "p-4 cursor-pointer transition-all group",
             selectedField === field.id && "ring-2 ring-indigo-500 bg-indigo-50",
-            dragOverIndex === index && "border-t-2 border-indigo-500"
+            !readOnly && dragOverIndex === index && "border-t-2 border-indigo-500",
+            readOnly && "opacity-75"
           )}
-          draggable
+          draggable={!readOnly}
           onDragStart={(e) => handleFieldDragStart(e, field.id)}
-          onDragOver={(e) => handleFieldDragOver(e, index)}
+          onDragOver={(e) => !readOnly && handleFieldDragOver(e, index)}
           onClick={() => onSelectField(field.id)}
         >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <GripVertical className="h-4 w-4 text-gray-400 cursor-grab group-hover:text-gray-600" />
+              {readOnly ? (
+                <Lock className="h-4 w-4 text-gray-400" />
+              ) : (
+                <GripVertical className="h-4 w-4 text-gray-400 cursor-grab group-hover:text-gray-600" />
+              )}
               <span className="font-medium">{field.label}</span>
               {field.required && <span className="text-red-500">*</span>}
             </div>
@@ -148,6 +172,7 @@ export const FormCanvas = ({
                   e.stopPropagation();
                   onSelectField(field.id);
                 }}
+                disabled={readOnly}
               >
                 <Edit className="h-4 w-4" />
               </Button>
@@ -156,8 +181,9 @@ export const FormCanvas = ({
                 variant="ghost"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onRemoveField(field.id);
+                  if (!readOnly) onRemoveField(field.id);
                 }}
+                disabled={readOnly}
               >
                 <Trash2 className="h-4 w-4" />
               </Button>

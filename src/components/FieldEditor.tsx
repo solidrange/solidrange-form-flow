@@ -7,23 +7,27 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, X } from "lucide-react";
+import { Plus, X, Lock } from "lucide-react";
 
 interface FieldEditorProps {
   selectedField: FormField | null;
   onUpdateField: (fieldId: string, updates: Partial<FormField>) => void;
+  readOnly?: boolean;
 }
 
-export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) => {
+export const FieldEditor = ({ selectedField, onUpdateField, readOnly = false }: FieldEditorProps) => {
   if (!selectedField) {
     return (
       <Card className="h-full">
         <CardHeader>
-          <CardTitle className="text-lg">Field Properties</CardTitle>
+          <CardTitle className="text-lg flex items-center gap-2">
+            {readOnly && <Lock className="h-4 w-4" />}
+            Field Properties
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-gray-500 text-center py-8">
-            Select a field to edit its properties
+            {readOnly ? "Published form - Select a field to view properties" : "Select a field to edit its properties"}
           </p>
         </CardContent>
       </Card>
@@ -31,47 +35,57 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
   }
 
   const updateField = (updates: Partial<FormField>) => {
-    onUpdateField(selectedField.id, updates);
+    if (!readOnly) {
+      onUpdateField(selectedField.id, updates);
+    }
   };
 
   const updateScoring = (updates: Partial<NonNullable<FormField['scoring']>>) => {
-    updateField({
-      scoring: {
-        ...selectedField.scoring,
-        enabled: selectedField.scoring?.enabled || false,
-        ...updates
-      }
-    });
+    if (!readOnly) {
+      updateField({
+        scoring: {
+          ...selectedField.scoring,
+          enabled: selectedField.scoring?.enabled || false,
+          ...updates
+        }
+      });
+    }
   };
 
   const addOption = () => {
+    if (readOnly) return;
     const currentOptions = selectedField.options || [];
     updateField({ options: [...currentOptions, `Option ${currentOptions.length + 1}`] });
   };
 
   const updateOption = (index: number, value: string) => {
+    if (readOnly) return;
     const newOptions = [...(selectedField.options || [])];
     newOptions[index] = value;
     updateField({ options: newOptions });
   };
 
   const removeOption = (index: number) => {
+    if (readOnly) return;
     const newOptions = selectedField.options?.filter((_, idx) => idx !== index);
     updateField({ options: newOptions });
   };
 
   const addCorrectAnswer = () => {
+    if (readOnly) return;
     const currentAnswers = selectedField.scoring?.correctAnswers || [];
     updateScoring({ correctAnswers: [...currentAnswers, ''] });
   };
 
   const updateCorrectAnswer = (index: number, value: string) => {
+    if (readOnly) return;
     const newAnswers = [...(selectedField.scoring?.correctAnswers || [])];
     newAnswers[index] = value;
     updateScoring({ correctAnswers: newAnswers });
   };
 
   const removeCorrectAnswer = (index: number) => {
+    if (readOnly) return;
     const newAnswers = selectedField.scoring?.correctAnswers?.filter((_, idx) => idx !== index);
     updateScoring({ correctAnswers: newAnswers });
   };
@@ -79,7 +93,11 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
   return (
     <Card className="h-full overflow-auto">
       <CardHeader>
-        <CardTitle className="text-lg">Field Properties</CardTitle>
+        <CardTitle className="text-lg flex items-center gap-2">
+          {readOnly && <Lock className="h-4 w-4" />}
+          Field Properties
+          {readOnly && <span className="text-sm font-normal text-gray-500">(Read Only)</span>}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
@@ -89,6 +107,8 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
             value={selectedField.label}
             onChange={(e) => updateField({ label: e.target.value })}
             className="mt-1"
+            readOnly={readOnly}
+            disabled={readOnly}
           />
         </div>
 
@@ -99,6 +119,8 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
             value={selectedField.placeholder || ''}
             onChange={(e) => updateField({ placeholder: e.target.value })}
             className="mt-1"
+            readOnly={readOnly}
+            disabled={readOnly}
           />
         </div>
 
@@ -107,6 +129,7 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
             id="field-required"
             checked={selectedField.required}
             onCheckedChange={(checked) => updateField({ required: !!checked })}
+            disabled={readOnly}
           />
           <Label htmlFor="field-required">Required field</Label>
         </div>
@@ -121,25 +144,30 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
                     value={option}
                     onChange={(e) => updateOption(index, e.target.value)}
                     placeholder={`Option ${index + 1}`}
+                    readOnly={readOnly}
+                    disabled={readOnly}
                   />
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => removeOption(index)}
+                    disabled={readOnly}
                   >
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
               ))}
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={addOption}
-                className="w-full"
-              >
-                <Plus className="h-4 w-4 mr-2" />
-                Add Option
-              </Button>
+              {!readOnly && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={addOption}
+                  className="w-full"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Add Option
+                </Button>
+              )}
             </div>
           </div>
         )}
@@ -151,6 +179,7 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
               id="enable-scoring"
               checked={selectedField.scoring?.enabled || false}
               onCheckedChange={(checked) => updateScoring({ enabled: !!checked })}
+              disabled={readOnly}
             />
             <Label htmlFor="enable-scoring">Enable scoring for this field</Label>
           </div>
@@ -165,6 +194,8 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
                   value={selectedField.scoring.maxPoints || 10}
                   onChange={(e) => updateScoring({ maxPoints: parseInt(e.target.value) || 10 })}
                   className="mt-1"
+                  readOnly={readOnly}
+                  disabled={readOnly}
                 />
               </div>
 
@@ -173,6 +204,7 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
                 <Select
                   value={selectedField.scoring.weightMultiplier?.toString() || "1"}
                   onValueChange={(value) => updateScoring({ weightMultiplier: parseInt(value) })}
+                  disabled={readOnly}
                 >
                   <SelectTrigger className="mt-1">
                     <SelectValue />
@@ -196,6 +228,7 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
                         <Select
                           value={answer}
                           onValueChange={(value) => updateCorrectAnswer(index, value)}
+                          disabled={readOnly}
                         >
                           <SelectTrigger>
                             <SelectValue placeholder="Select correct answer" />
@@ -212,20 +245,23 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
                           size="sm"
                           variant="ghost"
                           onClick={() => removeCorrectAnswer(index)}
+                          disabled={readOnly}
                         >
                           <X className="h-4 w-4" />
                         </Button>
                       </div>
                     ))}
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={addCorrectAnswer}
-                      className="w-full"
-                    >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Correct Answer
-                    </Button>
+                    {!readOnly && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={addCorrectAnswer}
+                        className="w-full"
+                      >
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Correct Answer
+                      </Button>
+                    )}
                   </div>
                 </div>
               )}
@@ -235,6 +271,7 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
                   id="manual-review"
                   checked={selectedField.scoring.requiresManualReview || false}
                   onCheckedChange={(checked) => updateScoring({ requiresManualReview: !!checked })}
+                  disabled={readOnly}
                 />
                 <Label htmlFor="manual-review">Requires manual review</Label>
               </div>
@@ -256,6 +293,8 @@ export const FieldEditor = ({ selectedField, onUpdateField }: FieldEditorProps) 
             placeholder="Custom validation message"
             className="mt-1"
             rows={2}
+            readOnly={readOnly}
+            disabled={readOnly}
           />
         </div>
       </CardContent>
