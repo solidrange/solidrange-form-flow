@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
@@ -913,7 +912,7 @@ const Index = () => {
               {/* Settings Tab */}
               <TabsContent value="settings" className="mt-4">
                 <SettingsPanel
-                  formSettings={formSettings}
+                  settings={formSettings}
                   onUpdateSettings={updateFormSettings}
                 />
               </TabsContent>
