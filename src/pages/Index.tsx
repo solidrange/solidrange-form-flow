@@ -912,8 +912,31 @@ const Index = () => {
               {/* Settings Tab */}
               <TabsContent value="settings" className="mt-4">
                 <SettingsPanel
-                  settings={formSettings}
-                  onUpdateSettings={updateFormSettings}
+                  form={{
+                    id: currentFormId || Date.now().toString(),
+                    title: formTitle,
+                    description: formDescription,
+                    fields: formFields,
+                    settings: formSettings,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    status: status,
+                    submissions: 0,
+                    analytics: {
+                      views: 0,
+                      submissions: 0,
+                      completionRate: 0,
+                      emailsSent: 0,
+                      emailsCompleted: 0,
+                      averageCompletionTime: 0,
+                      dropoffRate: 0
+                    }
+                  }}
+                  onUpdate={(updatedForm) => {
+                    setFormSettings(updatedForm.settings);
+                    if (updatedForm.title !== formTitle) setFormTitle(updatedForm.title);
+                    if (updatedForm.description !== formDescription) setFormDescription(updatedForm.description);
+                  }}
                 />
               </TabsContent>
             </Tabs>
