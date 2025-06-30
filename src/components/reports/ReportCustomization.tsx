@@ -38,6 +38,7 @@ export interface ReportConfig {
   };
   customRecommendations: string;
   format: 'pdf' | 'excel';
+  includeCharts?: boolean;
 }
 
 export const ReportCustomization = ({ submissions, onGenerateReport }: ReportCustomizationProps) => {
@@ -65,6 +66,7 @@ export const ReportCustomization = ({ submissions, onGenerateReport }: ReportCus
     },
     customRecommendations: "",
     format: 'pdf',
+    includeCharts: true,
   });
 
   const updateSection = (section: keyof ReportConfig['includeSections'], value: boolean) => {
@@ -135,6 +137,19 @@ export const ReportCustomization = ({ submissions, onGenerateReport }: ReportCus
           </div>
         </div>
 
+        {/* Chart Options */}
+        <div>
+          <Label className="text-base font-semibold">Chart Options</Label>
+          <div className="flex items-center space-x-2 mt-2">
+            <Checkbox
+              id="include-charts"
+              checked={config.includeCharts || false}
+              onCheckedChange={(checked) => setConfig(prev => ({ ...prev, includeCharts: !!checked }))}
+            />
+            <Label htmlFor="include-charts">Include Charts in Report</Label>
+          </div>
+        </div>
+
         {/* Report Sections */}
         <div>
           <Label className="text-base font-semibold">Include Sections</Label>
@@ -152,32 +167,34 @@ export const ReportCustomization = ({ submissions, onGenerateReport }: ReportCus
           </div>
         </div>
 
-        {/* Chart Types */}
-        <div>
-          <Label className="text-base font-semibold">Chart Types</Label>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-            {chartOptions.map(({ key, label, options }) => (
-              <div key={key}>
-                <Label>{label}</Label>
-                <Select 
-                  value={config.chartTypes[key as keyof ReportConfig['chartTypes']]} 
-                  onValueChange={(value) => updateChartType(key as keyof ReportConfig['chartTypes'], value)}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {options.map(option => (
-                      <SelectItem key={option} value={option}>
-                        {option.charAt(0).toUpperCase() + option.slice(1)} Chart
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            ))}
+        {/* Chart Types - Only show if charts are enabled */}
+        {config.includeCharts && (
+          <div>
+            <Label className="text-base font-semibold">Chart Types</Label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+              {chartOptions.map(({ key, label, options }) => (
+                <div key={key}>
+                  <Label>{label}</Label>
+                  <Select 
+                    value={config.chartTypes[key as keyof ReportConfig['chartTypes']]} 
+                    onValueChange={(value) => updateChartType(key as keyof ReportConfig['chartTypes'], value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {options.map(option => (
+                        <SelectItem key={option} value={option}>
+                          {option.charAt(0).toUpperCase() + option.slice(1)} Chart
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Filters */}
         <div>
@@ -231,7 +248,7 @@ export const ReportCustomization = ({ submissions, onGenerateReport }: ReportCus
         </div>
 
         <Button onClick={() => onGenerateReport(config)} className="w-full">
-          Generate {config.format.toUpperCase()} Report
+          Generate {config.format.toUpperCase()} Report {config.includeCharts && '(with Charts)'}
         </Button>
       </CardContent>
     </Card>

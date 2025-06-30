@@ -1,8 +1,8 @@
-
 import { FormSubmission } from "@/types/form";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import * as XLSX from "xlsx";
+import html2canvas from "html2canvas";
 
 /**
  * Configuration interface for report generation
@@ -32,11 +32,22 @@ export interface ReportConfig {
   };
   customRecommendations: string;
   format: 'pdf' | 'excel';
+  includeCharts?: boolean;
+}
+
+/**
+ * Interface for chart data that will be rendered in reports
+ */
+interface ChartData {
+  type: 'bar' | 'line' | 'pie' | 'donut';
+  title: string;
+  data: any[];
+  elementId?: string;
 }
 
 /**
  * Main class for generating reports from form submissions
- * Handles both PDF and Excel report generation with customizable sections
+ * Handles both PDF and Excel report generation with customizable sections and charts
  */
 export class ReportGenerator {
   private submissions: FormSubmission[];
@@ -44,7 +55,7 @@ export class ReportGenerator {
 
   constructor(submissions: FormSubmission[], config: ReportConfig) {
     this.submissions = submissions;
-    this.config = config;
+    this.config = { ...config, includeCharts: config.includeCharts ?? true };
   }
 
   /**
@@ -60,7 +71,123 @@ export class ReportGenerator {
   }
 
   /**
-   * Generates a PDF report with all selected sections
+   * Generates chart data for different report sections
+   */
+  private generateChartData(): ChartData[] {
+    const charts: ChartData[] = [];
+
+    // Submission Trends Chart
+    if (this.config.includeSections.submissionStats) {
+      const monthlyData = this.submissions.reduce((acc, sub) => {
+        const month = new Date(sub.submittedAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+        acc[month] = (acc[month] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+      
+      const trendData = Object.entries(monthlyData).map(([month, count]) => ({
+        name: month,
+        value: count,
+        submissions: count
+      }));
+
+      charts.push({
+        type: this.config.chartTypes.submissionTrends,
+        title: 'Submission Trends',
+        data: trendData
+      });
+    }
+
+    // Risk Distribution Chart
+    if (this.config.includeSections.riskAnalysis) {
+      const riskData = this.submissions.reduce((acc, sub) => {
+        const risk = sub.score?.riskLevel || 'unknown';
+        acc[risk] = (acc[risk] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+      
+      const riskChartData = Object.entries(riskData).map(([risk, count]) => ({
+        name: risk.charAt(0).toUpperCase() + risk.slice(1),
+        value: count
+      }));
+
+      charts.push({
+        type: this.config.chartTypes.riskDistribution,
+        title: 'Risk Distribution',
+        data: riskChartData
+      });
+    }
+
+    // Compliance Status Chart
+    if (this.config.includeSections.complianceStatus) {
+      const statusData = this.submissions.reduce((acc, sub) => {
+        acc[sub.status] = (acc[sub.status] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+      
+      const complianceChartData = Object.entries(statusData).map(([status, count]) => ({
+        name: status.replace('_', ' ').charAt(0).toUpperCase() + status.replace('_', ' ').slice(1),
+        value: count
+      }));
+
+      charts.push({
+        type: this.config.chartTypes.complianceStatus,
+        title: 'Compliance Status',
+        data: complianceChartData
+      });
+    }
+
+    return charts;
+  }
+
+  /**
+   * Captures chart as image for PDF embedding
+   */
+  private async captureChartAsImage(chartElement: HTMLElement): Promise<string> {
+    try {
+      const canvas = await html2canvas(chartElement, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+        allowTaint: true
+      });
+      return canvas.toDataURL('image/png');
+    } catch (error) {
+      console.error('Error capturing chart:', error);
+      return '';
+    }
+  }
+
+  /**
+   * Creates a temporary chart element for image capture
+   */
+  private createTemporaryChart(chartData: ChartData): HTMLElement {
+    const container = document.createElement('div');
+    container.style.width = '600px';
+    container.style.height = '400px';
+    container.style.position = 'absolute';
+    container.style.left = '-9999px';
+    container.style.backgroundColor = '#ffffff';
+    container.id = `temp-chart-${Date.now()}`;
+    
+    document.body.appendChild(container);
+    
+    // This would be replaced with actual chart rendering logic
+    // For now, creating a placeholder
+    container.innerHTML = `
+      <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; border: 2px solid #e2e8f0; border-radius: 8px;">
+        <div style="text-align: center;">
+          <h3 style="margin: 0; color: #1f2937; font-size: 18px; margin-bottom: 10px;">${chartData.title}</h3>
+          <p style="margin: 0; color: #6b7280; font-size: 14px;">${chartData.type.toUpperCase()} Chart</p>
+          <p style="margin: 5px 0 0 0; color: #9ca3af; font-size: 12px;">${chartData.data.length} data points</p>
+        </div>
+      </div>
+    `;
+    
+    return container;
+  }
+
+  /**
+   * Generates a PDF report with all selected sections and charts
    * Uses jsPDF and autoTable for structured document creation
    */
   private async generatePDF(): Promise<void> {
@@ -75,6 +202,39 @@ export class ReportGenerator {
     doc.setFontSize(12);
     doc.text(this.config.description, 20, yPosition);
     yPosition += 20;
+
+    // Generate charts if enabled
+    if (this.config.includeCharts) {
+      const chartData = this.generateChartData();
+      
+      for (const chart of chartData) {
+        // Check if we need a new page
+        if (yPosition > 200) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        // Add chart title
+        doc.setFontSize(16);
+        doc.text(chart.title, 20, yPosition);
+        yPosition += 15;
+
+        // Create and capture chart
+        const tempChart = this.createTemporaryChart(chart);
+        const chartImage = await this.captureChartAsImage(tempChart);
+        
+        if (chartImage) {
+          // Add chart image to PDF
+          doc.addImage(chartImage, 'PNG', 20, yPosition, 160, 100);
+          yPosition += 110;
+        }
+
+        // Clean up temporary chart
+        document.body.removeChild(tempChart);
+        
+        yPosition += 10;
+      }
+    }
 
     // Generate each section based on configuration
     if (this.config.includeSections.overview) {
@@ -129,6 +289,15 @@ export class ReportGenerator {
       XLSX.utils.book_append_sheet(workbook, riskWS, "Risk Analysis");
     }
 
+    // Chart data worksheets
+    if (this.config.includeCharts) {
+      const chartData = this.generateChartData();
+      chartData.forEach((chart, index) => {
+        const chartWS = XLSX.utils.json_to_sheet(chart.data);
+        XLSX.utils.book_append_sheet(workbook, chartWS, `Chart_${index + 1}_${chart.title.replace(/\s+/g, '_')}`);
+      });
+    }
+
     // Save the Excel file
     XLSX.writeFile(workbook, `${this.config.title.replace(/\s+/g, '_')}.xlsx`);
   }
@@ -137,6 +306,12 @@ export class ReportGenerator {
    * Adds overview section to PDF with key metrics
    */
   private addOverviewSection(doc: jsPDF, yPosition: number): number {
+    // Check if we need a new page
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
     doc.setFontSize(16);
     doc.text("Executive Overview", 20, yPosition);
     yPosition += 15;
@@ -157,6 +332,12 @@ export class ReportGenerator {
    * Adds submission statistics section to PDF
    */
   private addSubmissionStatsSection(doc: jsPDF, yPosition: number): number {
+    // Check if we need a new page
+    if (yPosition > 200) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
     doc.setFontSize(16);
     doc.text("Submission Statistics", 20, yPosition);
     yPosition += 15;
@@ -183,6 +364,12 @@ export class ReportGenerator {
    * Adds risk analysis section to PDF
    */
   private addRiskAnalysisSection(doc: jsPDF, yPosition: number): number {
+    // Check if we need a new page
+    if (yPosition > 200) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
     doc.setFontSize(16);
     doc.text("Risk Analysis", 20, yPosition);
     yPosition += 15;
@@ -210,6 +397,12 @@ export class ReportGenerator {
    * Adds compliance status section to PDF
    */
   private addComplianceSection(doc: jsPDF, yPosition: number): number {
+    // Check if we need a new page
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
     doc.setFontSize(16);
     doc.text("Compliance Status", 20, yPosition);
     yPosition += 15;
@@ -226,6 +419,12 @@ export class ReportGenerator {
    * Adds detailed responses section to PDF
    */
   private addDetailedResponsesSection(doc: jsPDF, yPosition: number): number {
+    // Check if we need a new page
+    if (yPosition > 250) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
     doc.setFontSize(16);
     doc.text("Detailed Responses", 20, yPosition);
     yPosition += 15;
@@ -242,6 +441,12 @@ export class ReportGenerator {
    * Adds recommendations section to PDF
    */
   private addRecommendationsSection(doc: jsPDF, yPosition: number): number {
+    // Check if we need a new page
+    if (yPosition > 200) {
+      doc.addPage();
+      yPosition = 20;
+    }
+
     doc.setFontSize(16);
     doc.text("Recommendations", 20, yPosition);
     yPosition += 15;

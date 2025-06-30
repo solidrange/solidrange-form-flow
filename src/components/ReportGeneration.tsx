@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -124,7 +123,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                 <Card className="p-4">
                   <h3 className="font-semibold mb-2">Executive Summary Report</h3>
                   <p className="text-sm text-gray-600 mb-4">
-                    Comprehensive overview with key statistics, risk analysis, and executive recommendations.
+                    Comprehensive overview with key statistics, risk analysis, executive recommendations, and visual charts.
                   </p>
                   
                   {/* Quick Stats Display */}
@@ -163,6 +162,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                         },
                         customRecommendations: "",
                         format: 'pdf',
+                        includeCharts: true,
                       })}
                       disabled={isGenerating}
                     >
@@ -196,6 +196,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                         },
                         customRecommendations: "",
                         format: 'excel',
+                        includeCharts: true,
                       })}
                       disabled={isGenerating}
                     >
@@ -209,7 +210,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                 <Card className="p-4">
                   <h3 className="font-semibold mb-2">Risk Assessment Report</h3>
                   <p className="text-sm text-gray-600 mb-4">
-                    Detailed risk analysis with scoring breakdowns, compliance status, and actionable insights.
+                    Detailed risk analysis with scoring breakdowns, compliance status, charts, and actionable insights.
                   </p>
                   
                   {/* Risk Assessment Details */}
@@ -246,6 +247,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                         },
                         customRecommendations: "",
                         format: 'pdf',
+                        includeCharts: true,
                       })}
                       disabled={isGenerating}
                     >
@@ -260,7 +262,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                         description: "Detailed risk analysis and compliance assessment",
                         includeSections: {
                           overview: true,
-                          submissionStats: true,
+                          submissionStats: false,
                           riskAnalysis: true,
                           complianceStatus: true,
                           detailedResponses: true,
@@ -279,6 +281,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                         },
                         customRecommendations: "",
                         format: 'excel',
+                        includeCharts: true,
                       })}
                       disabled={isGenerating}
                     >
@@ -292,7 +295,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                 <Card className="p-4">
                   <h3 className="font-semibold mb-2">Vendor Compliance Report</h3>
                   <p className="text-sm text-gray-600 mb-4">
-                    Compliance-focused report for vendor submissions with regulatory requirements analysis.
+                    Compliance-focused report for vendor submissions with regulatory requirements analysis and visual data.
                   </p>
                   <div className="flex gap-2">
                     <Button 
@@ -321,6 +324,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                         },
                         customRecommendations: "",
                         format: 'pdf',
+                        includeCharts: true,
                       })}
                       disabled={isGenerating}
                     >
@@ -354,6 +358,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                         },
                         customRecommendations: "",
                         format: 'excel',
+                        includeCharts: true,
                       })}
                       disabled={isGenerating}
                     >
@@ -367,7 +372,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                 <Card className="p-4">
                   <h3 className="font-semibold mb-2">Management Dashboard</h3>
                   <p className="text-sm text-gray-600 mb-4">
-                    Executive summary with graphs, KPIs, and strategic recommendations for leadership.
+                    Executive summary with interactive graphs, KPIs, and strategic recommendations for leadership.
                   </p>
                   <div className="flex gap-2">
                     <Button 
@@ -396,6 +401,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                         },
                         customRecommendations: "Focus on process automation and vendor relationship management to improve efficiency and reduce risk exposure.",
                         format: 'pdf',
+                        includeCharts: true,
                       })}
                       disabled={isGenerating}
                     >
@@ -429,6 +435,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                         },
                         customRecommendations: "Focus on process automation and vendor relationship management to improve efficiency and reduce risk exposure.",
                         format: 'excel',
+                        includeCharts: true,
                       })}
                       disabled={isGenerating}
                     >
@@ -504,7 +511,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
           <CardContent className="flex items-center justify-center py-8">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-              <p>Generating your report...</p>
+              <p>Generating your report with charts...</p>
             </div>
           </CardContent>
         </Card>
