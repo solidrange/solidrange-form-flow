@@ -12,7 +12,11 @@ import { CalendarIcon, Download, FileText, BarChart3, TrendingUp, Users } from "
 import { Badge } from "@/components/ui/badge";
 import { sampleSubmissions } from "@/data/sampleSubmissions";
 
-export const ReportGeneration = () => {
+interface ReportGenerationProps {
+  submissions: any[];
+}
+
+export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
   const [reportConfig, setReportConfig] = useState({
     title: "Form Submission Report",
     description: "Comprehensive analysis of form submissions",

@@ -667,7 +667,7 @@ const Index = () => {
               </TabsContent>
 
               <TabsContent value="reports" className="mt-3 sm:mt-4">
-                <ReportGeneration />
+                <ReportGeneration submissions={submissions} />
               </TabsContent>
             </Tabs>
           </TabsContent>
@@ -731,6 +731,38 @@ const Index = () => {
                                 <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                                 <span className="hidden sm:inline ml-1">Load</span>
                               </Button>
+                              <Button 
+                                size="sm"
+                                onClick={() => handlePublishForm(draft)}
+                                className="text-xs px-2 py-1"
+                              >
+                                <Send className="h-3 w-3 sm:h-4 sm:w-4" />
+                                <span className="hidden sm:inline ml-1">Publish</span>
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button size="sm" variant="destructive" className="text-xs px-2 py-1">
+                                    <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="mx-2">
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle className="text-lg">Delete Draft</AlertDialogTitle>
+                                    <AlertDialogDescription className="text-sm">
+                                      Are you sure you want to delete "{draft.title}"? This action cannot be undone.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel className="text-sm">Cancel</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => handleDeleteDraft(draft.id)}
+                                      className="bg-red-600 hover:bg-red-700 text-sm"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
                             </div>
                           </div>
                         </CardContent>
@@ -781,6 +813,67 @@ const Index = () => {
                                 <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                                 <span className="hidden sm:inline ml-1">Load</span>
                               </Button>
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button size="sm" variant="outline" className="text-xs px-2 py-1 whitespace-nowrap">
+                                    <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
+                                    <span className="hidden sm:inline ml-1">Share</span>
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="mx-2">
+                                  <DialogHeader>
+                                    <DialogTitle className="text-lg">Share: {form.title}</DialogTitle>
+                                  </DialogHeader>
+                                  <div className="space-y-4">
+                                    <div>
+                                      <label className="text-sm font-medium">Form URL</label>
+                                      <div className="flex gap-2 mt-1">
+                                        <Input value={generateFormUrl(form.id)} readOnly className="text-xs" />
+                                        <Button 
+                                          size="sm" 
+                                          variant="outline"
+                                          onClick={() => handleCopyToClipboard(generateFormUrl(form.id), 'Form URL')}
+                                        >
+                                          Copy
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => handleMoveToDraft(form)}
+                                className="text-xs px-2 py-1 whitespace-nowrap"
+                              >
+                                <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                                <span className="hidden sm:inline ml-1">Draft</span>
+                              </Button>
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button size="sm" variant="destructive" className="text-xs px-2 py-1">
+                                    <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="mx-2">
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle className="text-lg">Delete Published Form</AlertDialogTitle>
+                                    <AlertDialogDescription className="text-sm">
+                                      Are you sure you want to delete "{form.title}"? This will remove the form and all its data permanently.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel className="text-sm">Cancel</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => handleDeletePublished(form.id)}
+                                      className="bg-red-600 hover:bg-red-700 text-sm"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
                             </div>
                           </div>
                         </CardContent>
