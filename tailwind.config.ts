@@ -2,7 +2,6 @@
 import type { Config } from "tailwindcss";
 
 export default {
-	darkMode: ["class"],
 	content: [
 		"./pages/**/*.{ts,tsx}",
 		"./components/**/*.{ts,tsx}",
@@ -15,10 +14,11 @@ export default {
 			center: true,
 			padding: {
 				DEFAULT: '1rem',
-				sm: '2rem',
-				lg: '4rem',
-				xl: '5rem',
-				'2xl': '6rem',
+				sm: '1.5rem',
+				md: '2rem',
+				lg: '2.5rem',
+				xl: '3rem',
+				'2xl': '4rem',
 			},
 			screens: {
 				sm: '640px',
@@ -29,7 +29,7 @@ export default {
 			}
 		},
 		screens: {
-			'xs': '475px',
+			'xs': '375px',
 			'sm': '640px',
 			'md': '768px',
 			'lg': '1024px',
@@ -86,7 +86,7 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Enhanced color palette with proper contrast ratios
+				// Enhanced color palette with proper mobile contrast
 				blue: {
 					50: '#f0f9ff',
 					100: '#e0f2fe',
@@ -113,7 +113,47 @@ export default {
 					900: '#111827',
 					950: '#030712',
 				},
-				// Success, warning, and error colors with proper contrast
+				// Enhanced colors for mobile visibility
+				green: {
+					50: '#f0fdf4',
+					100: '#dcfce7',
+					200: '#bbf7d0',
+					300: '#86efac',
+					400: '#4ade80',
+					500: '#22c55e',
+					600: '#16a34a',
+					700: '#15803d',
+					800: '#166534',
+					900: '#14532d',
+					950: '#052e16',
+				},
+				orange: {
+					50: '#fff7ed',
+					100: '#ffedd5',
+					200: '#fed7aa',
+					300: '#fdba74',
+					400: '#fb923c',
+					500: '#f97316',
+					600: '#ea580c',
+					700: '#c2410c',
+					800: '#9a3412',
+					900: '#7c2d12',
+					950: '#431407',
+				},
+				purple: {
+					50: '#faf5ff',
+					100: '#f3e8ff',
+					200: '#e9d5ff',
+					300: '#d8b4fe',
+					400: '#c084fc',
+					500: '#a855f7',
+					600: '#9333ea',
+					700: '#7c3aed',
+					800: '#6b21a8',
+					900: '#581c87',
+					950: '#3b0764',
+				},
+				// Success, warning, and error colors with mobile-friendly contrast
 				success: {
 					50: '#f0fdf4',
 					500: '#22c55e',
@@ -143,7 +183,16 @@ export default {
 			},
 			spacing: {
 				'18': '4.5rem',
+				'22': '5.5rem',
 				'88': '22rem',
+			},
+			fontSize: {
+				'xs': ['0.75rem', { lineHeight: '1.2' }],
+				'sm': ['0.875rem', { lineHeight: '1.4' }],
+				'base': ['1rem', { lineHeight: '1.5' }],
+				'lg': ['1.125rem', { lineHeight: '1.6' }],
+				'xl': ['1.25rem', { lineHeight: '1.7' }],
+				'2xl': ['1.5rem', { lineHeight: '1.8' }],
 			},
 			keyframes: {
 				'accordion-down': {
@@ -165,20 +214,40 @@ export default {
 				'scale-in': {
 					'0%': { opacity: '0', transform: 'scale(0.95)' },
 					'100%': { opacity: '1', transform: 'scale(1)' }
+				},
+				'bounce-in': {
+					'0%': { opacity: '0', transform: 'scale(0.8)' },
+					'20%': { transform: 'scale(1.1)' },
+					'40%': { transform: 'scale(0.9)' },
+					'60%': { opacity: '1', transform: 'scale(1.03)' },
+					'80%': { transform: 'scale(0.97)' },
+					'100%': { opacity: '1', transform: 'scale(1)' }
+				},
+				'slide-in-right': {
+					'0%': { opacity: '0', transform: 'translateX(30px)' },
+					'100%': { opacity: '1', transform: 'translateX(0)' }
+				},
+				'slide-in-left': {
+					'0%': { opacity: '0', transform: 'translateX(-30px)' },
+					'100%': { opacity: '1', transform: 'translateX(0)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.5s ease-out',
-				'slide-up': 'slide-up 0.4s ease-out',
-				'scale-in': 'scale-in 0.3s ease-out'
+				'fade-in': 'fade-in 0.6s ease-out',
+				'slide-up': 'slide-up 0.5s ease-out',
+				'scale-in': 'scale-in 0.4s ease-out',
+				'bounce-in': 'bounce-in 0.8s ease-out',
+				'slide-in-right': 'slide-in-right 0.5s ease-out',
+				'slide-in-left': 'slide-in-left 0.5s ease-out'
 			},
 			boxShadow: {
 				'modern': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
 				'modern-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
 				'modern-xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-				'soft': '0 2px 8px rgba(0, 0, 0, 0.1)'
+				'soft': '0 2px 8px rgba(0, 0, 0, 0.1)',
+				'mobile': '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)'
 			},
 			backdropBlur: {
 				xs: '2px'
