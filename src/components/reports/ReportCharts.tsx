@@ -9,7 +9,7 @@ interface ReportChartsProps {
 }
 
 export const ReportCharts = ({ submissions, chartType, dataType }: ReportChartsProps) => {
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8'];
+  const COLORS = ['#70CDFF', '#39A8F7', '#0C75D1', '#C474F2', '#042C75'];
 
   const getChartData = () => {
     switch (dataType) {
@@ -62,12 +62,26 @@ export const ReportCharts = ({ submissions, chartType, dataType }: ReportChartsP
         return (
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis 
+                dataKey="name" 
+                tick={{ fill: '#64748b', fontSize: 12 }}
+                axisLine={{ stroke: '#cbd5e1' }}
+              />
+              <YAxis 
+                tick={{ fill: '#64748b', fontSize: 12 }}
+                axisLine={{ stroke: '#cbd5e1' }}
+              />
+              <Tooltip 
+                contentStyle={{
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                }}
+              />
               <Legend />
-              <Bar dataKey="value" fill="#8884d8" />
+              <Bar dataKey="value" fill="#39A8F7" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         );
@@ -76,12 +90,33 @@ export const ReportCharts = ({ submissions, chartType, dataType }: ReportChartsP
         return (
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+              <XAxis 
+                dataKey="name" 
+                tick={{ fill: '#64748b', fontSize: 12 }}
+                axisLine={{ stroke: '#cbd5e1' }}
+              />
+              <YAxis 
+                tick={{ fill: '#64748b', fontSize: 12 }}
+                axisLine={{ stroke: '#cbd5e1' }}
+              />
+              <Tooltip 
+                contentStyle={{
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                }}
+              />
               <Legend />
-              <Line type="monotone" dataKey="value" stroke="#8884d8" />
+              <Line 
+                type="monotone" 
+                dataKey="value" 
+                stroke="#39A8F7" 
+                strokeWidth={3}
+                dot={{ fill: '#0C75D1', strokeWidth: 2, r: 6 }}
+                activeDot={{ r: 8, fill: '#70CDFF' }}
+              />
             </LineChart>
           </ResponsiveContainer>
         );
@@ -106,7 +141,14 @@ export const ReportCharts = ({ submissions, chartType, dataType }: ReportChartsP
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip />
+              <Tooltip 
+                contentStyle={{
+                  backgroundColor: '#ffffff',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                }}
+              />
             </PieChart>
           </ResponsiveContainer>
         );
@@ -117,7 +159,7 @@ export const ReportCharts = ({ submissions, chartType, dataType }: ReportChartsP
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full bg-white rounded-lg p-4 shadow-soft border border-gray-100">
       {renderChart()}
     </div>
   );
