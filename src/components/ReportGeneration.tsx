@@ -74,45 +74,287 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
     }));
   };
 
-  const generateQuickReport = async (type: string) => {
+  const generateQuickReport = async (type: string, variant?: string) => {
     console.log(`Generating quick ${type} report...`);
     
     toast({
       title: "Generating Report",
-      description: `Starting ${type} report generation...`,
+      description: `Starting ${type} ${variant ? `(${variant})` : ''} report generation...`,
     });
     
     try {
       // Import the ReportGenerator
       const { ReportGenerator } = await import('@/utils/reportGenerator');
       
-      // Create a basic config for quick reports
-      const quickConfig = {
-        title: `Quick ${type.charAt(0).toUpperCase() + type.slice(1)} Report`,
-        description: `Quick analysis of form submissions - ${type} report`,
-        includeSections: {
-          overview: true,
-          submissionStats: type === 'summary' || type === 'compliance',
-          riskAnalysis: type === 'risk' || type === 'compliance',
-          complianceStatus: type === 'compliance',
-          detailedResponses: false,
-          recommendations: true,
-        },
-        chartTypes: {
-          submissionTrends: 'bar' as const,
-          riskDistribution: 'pie' as const,
-          complianceStatus: 'bar' as const,
-        },
-        filterBy: {
-          dateRange: { start: '2024-01-01', end: '2024-12-31' },
-          submissionType: 'all' as const,
-          status: 'all' as const,
-          riskLevel: 'all' as const,
-        },
-        customRecommendations: "",
-        format: 'pdf' as const,
-        includeCharts: true
-      };
+      // Create different configs based on report type and variant
+      let quickConfig;
+      
+      switch (type) {
+        case 'executive-summary':
+          quickConfig = {
+            title: `Executive Summary Report ${variant ? `- ${variant}` : ''}`,
+            description: 'High-level overview of all form submissions and key metrics',
+            includeSections: {
+              overview: true,
+              submissionStats: true,
+              riskAnalysis: true,
+              complianceStatus: true,
+              detailedResponses: false,
+              recommendations: true,
+            },
+            chartTypes: {
+              submissionTrends: variant === 'detailed' ? 'line' as const : 'bar' as const,
+              riskDistribution: 'pie' as const,
+              complianceStatus: 'bar' as const,
+            },
+            filterBy: {
+              dateRange: { start: '2024-01-01', end: '2024-12-31' },
+              submissionType: 'all' as const,
+              status: 'all' as const,
+              riskLevel: 'all' as const,
+            },
+            customRecommendations: variant === 'detailed' ? 
+              "Detailed executive recommendations based on comprehensive analysis of all submission data and trends." : "",
+            format: 'pdf' as const,
+            includeCharts: true
+          };
+          break;
+          
+        case 'risk-analysis':
+          quickConfig = {
+            title: `Risk Analysis Report ${variant ? `- ${variant}` : ''}`,
+            description: 'Comprehensive risk assessment of all form submissions',
+            includeSections: {
+              overview: variant !== 'focused',
+              submissionStats: variant === 'comprehensive',
+              riskAnalysis: true,
+              complianceStatus: variant === 'comprehensive',
+              detailedResponses: variant === 'detailed',
+              recommendations: true,
+            },
+            chartTypes: {
+              submissionTrends: 'bar' as const,
+              riskDistribution: variant === 'donut' ? 'donut' as const : 'pie' as const,
+              complianceStatus: 'bar' as const,
+            },
+            filterBy: {
+              dateRange: { start: '2024-01-01', end: '2024-12-31' },
+              submissionType: 'all' as const,
+              status: 'all' as const,
+              riskLevel: variant === 'high-risk-only' ? 'high' as const : 'all' as const,
+            },
+            customRecommendations: "Risk mitigation strategies and recommendations for improving overall risk profile.",
+            format: 'pdf' as const,
+            includeCharts: true
+          };
+          break;
+          
+        case 'compliance':
+          quickConfig = {
+            title: `Compliance Report ${variant ? `- ${variant}` : ''}`,
+            description: 'Compliance status and regulatory adherence analysis',
+            includeSections: {
+              overview: true,
+              submissionStats: true,
+              riskAnalysis: variant === 'comprehensive',
+              complianceStatus: true,
+              detailedResponses: variant === 'detailed',
+              recommendations: true,
+            },
+            chartTypes: {
+              submissionTrends: 'line' as const,
+              riskDistribution: 'bar' as const,
+              complianceStatus: variant === 'pie-chart' ? 'pie' as const : 'bar' as const,
+            },
+            filterBy: {
+              dateRange: { start: '2024-01-01', end: '2024-12-31' },
+              submissionType: 'all' as const,
+              status: variant === 'approved-only' ? 'approved' as const : 'all' as const,
+              riskLevel: 'all' as const,
+            },
+            customRecommendations: "Compliance improvement recommendations and regulatory adherence strategies.",
+            format: 'pdf' as const,
+            includeCharts: true
+          };
+          break;
+          
+        case 'performance-analytics':
+          quickConfig = {
+            title: `Performance Analytics Report ${variant ? `- ${variant}` : ''}`,
+            description: 'Performance metrics and analytics across all submissions',
+            includeSections: {
+              overview: true,
+              submissionStats: true,
+              riskAnalysis: true,
+              complianceStatus: true,
+              detailedResponses: variant === 'detailed',
+              recommendations: true,
+            },
+            chartTypes: {
+              submissionTrends: variant === 'line-trends' ? 'line' as const : 'bar' as const,
+              riskDistribution: 'pie' as const,
+              complianceStatus: 'bar' as const,
+            },
+            filterBy: {
+              dateRange: { start: '2024-01-01', end: '2024-12-31' },
+              submissionType: 'all' as const,
+              status: 'all' as const,
+              riskLevel: 'all' as const,
+            },
+            customRecommendations: "Performance optimization recommendations based on submission analytics.",
+            format: 'pdf' as const,
+            includeCharts: true
+          };
+          break;
+          
+        case 'submission-trends':
+          quickConfig = {
+            title: `Submission Trends Report ${variant ? `- ${variant}` : ''}`,
+            description: 'Temporal analysis of submission patterns and trends',
+            includeSections: {
+              overview: variant !== 'trends-only',
+              submissionStats: true,
+              riskAnalysis: variant === 'comprehensive',
+              complianceStatus: variant === 'comprehensive',
+              detailedResponses: false,
+              recommendations: true,
+            },
+            chartTypes: {
+              submissionTrends: variant === 'bar-chart' ? 'bar' as const : 'line' as const,
+              riskDistribution: 'pie' as const,
+              complianceStatus: 'bar' as const,
+            },
+            filterBy: {
+              dateRange: { start: '2024-01-01', end: '2024-12-31' },
+              submissionType: 'all' as const,
+              status: 'all' as const,
+              riskLevel: 'all' as const,
+            },
+            customRecommendations: "Trend-based recommendations for improving submission processes.",
+            format: 'pdf' as const,
+            includeCharts: true
+          };
+          break;
+          
+        case 'vendor-analysis':
+          quickConfig = {
+            title: `Vendor Analysis Report ${variant ? `- ${variant}` : ''}`,
+            description: 'Analysis of vendor submissions and performance',
+            includeSections: {
+              overview: true,
+              submissionStats: true,
+              riskAnalysis: true,
+              complianceStatus: true,
+              detailedResponses: variant === 'detailed',
+              recommendations: true,
+            },
+            chartTypes: {
+              submissionTrends: 'bar' as const,
+              riskDistribution: variant === 'donut' ? 'donut' as const : 'pie' as const,
+              complianceStatus: 'bar' as const,
+            },
+            filterBy: {
+              dateRange: { start: '2024-01-01', end: '2024-12-31' },
+              submissionType: 'vendor' as const,
+              status: 'all' as const,
+              riskLevel: 'all' as const,
+            },
+            customRecommendations: "Vendor management recommendations and performance improvement strategies.",
+            format: 'pdf' as const,
+            includeCharts: true
+          };
+          break;
+          
+        case 'score-analysis':
+          quickConfig = {
+            title: `Score Analysis Report ${variant ? `- ${variant}` : ''}`,
+            description: 'Detailed analysis of submission scores and ratings',
+            includeSections: {
+              overview: true,
+              submissionStats: true,
+              riskAnalysis: true,
+              complianceStatus: variant === 'comprehensive',
+              detailedResponses: variant === 'detailed',
+              recommendations: true,
+            },
+            chartTypes: {
+              submissionTrends: 'line' as const,
+              riskDistribution: 'pie' as const,
+              complianceStatus: 'bar' as const,
+            },
+            filterBy: {
+              dateRange: { start: '2024-01-01', end: '2024-12-31' },
+              submissionType: 'all' as const,
+              status: 'all' as const,
+              riskLevel: 'all' as const,
+            },
+            customRecommendations: "Score improvement recommendations and quality enhancement strategies.",
+            format: 'pdf' as const,
+            includeCharts: true
+          };
+          break;
+          
+        case 'monthly-summary':
+          quickConfig = {
+            title: `Monthly Summary Report ${variant ? `- ${variant}` : ''}`,
+            description: 'Monthly breakdown of submission activities and performance',
+            includeSections: {
+              overview: true,
+              submissionStats: true,
+              riskAnalysis: variant === 'comprehensive',
+              complianceStatus: true,
+              detailedResponses: false,
+              recommendations: true,
+            },
+            chartTypes: {
+              submissionTrends: 'line' as const,
+              riskDistribution: 'pie' as const,
+              complianceStatus: 'bar' as const,
+            },
+            filterBy: {
+              dateRange: { 
+                start: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0], 
+                end: new Date().toISOString().split('T')[0] 
+              },
+              submissionType: 'all' as const,
+              status: 'all' as const,
+              riskLevel: 'all' as const,
+            },
+            customRecommendations: "Monthly performance recommendations and next month action items.",
+            format: 'pdf' as const,
+            includeCharts: true
+          };
+          break;
+          
+        default:
+          // Default executive summary
+          quickConfig = {
+            title: `Quick Summary Report`,
+            description: 'Basic overview of form submissions',
+            includeSections: {
+              overview: true,
+              submissionStats: true,
+              riskAnalysis: false,
+              complianceStatus: true,
+              detailedResponses: false,
+              recommendations: true,
+            },
+            chartTypes: {
+              submissionTrends: 'bar' as const,
+              riskDistribution: 'pie' as const,
+              complianceStatus: 'bar' as const,
+            },
+            filterBy: {
+              dateRange: { start: '2024-01-01', end: '2024-12-31' },
+              submissionType: 'all' as const,
+              status: 'all' as const,
+              riskLevel: 'all' as const,
+            },
+            customRecommendations: "",
+            format: 'pdf' as const,
+            includeCharts: true
+          };
+      }
 
       const generator = new ReportGenerator(submissions, quickConfig);
       await generator.generate();
@@ -120,7 +362,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
       console.log(`${type} report generated successfully!`);
       toast({
         title: "Report Generated",
-        description: `${type.charAt(0).toUpperCase() + type.slice(1)} report has been downloaded successfully!`,
+        description: `${type.replace('-', ' ').charAt(0).toUpperCase() + type.replace('-', ' ').slice(1)} report has been downloaded successfully!`,
       });
     } catch (error) {
       console.error('Error generating quick report:', error);
@@ -186,121 +428,323 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
         </TabsList>
 
         <TabsContent value="quick" className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Executive Summary Report */}
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-blue-100 rounded-lg">
-                    <BarChart3 className="h-5 w-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Executive Summary</CardTitle>
-                    <p className="text-sm text-gray-500">High-level overview</p>
-                  </div>
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Executive & Summary Reports */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Executive & Summary Reports
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Total Submissions</span>
-                    <Badge variant="secondary">{stats.total}</Badge>
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => generateQuickReport('executive-summary')} 
+                      className="w-full justify-start"
+                      variant="outline"
+                    >
+                      <FileText className="mr-2 h-4 w-4" />
+                      Executive Summary
+                    </Button>
+                    <div className="grid grid-cols-2 gap-2 pl-4">
+                      <Button 
+                        onClick={() => generateQuickReport('executive-summary', 'detailed')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Detailed
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('executive-summary', 'concise')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Concise
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Approval Rate</span>
-                    <Badge variant="default">{Math.round((stats.approved / stats.total) * 100)}%</Badge>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Avg. Score</span>
-                    <Badge variant="outline">{stats.avgScore}%</Badge>
+                  
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => generateQuickReport('monthly-summary')} 
+                      className="w-full justify-start"
+                      variant="outline"
+                    >
+                      <FileText className="mr-2 h-4 w-4" />
+                      Monthly Summary
+                    </Button>
+                    <div className="grid grid-cols-2 gap-2 pl-4">
+                      <Button 
+                        onClick={() => generateQuickReport('monthly-summary', 'comprehensive')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Comprehensive
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('monthly-summary', 'basic')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Basic
+                      </Button>
+                    </div>
                   </div>
                 </div>
-                <Button 
-                  className="w-full" 
-                  onClick={() => generateQuickReport('executive')}
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Generate Report
-                </Button>
               </CardContent>
             </Card>
 
-            {/* Risk Analysis Report */}
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-red-100 rounded-lg">
-                    <TrendingUp className="h-5 w-5 text-red-600" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Risk Analysis</CardTitle>
-                    <p className="text-sm text-gray-500">Risk assessment overview</p>
-                  </div>
-                </div>
+            {/* Risk & Compliance Reports */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5" />
+                  Risk & Compliance Reports
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>High Risk</span>
-                    <Badge variant="destructive">{stats.highRisk}</Badge>
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => generateQuickReport('risk-analysis')} 
+                      className="w-full justify-start"
+                      variant="outline"
+                    >
+                      <BarChart3 className="mr-2 h-4 w-4" />
+                      Risk Analysis
+                    </Button>
+                    <div className="grid grid-cols-3 gap-2 pl-4">
+                      <Button 
+                        onClick={() => generateQuickReport('risk-analysis', 'comprehensive')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Comprehensive
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('risk-analysis', 'focused')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Focused
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('risk-analysis', 'high-risk-only')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        High Risk
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Under Review</span>
-                    <Badge variant="secondary">{stats.underReview}</Badge>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Rejected</span>
-                    <Badge variant="outline">{stats.rejected}</Badge>
+                  
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => generateQuickReport('compliance')} 
+                      className="w-full justify-start"
+                      variant="outline"
+                    >
+                      <Users className="mr-2 h-4 w-4" />
+                      Compliance Report
+                    </Button>
+                    <div className="grid grid-cols-3 gap-2 pl-4">
+                      <Button 
+                        onClick={() => generateQuickReport('compliance', 'comprehensive')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Comprehensive
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('compliance', 'approved-only')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Approved Only
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('compliance', 'pie-chart')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Pie Charts
+                      </Button>
+                    </div>
                   </div>
                 </div>
-                <Button 
-                  className="w-full" 
-                  onClick={() => generateQuickReport('risk')}
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Generate Report
-                </Button>
               </CardContent>
             </Card>
 
-            {/* Compliance Report */}
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-green-100 rounded-lg">
-                    <Users className="h-5 w-5 text-green-600" />
-                  </div>
-                  <div>
-                    <CardTitle className="text-lg">Compliance Status</CardTitle>
-                    <p className="text-sm text-gray-500">Regulatory compliance</p>
-                  </div>
-                </div>
+            {/* Performance & Analytics Reports */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <TrendingUp className="h-5 w-5" />
+                  Performance & Analytics
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Compliant</span>
-                    <Badge variant="default">{stats.approved}</Badge>
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => generateQuickReport('performance-analytics')} 
+                      className="w-full justify-start"
+                      variant="outline"
+                    >
+                      <TrendingUp className="mr-2 h-4 w-4" />
+                      Performance Analytics
+                    </Button>
+                    <div className="grid grid-cols-2 gap-2 pl-4">
+                      <Button 
+                        onClick={() => generateQuickReport('performance-analytics', 'detailed')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Detailed
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('performance-analytics', 'line-trends')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Line Trends
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Non-Compliant</span>
-                    <Badge variant="destructive">{stats.rejected}</Badge>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Compliance Rate</span>
-                    <Badge variant="outline">{Math.round((stats.approved / stats.total) * 100)}%</Badge>
+                  
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => generateQuickReport('score-analysis')} 
+                      className="w-full justify-start"
+                      variant="outline"
+                    >
+                      <BarChart3 className="mr-2 h-4 w-4" />
+                      Score Analysis
+                    </Button>
+                    <div className="grid grid-cols-2 gap-2 pl-4">
+                      <Button 
+                        onClick={() => generateQuickReport('score-analysis', 'comprehensive')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Comprehensive
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('score-analysis', 'detailed')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Detailed
+                      </Button>
+                    </div>
                   </div>
                 </div>
-                <Button 
-                  className="w-full" 
-                  onClick={() => generateQuickReport('compliance')}
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  Generate Report
-                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Vendor & Trend Reports */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Vendor & Trend Analysis
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => generateQuickReport('vendor-analysis')} 
+                      className="w-full justify-start"
+                      variant="outline"
+                    >
+                      <Users className="mr-2 h-4 w-4" />
+                      Vendor Analysis
+                    </Button>
+                    <div className="grid grid-cols-2 gap-2 pl-4">
+                      <Button 
+                        onClick={() => generateQuickReport('vendor-analysis', 'detailed')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Detailed
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('vendor-analysis', 'donut')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Donut Charts
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => generateQuickReport('submission-trends')} 
+                      className="w-full justify-start"
+                      variant="outline"
+                    >
+                      <TrendingUp className="mr-2 h-4 w-4" />
+                      Submission Trends
+                    </Button>
+                    <div className="grid grid-cols-3 gap-2 pl-4">
+                      <Button 
+                        onClick={() => generateQuickReport('submission-trends', 'comprehensive')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Comprehensive
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('submission-trends', 'trends-only')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Trends Only
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('submission-trends', 'bar-chart')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Bar Charts
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
+
+          {/* Statistics Overview */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Statistics Overview</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
+                  <div className="text-sm text-gray-600">Total Submissions</div>
+                </div>
+                <div className="text-center p-4 bg-green-50 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">{stats.approved}</div>
+                  <div className="text-sm text-gray-600">Approved</div>
+                </div>
+                <div className="text-center p-4 bg-red-50 rounded-lg">
+                  <div className="text-2xl font-bold text-red-600">{stats.highRisk}</div>
+                  <div className="text-sm text-gray-600">High Risk</div>
+                </div>
+                <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                  <div className="text-2xl font-bold text-yellow-600">{stats.avgScore}%</div>
+                  <div className="text-sm text-gray-600">Avg Score</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="custom" className="space-y-6">
