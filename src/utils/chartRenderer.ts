@@ -1,6 +1,4 @@
 
-import { ChartConfiguration } from 'chart.js';
-
 export interface ChartData {
   type: 'bar' | 'line' | 'pie' | 'donut';
   title: string;
