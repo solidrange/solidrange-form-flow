@@ -1,4 +1,3 @@
-
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } from 'recharts';
 import { FormSubmission } from '@/types/form';
 
@@ -9,7 +8,17 @@ interface ReportChartsProps {
 }
 
 export const ReportCharts = ({ submissions, chartType, dataType }: ReportChartsProps) => {
-  const COLORS = ['#70CDFF', '#39A8F7', '#0C75D1', '#C474F2', '#042C75'];
+  // Enhanced color palette with better contrast and accessibility
+  const COLORS = [
+    '#0ea5e9', // Blue 500
+    '#3b82f6', // Blue 500
+    '#06b6d4', // Cyan 500
+    '#8b5cf6', // Violet 500
+    '#f59e0b', // Amber 500
+    '#ef4444', // Red 500
+    '#22c55e', // Green 500
+    '#f97316'  // Orange 500
+  ];
 
   const getChartData = () => {
     switch (dataType) {
@@ -65,29 +74,33 @@ export const ReportCharts = ({ submissions, chartType, dataType }: ReportChartsP
       color: 'hsl(var(--foreground))',
     };
 
+    const gridColor = 'hsl(var(--border))';
+    const textColor = 'hsl(var(--muted-foreground))';
+    const axisColor = 'hsl(var(--border))';
+
     switch (chartType) {
       case 'bar':
         return (
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
               <XAxis 
                 dataKey="name" 
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                axisLine={{ stroke: 'hsl(var(--border))' }}
+                tick={{ fill: textColor, fontSize: 12 }}
+                axisLine={{ stroke: axisColor }}
                 angle={-45}
                 textAnchor="end"
                 height={60}
               />
               <YAxis 
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                axisLine={{ stroke: 'hsl(var(--border))' }}
+                tick={{ fill: textColor, fontSize: 12 }}
+                axisLine={{ stroke: axisColor }}
               />
               <Tooltip contentStyle={commonTooltipStyle} />
               <Legend />
               <Bar 
                 dataKey="value" 
-                fill="#39A8F7" 
+                fill={COLORS[0]}
                 radius={[4, 4, 0, 0]}
                 name="Count"
               />
@@ -99,28 +112,28 @@ export const ReportCharts = ({ submissions, chartType, dataType }: ReportChartsP
         return (
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
               <XAxis 
                 dataKey="name" 
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                axisLine={{ stroke: 'hsl(var(--border))' }}
+                tick={{ fill: textColor, fontSize: 12 }}
+                axisLine={{ stroke: axisColor }}
                 angle={-45}
                 textAnchor="end"
                 height={60}
               />
               <YAxis 
-                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
-                axisLine={{ stroke: 'hsl(var(--border))' }}
+                tick={{ fill: textColor, fontSize: 12 }}
+                axisLine={{ stroke: axisColor }}
               />
               <Tooltip contentStyle={commonTooltipStyle} />
               <Legend />
               <Line 
                 type="monotone" 
                 dataKey="value" 
-                stroke="#39A8F7" 
+                stroke={COLORS[0]}
                 strokeWidth={3}
-                dot={{ fill: '#0C75D1', strokeWidth: 2, r: 6 }}
-                activeDot={{ r: 8, fill: '#70CDFF' }}
+                dot={{ fill: COLORS[1], strokeWidth: 2, r: 6 }}
+                activeDot={{ r: 8, fill: COLORS[2] }}
                 name="Count"
               />
             </LineChart>

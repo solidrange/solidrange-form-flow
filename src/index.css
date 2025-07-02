@@ -7,33 +7,34 @@
 
 @layer base {
   :root {
+    /* Light theme - High contrast and accessibility focused */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 224 71.4% 4.1%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 224 71.4% 4.1%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 224 71.4% 4.1%;
 
-    --primary: 205 100% 50%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 208 100% 47%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 205 100% 50%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 208 100% 47%;
 
     --radius: 0.75rem;
 
@@ -44,60 +45,47 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-
-    /* Custom brand colors - optimized for light theme */
-    --brand-primary: 197 100% 71%;
-    --brand-secondary: 205 100% 59%;
-    --brand-tertiary: 208 100% 44%;
-    --brand-accent: 235 100% 30%;
-    --brand-purple: 281 66% 68%;
+    --sidebar-ring: 208 100% 47%;
   }
 
   .dark {
-    --background: 224 71% 4%;
-    --foreground: 213 31% 91%;
+    /* Dark theme - Carefully calibrated for accessibility and reduced eye strain */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
 
-    --card: 224 71% 4%;
-    --card-foreground: 213 31% 91%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 224 71% 4%;
-    --popover-foreground: 213 31% 91%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 197 100% 63%;
-    --primary-foreground: 224 71% 4%;
+    --primary: 208 100% 65%;
+    --primary-foreground: 222.2 84% 4.9%;
 
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 213 31% 91%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 215 27.9% 16.9%;
-    --accent-foreground: 213 31% 91%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 213 31% 91%;
+    --destructive: 0 62.8% 60.5%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 215 27.9% 16.9%;
-    --input: 215 27.9% 16.9%;
-    --ring: 197 100% 63%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 208 100% 65%;
 
-    --sidebar-background: 224 71% 4%;
-    --sidebar-foreground: 213 31% 91%;
-    --sidebar-primary: 197 100% 63%;
-    --sidebar-primary-foreground: 224 71% 4%;
-    --sidebar-accent: 215 27.9% 16.9%;
-    --sidebar-accent-foreground: 213 31% 91%;
-    --sidebar-border: 215 27.9% 16.9%;
-    --sidebar-ring: 197 100% 63%;
-
-    /* Custom brand colors - optimized for dark theme with proper contrast */
-    --brand-primary: 197 100% 71%;
-    --brand-secondary: 205 100% 65%;
-    --brand-tertiary: 208 100% 55%;
-    --brand-accent: 235 100% 45%;
-    --brand-purple: 281 66% 75%;
+    --sidebar-background: 222.2 84% 4.9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 208 100% 65%;
+    --sidebar-primary-foreground: 222.2 84% 4.9%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
+    --sidebar-ring: 208 100% 65%;
   }
 }
 
@@ -113,38 +101,31 @@
 
   /* Improved glassmorphism effects for both themes */
   .glass {
-    @apply backdrop-blur-xl bg-white/80 border border-white/20 dark:bg-black/80 dark:border-white/10;
+    @apply backdrop-blur-xl bg-white/90 border border-gray-200/50 dark:bg-gray-900/90 dark:border-gray-700/50;
   }
 
-  /* Modern responsive card styling */
+  /* Modern responsive card styling with better contrast */
   .modern-card {
-    @apply bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 
-           shadow-lg shadow-blue-500/5 dark:shadow-blue-400/10 
-           hover:shadow-xl hover:shadow-blue-500/10 dark:hover:shadow-blue-400/20 
+    @apply bg-white dark:bg-gray-900 rounded-2xl border border-gray-200 dark:border-gray-700 
+           shadow-lg shadow-gray-500/10 dark:shadow-black/20 
+           hover:shadow-xl hover:shadow-gray-500/20 dark:hover:shadow-black/30 
            transition-all duration-300;
   }
 
-  /* Responsive gradient backgrounds */
+  /* Responsive gradient backgrounds with proper contrast */
   .gradient-primary {
-    background: linear-gradient(135deg, #70CDFF 0%, #39A8F7 50%, #0C75D1 100%);
+    background: linear-gradient(135deg, hsl(208 100% 65%) 0%, hsl(208 100% 47%) 50%, hsl(208 100% 35%) 100%);
   }
 
   .gradient-secondary {
-    background: linear-gradient(135deg, #C474F2 0%, #042C75 100%);
+    background: linear-gradient(135deg, hsl(260 60% 65%) 0%, hsl(235 100% 25%) 100%);
   }
 
-  .dark .gradient-primary {
-    background: linear-gradient(135deg, #70CDFF 0%, #39A8F7 40%, #0C75D1 100%);
-  }
-
-  .dark .gradient-secondary {
-    background: linear-gradient(135deg, #C474F2 0%, #042C75 100%);
-  }
-
-  /* Responsive button styles */
+  /* Responsive button styles with better accessibility */
   .btn-modern {
     @apply px-4 py-2 sm:px-6 sm:py-3 rounded-xl font-medium transition-all duration-200 
-           transform hover:scale-105 active:scale-95;
+           transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 
+           focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-gray-900;
   }
 
   /* Responsive KPI card styling */
@@ -204,10 +185,10 @@
     }
   }
 
-  /* Responsive hover effects */
+  /* Responsive hover effects with better contrast */
   .hover-lift {
     @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-lg 
-           dark:hover:shadow-blue-400/20;
+           hover:shadow-gray-500/25 dark:hover:shadow-black/40;
   }
 
   .hover-glow {
@@ -220,13 +201,13 @@
     @apply w-full h-full;
   }
 
-  /* Responsive text sizing */
+  /* Responsive text sizing with better contrast */
   .text-responsive {
-    @apply text-sm sm:text-base lg:text-lg;
+    @apply text-sm sm:text-base lg:text-lg text-gray-700 dark:text-gray-200;
   }
 
   .heading-responsive {
-    @apply text-lg sm:text-xl lg:text-2xl;
+    @apply text-lg sm:text-xl lg:text-2xl text-gray-900 dark:text-gray-100;
   }
 
   /* Improved scrollbar styling for both themes */
@@ -256,6 +237,19 @@
   .chart-container {
     @apply w-full h-64 sm:h-80 lg:h-96;
   }
+
+  /* Enhanced form elements with better contrast */
+  .form-input {
+    @apply bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 
+           text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400
+           focus:border-primary focus:ring-primary/20;
+  }
+
+  /* Better contrast for interactive elements */
+  .interactive-element {
+    @apply text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-gray-100
+           border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500;
+  }
 }
 
 /* Media queries for enhanced responsiveness */
@@ -276,5 +270,27 @@
   
   .chart-container {
     @apply h-48;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  :root {
+    --border: 0 0% 70%;
+    --input: 0 0% 70%;
+  }
+  
+  .dark {
+    --border: 0 0% 30%;
+    --input: 0 0% 30%;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
