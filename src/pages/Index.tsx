@@ -32,7 +32,6 @@ import {
   ArrowLeft,
   User,
   Zap,
-  Dashboard,
   Folder
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -603,7 +602,7 @@ const Index = () => {
               )}
             </TabsTrigger>
             <TabsTrigger value="dashboard" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <Dashboard className="h-3 w-3 sm:h-4 sm:w-4" />
+              <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden xs:inline">Dashboard</span>
             </TabsTrigger>
             <TabsTrigger value="review-submissions" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
