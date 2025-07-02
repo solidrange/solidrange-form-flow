@@ -13,14 +13,32 @@ export default {
 	theme: {
 		container: {
 			center: true,
-			padding: '2rem',
+			padding: {
+				DEFAULT: '1rem',
+				sm: '2rem',
+				lg: '4rem',
+				xl: '5rem',
+				'2xl': '6rem',
+			},
 			screens: {
+				sm: '640px',
+				md: '768px',
+				lg: '1024px',
+				xl: '1280px',
 				'2xl': '1400px'
 			}
 		},
+		screens: {
+			'xs': '475px',
+			'sm': '640px',
+			'md': '768px',
+			'lg': '1024px',
+			'xl': '1280px',
+			'2xl': '1536px',
+		},
 		extend: {
 			fontFamily: {
-				sans: ['Galano Grotesque', 'Inter', 'DM Sans', 'system-ui', 'sans-serif'],
+				sans: ['Inter', 'DM Sans', 'system-ui', 'sans-serif'],
 				inter: ['Inter', 'system-ui', 'sans-serif'],
 				dm: ['DM Sans', 'system-ui', 'sans-serif'],
 			},
@@ -68,7 +86,7 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// Brand colors
+				// Brand colors with dark theme variants
 				brand: {
 					primary: '#70CDFF',
 					secondary: '#39A8F7',
@@ -76,7 +94,7 @@ export default {
 					accent: '#042C75',
 					purple: '#C474F2'
 				},
-				// Modern color palette
+				// Enhanced color palette for dark theme
 				blue: {
 					50: '#f0f9ff',
 					100: '#e0f2fe',
@@ -88,6 +106,20 @@ export default {
 					700: '#0369a1',
 					800: '#075985',
 					900: '#042C75',
+					950: '#0c1229',
+				},
+				gray: {
+					50: '#f9fafb',
+					100: '#f3f4f6',
+					200: '#e5e7eb',
+					300: '#d1d5db',
+					400: '#9ca3af',
+					500: '#6b7280',
+					600: '#4b5563',
+					700: '#374151',
+					800: '#1f2937',
+					900: '#111827',
+					950: '#030712',
 				}
 			},
 			borderRadius: {
@@ -95,60 +127,34 @@ export default {
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
 			},
+			spacing: {
+				'18': '4.5rem',
+				'88': '22rem',
+			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' }
 				},
 				'fade-in': {
-					'0%': {
-						opacity: '0',
-						transform: 'translateY(10px)'
-					},
-					'100%': {
-						opacity: '1',
-						transform: 'translateY(0)'
-					}
+					'0%': { opacity: '0', transform: 'translateY(10px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
 				},
 				'slide-up': {
-					'0%': {
-						opacity: '0',
-						transform: 'translateY(20px)'
-					},
-					'100%': {
-						opacity: '1',
-						transform: 'translateY(0)'
-					}
+					'0%': { opacity: '0', transform: 'translateY(20px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
 				},
 				'scale-in': {
-					'0%': {
-						opacity: '0',
-						transform: 'scale(0.95)'
-					},
-					'100%': {
-						opacity: '1',
-						transform: 'scale(1)'
-					}
+					'0%': { opacity: '0', transform: 'scale(0.95)' },
+					'100%': { opacity: '1', transform: 'scale(1)' }
 				},
 				'pulse-glow': {
-					'0%, 100%': {
-						boxShadow: '0 0 20px rgba(112, 205, 255, 0.4)'
-					},
-					'50%': {
-						boxShadow: '0 0 40px rgba(112, 205, 255, 0.8)'
-					}
+					'0%, 100%': { boxShadow: '0 0 20px rgba(112, 205, 255, 0.4)' },
+					'50%': { boxShadow: '0 0 40px rgba(112, 205, 255, 0.8)' }
 				}
 			},
 			animation: {
@@ -164,7 +170,8 @@ export default {
 				'modern-lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
 				'modern-xl': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
 				'glow': '0 0 20px rgba(112, 205, 255, 0.3)',
-				'glow-lg': '0 0 40px rgba(112, 205, 255, 0.4)'
+				'glow-lg': '0 0 40px rgba(112, 205, 255, 0.4)',
+				'soft': '0 2px 8px rgba(0, 0, 0, 0.1)'
 			},
 			backdropBlur: {
 				xs: '2px'

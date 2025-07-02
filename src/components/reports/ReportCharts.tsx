@@ -57,57 +57,62 @@ export const ReportCharts = ({ submissions, chartType, dataType }: ReportChartsP
   const data = getChartData();
 
   const renderChart = () => {
+    const commonTooltipStyle = {
+      backgroundColor: 'hsl(var(--card))',
+      border: '1px solid hsl(var(--border))',
+      borderRadius: '8px',
+      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+      color: 'hsl(var(--foreground))',
+    };
+
     switch (chartType) {
       case 'bar':
         return (
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis 
                 dataKey="name" 
-                tick={{ fill: '#64748b', fontSize: 12 }}
-                axisLine={{ stroke: '#cbd5e1' }}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                axisLine={{ stroke: 'hsl(var(--border))' }}
+                angle={-45}
+                textAnchor="end"
+                height={60}
               />
               <YAxis 
-                tick={{ fill: '#64748b', fontSize: 12 }}
-                axisLine={{ stroke: '#cbd5e1' }}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                axisLine={{ stroke: 'hsl(var(--border))' }}
               />
-              <Tooltip 
-                contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                }}
-              />
+              <Tooltip contentStyle={commonTooltipStyle} />
               <Legend />
-              <Bar dataKey="value" fill="#39A8F7" radius={[4, 4, 0, 0]} />
+              <Bar 
+                dataKey="value" 
+                fill="#39A8F7" 
+                radius={[4, 4, 0, 0]}
+                name="Count"
+              />
             </BarChart>
           </ResponsiveContainer>
         );
 
       case 'line':
         return (
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
               <XAxis 
                 dataKey="name" 
-                tick={{ fill: '#64748b', fontSize: 12 }}
-                axisLine={{ stroke: '#cbd5e1' }}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                axisLine={{ stroke: 'hsl(var(--border))' }}
+                angle={-45}
+                textAnchor="end"
+                height={60}
               />
               <YAxis 
-                tick={{ fill: '#64748b', fontSize: 12 }}
-                axisLine={{ stroke: '#cbd5e1' }}
+                tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                axisLine={{ stroke: 'hsl(var(--border))' }}
               />
-              <Tooltip 
-                contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                }}
-              />
+              <Tooltip contentStyle={commonTooltipStyle} />
               <Legend />
               <Line 
                 type="monotone" 
@@ -116,6 +121,7 @@ export const ReportCharts = ({ submissions, chartType, dataType }: ReportChartsP
                 strokeWidth={3}
                 dot={{ fill: '#0C75D1', strokeWidth: 2, r: 6 }}
                 activeDot={{ r: 8, fill: '#70CDFF' }}
+                name="Count"
               />
             </LineChart>
           </ResponsiveContainer>
@@ -124,16 +130,16 @@ export const ReportCharts = ({ submissions, chartType, dataType }: ReportChartsP
       case 'pie':
       case 'donut':
         return (
-          <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
               <Pie
                 data={data}
                 cx="50%"
                 cy="50%"
                 labelLine={false}
                 label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={chartType === 'donut' ? 100 : 120}
-                innerRadius={chartType === 'donut' ? 60 : 0}
+                outerRadius={chartType === 'donut' ? '70%' : '80%'}
+                innerRadius={chartType === 'donut' ? '40%' : 0}
                 fill="#8884d8"
                 dataKey="value"
               >
@@ -141,14 +147,7 @@ export const ReportCharts = ({ submissions, chartType, dataType }: ReportChartsP
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip 
-                contentStyle={{
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #e2e8f0',
-                  borderRadius: '8px',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                }}
-              />
+              <Tooltip contentStyle={commonTooltipStyle} />
             </PieChart>
           </ResponsiveContainer>
         );
@@ -159,7 +158,7 @@ export const ReportCharts = ({ submissions, chartType, dataType }: ReportChartsP
   };
 
   return (
-    <div className="w-full bg-white rounded-lg p-4 shadow-soft border border-gray-100">
+    <div className="w-full bg-card rounded-lg p-4 shadow-soft border border-border chart-container">
       {renderChart()}
     </div>
   );
