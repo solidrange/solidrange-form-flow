@@ -25,9 +25,9 @@ export const SubmissionReview = ({ submissions, form, onUpdateSubmission }: Subm
   };
 
   return (
-    <div className="grid grid-cols-12 gap-6 h-[calc(100vh-200px)]">
-      {/* Submissions List */}
-      <div className="col-span-4">
+    <div className="flex flex-col lg:grid lg:grid-cols-12 gap-2 sm:gap-4 lg:gap-6 h-auto lg:h-[calc(100vh-200px)]">
+      {/* Submissions List - Full width on mobile, left column on desktop */}
+      <div className="lg:col-span-4 order-1 lg:order-1">
         <SubmissionsList
           submissions={submissions}
           form={form}
@@ -38,26 +38,28 @@ export const SubmissionReview = ({ submissions, form, onUpdateSubmission }: Subm
         />
       </div>
 
-      {/* Submission Details */}
-      <div className="col-span-8">
+      {/* Submission Details - Full width on mobile, right column on desktop */}
+      <div className="lg:col-span-8 order-2 lg:order-2">
         {selectedSub ? (
           <Card className="h-full">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>Submission Review</CardTitle>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm">
-                    <Download className="h-4 w-4 mr-2" />
-                    Export
+            <CardHeader className="pb-2 sm:pb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
+                <CardTitle className="text-sm sm:text-base lg:text-lg truncate">
+                  Review Submission
+                </CardTitle>
+                <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto">
+                  <Button variant="outline" size="sm" className="text-xs px-2 py-1 whitespace-nowrap">
+                    <Download className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline ml-1">Export</span>
                   </Button>
-                  <Button variant="outline" size="sm">
-                    <FileText className="h-4 w-4 mr-2" />
-                    Print
+                  <Button variant="outline" size="sm" className="text-xs px-2 py-1 whitespace-nowrap">
+                    <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline ml-1">Print</span>
                   </Button>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="space-y-6 overflow-auto max-h-[calc(100vh-300px)]">
+            <CardContent className="space-y-3 sm:space-y-4 lg:space-y-6 overflow-auto max-h-[60vh] sm:max-h-[70vh] lg:max-h-[calc(100vh-300px)] p-3 sm:p-4 lg:p-6">
               <SubmissionDetails submission={selectedSub} form={form} />
               <SubmissionActions 
                 submission={selectedSub} 
@@ -68,12 +70,10 @@ export const SubmissionReview = ({ submissions, form, onUpdateSubmission }: Subm
             </CardContent>
           </Card>
         ) : (
-          <Card className="h-full flex items-center justify-center">
-            <CardContent>
-              <div className="text-center text-gray-500">
-                <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                <p>Select a submission to review</p>
-              </div>
+          <Card className="h-full flex items-center justify-center min-h-[200px] sm:min-h-[300px]">
+            <CardContent className="text-center p-4">
+              <FileText className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 mx-auto mb-3 sm:mb-4 text-gray-300" />
+              <p className="text-xs sm:text-sm text-gray-500">Select a submission to review</p>
             </CardContent>
           </Card>
         )}

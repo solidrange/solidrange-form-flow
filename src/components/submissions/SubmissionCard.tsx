@@ -1,4 +1,3 @@
-
 import { FormSubmission, Form } from "@/types/form";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -114,77 +113,73 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
   return (
     <Card 
       className={`cursor-pointer transition-colors hover:bg-gray-50 ${
-        isSelected ? 'ring-2 ring-blue-500' : ''
+        isSelected ? 'ring-1 sm:ring-2 ring-blue-500' : ''
       }`}
       onClick={onClick}
     >
-      <CardContent className="p-4">
+      <CardContent className="p-2 sm:p-3 lg:p-4">
         {/* Header with submitter info and status */}
-        <div className="flex items-start justify-between mb-2">
-          <div className="flex items-center gap-2">
+        <div className="flex items-start justify-between mb-2 gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 min-w-0 flex-1">
             {submission.submissionType === 'vendor' ? (
-              <Building className="h-4 w-4 text-gray-500" />
+              <Building className="h-3 w-3 sm:h-4 sm:w-4 text-gray-500 shrink-0" />
             ) : (
-              <User className="h-4 w-4 text-gray-500" />
+              <User className="h-3 w-3 sm:h-4 sm:w-4 text-gray-500 shrink-0" />
             )}
-            <div className="flex flex-col">
-              <span className="text-sm font-medium">
+            <div className="flex flex-col min-w-0 flex-1">
+              <span className="text-xs sm:text-sm font-medium truncate leading-tight">
                 {submitterInfo.primary}
               </span>
               {submitterInfo.secondary && (
-                <span className="text-xs text-gray-500">{submitterInfo.secondary}</span>
+                <span className="text-xs text-gray-500 truncate leading-tight">
+                  {submitterInfo.secondary}
+                </span>
               )}
             </div>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center shrink-0">
             {getStatusIcon(submission.status, completionPercentage)}
           </div>
         </div>
         
         {/* Progress and status information */}
-        <div className="space-y-2">
+        <div className="space-y-1 sm:space-y-2">
           {/* Completion progress */}
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-500">Completion</span>
-            <span className="text-xs font-medium">{completionPercentage}%</span>
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-gray-500">Progress</span>
+            <span className="font-medium">{completionPercentage}%</span>
           </div>
-          <Progress value={completionPercentage} className="h-2" />
+          <Progress value={completionPercentage} className="h-1 sm:h-2" />
           
-          {/* Completion status */}
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-500">Status</span>
-            <Badge variant="outline" className="text-xs">
+          {/* Status badges row */}
+          <div className="flex items-center justify-between gap-1 flex-wrap">
+            <Badge variant="outline" className="text-xs px-1 sm:px-2 py-0 sm:py-1 leading-tight">
               {completionStatus}
             </Badge>
-          </div>
-          
-          {/* Score display if available */}
-          {submission.score && (
-            <div className="flex items-center justify-between">
-              <span className="text-xs text-gray-500">Score</span>
-              <Badge variant="outline">
-                {submission.score.total}/{submission.score.maxTotal}
-              </Badge>
-            </div>
-          )}
-          
-          {/* Status badge and submission date */}
-          <div className="flex items-center justify-between">
-            <Badge className={getStatusColor(submission.status, completionPercentage)}>
+            <Badge className={`text-xs px-1 sm:px-2 py-0 sm:py-1 leading-tight ${getStatusColor(submission.status, completionPercentage)}`}>
               {submission.status.replace('_', ' ')}
             </Badge>
-            <span className="text-xs text-gray-500">
-              {new Date(submission.submittedAt).toLocaleDateString()}
-            </span>
           </div>
           
-          {/* Submission type indicator */}
-          <div className="flex items-center justify-between">
-            <Badge variant="outline" className="text-xs">
+          {/* Score and type row */}
+          <div className="flex items-center justify-between gap-1 text-xs">
+            {submission.score && (
+              <Badge variant="outline" className="text-xs px-1 py-0 leading-tight">
+                {submission.score.total}/{submission.score.maxTotal}
+              </Badge>
+            )}
+            <Badge variant="outline" className="text-xs px-1 py-0 leading-tight">
               {submission.submissionType === 'vendor' ? 'Vendor' : 'Internal'}
             </Badge>
+          </div>
+          
+          {/* Date and time row */}
+          <div className="flex items-center justify-between gap-1 text-xs text-gray-500">
+            <span className="truncate">
+              {new Date(submission.submittedAt).toLocaleDateString()}
+            </span>
             {submission.timeSpent && (
-              <span className="text-xs text-gray-500">
+              <span className="whitespace-nowrap">
                 {submission.timeSpent}min
               </span>
             )}
