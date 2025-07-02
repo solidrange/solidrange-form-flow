@@ -33,11 +33,8 @@ export class ChartRenderer {
         return;
       }
 
-      // Enhanced gradient background
-      const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height / (window.devicePixelRatio || 1));
-      gradient.addColorStop(0, '#ffffff');
-      gradient.addColorStop(1, '#f8fafc');
-      ctx.fillStyle = gradient;
+      // Set white background with better quality
+      ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width / (window.devicePixelRatio || 1), canvas.height / (window.devicePixelRatio || 1));
 
       // Improve text rendering
@@ -45,12 +42,9 @@ export class ChartRenderer {
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
 
-      // Draw enhanced title with gradient
-      const titleGradient = ctx.createLinearGradient(0, 30, 0, 70);
-      titleGradient.addColorStop(0, '#1e40af');
-      titleGradient.addColorStop(1, '#7c3aed');
-      ctx.fillStyle = titleGradient;
-      ctx.font = 'bold 36px Inter, Arial, sans-serif';
+      // Draw title with better positioning
+      ctx.fillStyle = '#1f2937';
+      ctx.font = 'bold 32px Inter, Arial, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(chartData.title, 600, 50);
 
@@ -74,13 +68,9 @@ export class ChartRenderer {
           break;
       }
 
-      // Add enhanced border with gradient
-      const borderGradient = ctx.createLinearGradient(0, 0, 1200, 800);
-      borderGradient.addColorStop(0, '#3b82f6');
-      borderGradient.addColorStop(0.5, '#8b5cf6');
-      borderGradient.addColorStop(1, '#06b6d4');
-      ctx.strokeStyle = borderGradient;
-      ctx.lineWidth = 4;
+      // Add subtle border for better presentation
+      ctx.strokeStyle = '#e5e7eb';
+      ctx.lineWidth = 2;
       ctx.strokeRect(10, 10, 1180, 780);
 
       // Convert to high-quality base64
@@ -90,26 +80,13 @@ export class ChartRenderer {
   }
 
   private static drawBarChart(ctx: CanvasRenderingContext2D, data: any[], area: any) {
-    // Vibrant color palette with gradients
-    const colors = [
-      ['#FF6B6B', '#FF8E53'], // Coral to Orange
-      ['#4ECDC4', '#44A08D'], // Turquoise to Teal
-      ['#45B7D1', '#2196F3'], // Light Blue to Blue
-      ['#96CEB4', '#6AB04C'], // Mint to Green
-      ['#FFEAA7', '#FDCB6E'], // Light Yellow to Yellow
-      ['#DDA0DD', '#A8E6CF'], // Plum to Light Green
-      ['#98D8C8', '#88D8A3'], // Seafoam to Light Green
-      ['#F7DC6F', '#F39C12'], // Golden to Orange
-      ['#BB8FCE', '#9B59B6'], // Lavender to Purple
-      ['#85C1E9', '#3498DB']  // Sky Blue to Blue
-    ];
-    
+    const colors = ['#70CDFF', '#39A8F7', '#0C75D1', '#C474F2', '#042C75'];
     const maxValue = Math.max(...data.map(d => d.value));
     const barWidth = (area.width / data.length) * 0.7;
     const barSpacing = (area.width / data.length) * 0.3;
 
-    // Draw enhanced grid lines
-    ctx.strokeStyle = '#e2e8f0';
+    // Draw grid lines
+    ctx.strokeStyle = '#f3f4f6';
     ctx.lineWidth = 1;
     for (let i = 0; i <= 5; i++) {
       const y = area.y + (area.height * i / 5);
@@ -124,46 +101,34 @@ export class ChartRenderer {
       const x = area.x + index * (barWidth + barSpacing) + barSpacing / 2;
       const y = area.y + area.height - barHeight;
 
-      // Draw bar with enhanced gradient
+      // Draw bar with gradient
       const gradient = ctx.createLinearGradient(0, y, 0, y + barHeight);
-      const colorPair = colors[index % colors.length];
-      gradient.addColorStop(0, colorPair[0]);
-      gradient.addColorStop(1, colorPair[1]);
+      const baseColor = colors[index % colors.length];
+      gradient.addColorStop(0, baseColor);
+      gradient.addColorStop(1, baseColor + '80');
       
       ctx.fillStyle = gradient;
-      
-      // Add rounded corners
-      ctx.beginPath();
-      ctx.roundRect(x, y, barWidth, barHeight, [8, 8, 0, 0]);
-      ctx.fill();
+      ctx.fillRect(x, y, barWidth, barHeight);
 
-      // Add subtle shadow
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.1)';
-      ctx.shadowBlur = 4;
-      ctx.shadowOffsetY = 2;
-      ctx.fill();
-      ctx.shadowColor = 'transparent';
-
-      // Draw enhanced value label
-      ctx.fillStyle = '#1e293b';
-      ctx.font = 'bold 18px Inter, Arial, sans-serif';
+      // Draw value label
+      ctx.fillStyle = '#374151';
+      ctx.font = 'bold 16px Inter, Arial, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(item.value.toString(), x + barWidth / 2, y - 20);
+      ctx.fillText(item.value.toString(), x + barWidth / 2, y - 15);
 
-      // Draw enhanced name label
-      ctx.font = '16px Inter, Arial, sans-serif';
-      ctx.fillStyle = '#475569';
-      ctx.fillText(item.name, x + barWidth / 2, area.y + area.height + 35);
+      // Draw name label
+      ctx.font = '14px Inter, Arial, sans-serif';
+      ctx.fillText(item.name, x + barWidth / 2, area.y + area.height + 30);
     });
 
-    // Draw enhanced Y-axis labels
-    ctx.fillStyle = '#64748b';
-    ctx.font = '14px Inter, Arial, sans-serif';
+    // Draw Y-axis labels
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '12px Inter, Arial, sans-serif';
     ctx.textAlign = 'right';
     for (let i = 0; i <= 5; i++) {
       const value = (maxValue * i / 5).toFixed(0);
       const y = area.y + area.height - (area.height * i / 5);
-      ctx.fillText(value, area.x - 15, y);
+      ctx.fillText(value, area.x - 10, y);
     }
   }
 
@@ -171,8 +136,8 @@ export class ChartRenderer {
     const maxValue = Math.max(...data.map(d => d.value));
     const points: Array<{x: number, y: number}> = [];
 
-    // Draw enhanced grid
-    ctx.strokeStyle = '#e2e8f0';
+    // Draw grid
+    ctx.strokeStyle = '#f3f4f6';
     ctx.lineWidth = 1;
     for (let i = 0; i <= 5; i++) {
       const y = area.y + (area.height * i / 5);
@@ -189,23 +154,17 @@ export class ChartRenderer {
       points.push({ x, y });
     });
 
-    // Draw line with enhanced gradient
-    const lineGradient = ctx.createLinearGradient(0, area.y, 0, area.y + area.height);
-    lineGradient.addColorStop(0, '#3b82f6');
-    lineGradient.addColorStop(0.5, '#8b5cf6');
-    lineGradient.addColorStop(1, '#06b6d4');
+    // Draw line with gradient
+    const gradient = ctx.createLinearGradient(0, area.y, 0, area.y + area.height);
+    gradient.addColorStop(0, '#39A8F7');
+    gradient.addColorStop(1, '#0C75D1');
     
-    ctx.strokeStyle = lineGradient;
-    ctx.lineWidth = 5;
+    ctx.strokeStyle = gradient;
+    ctx.lineWidth = 4;
     ctx.lineCap = 'round';
     ctx.lineJoin = 'round';
-    
-    // Add shadow to line
-    ctx.shadowColor = 'rgba(59, 130, 246, 0.3)';
-    ctx.shadowBlur = 8;
-    ctx.shadowOffsetY = 2;
-    
     ctx.beginPath();
+    
     points.forEach((point, index) => {
       if (index === 0) {
         ctx.moveTo(point.x, point.y);
@@ -214,51 +173,30 @@ export class ChartRenderer {
       }
     });
     ctx.stroke();
-    ctx.shadowColor = 'transparent';
 
-    // Draw enhanced points and labels
+    // Draw points and labels
     points.forEach((point, index) => {
-      // Draw outer ring
+      // Draw point
       ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, 10, 0, 2 * Math.PI);
-      ctx.fill();
-      
-      // Draw inner circle with gradient
-      const pointGradient = ctx.createRadialGradient(point.x, point.y, 0, point.x, point.y, 8);
-      pointGradient.addColorStop(0, '#ff6b6b');
-      pointGradient.addColorStop(1, '#ee5a52');
-      ctx.fillStyle = pointGradient;
       ctx.beginPath();
       ctx.arc(point.x, point.y, 8, 0, 2 * Math.PI);
       ctx.fill();
+      ctx.strokeStyle = '#0C75D1';
+      ctx.lineWidth = 3;
+      ctx.stroke();
 
-      // Draw enhanced labels
-      ctx.fillStyle = '#1e293b';
-      ctx.font = 'bold 16px Inter, Arial, sans-serif';
+      // Draw labels
+      ctx.fillStyle = '#374151';
+      ctx.font = 'bold 14px Inter, Arial, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText(data[index].value.toString(), point.x, point.y - 25);
-      ctx.font = '14px Inter, Arial, sans-serif';
-      ctx.fillStyle = '#475569';
-      ctx.fillText(data[index].name, point.x, area.y + area.height + 35);
+      ctx.fillText(data[index].value.toString(), point.x, point.y - 20);
+      ctx.font = '12px Inter, Arial, sans-serif';
+      ctx.fillText(data[index].name, point.x, area.y + area.height + 30);
     });
   }
 
   private static drawPieChart(ctx: CanvasRenderingContext2D, data: any[], area: any, isDonut: boolean = false) {
-    // Enhanced vibrant color palette
-    const colors = [
-      ['#FF6B6B', '#FF8E53'], // Coral to Orange
-      ['#4ECDC4', '#44A08D'], // Turquoise to Teal
-      ['#45B7D1', '#2196F3'], // Light Blue to Blue
-      ['#96CEB4', '#6AB04C'], // Mint to Green
-      ['#FFEAA7', '#FDCB6E'], // Light Yellow to Yellow
-      ['#DDA0DD', '#A8E6CF'], // Plum to Light Green
-      ['#98D8C8', '#88D8A3'], // Seafoam to Light Green
-      ['#F7DC6F', '#F39C12'], // Golden to Orange
-      ['#BB8FCE', '#9B59B6'], // Lavender to Purple
-      ['#85C1E9', '#3498DB']  // Sky Blue to Blue
-    ];
-    
+    const colors = ['#70CDFF', '#39A8F7', '#0C75D1', '#C474F2', '#042C75'];
     const total = data.reduce((sum, item) => sum + item.value, 0);
     const centerX = area.x + area.width / 2;
     const centerY = area.y + area.height / 2;
@@ -269,12 +207,12 @@ export class ChartRenderer {
 
     data.forEach((item, index) => {
       const sliceAngle = (item.value / total) * 2 * Math.PI;
-      const colorPair = colors[index % colors.length];
+      const color = colors[index % colors.length];
 
-      // Draw slice with enhanced gradient
+      // Draw slice with gradient
       const gradient = ctx.createRadialGradient(centerX, centerY, innerRadius, centerX, centerY, radius);
-      gradient.addColorStop(0, colorPair[0]);
-      gradient.addColorStop(1, colorPair[1]);
+      gradient.addColorStop(0, color);
+      gradient.addColorStop(1, color + 'CC');
       
       ctx.fillStyle = gradient;
       ctx.beginPath();
@@ -283,76 +221,62 @@ export class ChartRenderer {
       ctx.closePath();
       ctx.fill();
 
-      // Add enhanced border
+      // Add subtle border
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 2;
       ctx.stroke();
 
-      // Draw inner circle for donut with gradient
+      // Draw inner circle for donut
       if (isDonut) {
-        const innerGradient = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, innerRadius);
-        innerGradient.addColorStop(0, '#ffffff');
-        innerGradient.addColorStop(1, '#f8fafc');
-        ctx.fillStyle = innerGradient;
+        ctx.fillStyle = '#ffffff';
         ctx.beginPath();
         ctx.arc(centerX, centerY, innerRadius, 0, 2 * Math.PI);
         ctx.fill();
       }
 
-      // Draw enhanced percentage label
-      if (sliceAngle > 0.2) {
+      // Draw percentage label
+      if (sliceAngle > 0.2) { // Only show label if slice is large enough
         const labelAngle = currentAngle + sliceAngle / 2;
         const labelRadius = radius * (isDonut ? 0.7 : 0.6);
         const labelX = centerX + Math.cos(labelAngle) * labelRadius;
         const labelY = centerY + Math.sin(labelAngle) * labelRadius;
         
         const percentage = ((item.value / total) * 100).toFixed(1);
-        
-        // Add text shadow
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
-        ctx.lineWidth = 4;
-        ctx.font = 'bold 18px Inter, Arial, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.strokeText(`${percentage}%`, labelX, labelY);
-        
         ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 16px Inter, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 3;
+        ctx.strokeText(`${percentage}%`, labelX, labelY);
         ctx.fillText(`${percentage}%`, labelX, labelY);
       }
 
       currentAngle += sliceAngle;
     });
 
-    // Draw enhanced legend
-    const legendX = area.x + area.width + 60;
-    let legendY = area.y + 60;
+    // Draw legend with better positioning
+    const legendX = area.x + area.width + 40;
+    let legendY = area.y + 40;
     
-    ctx.font = 'bold 20px Inter, Arial, sans-serif';
-    ctx.fillStyle = '#1e293b';
+    ctx.font = 'bold 16px Inter, Arial, sans-serif';
+    ctx.fillStyle = '#374151';
     ctx.textAlign = 'left';
     ctx.fillText('Legend', legendX, legendY);
-    legendY += 40;
+    legendY += 30;
     
     data.forEach((item, index) => {
-      const colorPair = colors[index % colors.length];
+      const color = colors[index % colors.length];
       
-      // Enhanced legend color box with gradient
-      const legendGradient = ctx.createLinearGradient(legendX, legendY - 12, legendX + 24, legendY + 12);
-      legendGradient.addColorStop(0, colorPair[0]);
-      legendGradient.addColorStop(1, colorPair[1]);
-      ctx.fillStyle = legendGradient;
-      ctx.fillRect(legendX, legendY - 12, 24, 24);
+      // Legend color box
+      ctx.fillStyle = color;
+      ctx.fillRect(legendX, legendY - 8, 20, 16);
       
-      // Add border to legend box
-      ctx.strokeStyle = '#e2e8f0';
-      ctx.lineWidth = 2;
-      ctx.strokeRect(legendX, legendY - 12, 24, 24);
+      // Legend text
+      ctx.fillStyle = '#374151';
+      ctx.font = '14px Inter, Arial, sans-serif';
+      ctx.fillText(`${item.name} (${item.value})`, legendX + 30, legendY);
       
-      // Enhanced legend text
-      ctx.fillStyle = '#1e293b';
-      ctx.font = '16px Inter, Arial, sans-serif';
-      ctx.fillText(`${item.name} (${item.value})`, legendX + 35, legendY);
-      
-      legendY += 35;
+      legendY += 30;
     });
   }
 }
