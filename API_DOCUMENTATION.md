@@ -226,9 +226,101 @@ CREATE TABLE EmailRecipients (
 );
 ```
 
+### 11. FormCategories Table
+```sql
+CREATE TABLE FormCategories (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    Name NVARCHAR(255) NOT NULL UNIQUE,
+    Description NTEXT,
+    Color NVARCHAR(7), -- Hex color code
+    Icon NVARCHAR(50), -- Icon name or identifier
+    ParentCategoryId UNIQUEIDENTIFIER FOREIGN KEY REFERENCES FormCategories(Id),
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+    IsActive BIT NOT NULL DEFAULT 1,
+    
+    INDEX IX_FormCategories_ParentCategory (ParentCategoryId)
+);
+```
+
+### 12. FormAnalytics Table
+```sql
+CREATE TABLE FormAnalytics (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    FormId UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES Forms(Id) ON DELETE CASCADE,
+    EventType NVARCHAR(50) NOT NULL, -- view, start, submit, abandon
+    EventData NVARCHAR(MAX), -- JSON with additional event details
+    UserAgent NVARCHAR(500),
+    IpAddress NVARCHAR(45),
+    SessionId NVARCHAR(100),
+    EventDate DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+    
+    INDEX IX_FormAnalytics_FormId (FormId),
+    INDEX IX_FormAnalytics_EventType (EventType),
+    INDEX IX_FormAnalytics_EventDate (EventDate)
+);
+```
+
+### 13. SystemSettings Table
+```sql
+CREATE TABLE SystemSettings (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    SettingKey NVARCHAR(255) NOT NULL UNIQUE,
+    SettingValue NVARCHAR(MAX) NOT NULL,
+    Description NTEXT,
+    SettingType NVARCHAR(50) NOT NULL, -- string, number, boolean, json
+    IsSystem BIT NOT NULL DEFAULT 0, -- System settings vs user configurable
+    CreatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+    UpdatedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+    
+    INDEX IX_SystemSettings_Key (SettingKey)
+);
+```
+
+### 14. AuditLogs Table
+```sql
+CREATE TABLE AuditLogs (
+    Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+    UserId UNIQUEIDENTIFIER FOREIGN KEY REFERENCES Users(Id),
+    EntityType NVARCHAR(100) NOT NULL, -- Form, Submission, User, etc.
+    EntityId UNIQUEIDENTIFIER NOT NULL,
+    Action NVARCHAR(50) NOT NULL, -- Create, Update, Delete, View, etc.
+    OldValues NVARCHAR(MAX), -- JSON of old values
+    NewValues NVARCHAR(MAX), -- JSON of new values
+    IPAddress NVARCHAR(45),
+    UserAgent NVARCHAR(500),
+    Timestamp DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+    
+    INDEX IX_AuditLogs_EntityType (EntityType),
+    INDEX IX_AuditLogs_EntityId (EntityId),
+    INDEX IX_AuditLogs_UserId (UserId),
+    INDEX IX_AuditLogs_Timestamp (Timestamp)
+);
+```
+
 ## API Endpoints
 
 ### Authentication Endpoints
+
+#### GET /api/auth/me
+```csharp
+// Get current user information
+// Response: UserDto with current user details
+public class UserDto
+{
+    public Guid Id { get; set; }
+    public string Email { get; set; }
+    public string Name { get; set; }
+    public string Role { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public bool IsActive { get; set; }
+}
+```
+
+#### POST /api/auth/logout
+```csharp
+// Invalidate current token
+// No request body, returns 200 OK
+```
 
 #### POST /api/auth/login
 ```csharp
@@ -333,6 +425,35 @@ public class DuplicateFormRequest
 {
     public string NewTitle { get; set; }
 }
+```
+
+#### POST /api/forms/{id}/unpublish
+```csharp
+// No request body, changes status back to 'draft'
+```
+
+#### GET /api/forms/{id}/preview
+```csharp
+// Response: FormDto with preview-specific formatting
+```
+
+#### PUT /api/forms/{id}/settings
+```csharp
+// Request
+public class UpdateFormSettingsRequest
+{
+    public FormSettingsDto Settings { get; set; }
+}
+```
+
+#### POST /api/forms/{id}/export
+```csharp
+// Request
+public class ExportFormRequest
+{
+    public string Format { get; set; } // json, xml, pdf
+}
+// Response: File stream or export data
 ```
 
 ### Form Fields Endpoints
@@ -630,6 +751,394 @@ public class CustomReportRequest
 #### GET /api/reports/{reportId}/download
 ```csharp
 // Response: File stream (PDF/Excel)
+```
+
+### Categories Management Endpoints
+
+#### GET /api/categories
+```csharp
+// Response: List<FormCategoryDto>
+public class FormCategoryDto
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public string Color { get; set; }
+    public string Icon { get; set; }
+    public Guid? ParentCategoryId { get; set; }
+    public bool IsActive { get; set; }
+}
+```
+
+#### POST /api/categories
+```csharp
+// Request
+public class CreateCategoryRequest
+{
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public string Color { get; set; }
+    public string Icon { get; set; }
+    public Guid? ParentCategoryId { get; set; }
+}
+```
+
+#### PUT /api/categories/{id}
+```csharp
+// Request: Same as CreateCategoryRequest
+```
+
+#### DELETE /api/categories/{id}
+```csharp
+// No request body
+```
+
+### System Settings Endpoints
+
+#### GET /api/settings
+```csharp
+// Response: List<SystemSettingDto>
+public class SystemSettingDto
+{
+    public string Key { get; set; }
+    public string Value { get; set; }
+    public string Description { get; set; }
+    public string Type { get; set; }
+}
+```
+
+#### PUT /api/settings/{key}
+```csharp
+// Request
+public class UpdateSettingRequest
+{
+    public string Value { get; set; }
+}
+```
+
+### Analytics Tracking Endpoints
+
+#### POST /api/analytics/track
+```csharp
+// Request
+public class TrackEventRequest
+{
+    public Guid FormId { get; set; }
+    public string EventType { get; set; } // view, start, submit, abandon
+    public Dictionary<string, object> EventData { get; set; }
+    public string SessionId { get; set; }
+}
+```
+
+#### GET /api/analytics/events/{formId}
+```csharp
+// Query Parameters
+public class GetAnalyticsEventsQuery
+{
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public string EventType { get; set; }
+    public int Page { get; set; } = 1;
+    public int PageSize { get; set; } = 50;
+}
+```
+
+### Audit Log Endpoints
+
+#### GET /api/audit-logs
+```csharp
+// Query Parameters
+public class GetAuditLogsQuery
+{
+    public Guid? UserId { get; set; }
+    public string EntityType { get; set; }
+    public Guid? EntityId { get; set; }
+    public string Action { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? EndDate { get; set; }
+    public int Page { get; set; } = 1;
+    public int PageSize { get; set; } = 50;
+}
+
+// Response
+public class AuditLogDto
+{
+    public Guid Id { get; set; }
+    public UserDto User { get; set; }
+    public string EntityType { get; set; }
+    public Guid EntityId { get; set; }
+    public string Action { get; set; }
+    public Dictionary<string, object> OldValues { get; set; }
+    public Dictionary<string, object> NewValues { get; set; }
+    public DateTime Timestamp { get; set; }
+}
+```
+
+### Bulk Operations Endpoints
+
+#### POST /api/submissions/bulk-update
+```csharp
+// Request
+public class BulkUpdateSubmissionsRequest
+{
+    public List<Guid> SubmissionIds { get; set; }
+    public string Status { get; set; }
+    public string Comments { get; set; }
+}
+```
+
+#### POST /api/submissions/bulk-export
+```csharp
+// Request
+public class BulkExportRequest
+{
+    public List<Guid> SubmissionIds { get; set; }
+    public string Format { get; set; } // csv, excel, pdf
+    public bool IncludeAttachments { get; set; }
+}
+// Response: File stream
+```
+
+#### POST /api/forms/bulk-delete
+```csharp
+// Request
+public class BulkDeleteFormsRequest
+{
+    public List<Guid> FormIds { get; set; }
+}
+```
+
+### Form Validation Endpoints
+
+#### POST /api/forms/{id}/validate
+```csharp
+// Request: FormDto (for validation)
+// Response
+public class FormValidationResponse
+{
+    public bool IsValid { get; set; }
+    public List<ValidationError> Errors { get; set; }
+    public List<ValidationWarning> Warnings { get; set; }
+}
+
+public class ValidationError
+{
+    public string FieldId { get; set; }
+    public string Message { get; set; }
+    public string Severity { get; set; }
+}
+```
+
+### Public Form Endpoints (For Form Completion)
+
+#### GET /api/public/forms/{token}
+```csharp
+// Public endpoint for recipients to access forms
+// Response: FormDto with public-safe data
+```
+
+#### POST /api/public/forms/{token}/submit
+```csharp
+// Request
+public class PublicSubmissionRequest
+{
+    public Dictionary<string, object> Responses { get; set; }
+    public string SubmitterName { get; set; }
+    public string SubmitterEmail { get; set; }
+    public string CompanyName { get; set; }
+}
+```
+
+#### GET /api/public/forms/{token}/progress
+```csharp
+// Get submission progress for a specific token
+// Response
+public class SubmissionProgressDto
+{
+    public decimal CompletionPercentage { get; set; }
+    public DateTime LastUpdated { get; set; }
+    public bool IsSubmitted { get; set; }
+}
+```
+
+### Email Template Endpoints
+
+#### GET /api/email-templates
+```csharp
+// Response: List<EmailTemplateDto>
+public class EmailTemplateDto
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string Subject { get; set; }
+    public string Body { get; set; }
+    public string Type { get; set; } // invitation, reminder, notification
+}
+```
+
+#### POST /api/email-templates
+```csharp
+// Request: CreateEmailTemplateRequest
+```
+
+#### PUT /api/email-templates/{id}
+```csharp
+// Request: UpdateEmailTemplateRequest
+```
+
+#### DELETE /api/email-templates/{id}
+```csharp
+// No request body
+```
+
+### Dashboard Summary Endpoints
+
+#### GET /api/dashboard/summary
+```csharp
+// Response
+public class DashboardSummaryDto
+{
+    public int TotalForms { get; set; }
+    public int PublishedForms { get; set; }
+    public int DraftForms { get; set; }
+    public int TotalSubmissions { get; set; }
+    public int PendingReviews { get; set; }
+    public int ApprovedSubmissions { get; set; }
+    public int RejectedSubmissions { get; set; }
+    public decimal AverageCompletionRate { get; set; }
+    public List<RecentActivityDto> RecentActivities { get; set; }
+}
+```
+
+#### GET /api/dashboard/recent-activities
+```csharp
+// Response: List<RecentActivityDto>
+public class RecentActivityDto
+{
+    public string Type { get; set; } // form_created, submission_received, etc.
+    public string Description { get; set; }
+    public DateTime Timestamp { get; set; }
+    public UserDto User { get; set; }
+    public string EntityType { get; set; }
+    public Guid EntityId { get; set; }
+}
+```
+
+### Form Theme and Styling Endpoints
+
+#### GET /api/forms/{id}/theme
+```csharp
+// Response
+public class FormThemeDto
+{
+    public string Theme { get; set; } // light, dark, custom
+    public string CustomCss { get; set; }
+    public string PrimaryColor { get; set; }
+    public string SecondaryColor { get; set; }
+    public string BackgroundColor { get; set; }
+    public string FontFamily { get; set; }
+}
+```
+
+#### PUT /api/forms/{id}/theme
+```csharp
+// Request: FormThemeDto
+```
+
+### Real-time Notifications Endpoints
+
+#### GET /api/notifications
+```csharp
+// Response: List<NotificationDto>
+public class NotificationDto
+{
+    public Guid Id { get; set; }
+    public string Type { get; set; }
+    public string Title { get; set; }
+    public string Message { get; set; }
+    public bool IsRead { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public Dictionary<string, object> Data { get; set; }
+}
+```
+
+#### PUT /api/notifications/{id}/mark-read
+```csharp
+// No request body
+```
+
+#### POST /api/notifications/mark-all-read
+```csharp
+// No request body
+```
+
+### Data Import/Export Endpoints
+
+#### POST /api/forms/import
+```csharp
+// Request: IFormFile (CSV, JSON, XML)
+// Response
+public class ImportResultDto
+{
+    public int TotalProcessed { get; set; }
+    public int SuccessCount { get; set; }
+    public int ErrorCount { get; set; }
+    public List<string> Errors { get; set; }
+    public List<Guid> CreatedFormIds { get; set; }
+}
+```
+
+#### GET /api/forms/export
+```csharp
+// Query Parameters
+public class ExportFormsQuery
+{
+    public List<Guid> FormIds { get; set; }
+    public string Format { get; set; } // json, csv, xml
+    public bool IncludeSubmissions { get; set; }
+}
+// Response: File stream
+```
+
+### Integration Endpoints
+
+#### GET /api/integrations/webhooks
+```csharp
+// Response: List<WebhookDto>
+public class WebhookDto
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string Url { get; set; }
+    public List<string> Events { get; set; }
+    public bool IsActive { get; set; }
+    public string Secret { get; set; }
+}
+```
+
+#### POST /api/integrations/webhooks
+```csharp
+// Request: CreateWebhookRequest
+```
+
+#### PUT /api/integrations/webhooks/{id}
+```csharp
+// Request: UpdateWebhookRequest
+```
+
+#### DELETE /api/integrations/webhooks/{id}
+```csharp
+// No request body
+```
+
+#### POST /api/integrations/webhooks/{id}/test
+```csharp
+// Request
+public class TestWebhookRequest
+{
+    public string EventType { get; set; }
+    public Dictionary<string, object> SampleData { get; set; }
+}
 ```
 
 ## Data Transfer Objects (DTOs)
