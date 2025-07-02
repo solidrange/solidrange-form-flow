@@ -4,8 +4,6 @@ import { FormPreview } from "@/components/FormPreview";
 import { FormLibrary } from "@/components/FormLibrary";
 import { FormInvitations } from "@/components/FormInvitations";
 import { Analytics } from "@/components/Analytics";
-import { ScoringSettings } from "@/components/ScoringSettings";
-import { WeightageEditor } from "@/components/WeightageEditor";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { ReportGeneration } from "@/components/ReportGeneration";
@@ -485,8 +483,6 @@ const Index = () => {
   const buildTabs = [
     { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" />, mobileLabel: "Build" },
     { id: "library", label: "Library", icon: <Library className="h-4 w-4" />, mobileLabel: "Lib" },
-    { id: "scoring", label: "Scoring", icon: <Target className="h-4 w-4" />, mobileLabel: "Score" },
-    { id: "weightage", label: "Weightage", icon: <Scale className="h-4 w-4" />, mobileLabel: "Weight" },
     { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" />, mobileLabel: "View" },
     { id: "drafts", label: "Drafts", icon: <FileText className="h-4 w-4" />, mobileLabel: "Draft" },
     { id: "published", label: "Published", icon: <BookOpen className="h-4 w-4" />, mobileLabel: "Live" },
@@ -681,20 +677,6 @@ const Index = () => {
                   )}
                 </TabsContent>
               )}
-
-              <TabsContent value="scoring" className="mt-3 sm:mt-4">
-                <ScoringSettings
-                  formSettings={formSettings}
-                  onUpdateSettings={updateFormSettings}
-                />
-              </TabsContent>
-
-              <TabsContent value="weightage" className="mt-3 sm:mt-4">
-                <WeightageEditor
-                  fields={formFields}
-                  onUpdateField={updateField}
-                />
-              </TabsContent>
 
               <TabsContent value="preview" className="mt-3 sm:mt-4">
                 <FormPreview

@@ -38,10 +38,10 @@ import {
 } from "lucide-react";
 
 interface AnalyticsProps {
-  submissions?: FormSubmission[];
+  submissions: FormSubmission[];
 }
 
-export const Analytics = ({ submissions = [] }: AnalyticsProps) => {
+export const Analytics = ({ submissions }: AnalyticsProps) => {
   const [selectedTimeRange, setSelectedTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
 
   // Calculate analytics metrics
