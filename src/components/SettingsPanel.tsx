@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
+import { WeightageAndScoringSettings } from "./WeightageAndScoringSettings";
 
 interface SettingsPanelProps {
   form: Form;
@@ -15,7 +16,6 @@ interface SettingsPanelProps {
 }
 
 export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
-  const [isScoringEnabled, setIsScoringEnabled] = useState(form.settings.scoring?.enabled || false);
   const [isExpirationEnabled, setIsExpirationEnabled] = useState(form.settings.expiration?.enabled || false);
   const [isEmailDistributionEnabled, setIsEmailDistributionEnabled] = useState(form.settings.emailDistribution?.enabled || false);
   const [isApprovalEnabled, setIsApprovalEnabled] = useState(form.settings.approval?.enabled || false);
@@ -31,27 +31,22 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
     });
   };
 
-  const handleScoringChange = (field: string, value: any) => {
-    const currentScoring = form.settings.scoring || {
-      enabled: false,
-      maxTotalPoints: 100,
-      showScoreToUser: false,
-      passingScore: 70,
-      riskThresholds: {
-        low: 30,
-        medium: 60,
-        high: 90
-      }
-    };
+  const handleFieldUpdate = (fieldId: string, updates: any) => {
+    const updatedFields = form.fields.map(field => 
+      field.id === fieldId ? { ...field, ...updates } : field
+    );
+    onUpdate({
+      ...form,
+      fields: updatedFields
+    });
+  };
 
+  const handleSettingsUpdate = (updates: any) => {
     onUpdate({
       ...form,
       settings: {
         ...form.settings,
-        scoring: {
-          ...currentScoring,
-          [field]: value
-        }
+        ...updates
       }
     });
   };
@@ -244,6 +239,14 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
         </CardContent>
       </Card>
 
+      {/* Scoring and Weightage Settings */}
+      <WeightageAndScoringSettings
+        fields={form.fields}
+        settings={form.settings}
+        onUpdateField={handleFieldUpdate}
+        onUpdateSettings={handleSettingsUpdate}
+      />
+
       {/* Approval Workflow */}
       <Card>
         <CardHeader>
@@ -393,120 +396,6 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
                   className="mt-1"
                   rows={3}
                 />
-              </div>
-            </>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Scoring Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Scoring Settings</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Enable scoring */}
-          <div className="flex items-center justify-between">
-            <div>
-              <Label>Enable Scoring</Label>
-              <p className="text-sm text-gray-500">Enable scoring for this form</p>
-            </div>
-            <Switch
-              checked={form.settings.scoring?.enabled || false}
-              onCheckedChange={(checked) => {
-                setIsScoringEnabled(checked);
-                handleScoringChange('enabled', checked);
-              }}
-            />
-          </div>
-
-          {/* Scoring configuration options */}
-          {isScoringEnabled && (
-            <>
-              {/* Max total points */}
-              <div>
-                <Label>Max Total Points</Label>
-                <Input
-                  type="number"
-                  min="1"
-                  value={form.settings.scoring?.maxTotalPoints || 100}
-                  onChange={(e) => handleScoringChange('maxTotalPoints', parseInt(e.target.value))}
-                  className="mt-1"
-                />
-              </div>
-
-              {/* Show score to user */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label>Show Score to User</Label>
-                  <p className="text-sm text-gray-500">Display the score to the user after submission</p>
-                </div>
-                <Switch
-                  checked={form.settings.scoring?.showScoreToUser || false}
-                  onCheckedChange={(checked) => handleScoringChange('showScoreToUser', checked)}
-                />
-              </div>
-
-              {/* Passing score */}
-              <div>
-                <Label>Passing Score (%)</Label>
-                <Input
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={form.settings.scoring?.passingScore || 70}
-                  onChange={(e) => handleScoringChange('passingScore', parseInt(e.target.value))}
-                  className="mt-1"
-                />
-              </div>
-
-              {/* Risk thresholds */}
-              <div>
-                <Label>Risk Thresholds</Label>
-                <div className="grid grid-cols-3 gap-2 mt-2">
-                  <div>
-                    <Label className="text-xs">Low</Label>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={form.settings.scoring?.riskThresholds?.low || 30}
-                      onChange={(e) => handleScoringChange('riskThresholds', {
-                        ...form.settings.scoring?.riskThresholds,
-                        low: parseInt(e.target.value)
-                      })}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs">Medium</Label>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={form.settings.scoring?.riskThresholds?.medium || 60}
-                      onChange={(e) => handleScoringChange('riskThresholds', {
-                        ...form.settings.scoring?.riskThresholds,
-                        medium: parseInt(e.target.value)
-                      })}
-                      className="mt-1"
-                    />
-                  </div>
-                  <div>
-                    <Label className="text-xs">High</Label>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      value={form.settings.scoring?.riskThresholds?.high || 90}
-                      onChange={(e) => handleScoringChange('riskThresholds', {
-                        ...form.settings.scoring?.riskThresholds,
-                        high: parseInt(e.target.value)
-                      })}
-                      className="mt-1"
-                    />
-                  </div>
-                </div>
               </div>
             </>
           )}

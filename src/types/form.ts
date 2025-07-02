@@ -74,6 +74,7 @@ export interface SubmissionScore {
   reviewedAt: Date;
   reviewComments: string;
   categoryScores?: Record<string, number>;
+  breakdown?: Record<string, number>;
 }
 
 /**

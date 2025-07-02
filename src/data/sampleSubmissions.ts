@@ -1,4 +1,3 @@
-
 import { FormSubmission } from "@/types/form";
 
 export const sampleSubmissions: FormSubmission[] = [
@@ -7,6 +6,9 @@ export const sampleSubmissions: FormSubmission[] = [
     formId: "form-vendor-assessment",
     submittedBy: "Sarah Johnson",
     submitterEmail: "sarah.johnson@techcorp.com",
+    submitterName: "Sarah Johnson",
+    companyName: "TechCorp Solutions",
+    submissionType: "vendor",
     submittedAt: new Date("2024-01-15T10:30:00Z"),
     status: "approved",
     responses: {
@@ -25,8 +27,12 @@ export const sampleSubmissions: FormSubmission[] = [
     },
     score: {
       total: 92,
+      maxTotal: 100,
       percentage: 92,
       riskLevel: "low",
+      reviewedBy: "John Reviewer",
+      reviewedAt: new Date("2024-01-16T09:00:00Z"),
+      reviewComments: "Excellent security posture and compliance. Strong references. Approved for partnership.",
       breakdown: {
         security: 95,
         compliance: 90,
@@ -34,7 +40,15 @@ export const sampleSubmissions: FormSubmission[] = [
         operational: 94
       }
     },
-    reviewNotes: "Excellent security posture and compliance. Strong references. Approved for partnership.",
+    activityLog: [
+      {
+        id: "act-001",
+        action: "approved",
+        comments: "Excellent security posture and compliance. Strong references. Approved for partnership.",
+        reviewedBy: "John Reviewer",
+        reviewedAt: new Date("2024-01-16T09:00:00Z")
+      }
+    ],
     attachments: [
       {
         id: "att-001",
@@ -59,6 +73,9 @@ export const sampleSubmissions: FormSubmission[] = [
     formId: "form-vendor-assessment",
     submittedBy: "Marcus Rodriguez",
     submitterEmail: "marcus@startupventures.io",
+    submitterName: "Marcus Rodriguez",
+    companyName: "StartupVentures Inc",
+    submissionType: "vendor",
     submittedAt: new Date("2024-01-20T14:15:00Z"),
     status: "under_review",
     responses: {
@@ -76,8 +93,12 @@ export const sampleSubmissions: FormSubmission[] = [
     },
     score: {
       total: 68,
+      maxTotal: 100,
       percentage: 68,
       riskLevel: "medium",
+      reviewedBy: "Sarah Analyst",
+      reviewedAt: new Date("2024-01-21T10:30:00Z"),
+      reviewComments: "Adequate for small partnership. Recommend security improvements before larger engagement.",
       breakdown: {
         security: 60,
         compliance: 70,
@@ -85,7 +106,15 @@ export const sampleSubmissions: FormSubmission[] = [
         operational: 70
       }
     },
-    reviewNotes: "Adequate for small partnership. Recommend security improvements before larger engagement.",
+    activityLog: [
+      {
+        id: "act-002",
+        action: "under_review",
+        comments: "Adequate for small partnership. Recommend security improvements before larger engagement.",
+        reviewedBy: "Sarah Analyst",
+        reviewedAt: new Date("2024-01-21T10:30:00Z")
+      }
+    ],
     attachments: [
       {
         id: "att-003",
@@ -102,6 +131,9 @@ export const sampleSubmissions: FormSubmission[] = [
     formId: "form-vendor-assessment",
     submittedBy: "Amanda Chen",
     submitterEmail: "a.chen@globalsecure.com",
+    submitterName: "Amanda Chen",
+    companyName: "GlobalSecure Systems",
+    submissionType: "vendor",
     submittedAt: new Date("2024-01-25T09:45:00Z"),
     status: "approved",
     responses: {
@@ -121,8 +153,12 @@ export const sampleSubmissions: FormSubmission[] = [
     },
     score: {
       total: 98,
+      maxTotal: 100,
       percentage: 98,
       riskLevel: "low",
+      reviewedBy: "John Reviewer",
+      reviewedAt: new Date("2024-01-26T08:15:00Z"),
+      reviewComments: "Premium vendor with exceptional security posture. Highly recommended for critical projects.",
       breakdown: {
         security: 100,
         compliance: 98,
@@ -130,7 +166,15 @@ export const sampleSubmissions: FormSubmission[] = [
         operational: 99
       }
     },
-    reviewNotes: "Premium vendor with exceptional security posture. Highly recommended for critical projects.",
+    activityLog: [
+      {
+        id: "act-003",
+        action: "approved", 
+        comments: "Premium vendor with exceptional security posture. Highly recommended for critical projects.",
+        reviewedBy: "John Reviewer",
+        reviewedAt: new Date("2024-01-26T08:15:00Z")
+      }
+    ],
     attachments: [
       {
         id: "att-004",
@@ -155,6 +199,9 @@ export const sampleSubmissions: FormSubmission[] = [
     formId: "form-vendor-assessment",
     submittedBy: "David Kim",
     submitterEmail: "dkim@riskycorp.com",
+    submitterName: "David Kim",
+    companyName: "RiskyCorp LLC",
+    submissionType: "vendor",
     submittedAt: new Date("2024-02-01T16:20:00Z"),
     status: "rejected",
     responses: {
@@ -170,8 +217,12 @@ export const sampleSubmissions: FormSubmission[] = [
     },
     score: {
       total: 25,
+      maxTotal: 100,
       percentage: 25,
       riskLevel: "critical",
+      reviewedBy: "Risk Team Lead",
+      reviewedAt: new Date("2024-02-02T11:00:00Z"),
+      reviewComments: "Unacceptable risk level. Multiple security incidents and no compliance measures. Rejected.",
       breakdown: {
         security: 15,
         compliance: 20,
@@ -179,7 +230,15 @@ export const sampleSubmissions: FormSubmission[] = [
         operational: 30
       }
     },
-    reviewNotes: "Unacceptable risk level. Multiple security incidents and no compliance measures. Rejected.",
+    activityLog: [
+      {
+        id: "act-004",
+        action: "rejected",
+        comments: "Unacceptable risk level. Multiple security incidents and no compliance measures. Rejected.",
+        reviewedBy: "Risk Team Lead",
+        reviewedAt: new Date("2024-02-02T11:00:00Z")
+      }
+    ],
     attachments: []
   },
   {
@@ -187,6 +246,9 @@ export const sampleSubmissions: FormSubmission[] = [
     formId: "form-internal-assessment",
     submittedBy: "Jennifer Walsh",
     submitterEmail: "j.walsh@ourcompany.com",
+    submitterName: "Jennifer Walsh",
+    companyName: "Our Company",
+    submissionType: "internal",
     submittedAt: new Date("2024-02-05T11:00:00Z"),
     status: "approved",
     responses: {
@@ -200,8 +262,12 @@ export const sampleSubmissions: FormSubmission[] = [
     },
     score: {
       total: 88,
+      maxTotal: 100,
       percentage: 88,
       riskLevel: "low",
+      reviewedBy: "Internal Reviewer",
+      reviewedAt: new Date("2024-02-06T09:30:00Z"),
+      reviewComments: "Well-designed internal project with appropriate security controls. Approved.",
       breakdown: {
         security: 90,
         compliance: 85,
@@ -209,7 +275,15 @@ export const sampleSubmissions: FormSubmission[] = [
         operational: 87
       }
     },
-    reviewNotes: "Well-designed internal project with appropriate security controls. Approved.",
+    activityLog: [
+      {
+        id: "act-005",
+        action: "approved",
+        comments: "Well-designed internal project with appropriate security controls. Approved.",
+        reviewedBy: "Internal Reviewer",
+        reviewedAt: new Date("2024-02-06T09:30:00Z")
+      }
+    ],
     attachments: [
       {
         id: "att-006",
@@ -226,6 +300,9 @@ export const sampleSubmissions: FormSubmission[] = [
     formId: "form-vendor-assessment",
     submittedBy: "Roberto Silva",
     submitterEmail: "r.silva@mediumrisk.com",
+    submitterName: "Roberto Silva",
+    companyName: "MediumRisk Solutions",
+    submissionType: "vendor",
     submittedAt: new Date("2024-02-10T13:30:00Z"),
     status: "under_review",
     responses: {
@@ -244,8 +321,12 @@ export const sampleSubmissions: FormSubmission[] = [
     },
     score: {
       total: 75,
+      maxTotal: 100,
       percentage: 75,
       riskLevel: "medium",
+      reviewedBy: "Security Analyst",
+      reviewedAt: new Date("2024-02-11T14:00:00Z"),
+      reviewComments: "Reasonable security posture. Monitoring progress on SOC 2 Type II certification.",
       breakdown: {
         security: 72,
         compliance: 78,
@@ -253,7 +334,15 @@ export const sampleSubmissions: FormSubmission[] = [
         operational: 74
       }
     },
-    reviewNotes: "Reasonable security posture. Monitoring progress on SOC 2 Type II certification.",
+    activityLog: [
+      {
+        id: "act-006",
+        action: "under_review",
+        comments: "Reasonable security posture. Monitoring progress on SOC 2 Type II certification.",
+        reviewedBy: "Security Analyst",
+        reviewedAt: new Date("2024-02-11T14:00:00Z")
+      }
+    ],
     attachments: [
       {
         id: "att-007",
@@ -270,6 +359,9 @@ export const sampleSubmissions: FormSubmission[] = [
     formId: "form-vendor-assessment",
     submittedBy: "Emily Foster",
     submitterEmail: "e.foster@highriskco.net",
+    submitterName: "Emily Foster",
+    companyName: "HighRisk Co",
+    submissionType: "vendor",
     submittedAt: new Date("2024-02-12T15:45:00Z"),
     status: "rejected",
     responses: {
@@ -287,8 +379,12 @@ export const sampleSubmissions: FormSubmission[] = [
     },
     score: {
       total: 35,
+      maxTotal: 100,
       percentage: 35,
       riskLevel: "high",
+      reviewedBy: "Risk Assessment Team",
+      reviewedAt: new Date("2024-02-13T10:00:00Z"),
+      reviewComments: "High risk due to recent breach and inadequate security measures. Rejected.",
       breakdown: {
         security: 25,
         compliance: 30,
@@ -296,7 +392,15 @@ export const sampleSubmissions: FormSubmission[] = [
         operational: 40
       }
     },
-    reviewNotes: "High risk due to recent breach and inadequate security measures. Rejected.",
+    activityLog: [
+      {
+        id: "act-007",
+        action: "rejected",
+        comments: "High risk due to recent breach and inadequate security measures. Rejected.",
+        reviewedBy: "Risk Assessment Team",
+        reviewedAt: new Date("2024-02-13T10:00:00Z")
+      }
+    ],
     attachments: []
   },
   {
@@ -304,6 +408,9 @@ export const sampleSubmissions: FormSubmission[] = [
     formId: "form-internal-assessment",
     submittedBy: "Michael Thompson",
     submitterEmail: "m.thompson@ourcompany.com",
+    submitterName: "Michael Thompson",
+    companyName: "Our Company",
+    submissionType: "internal",
     submittedAt: new Date("2024-02-15T10:15:00Z"),
     status: "approved",
     responses: {
@@ -317,8 +424,12 @@ export const sampleSubmissions: FormSubmission[] = [
     },
     score: {
       total: 82,
+      maxTotal: 100,
       percentage: 82,
       riskLevel: "low",
+      reviewedBy: "Security Compliance",
+      reviewedAt: new Date("2024-02-16T11:30:00Z"),
+      reviewComments: "Good project design with appropriate data handling. Approved with standard monitoring.",
       breakdown: {
         security: 80,
         compliance: 85,
@@ -326,7 +437,15 @@ export const sampleSubmissions: FormSubmission[] = [
         operational: 81
       }
     },
-    reviewNotes: "Good project design with appropriate data handling. Approved with standard monitoring.",
+    activityLog: [
+      {
+        id: "act-008",
+        action: "approved",
+        comments: "Good project design with appropriate data handling. Approved with standard monitoring.",
+        reviewedBy: "Security Compliance",
+        reviewedAt: new Date("2024-02-16T11:30:00Z")
+      }
+    ],
     attachments: [
       {
         id: "att-008",
@@ -343,6 +462,9 @@ export const sampleSubmissions: FormSubmission[] = [
     formId: "form-vendor-assessment",
     submittedBy: "Lisa Park",
     submitterEmail: "l.park@excellentvendor.com",
+    submitterName: "Lisa Park",
+    companyName: "ExcellentVendor Inc",
+    submissionType: "vendor",
     submittedAt: new Date("2024-02-18T12:00:00Z"),
     status: "approved",
     responses: {
@@ -362,8 +484,12 @@ export const sampleSubmissions: FormSubmission[] = [
     },
     score: {
       total: 96,
+      maxTotal: 100,
       percentage: 96,
       riskLevel: "low",
+      reviewedBy: "Vendor Management",
+      reviewedAt: new Date("2024-02-19T09:45:00Z"),
+      reviewComments: "Top-tier vendor with exceptional track record. Highly recommended for strategic partnerships.",
       breakdown: {
         security: 98,
         compliance: 95,
@@ -371,7 +497,15 @@ export const sampleSubmissions: FormSubmission[] = [
         operational: 97
       }
     },
-    reviewNotes: "Top-tier vendor with exceptional track record. Highly recommended for strategic partnerships.",
+    activityLog: [
+      {
+        id: "act-009",
+        action: "approved",
+        comments: "Top-tier vendor with exceptional track record. Highly recommended for strategic partnerships.",
+        reviewedBy: "Vendor Management",
+        reviewedAt: new Date("2024-02-19T09:45:00Z")
+      }
+    ],
     attachments: [
       {
         id: "att-009",
@@ -396,6 +530,9 @@ export const sampleSubmissions: FormSubmission[] = [
     formId: "form-vendor-assessment",
     submittedBy: "Carlos Mendez",
     submitterEmail: "c.mendez@emergingtech.io",
+    submitterName: "Carlos Mendez",
+    companyName: "EmergingTech Solutions",
+    submissionType: "vendor",
     submittedAt: new Date("2024-02-20T14:30:00Z"),
     status: "under_review",
     responses: {
@@ -414,8 +551,12 @@ export const sampleSubmissions: FormSubmission[] = [
     },
     score: {
       total: 84,
+      maxTotal: 100,
       percentage: 84,
       riskLevel: "low",
+      reviewedBy: "Tech Review Team",
+      reviewedAt: new Date("2024-02-21T10:15:00Z"),
+      reviewComments: "Promising emerging vendor with strong technical capabilities. Conducting due diligence review.",
       breakdown: {
         security: 85,
         compliance: 82,
@@ -423,7 +564,15 @@ export const sampleSubmissions: FormSubmission[] = [
         operational: 89
       }
     },
-    reviewNotes: "Promising emerging vendor with strong technical capabilities. Conducting due diligence review.",
+    activityLog: [
+      {
+        id: "act-010",
+        action: "under_review",
+        comments: "Promising emerging vendor with strong technical capabilities. Conducting due diligence review.",
+        reviewedBy: "Tech Review Team",
+        reviewedAt: new Date("2024-02-21T10:15:00Z")
+      }
+    ],
     attachments: [
       {
         id: "att-011",
@@ -440,6 +589,9 @@ export const sampleSubmissions: FormSubmission[] = [
     formId: "form-internal-assessment",
     submittedBy: "Rachel Green",
     submitterEmail: "r.green@ourcompany.com",
+    submitterName: "Rachel Green",
+    companyName: "Our Company",
+    submissionType: "internal",
     submittedAt: new Date("2024-02-22T09:20:00Z"),
     status: "under_review",
     responses: {
@@ -453,8 +605,12 @@ export const sampleSubmissions: FormSubmission[] = [
     },
     score: {
       total: 91,
+      maxTotal: 100,
       percentage: 91,
       riskLevel: "low",
+      reviewedBy: "Finance Compliance",
+      reviewedAt: new Date("2024-02-23T14:45:00Z"),
+      reviewComments: "Critical financial system requiring additional security review. High compliance requirements.",
       breakdown: {
         security: 93,
         compliance: 90,
@@ -462,7 +618,15 @@ export const sampleSubmissions: FormSubmission[] = [
         operational: 92
       }
     },
-    reviewNotes: "Critical financial system requiring additional security review. High compliance requirements.",
+    activityLog: [
+      {
+        id: "act-011",
+        action: "under_review",
+        comments: "Critical financial system requiring additional security review. High compliance requirements.",
+        reviewedBy: "Finance Compliance",
+        reviewedAt: new Date("2024-02-23T14:45:00Z")
+      }
+    ],
     attachments: [
       {
         id: "att-012",
@@ -487,6 +651,9 @@ export const sampleSubmissions: FormSubmission[] = [
     formId: "form-vendor-assessment",
     submittedBy: "Ahmed Hassan",
     submitterEmail: "a.hassan@criticalrisk.com",
+    submitterName: "Ahmed Hassan",
+    companyName: "CriticalRisk Systems",
+    submissionType: "vendor",
     submittedAt: new Date("2024-02-25T16:45:00Z"),
     status: "rejected",
     responses: {
@@ -502,8 +669,12 @@ export const sampleSubmissions: FormSubmission[] = [
     },
     score: {
       total: 18,
+      maxTotal: 100,
       percentage: 18,
       riskLevel: "critical",
+      reviewedBy: "Security Team",
+      reviewedAt: new Date("2024-02-26T12:00:00Z"),
+      reviewComments: "Critical security deficiencies and recent ransomware incident. Immediate rejection.",
       breakdown: {
         security: 10,
         compliance: 15,
@@ -511,7 +682,15 @@ export const sampleSubmissions: FormSubmission[] = [
         operational: 22
       }
     },
-    reviewNotes: "Critical security deficiencies and recent ransomware incident. Immediate rejection.",
+    activityLog: [
+      {
+        id: "act-012",
+        action: "rejected",
+        comments: "Critical security deficiencies and recent ransomware incident. Immediate rejection.",
+        reviewedBy: "Security Team",
+        reviewedAt: new Date("2024-02-26T12:00:00Z")
+      }
+    ],
     attachments: []
   }
 ];
