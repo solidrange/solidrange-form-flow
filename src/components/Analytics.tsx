@@ -41,7 +41,7 @@ interface AnalyticsProps {
   submissions: FormSubmission[];
 }
 
-export const Analytics = ({ submissions }: AnalyticsProps) => {
+const Analytics = ({ submissions }: AnalyticsProps) => {
   const [selectedTimeRange, setSelectedTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
 
   // Calculate analytics metrics
@@ -460,3 +460,5 @@ export const Analytics = ({ submissions }: AnalyticsProps) => {
     </div>
   );
 };
+
+export default Analytics;

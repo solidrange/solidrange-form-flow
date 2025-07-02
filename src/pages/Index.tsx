@@ -3,7 +3,7 @@ import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
 import { FormLibrary } from "@/components/FormLibrary";
 import { FormInvitations } from "@/components/FormInvitations";
-import { Analytics } from "@/components/Analytics";
+import Analytics from "@/components/Analytics";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { ReportGeneration } from "@/components/ReportGeneration";
@@ -590,17 +590,6 @@ const Index = () => {
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Main Tabs - Mobile Responsive */}
           <TabsList className="grid w-full grid-cols-4 mb-3 sm:mb-4 h-10 sm:h-11">
-            <TabsTrigger value="build-form" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-              <Wrench className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden xs:inline">Build</span>
-            </TabsTrigger>
-            <TabsTrigger value="forms" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm relative">
-              <Folder className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden xs:inline">Forms</span>
-              {hasUnpublishedDrafts && (
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
-              )}
-            </TabsTrigger>
             <TabsTrigger value="dashboard" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
               <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden xs:inline">Dashboard</span>
@@ -609,7 +598,199 @@ const Index = () => {
               <ClipboardList className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden xs:inline">Review</span>
             </TabsTrigger>
+            <TabsTrigger value="forms" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm relative">
+              <Folder className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Forms</span>
+              {hasUnpublishedDrafts && (
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="build-form" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Wrench className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Build</span>
+            </TabsTrigger>
           </TabsList>
+
+          {/* Dashboard Section */}
+          <TabsContent value="dashboard" className="mt-3 sm:mt-6">
+            <Analytics submissions={submissions} />
+          </TabsContent>
+
+          {/* Review Submissions Section */}
+          <TabsContent value="review-submissions" className="mt-3 sm:mt-6">
+            <Tabs defaultValue="submissions" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 h-9 sm:h-10 mb-3 sm:mb-4">
+                <TabsTrigger value="submissions" className="flex items-center gap-1 text-xs sm:text-sm">
+                  <FileCheck className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Submissions</span>
+                  <span className="sm:hidden">Sub</span>
+                </TabsTrigger>
+                <TabsTrigger value="reports" className="flex items-center gap-1 text-xs sm:text-sm">
+                  <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Reports</span>
+                  <span className="sm:hidden">Rep</span>
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="submissions" className="mt-3 sm:mt-4">
+                <SubmissionReview
+                  submissions={submissions}
+                  form={{
+                    id: currentFormId || 'current-form',
+                    title: formTitle,
+                    description: formDescription,
+                    fields: formFields,
+                    settings: formSettings,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    status: status,
+                    submissions: submissions.length,
+                    analytics: {
+                      views: 0,
+                      submissions: submissions.length,
+                      completionRate: 0,
+                      emailsSent: 0,
+                      emailsCompleted: 0,
+                      averageCompletionTime: 0,
+                      dropoffRate: 0
+                    }
+                  }}
+                  onUpdateSubmission={(id, updates) => {
+                    // Handle submission updates
+                    console.log('Updating submission:', id, updates);
+                    toast({
+                      title: "Submission Updated",
+                      description: "The submission has been updated successfully.",
+                    });
+                  }}
+                />
+              </TabsContent>
+
+              <TabsContent value="reports" className="mt-3 sm:mt-4">
+                <ReportGeneration />
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+
+          {/* Forms Section */}
+          <TabsContent value="forms" className="mt-3 sm:mt-6">
+            <Tabs defaultValue="drafts" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 h-9 sm:h-10 mb-3 sm:mb-4">
+                <TabsTrigger value="drafts" className="flex items-center gap-1 text-xs sm:text-sm">
+                  <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Drafts</span>
+                  <span className="sm:hidden">Draft</span>
+                  {savedDrafts.length > 0 && (
+                    <Badge variant="secondary" className="ml-1 text-xs">{savedDrafts.length}</Badge>
+                  )}
+                </TabsTrigger>
+                <TabsTrigger value="published" className="flex items-center gap-1 text-xs sm:text-sm">
+                  <FileCheck className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Published</span>
+                  <span className="sm:hidden">Pub</span>
+                  {publishedForms.length > 0 && (
+                    <Badge variant="secondary" className="ml-1 text-xs">{publishedForms.length}</Badge>
+                  )}
+                </TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="drafts" className="mt-3 sm:mt-4">
+                {savedDrafts.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <p className="text-sm">No draft forms available</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 sm:space-y-4">
+                    {savedDrafts.map((draft) => (
+                      <Card key={draft.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-3 sm:p-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-medium text-sm sm:text-lg truncate">{draft.title}</h3>
+                              <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{draft.description || "No description"}</p>
+                              <div className="flex items-center gap-2 sm:gap-4 mt-2">
+                                <p className="text-xs text-gray-500">
+                                  {draft.createdAt.toLocaleDateString()}
+                                </p>
+                                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 text-xs">
+                                  Draft
+                                </Badge>
+                              </div>
+                            </div>
+                            <div className="flex gap-2 shrink-0">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => {
+                                  loadForm(draft);
+                                  setActiveTab("build-form");
+                                }}
+                                className="text-xs px-2 py-1"
+                              >
+                                <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                                <span className="hidden sm:inline ml-1">Load</span>
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+
+              <TabsContent value="published" className="mt-3 sm:mt-4">
+                {publishedForms.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    <BookOpen className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                    <p className="text-sm">No published forms available</p>
+                    <p className="text-xs mt-2">Publish your first form to see it here</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 sm:space-y-4">
+                    {publishedForms.map((form) => (
+                      <Card key={form.id} className="hover:shadow-md transition-shadow">
+                        <CardContent className="p-3 sm:p-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-medium text-sm sm:text-lg truncate">{form.title}</h3>
+                              <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{form.description || "No description"}</p>
+                              <div className="flex items-center gap-2 sm:gap-4 mt-2">
+                                <p className="text-xs text-gray-500">
+                                  {form.createdAt.toLocaleDateString()}
+                                </p>
+                                <Badge variant="default" className="bg-green-100 text-green-800 text-xs">
+                                  Published
+                                </Badge>
+                                <p className="text-xs text-gray-500">
+                                  {form.submissions} submissions
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex gap-1 sm:gap-2 shrink-0 overflow-x-auto">
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                onClick={() => {
+                                  loadForm(form);
+                                  setActiveTab("build-form");
+                                }}
+                                className="text-xs px-2 py-1 whitespace-nowrap"
+                              >
+                                <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                                <span className="hidden sm:inline ml-1">Load</span>
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
 
           {/* Build Form Section */}
           <TabsContent value="build-form" className="mt-3 sm:mt-6">
@@ -733,308 +914,6 @@ const Index = () => {
             </Tabs>
           </TabsContent>
 
-          {/* Forms Section */}
-          <TabsContent value="forms" className="mt-3 sm:mt-6">
-            <Tabs defaultValue="drafts" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 h-9 sm:h-10 mb-3 sm:mb-4">
-                <TabsTrigger value="drafts" className="flex items-center gap-1 text-xs sm:text-sm">
-                  <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Drafts</span>
-                  <span className="sm:hidden">Draft</span>
-                  {savedDrafts.length > 0 && (
-                    <Badge variant="secondary" className="ml-1 text-xs">{savedDrafts.length}</Badge>
-                  )}
-                </TabsTrigger>
-                <TabsTrigger value="published" className="flex items-center gap-1 text-xs sm:text-sm">
-                  <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Published</span>
-                  <span className="sm:hidden">Live</span>
-                  {publishedForms.length > 0 && (
-                    <Badge variant="default" className="ml-1 text-xs">{publishedForms.length}</Badge>
-                  )}
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="drafts" className="mt-3 sm:mt-4">
-                {savedDrafts.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p className="text-sm">No draft forms available</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3 sm:space-y-4">
-                    {savedDrafts.map((draft) => (
-                      <Card key={draft.id} className="hover:shadow-md transition-shadow">
-                        <CardContent className="p-3 sm:p-4">
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                            <div className="flex-1 min-w-0">
-                              <h3 className="font-medium text-sm sm:text-lg truncate">{draft.title}</h3>
-                              <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{draft.description || "No description"}</p>
-                              <div className="flex items-center gap-2 sm:gap-4 mt-2">
-                                <p className="text-xs text-gray-500">
-                                  {draft.createdAt.toLocaleDateString()}
-                                </p>
-                                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 text-xs">
-                                  Draft
-                                </Badge>
-                              </div>
-                            </div>
-                            <div className="flex gap-2 shrink-0">
-                              <Button 
-                                size="sm" 
-                                variant="outline"
-                                onClick={() => {
-                                  loadForm(draft);
-                                  setActiveTab("build-form");
-                                }}
-                                className="text-xs px-2 py-1"
-                              >
-                                <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
-                                <span className="hidden sm:inline ml-1">Load</span>
-                              </Button>
-                              <Button 
-                                size="sm"
-                                onClick={() => handlePublishForm(draft)}
-                                className="text-xs px-2 py-1"
-                              >
-                                <Send className="h-3 w-3 sm:h-4 sm:w-4" />
-                                <span className="hidden sm:inline ml-1">Publish</span>
-                              </Button>
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button size="sm" variant="destructive" className="text-xs px-2 py-1">
-                                    <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent className="mx-2">
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle className="text-lg">Delete Draft</AlertDialogTitle>
-                                    <AlertDialogDescription className="text-sm">
-                                      Are you sure you want to delete "{draft.title}"? This action cannot be undone.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel className="text-sm">Cancel</AlertDialogCancel>
-                                    <AlertDialogAction 
-                                      onClick={() => handleDeleteDraft(draft.id)}
-                                      className="bg-red-600 hover:bg-red-700 text-sm"
-                                    >
-                                      Delete
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </TabsContent>
-
-              <TabsContent value="published" className="mt-3 sm:mt-4">
-                {publishedForms.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <BookOpen className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p className="text-sm">No published forms available</p>
-                    <p className="text-xs mt-2">Publish your first form to see it here</p>
-                  </div>
-                ) : (
-                  <div className="space-y-3 sm:space-y-4">
-                    {publishedForms.map((form) => (
-                      <Card key={form.id} className="hover:shadow-md transition-shadow">
-                        <CardContent className="p-3 sm:p-4">
-                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                            <div className="flex-1 min-w-0">
-                              <h3 className="font-medium text-sm sm:text-lg truncate">{form.title}</h3>
-                              <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{form.description || "No description"}</p>
-                              <div className="flex items-center gap-2 sm:gap-4 mt-2">
-                                <p className="text-xs text-gray-500">
-                                  {form.createdAt.toLocaleDateString()}
-                                </p>
-                                <Badge variant="default" className="bg-green-100 text-green-800 text-xs">
-                                  Published
-                                </Badge>
-                                <p className="text-xs text-gray-500">
-                                  {form.submissions} submissions
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex gap-1 sm:gap-2 shrink-0 overflow-x-auto">
-                              <Button 
-                                size="sm" 
-                                variant="outline"
-                                onClick={() => {
-                                  loadForm(form);
-                                  setActiveTab("build-form");
-                                }}
-                                className="text-xs px-2 py-1 whitespace-nowrap"
-                              >
-                                <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
-                                <span className="hidden sm:inline ml-1">Load</span>
-                              </Button>
-                              <Button 
-                                size="sm" 
-                                variant="outline"
-                                onClick={() => {
-                                  loadForm(form);
-                                  setActiveTab("build-form");
-                                  setActiveBuildTab("invitations");
-                                }}
-                                className="text-xs px-2 py-1 whitespace-nowrap"
-                              >
-                                <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
-                                <span className="hidden sm:inline ml-1">Mail</span>
-                              </Button>
-                              <Dialog>
-                                <DialogTrigger asChild>
-                                  <Button size="sm" variant="outline" className="text-xs px-2 py-1 whitespace-nowrap">
-                                    <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
-                                    <span className="hidden sm:inline ml-1">Share</span>
-                                  </Button>
-                                </DialogTrigger>
-                                <DialogContent className="mx-2">
-                                  <DialogHeader>
-                                    <DialogTitle className="text-lg">Share: {form.title}</DialogTitle>
-                                  </DialogHeader>
-                                  <div className="space-y-4">
-                                    <div>
-                                      <label className="text-sm font-medium">Form URL</label>
-                                      <div className="flex gap-2 mt-1">
-                                        <Input value={generateFormUrl(form.id)} readOnly className="text-xs" />
-                                        <Button 
-                                          size="sm" 
-                                          variant="outline"
-                                          onClick={() => handleCopyToClipboard(generateFormUrl(form.id), 'Form URL')}
-                                        >
-                                          Copy
-                                        </Button>
-                                      </div>
-                                    </div>
-                                    <div>
-                                      <label className="text-sm font-medium">Embed Code</label>
-                                      <div className="flex gap-2 mt-1">
-                                        <textarea 
-                                          value={generateEmbedCode(form.id)} 
-                                          readOnly 
-                                          className="flex-1 min-h-[60px] p-2 border rounded text-xs font-mono"
-                                        />
-                                        <Button 
-                                          size="sm" 
-                                          variant="outline"
-                                          onClick={() => handleCopyToClipboard(generateEmbedCode(form.id), 'Embed code')}
-                                        >
-                                          Copy
-                                        </Button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </DialogContent>
-                              </Dialog>
-                              <Button 
-                                size="sm" 
-                                variant="outline"
-                                onClick={() => handleMoveToDraft(form)}
-                                className="text-xs px-2 py-1 whitespace-nowrap"
-                              >
-                                <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
-                                <span className="hidden sm:inline ml-1">Draft</span>
-                              </Button>
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <Button size="sm" variant="destructive" className="text-xs px-2 py-1">
-                                    <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
-                                  </Button>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent className="mx-2">
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle className="text-lg">Delete Published Form</AlertDialogTitle>
-                                    <AlertDialogDescription className="text-sm">
-                                      Are you sure you want to delete "{form.title}"? This will remove the form and all its data permanently.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel className="text-sm">Cancel</AlertDialogCancel>
-                                    <AlertDialogAction 
-                                      onClick={() => handleDeletePublished(form.id)}
-                                      className="bg-red-600 hover:bg-red-700 text-sm"
-                                    >
-                                      Delete
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                )}
-              </TabsContent>
-            </Tabs>
-          </TabsContent>
-
-          {/* Dashboard Section */}
-          <TabsContent value="dashboard" className="mt-3 sm:mt-6">
-            <Analytics submissions={submissions} />
-          </TabsContent>
-
-          {/* Review Submissions Section */}
-          <TabsContent value="review-submissions" className="mt-3 sm:mt-6">
-            <Tabs defaultValue="submissions" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 h-9 sm:h-10 mb-3 sm:mb-4">
-                <TabsTrigger value="submissions" className="flex items-center gap-1 text-xs sm:text-sm">
-                  <FileCheck className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Submissions</span>
-                  <span className="sm:hidden">Sub</span>
-                </TabsTrigger>
-                <TabsTrigger value="reports" className="flex items-center gap-1 text-xs sm:text-sm">
-                  <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Reports</span>
-                  <span className="sm:hidden">Rep</span>
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="submissions" className="mt-3 sm:mt-4">
-                <SubmissionReview
-                  submissions={submissions}
-                  form={{
-                    id: currentFormId || 'current-form',
-                    title: formTitle,
-                    description: formDescription,
-                    fields: formFields,
-                    settings: formSettings,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    status: status,
-                    submissions: submissions.length,
-                    analytics: {
-                      views: 0,
-                      submissions: submissions.length,
-                      completionRate: 0,
-                      emailsSent: 0,
-                      emailsCompleted: 0,
-                      averageCompletionTime: 0,
-                      dropoffRate: 0
-                    }
-                  }}
-                  onUpdateSubmission={(submissionId, updates) => {
-                    console.log('Updating submission:', submissionId, updates);
-                    toast({
-                      title: "Submission Updated",
-                      description: "The submission has been updated successfully.",
-                    });
-                  }}
-                />
-              </TabsContent>
-
-              <TabsContent value="reports" className="mt-3 sm:mt-4">
-                <ReportGeneration submissions={submissions} />
-              </TabsContent>
-            </Tabs>
-          </TabsContent>
         </Tabs>
       </div>
     </div>
