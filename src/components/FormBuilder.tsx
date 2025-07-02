@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { FormField, DocumentAttachment } from "@/types/form";
 import { FieldPalette } from "./FieldPalette";
@@ -14,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
-import { Lock, ArrowLeft, Sparkles, Layout, Paperclip, Menu, X } from "lucide-react";
+import { Lock, ArrowLeft, Sparkles, Layout, Paperclip, Menu, X, Plus } from "lucide-react";
 
 interface FormBuilderProps {
   formFields: FormField[];
@@ -116,9 +115,9 @@ export const FormBuilder = ({
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50/80 to-blue-50/40">
       {/* Mobile Header with Controls */}
-      <div className="lg:hidden bg-white border-b border-gray-200 p-4 sticky top-0 z-40">
+      <div className="lg:hidden bg-white border-b border-gray-200 p-3 sticky top-0 z-40">
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-semibold text-gray-900 truncate">Form Builder</h1>
+          <h1 className="text-base font-semibold text-gray-900 truncate">Form Builder</h1>
           <div className="flex items-center gap-2">
             {!isPublished && (
               <>
@@ -128,7 +127,7 @@ export const FormBuilder = ({
                   onClick={() => setShowFieldPalette(!showFieldPalette)}
                   className="p-2"
                 >
-                  <Menu className="h-4 w-4" />
+                  <Plus className="h-4 w-4" />
                 </Button>
                 <Button
                   variant="outline"
@@ -255,7 +254,7 @@ export const FormBuilder = ({
 
             <CardContent className="flex-1 overflow-hidden">
               <Tabs defaultValue="fields" className="h-full flex flex-col">
-                <TabsList className="grid w-full grid-cols-2 mb-4 bg-gray-100 p-1 rounded-lg">
+                <TabsList className="grid w-full grid-cols-2 mb-4 bg-gray-100 p-1 rounded-lg h-9">
                   <TabsTrigger 
                     value="fields" 
                     className="flex items-center gap-2 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md transition-all text-sm"
@@ -310,13 +309,13 @@ export const FormBuilder = ({
       </div>
 
       {/* Mobile Layout */}
-      <div className="lg:hidden p-4 space-y-4">
+      <div className="lg:hidden p-3 space-y-3">
         {/* Form Header */}
         <Card className="modern-card">
           <CardHeader className="pb-3">
             {/* Published Status Banner */}
             {isPublished && (
-              <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg mb-4">
+              <div className="bg-blue-50 border border-blue-200 p-3 rounded-lg mb-3">
                 <div className="flex items-center justify-between">
                   <Badge className="bg-blue-600 text-white border-0 text-xs">
                     <Sparkles className="h-3 w-3 mr-1" />
@@ -326,7 +325,7 @@ export const FormBuilder = ({
                     onClick={onMoveToDraft}
                     variant="outline"
                     size="sm"
-                    className="text-xs h-7"
+                    className="text-xs h-7 px-2"
                   >
                     <ArrowLeft className="h-3 w-3 mr-1" />
                     Draft
@@ -380,7 +379,7 @@ export const FormBuilder = ({
 
         {/* Mobile Tabs */}
         <Tabs defaultValue="fields" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-1 rounded-lg">
+          <TabsList className="grid w-full grid-cols-2 bg-gray-100 p-1 rounded-lg h-9">
             <TabsTrigger 
               value="fields" 
               className="flex items-center gap-1 data-[state=active]:bg-white data-[state=active]:shadow-sm rounded-md text-sm"
@@ -397,7 +396,7 @@ export const FormBuilder = ({
             </TabsTrigger>
           </TabsList>
           
-          <TabsContent value="fields" className="mt-4">
+          <TabsContent value="fields" className="mt-3">
             <FormCanvas
               fields={formFields}
               selectedField={selectedField}
@@ -410,7 +409,7 @@ export const FormBuilder = ({
             />
           </TabsContent>
           
-          <TabsContent value="attachments" className="mt-4">
+          <TabsContent value="attachments" className="mt-3">
             <FileAttachmentManager
               attachments={attachments}
               onUpdateAttachments={isPublished ? () => handleReadOnlyAction() : onUpdateAttachments}

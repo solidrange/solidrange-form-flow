@@ -31,7 +31,9 @@ import {
   Globe,
   Trash2,
   Edit,
-  ArrowLeft
+  ArrowLeft,
+  User,
+  Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -44,11 +46,6 @@ import { FormField, FormTemplate, Form, EmailRecipient, DocumentAttachment } fro
 import { toast } from "@/hooks/use-toast";
 import { sampleSubmissions } from "@/data/sampleSubmissions";
 
-/**
- * Main Index Component
- * Manages the entire form builder application state and navigation
- * Handles form creation, editing, publishing, and submission review
- */
 const Index = () => {
   // Tab navigation state
   const [activeTab, setActiveTab] = useState("build-form");
@@ -484,61 +481,66 @@ const Index = () => {
     return null;
   };
 
-  // Create tabs array for build section (removed email tab from here)
+  // Create mobile-friendly tabs array for build section
   const buildTabs = [
-    { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" /> },
-    { id: "library", label: "Library", icon: <Library className="h-4 w-4" /> },
-    { id: "scoring", label: "Scoring", icon: <Target className="h-4 w-4" /> },
-    { id: "weightage", label: "Weightage", icon: <Scale className="h-4 w-4" /> },
-    { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" /> },
-    { id: "drafts", label: "Drafts", icon: <FileText className="h-4 w-4" /> },
-    { id: "published", label: "Published", icon: <BookOpen className="h-4 w-4" /> },
-    // Add invitations tab only for published forms
-    ...(currentFormIsPublished() ? [{ id: "invitations", label: "Invitations", icon: <Mail className="h-4 w-4" /> }] : [])
+    { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" />, mobileLabel: "Build" },
+    { id: "library", label: "Library", icon: <Library className="h-4 w-4" />, mobileLabel: "Lib" },
+    { id: "scoring", label: "Scoring", icon: <Target className="h-4 w-4" />, mobileLabel: "Score" },
+    { id: "weightage", label: "Weightage", icon: <Scale className="h-4 w-4" />, mobileLabel: "Weight" },
+    { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" />, mobileLabel: "View" },
+    { id: "drafts", label: "Drafts", icon: <FileText className="h-4 w-4" />, mobileLabel: "Draft" },
+    { id: "published", label: "Published", icon: <BookOpen className="h-4 w-4" />, mobileLabel: "Live" },
+    ...(currentFormIsPublished() ? [{ id: "invitations", label: "Invitations", icon: <Mail className="h-4 w-4" />, mobileLabel: "Mail" }] : [])
   ];
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">SF</span>
+      {/* Mobile-First Header */}
+      <div className="bg-white border-b shadow-sm sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            {/* Logo - Responsive */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xs sm:text-sm">SF</span>
               </div>
-              <h1 className="text-xl font-semibold text-gray-900">Solidrange Form Builder</h1>
+              <h1 className="text-sm sm:text-lg lg:text-xl font-semibold text-gray-900 truncate">
+                <span className="hidden sm:inline">Solidrange Form Builder</span>
+                <span className="sm:hidden">Form Builder</span>
+              </h1>
             </div>
             
-            {/* Form Status and Actions */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-gray-600">Current Form:</span>
+            {/* Form Status and Actions - Mobile Responsive */}
+            <div className="flex items-center gap-1 sm:gap-3">
+              {/* Status Badge */}
+              <div className="flex items-center gap-1 sm:gap-2">
+                <span className="text-xs font-medium text-gray-600 hidden sm:inline">Status:</span>
                 <Badge 
                   variant={isDraft ? "secondary" : "default"}
-                  className={isDraft ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}
+                  className={`text-xs px-2 py-1 ${isDraft ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}`}
                 >
-                  {isDraft ? "Draft" : "Published"}
+                  {isDraft ? "Draft" : "Live"}
                 </Badge>
               </div>
               
-              <Button onClick={createNewForm} variant="outline" size="sm">
-                <Plus className="h-4 w-4 mr-1" />
-                New Form
+              {/* Action Buttons */}
+              <Button onClick={createNewForm} variant="outline" size="sm" className="p-2 sm:px-3">
+                <Plus className="h-4 w-4" />
+                <span className="hidden sm:inline ml-1">New</span>
               </Button>
               
               {/* Quick Share Button for Published Forms */}
               {currentFormIsPublished() && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                    <Button variant="outline" size="sm" className="p-2 sm:px-3">
                       <Globe className="h-4 w-4" />
-                      Share Form
+                      <span className="hidden sm:inline ml-1">Share</span>
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="max-w-2xl">
+                  <DialogContent className="max-w-2xl mx-2">
                     <DialogHeader>
-                      <DialogTitle>Share Published Form</DialogTitle>
+                      <DialogTitle className="text-lg">Share Form</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4">
                       <div>
@@ -547,7 +549,7 @@ const Index = () => {
                           <Input 
                             value={generateFormUrl(currentFormId || 'current-form')} 
                             readOnly 
-                            className="flex-1"
+                            className="flex-1 text-sm"
                           />
                           <Button 
                             variant="outline" 
@@ -565,7 +567,7 @@ const Index = () => {
                           <textarea 
                             value={generateEmbedCode(currentFormId || 'current-form')} 
                             readOnly 
-                            className="flex-1 min-h-[100px] p-2 border border-gray-300 rounded-md resize-none text-sm font-mono"
+                            className="flex-1 min-h-[80px] p-2 border border-gray-300 rounded-md resize-none text-xs font-mono"
                           />
                           <Button 
                             variant="outline" 
@@ -586,49 +588,58 @@ const Index = () => {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3 sm:py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="build-form" className="flex items-center gap-2">
-              <Wrench className="h-4 w-4" />
-              Build Form
+          {/* Main Tabs - Mobile Responsive */}
+          <TabsList className="grid w-full grid-cols-2 mb-3 sm:mb-4 h-10 sm:h-11">
+            <TabsTrigger value="build-form" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Wrench className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Build</span>
             </TabsTrigger>
-            <TabsTrigger value="review-submissions" className="flex items-center gap-2">
-              <ClipboardList className="h-4 w-4" />
-              Review Submissions
+            <TabsTrigger value="review-submissions" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <ClipboardList className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Review</span>
             </TabsTrigger>
           </TabsList>
 
           {/* Build Form Section */}
-          <TabsContent value="build-form" className="mt-6">
+          <TabsContent value="build-form" className="mt-3 sm:mt-6">
             <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-4">
-                  <TabsList className="grid w-auto" style={{ gridTemplateColumns: `repeat(${buildTabs.length}, minmax(0, 1fr))` }}>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-3">
+                {/* Build Tabs - Horizontal Scroll on Mobile */}
+                <div className="overflow-x-auto">
+                  <TabsList className="flex w-max sm:w-auto min-w-full sm:min-w-0 h-9 sm:h-10 p-1">
                     {buildTabs.map((tab) => (
-                      <TabsTrigger key={tab.id} value={tab.id} className="flex items-center gap-2">
+                      <TabsTrigger 
+                        key={tab.id} 
+                        value={tab.id} 
+                        className="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-2 text-xs sm:text-sm whitespace-nowrap"
+                      >
                         {tab.icon}
-                        {tab.label}
+                        <span className="hidden sm:inline">{tab.label}</span>
+                        <span className="sm:hidden">{tab.mobileLabel}</span>
                       </TabsTrigger>
                     ))}
                   </TabsList>
                 </div>
                 
-                {/* Action Buttons */}
-                <div className="flex items-center gap-3">
-                  <Button onClick={saveForm} className="flex items-center gap-2">
-                    <Save className="h-4 w-4" />
-                    Save to Draft
+                {/* Action Buttons - Stack on Mobile */}
+                <div className="flex items-center gap-2 sm:gap-3 overflow-x-auto">
+                  <Button onClick={saveForm} className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-3 py-2 whitespace-nowrap">
+                    <Save className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Save to Draft</span>
+                    <span className="sm:hidden">Save</span>
                   </Button>
-                  <Button variant="outline" className="flex items-center gap-2" onClick={() => setActiveBuildTab("settings")}>
-                    <Settings className="h-4 w-4" />
-                    Settings
+                  <Button variant="outline" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm px-3 py-2 whitespace-nowrap" onClick={() => setActiveBuildTab("settings")}>
+                    <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="hidden sm:inline">Settings</span>
+                    <span className="sm:hidden">Config</span>
                   </Button>
                 </div>
               </div>
 
-              {/* Form Builder Tab */}
-              <TabsContent value="builder" className="mt-4">
+              {/* Tab Contents */}
+              <TabsContent value="builder" className="mt-3 sm:mt-4">
                 <FormBuilder
                   formFields={formFields}
                   formTitle={formTitle}
@@ -651,14 +662,12 @@ const Index = () => {
                 />
               </TabsContent>
 
-              {/* Template Library Tab */}
-              <TabsContent value="library" className="mt-4">
+              <TabsContent value="library" className="mt-3 sm:mt-4">
                 <FormLibrary onUseTemplate={useTemplate} />
               </TabsContent>
 
-              {/* Form Invitations Tab (Only for Published Forms) */}
               {currentFormIsPublished() && (
-                <TabsContent value="invitations" className="mt-4">
+                <TabsContent value="invitations" className="mt-3 sm:mt-4">
                   {getCurrentForm() ? (
                     <FormInvitations
                       form={getCurrentForm()!}
@@ -667,30 +676,27 @@ const Index = () => {
                   ) : (
                     <div className="text-center py-8 text-gray-500">
                       <Mail className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                      <p>No published form selected</p>
+                      <p className="text-sm">No published form selected</p>
                     </div>
                   )}
                 </TabsContent>
               )}
 
-              {/* Scoring Settings Tab */}
-              <TabsContent value="scoring" className="mt-4">
+              <TabsContent value="scoring" className="mt-3 sm:mt-4">
                 <ScoringSettings
                   formSettings={formSettings}
                   onUpdateSettings={updateFormSettings}
                 />
               </TabsContent>
 
-              {/* Weightage Editor Tab */}
-              <TabsContent value="weightage" className="mt-4">
+              <TabsContent value="weightage" className="mt-3 sm:mt-4">
                 <WeightageEditor
                   fields={formFields}
                   onUpdateField={updateField}
                 />
               </TabsContent>
 
-              {/* Form Preview Tab */}
-              <TabsContent value="preview" className="mt-4">
+              <TabsContent value="preview" className="mt-3 sm:mt-4">
                 <FormPreview
                   formTitle={formTitle}
                   formDescription={formDescription}
@@ -700,65 +706,66 @@ const Index = () => {
                 />
               </TabsContent>
 
-              {/* Drafts Tab */}
-              <TabsContent value="drafts" className="mt-4">
+              <TabsContent value="drafts" className="mt-3 sm:mt-4">
                 {savedDrafts.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p>No draft forms available</p>
+                    <p className="text-sm">No draft forms available</p>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {savedDrafts.map((draft) => (
                       <Card key={draft.id} className="hover:shadow-md transition-shadow">
-                        <CardContent className="p-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <h3 className="font-medium text-lg">{draft.title}</h3>
-                              <p className="text-sm text-gray-600 mt-1">{draft.description || "No description"}</p>
-                              <div className="flex items-center gap-4 mt-2">
+                        <CardContent className="p-3 sm:p-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-medium text-sm sm:text-lg truncate">{draft.title}</h3>
+                              <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{draft.description || "No description"}</p>
+                              <div className="flex items-center gap-2 sm:gap-4 mt-2">
                                 <p className="text-xs text-gray-500">
-                                  Created: {draft.createdAt.toLocaleDateString()}
+                                  {draft.createdAt.toLocaleDateString()}
                                 </p>
-                                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800 text-xs">
                                   Draft
                                 </Badge>
                               </div>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 shrink-0">
                               <Button 
                                 size="sm" 
                                 variant="outline"
                                 onClick={() => loadForm(draft)}
+                                className="text-xs px-2 py-1"
                               >
-                                <Edit className="h-4 w-4 mr-1" />
-                                Load
+                                <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                                <span className="hidden sm:inline ml-1">Load</span>
                               </Button>
                               <Button 
                                 size="sm"
                                 onClick={() => handlePublishForm(draft)}
+                                className="text-xs px-2 py-1"
                               >
-                                <Send className="h-4 w-4 mr-1" />
-                                Publish
+                                <Send className="h-3 w-3 sm:h-4 sm:w-4" />
+                                <span className="hidden sm:inline ml-1">Publish</span>
                               </Button>
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                  <Button size="sm" variant="destructive">
-                                    <Trash2 className="h-4 w-4" />
+                                  <Button size="sm" variant="destructive" className="text-xs px-2 py-1">
+                                    <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                                   </Button>
                                 </AlertDialogTrigger>
-                                <AlertDialogContent>
+                                <AlertDialogContent className="mx-2">
                                   <AlertDialogHeader>
-                                    <AlertDialogTitle>Delete Draft</AlertDialogTitle>
-                                    <AlertDialogDescription>
+                                    <AlertDialogTitle className="text-lg">Delete Draft</AlertDialogTitle>
+                                    <AlertDialogDescription className="text-sm">
                                       Are you sure you want to delete "{draft.title}"? This action cannot be undone.
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogCancel className="text-sm">Cancel</AlertDialogCancel>
                                     <AlertDialogAction 
                                       onClick={() => handleDeleteDraft(draft.id)}
-                                      className="bg-red-600 hover:bg-red-700"
+                                      className="bg-red-600 hover:bg-red-700 text-sm"
                                     >
                                       Delete
                                     </AlertDialogAction>
@@ -774,28 +781,27 @@ const Index = () => {
                 )}
               </TabsContent>
 
-              {/* Published Forms Tab */}
-              <TabsContent value="published" className="mt-4">
+              <TabsContent value="published" className="mt-3 sm:mt-4">
                 {publishedForms.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
                     <BookOpen className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                    <p>No published forms available</p>
-                    <p className="text-sm mt-2">Publish your first form to see it here</p>
+                    <p className="text-sm">No published forms available</p>
+                    <p className="text-xs mt-2">Publish your first form to see it here</p>
                   </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {publishedForms.map((form) => (
                       <Card key={form.id} className="hover:shadow-md transition-shadow">
-                        <CardContent className="p-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <h3 className="font-medium text-lg">{form.title}</h3>
-                              <p className="text-sm text-gray-600 mt-1">{form.description || "No description"}</p>
-                              <div className="flex items-center gap-4 mt-2">
+                        <CardContent className="p-3 sm:p-4">
+                          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-medium text-sm sm:text-lg truncate">{form.title}</h3>
+                              <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{form.description || "No description"}</p>
+                              <div className="flex items-center gap-2 sm:gap-4 mt-2">
                                 <p className="text-xs text-gray-500">
-                                  Published: {form.createdAt.toLocaleDateString()}
+                                  {form.createdAt.toLocaleDateString()}
                                 </p>
-                                <Badge variant="default" className="bg-green-100 text-green-800">
+                                <Badge variant="default" className="bg-green-100 text-green-800 text-xs">
                                   Published
                                 </Badge>
                                 <p className="text-xs text-gray-500">
@@ -803,14 +809,15 @@ const Index = () => {
                                 </p>
                               </div>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-1 sm:gap-2 shrink-0 overflow-x-auto">
                               <Button 
                                 size="sm" 
                                 variant="outline"
                                 onClick={() => loadForm(form)}
+                                className="text-xs px-2 py-1 whitespace-nowrap"
                               >
-                                <Edit className="h-4 w-4 mr-1" />
-                                Load
+                                <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                                <span className="hidden sm:inline ml-1">Load</span>
                               </Button>
                               <Button 
                                 size="sm" 
@@ -819,26 +826,27 @@ const Index = () => {
                                   loadForm(form);
                                   setActiveBuildTab("invitations");
                                 }}
+                                className="text-xs px-2 py-1 whitespace-nowrap"
                               >
-                                <Mail className="h-4 w-4 mr-1" />
-                                Invitations
+                                <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
+                                <span className="hidden sm:inline ml-1">Mail</span>
                               </Button>
                               <Dialog>
                                 <DialogTrigger asChild>
-                                  <Button size="sm" variant="outline">
-                                    <Globe className="h-4 w-4 mr-1" />
-                                    Share
+                                  <Button size="sm" variant="outline" className="text-xs px-2 py-1 whitespace-nowrap">
+                                    <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
+                                    <span className="hidden sm:inline ml-1">Share</span>
                                   </Button>
                                 </DialogTrigger>
-                                <DialogContent>
+                                <DialogContent className="mx-2">
                                   <DialogHeader>
-                                    <DialogTitle>Share Form: {form.title}</DialogTitle>
+                                    <DialogTitle className="text-lg">Share: {form.title}</DialogTitle>
                                   </DialogHeader>
                                   <div className="space-y-4">
                                     <div>
                                       <label className="text-sm font-medium">Form URL</label>
                                       <div className="flex gap-2 mt-1">
-                                        <Input value={generateFormUrl(form.id)} readOnly />
+                                        <Input value={generateFormUrl(form.id)} readOnly className="text-xs" />
                                         <Button 
                                           size="sm" 
                                           variant="outline"
@@ -854,7 +862,7 @@ const Index = () => {
                                         <textarea 
                                           value={generateEmbedCode(form.id)} 
                                           readOnly 
-                                          className="flex-1 min-h-[80px] p-2 border rounded text-sm font-mono"
+                                          className="flex-1 min-h-[60px] p-2 border rounded text-xs font-mono"
                                         />
                                         <Button 
                                           size="sm" 
@@ -872,28 +880,29 @@ const Index = () => {
                                 size="sm" 
                                 variant="outline"
                                 onClick={() => handleMoveToDraft(form)}
+                                className="text-xs px-2 py-1 whitespace-nowrap"
                               >
-                                <ArrowLeft className="h-4 w-4 mr-1" />
-                                To Draft
+                                <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                                <span className="hidden sm:inline ml-1">Draft</span>
                               </Button>
                               <AlertDialog>
                                 <AlertDialogTrigger asChild>
-                                  <Button size="sm" variant="destructive">
-                                    <Trash2 className="h-4 w-4" />
+                                  <Button size="sm" variant="destructive" className="text-xs px-2 py-1">
+                                    <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                                   </Button>
                                 </AlertDialogTrigger>
-                                <AlertDialogContent>
+                                <AlertDialogContent className="mx-2">
                                   <AlertDialogHeader>
-                                    <AlertDialogTitle>Delete Published Form</AlertDialogTitle>
-                                    <AlertDialogDescription>
+                                    <AlertDialogTitle className="text-lg">Delete Published Form</AlertDialogTitle>
+                                    <AlertDialogDescription className="text-sm">
                                       Are you sure you want to delete "{form.title}"? This will remove the form and all its data permanently.
                                     </AlertDialogDescription>
                                   </AlertDialogHeader>
                                   <AlertDialogFooter>
-                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                    <AlertDialogCancel className="text-sm">Cancel</AlertDialogCancel>
                                     <AlertDialogAction 
                                       onClick={() => handleDeletePublished(form.id)}
-                                      className="bg-red-600 hover:bg-red-700"
+                                      className="bg-red-600 hover:bg-red-700 text-sm"
                                     >
                                       Delete
                                     </AlertDialogAction>
@@ -909,8 +918,7 @@ const Index = () => {
                 )}
               </TabsContent>
 
-              {/* Settings Tab */}
-              <TabsContent value="settings" className="mt-4">
+              <TabsContent value="settings" className="mt-3 sm:mt-4">
                 <SettingsPanel
                   form={{
                     id: currentFormId || Date.now().toString(),
@@ -943,24 +951,27 @@ const Index = () => {
           </TabsContent>
 
           {/* Review Submissions Section */}
-          <TabsContent value="review-submissions" className="mt-6">
+          <TabsContent value="review-submissions" className="mt-3 sm:mt-6">
             <Tabs defaultValue="submissions" className="w-full">
-              <TabsList className="grid w-auto grid-cols-3">
-                <TabsTrigger value="submissions" className="flex items-center gap-2">
-                  <FileCheck className="h-4 w-4" />
-                  Submissions
+              <TabsList className="grid w-full grid-cols-3 h-9 sm:h-10 mb-3 sm:mb-4">
+                <TabsTrigger value="submissions" className="flex items-center gap-1 text-xs sm:text-sm">
+                  <FileCheck className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Submissions</span>
+                  <span className="sm:hidden">Sub</span>
                 </TabsTrigger>
-                <TabsTrigger value="analytics" className="flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4" />
-                  Analytics
+                <TabsTrigger value="analytics" className="flex items-center gap-1 text-xs sm:text-sm">
+                  <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Analytics</span>
+                  <span className="sm:hidden">Stats</span>
                 </TabsTrigger>
-                <TabsTrigger value="reports" className="flex items-center gap-2">
-                  <FileText className="h-4 w-4" />
-                  Report Generation
+                <TabsTrigger value="reports" className="flex items-center gap-1 text-xs sm:text-sm">
+                  <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Reports</span>
+                  <span className="sm:hidden">Rep</span>
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="submissions" className="mt-4">
+              <TabsContent value="submissions" className="mt-3 sm:mt-4">
                 <SubmissionReview
                   submissions={submissions}
                   form={{
@@ -993,11 +1004,11 @@ const Index = () => {
                 />
               </TabsContent>
 
-              <TabsContent value="analytics" className="mt-4">
+              <TabsContent value="analytics" className="mt-3 sm:mt-4">
                 <Analytics />
               </TabsContent>
 
-              <TabsContent value="reports" className="mt-4">
+              <TabsContent value="reports" className="mt-3 sm:mt-4">
                 <ReportGeneration submissions={submissions} />
               </TabsContent>
             </Tabs>
