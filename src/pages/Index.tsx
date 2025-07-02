@@ -1005,7 +1005,7 @@ const Index = () => {
               </TabsContent>
 
               <TabsContent value="analytics" className="mt-3 sm:mt-4">
-                <Analytics />
+                <Analytics submissions={submissions} />
               </TabsContent>
 
               <TabsContent value="reports" className="mt-3 sm:mt-4">

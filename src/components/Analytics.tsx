@@ -1,325 +1,462 @@
 
+import { useState } from "react";
+import { FormSubmission } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, Area, AreaChart } from "recharts";
-import { TrendingUp, TrendingDown, Users, FileText, Clock, Eye, CheckCircle, Mail, MousePointer, Activity } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line,
+  Area,
+  AreaChart
+} from "recharts";
+import { 
+  TrendingUp, 
+  TrendingDown, 
+  Users, 
+  FileText, 
+  CheckCircle, 
+  XCircle, 
+  Clock,
+  AlertTriangle,
+  Star,
+  Target,
+  Calendar,
+  Building,
+  Shield
+} from "lucide-react";
 
-const submissionData = [
-  { name: 'Mon', submissions: 12, views: 45 },
-  { name: 'Tue', submissions: 19, views: 52 },
-  { name: 'Wed', submissions: 15, views: 38 },
-  { name: 'Thu', submissions: 22, views: 61 },
-  { name: 'Fri', submissions: 18, views: 55 },
-  { name: 'Sat', submissions: 8, views: 25 },
-  { name: 'Sun', submissions: 10, views: 30 },
-];
+interface AnalyticsProps {
+  submissions?: FormSubmission[];
+}
 
-const formData = [
-  { name: 'Employee Onboarding', submissions: 45, completionRate: 85 },
-  { name: 'Customer Survey', submissions: 32, completionRate: 92 },
-  { name: 'Event Registration', submissions: 28, completionRate: 78 },
-  { name: 'Incident Report', submissions: 15, completionRate: 95 },
-  { name: 'Risk Assessment', submissions: 22, completionRate: 88 },
-];
+export const Analytics = ({ submissions = [] }: AnalyticsProps) => {
+  const [selectedTimeRange, setSelectedTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
 
-const deviceData = [
-  { name: 'Desktop', value: 65, color: '#70CDFF' },
-  { name: 'Mobile', value: 25, color: '#39A8F7' },
-  { name: 'Tablet', value: 10, color: '#0C75D1' },
-];
+  // Calculate analytics metrics
+  const totalSubmissions = submissions.length;
+  const approvedSubmissions = submissions.filter(s => s.status === 'approved').length;
+  const rejectedSubmissions = submissions.filter(s => s.status === 'rejected').length;
+  const pendingSubmissions = submissions.filter(s => s.status === 'under_review').length;
+  const submittedSubmissions = submissions.filter(s => s.status === 'submitted').length;
 
-const trendData = [
-  { name: 'Jan', value: 400 },
-  { name: 'Feb', value: 300 },
-  { name: 'Mar', value: 600 },
-  { name: 'Apr', value: 800 },
-  { name: 'May', value: 700 },
-  { name: 'Jun', value: 900 },
-];
+  const approvalRate = totalSubmissions > 0 ? (approvedSubmissions / totalSubmissions) * 100 : 0;
+  const rejectionRate = totalSubmissions > 0 ? (rejectedSubmissions / totalSubmissions) * 100 : 0;
 
-/**
- * Modern KPI Card Component
- * Displays key performance indicators with modern styling inspired by Linear and Vanta
- */
-const KPICard = ({ title, value, change, icon: Icon, trend, color = "blue" }: {
-  title: string;
-  value: string | number;
-  change: string;
-  icon: any;
-  trend: "up" | "down";
-  color?: string;
-}) => {
-  const isPositive = trend === "up";
-  const TrendIcon = isPositive ? TrendingUp : TrendingDown;
-  
+  // Risk level analytics
+  const riskLevels = submissions.reduce((acc, sub) => {
+    const risk = sub.score?.riskLevel || 'medium';
+    acc[risk] = (acc[risk] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Submission type analytics
+  const submissionTypes = submissions.reduce((acc, sub) => {
+    acc[sub.submissionType] = (acc[sub.submissionType] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // Average scores
+  const avgScore = submissions.length > 0 
+    ? submissions.reduce((acc, sub) => acc + (sub.score?.percentage || 0), 0) / submissions.length
+    : 0;
+
+  // Monthly submission trends
+  const monthlyData = submissions.reduce((acc, sub) => {
+    const month = sub.submittedAt.toLocaleString('default', { month: 'short', year: '2-digit' });
+    const existing = acc.find(item => item.month === month);
+    if (existing) {
+      existing.submissions += 1;
+      if (sub.status === 'approved') existing.approved += 1;
+      if (sub.status === 'rejected') existing.rejected += 1;
+    } else {
+      acc.push({
+        month,
+        submissions: 1,
+        approved: sub.status === 'approved' ? 1 : 0,
+        rejected: sub.status === 'rejected' ? 1 : 0
+      });
+    }
+    return acc;
+  }, [] as Array<{ month: string; submissions: number; approved: number; rejected: number }>);
+
+  // Status distribution data
+  const statusData = [
+    { name: 'Approved', value: approvedSubmissions, color: '#22c55e' },
+    { name: 'Rejected', value: rejectedSubmissions, color: '#ef4444' },
+    { name: 'Under Review', value: pendingSubmissions, color: '#f59e0b' },
+    { name: 'Submitted', value: submittedSubmissions, color: '#3b82f6' }
+  ].filter(item => item.value > 0);
+
+  // Risk level data
+  const riskData = [
+    { name: 'Low Risk', value: riskLevels.low || 0, color: '#22c55e' },
+    { name: 'Medium Risk', value: riskLevels.medium || 0, color: '#f59e0b' },
+    { name: 'High Risk', value: riskLevels.high || 0, color: '#ef4444' },
+    { name: 'Critical Risk', value: riskLevels.critical || 0, color: '#dc2626' }
+  ].filter(item => item.value > 0);
+
+  // Top performing companies
+  const companyScores = submissions.reduce((acc, sub) => {
+    if (sub.companyName && sub.score) {
+      if (!acc[sub.companyName]) {
+        acc[sub.companyName] = { total: 0, count: 0, scores: [] };
+      }
+      acc[sub.companyName].total += sub.score.percentage;
+      acc[sub.companyName].count += 1;
+      acc[sub.companyName].scores.push(sub.score.percentage);
+    }
+    return acc;
+  }, {} as Record<string, { total: number; count: number; scores: number[] }>);
+
+  const topCompanies = Object.entries(companyScores)
+    .map(([company, data]) => ({
+      company,
+      avgScore: data.total / data.count,
+      submissions: data.count,
+      status: data.total / data.count >= 80 ? 'excellent' : data.total / data.count >= 60 ? 'good' : 'needs_improvement'
+    }))
+    .sort((a, b) => b.avgScore - a.avgScore)
+    .slice(0, 10);
+
   return (
-    <Card className="kpi-card group hover-lift animate-fade-in">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
-          {title}
-        </CardTitle>
-        <div className={`p-2 rounded-xl ${color === "blue" ? "bg-blue-50" : "bg-purple-50"} group-hover:scale-110 transition-transform duration-200`}>
-          <Icon className={`h-4 w-4 ${color === "blue" ? "text-brand-secondary" : "text-brand-purple"}`} />
-        </div>
-      </CardHeader>
-      <CardContent>
-        <div className="text-3xl font-bold text-gray-900 mb-2">
-          {value}
-        </div>
-        <div className="flex items-center text-sm">
-          <TrendIcon className={`h-3 w-3 mr-1 ${isPositive ? "text-emerald-500" : "text-red-500"}`} />
-          <span className={`font-medium ${isPositive ? "text-emerald-600" : "text-red-600"}`}>
-            {change}
-          </span>
-          <span className="text-muted-foreground ml-1">from last week</span>
-        </div>
-      </CardContent>
-    </Card>
-  );
-};
-
-/**
- * Modern Chart Card Component
- * Wrapper for charts with modern styling and glassmorphism effects
- */
-const ChartCard = ({ title, children, className = "" }: {
-  title: string;
-  children: React.ReactNode;
-  className?: string;
-}) => (
-  <Card className={`modern-card hover-glow animate-slide-up ${className}`}>
-    <CardHeader className="pb-4">
-      <CardTitle className="text-lg font-semibold text-gray-900">{title}</CardTitle>
-    </CardHeader>
-    <CardContent>
-      {children}
-    </CardContent>
-  </Card>
-);
-
-/**
- * Analytics Dashboard Component
- * Modern analytics dashboard with enterprise-ready design
- * Inspired by Vanta, Linear, and Pitch design systems
- */
-export const Analytics = () => {
-  const totalSubmissions = submissionData.reduce((acc, day) => acc + day.submissions, 0);
-  const totalViews = submissionData.reduce((acc, day) => acc + day.views, 0);
-  const conversionRate = ((totalSubmissions / totalViews) * 100).toFixed(1);
-  const avgCompletionRate = (formData.reduce((acc, form) => acc + form.completionRate, 0) / formData.length).toFixed(1);
-
-  return (
-    <div className="space-y-8 p-6 bg-gradient-to-br from-gray-50/50 to-blue-50/30 min-h-screen">
-      {/* Header Section */}
-      <div className="animate-fade-in">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Analytics Dashboard</h1>
-        <p className="text-muted-foreground">Track your form performance and user engagement</p>
-      </div>
-
-      {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <KPICard
-          title="Total Submissions"
-          value={totalSubmissions}
-          change="+12%"
-          icon={FileText}
-          trend="up"
-          color="blue"
-        />
-        <KPICard
-          title="Form Views"
-          value={totalViews}
-          change="+8%"
-          icon={Eye}
-          trend="up"
-          color="blue"
-        />
-        <KPICard
-          title="Conversion Rate"
-          value={`${conversionRate}%`}
-          change="+2.1%"
-          icon={MousePointer}
-          trend="up"
-          color="blue"
-        />
-        <KPICard
-          title="Avg. Completion"
-          value={`${avgCompletionRate}%`}
-          change="+1.5%"
-          icon={CheckCircle}
-          trend="up"
-          color="purple"
-        />
-      </div>
-
-      {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Submissions Over Time */}
-        <ChartCard title="Weekly Performance">
-          <ResponsiveContainer width="100%" height={320}>
-            <AreaChart data={submissionData}>
-              <defs>
-                <linearGradient id="submissionsGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#70CDFF" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#70CDFF" stopOpacity={0.1}/>
-                </linearGradient>
-                <linearGradient id="viewsGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#39A8F7" stopOpacity={0.8}/>
-                  <stop offset="95%" stopColor="#39A8F7" stopOpacity={0.1}/>
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-              <XAxis 
-                dataKey="name" 
-                stroke="#64748b"
-                fontSize={12}
-                tickLine={false}
-                axisLine={false}
-              />
-              <YAxis 
-                stroke="#64748b"
-                fontSize={12}
-                tickLine={false}
-                axisLine={false}
-              />
-              <Tooltip 
-                contentStyle={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  border: 'none',
-                  borderRadius: '12px',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                  backdropFilter: 'blur(8px)'
-                }}
-              />
-              <Area
-                type="monotone"
-                dataKey="submissions"
-                stroke="#70CDFF"
-                strokeWidth={2}
-                fill="url(#submissionsGradient)"
-                name="Submissions"
-              />
-              <Area
-                type="monotone"
-                dataKey="views"
-                stroke="#39A8F7"
-                strokeWidth={2}
-                fill="url(#viewsGradient)"
-                name="Views"
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </ChartCard>
-
-        {/* Device Usage */}
-        <ChartCard title="Device Distribution">
-          <ResponsiveContainer width="100%" height={320}>
-            <PieChart>
-              <Pie
-                data={deviceData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-                stroke="none"
-              >
-                {deviceData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip 
-                contentStyle={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                  border: 'none',
-                  borderRadius: '12px',
-                  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                  backdropFilter: 'blur(8px)'
-                }}
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartCard>
-      </div>
-
-      {/* Form Performance Table */}
-      <ChartCard title="Form Performance Overview" className="animate-scale-in">
-        <div className="space-y-4">
-          {formData.map((form, index) => (
-            <div key={index} className="flex items-center justify-between p-4 bg-gradient-to-r from-white to-blue-50/30 rounded-xl border border-gray-100 hover:shadow-md transition-all duration-200 group">
-              <div className="flex-1">
-                <h3 className="font-semibold text-gray-900 group-hover:text-brand-secondary transition-colors">
-                  {form.name}
-                </h3>
-                <div className="flex items-center gap-4 mt-2">
-                  <span className="text-sm text-gray-600 flex items-center gap-1">
-                    <Activity className="h-3 w-3" />
-                    {form.submissions} submissions
-                  </span>
-                  <Badge 
-                    variant={form.completionRate >= 90 ? "default" : form.completionRate >= 80 ? "secondary" : "destructive"}
-                    className="px-3 py-1 text-xs font-medium"
-                  >
-                    {form.completionRate}% completion
-                  </Badge>
-                </div>
+    <div className="space-y-6">
+      {/* Overview Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Total Submissions</p>
+                <p className="text-2xl font-bold">{totalSubmissions}</p>
               </div>
-              <div className="text-right min-w-[140px]">
-                <div className="w-32 bg-gray-200 rounded-full h-2 overflow-hidden">
-                  <div 
-                    className="bg-gradient-to-r from-brand-primary to-brand-secondary h-2 rounded-full transition-all duration-500 ease-out" 
-                    style={{ width: `${form.completionRate}%` }}
-                  ></div>
-                </div>
-                <span className="text-xs text-gray-500 mt-1 block">
-                  {form.completionRate}%
-                </span>
-              </div>
+              <FileText className="h-8 w-8 text-blue-500" />
             </div>
-          ))}
-        </div>
-      </ChartCard>
+            <div className="mt-2 flex items-center text-sm text-green-600">
+              <TrendingUp className="h-4 w-4 mr-1" />
+              <span>+12% from last month</span>
+            </div>
+          </CardContent>
+        </Card>
 
-      {/* Growth Trend */}
-      <ChartCard title="Growth Trend" className="animate-slide-up">
-        <ResponsiveContainer width="100%" height={200}>
-          <LineChart data={trendData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-            <XAxis 
-              dataKey="name" 
-              stroke="#64748b"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-            />
-            <YAxis 
-              stroke="#64748b"
-              fontSize={12}
-              tickLine={false}
-              axisLine={false}
-            />
-            <Tooltip 
-              contentStyle={{
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                border: 'none',
-                borderRadius: '12px',
-                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-                backdropFilter: 'blur(8px)'
-              }}
-            />
-            <Line 
-              type="monotone" 
-              dataKey="value" 
-              stroke="#70CDFF" 
-              strokeWidth={3}
-              dot={{ fill: '#39A8F7', strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, fill: '#0C75D1' }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </ChartCard>
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Approval Rate</p>
+                <p className="text-2xl font-bold">{approvalRate.toFixed(1)}%</p>
+              </div>
+              <CheckCircle className="h-8 w-8 text-green-500" />
+            </div>
+            <div className="mt-2">
+              <Progress value={approvalRate} className="h-2" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Average Score</p>
+                <p className="text-2xl font-bold">{avgScore.toFixed(1)}/100</p>
+              </div>
+              <Star className="h-8 w-8 text-yellow-500" />
+            </div>
+            <div className="mt-2">
+              <Progress value={avgScore} className="h-2" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600">Pending Review</p>
+                <p className="text-2xl font-bold">{pendingSubmissions}</p>
+              </div>
+              <Clock className="h-8 w-8 text-orange-500" />
+            </div>
+            <div className="mt-2 flex items-center text-sm text-orange-600">
+              <AlertTriangle className="h-4 w-4 mr-1" />
+              <span>Needs attention</span>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Main Analytics Tabs */}
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-5">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="submissions">Submissions</TabsTrigger>
+          <TabsTrigger value="risk">Risk Analysis</TabsTrigger>
+          <TabsTrigger value="performance">Performance</TabsTrigger>
+          <TabsTrigger value="trends">Trends</TabsTrigger>
+        </TabsList>
+
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Submission Status Distribution */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5" />
+                  Submission Status Distribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={statusData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {statusData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  {statusData.map((item, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                      <span className="text-sm">{item.name}: {item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Risk Level Distribution */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5" />
+                  Risk Level Distribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={riskData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="value" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Submissions Tab */}
+        <TabsContent value="submissions" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Submission Type Breakdown */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Building className="h-5 w-5" />
+                  Submission Types
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {Object.entries(submissionTypes).map(([type, count]) => (
+                    <div key={type} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Badge variant={type === 'vendor' ? 'default' : 'secondary'}>
+                          {type === 'vendor' ? 'Vendor' : 'Internal'}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">{count}</span>
+                        <div className="w-20 bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-blue-500 h-2 rounded-full" 
+                            style={{ width: `${(count / totalSubmissions) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Activity */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5" />
+                  Recent Submissions
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {submissions.slice(0, 5).map((submission) => (
+                    <div key={submission.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">{submission.companyName || submission.submitterName}</p>
+                        <p className="text-xs text-gray-500">{submission.submittedAt.toLocaleDateString()}</p>
+                      </div>
+                      <Badge 
+                        variant={
+                          submission.status === 'approved' ? 'default' :
+                          submission.status === 'rejected' ? 'destructive' :
+                          'secondary'
+                        }
+                      >
+                        {submission.status.replace('_', ' ')}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Risk Analysis Tab */}
+        <TabsContent value="risk" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                Risk Analysis Overview
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-medium mb-3">Risk Distribution</h4>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <PieChart>
+                      <Pie
+                        data={riskData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        dataKey="value"
+                      >
+                        {riskData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-3">Risk Metrics</h4>
+                  <div className="space-y-3">
+                    {riskData.map((risk, index) => (
+                      <div key={index} className="flex items-center justify-between">
+                        <span className="text-sm">{risk.name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium">{risk.value}</span>
+                          <span className="text-xs text-gray-500">
+                            ({((risk.value / totalSubmissions) * 100).toFixed(1)}%)
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Performance Tab */}
+        <TabsContent value="performance" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                Top Performing Companies
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {topCompanies.map((company, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-sm font-medium text-blue-600">#{index + 1}</span>
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">{company.company}</p>
+                        <p className="text-xs text-gray-500">{company.submissions} submissions</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium">{company.avgScore.toFixed(1)}%</p>
+                      <Badge 
+                        variant={
+                          company.status === 'excellent' ? 'default' :
+                          company.status === 'good' ? 'secondary' :
+                          'destructive'
+                        }
+                        className="text-xs"
+                      >
+                        {company.status.replace('_', ' ')}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Trends Tab */}
+        <TabsContent value="trends" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                Submission Trends
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={monthlyData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="submissions" stackId="1" stroke="#8884d8" fill="#8884d8" />
+                  <Area type="monotone" dataKey="approved" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
+                  <Area type="monotone" dataKey="rejected" stackId="1" stroke="#ffc658" fill="#ffc658" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

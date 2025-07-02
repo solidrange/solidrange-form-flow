@@ -226,4 +226,6 @@ export interface FormSubmission {
   // Additional tracking fields
   completionPercentage?: number;
   timeSpent?: number;
+  // Document attachments
+  attachments?: DocumentAttachment[];
 }
