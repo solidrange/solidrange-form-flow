@@ -508,79 +508,60 @@ const Index = () => {
               </h1>
             </div>
             
-            {/* Form Status and Actions - Mobile Responsive */}
-            <div className="flex items-center gap-1 sm:gap-3">
-              {/* Status Badge */}
-              <div className="flex items-center gap-1 sm:gap-2">
-                <span className="text-xs font-medium text-gray-600 hidden sm:inline">Status:</span>
-                <Badge 
-                  variant={isDraft ? "secondary" : "default"}
-                  className={`text-xs px-2 py-1 ${isDraft ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}`}
-                >
-                  {isDraft ? "Draft" : "Live"}
-                </Badge>
-              </div>
-              
-              {/* Action Buttons */}
-              <Button onClick={createNewForm} variant="outline" size="sm" className="p-2 sm:px-3">
-                <Plus className="h-4 w-4" />
-                <span className="hidden sm:inline ml-1">New</span>
-              </Button>
-              
-              {/* Quick Share Button for Published Forms */}
-              {currentFormIsPublished() && (
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="p-2 sm:px-3">
-                      <Globe className="h-4 w-4" />
-                      <span className="hidden sm:inline ml-1">Share</span>
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-2xl mx-2">
-                    <DialogHeader>
-                      <DialogTitle className="text-lg">Share Form</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="text-sm font-medium text-gray-700">Form URL</label>
-                        <div className="flex gap-2 mt-1">
-                          <Input 
-                            value={generateFormUrl(currentFormId || 'current-form')} 
-                            readOnly 
-                            className="flex-1 text-sm"
-                          />
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleCopyToClipboard(generateFormUrl(currentFormId || 'current-form'), 'Form URL')}
-                          >
-                            <ExternalLink className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                      
-                      <div>
-                        <label className="text-sm font-medium text-gray-700">Embed Code</label>
-                        <div className="flex gap-2 mt-1">
-                          <textarea 
-                            value={generateEmbedCode(currentFormId || 'current-form')} 
-                            readOnly 
-                            className="flex-1 min-h-[80px] p-2 border border-gray-300 rounded-md resize-none text-xs font-mono"
-                          />
-                          <Button 
-                            variant="outline" 
-                            size="sm"
-                            onClick={() => handleCopyToClipboard(generateEmbedCode(currentFormId || 'current-form'), 'Embed code')}
-                          >
-                            <Code className="h-4 w-4" />
-                          </Button>
-                        </div>
+            
+            {/* Quick Share Button for Published Forms */}
+            {currentFormIsPublished() && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm" className="p-2 sm:px-3">
+                    <Globe className="h-4 w-4" />
+                    <span className="hidden sm:inline ml-1">Share</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-2xl mx-2">
+                  <DialogHeader>
+                    <DialogTitle className="text-lg">Share Form</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">Form URL</label>
+                      <div className="flex gap-2 mt-1">
+                        <Input 
+                          value={generateFormUrl(currentFormId || 'current-form')} 
+                          readOnly 
+                          className="flex-1 text-sm"
+                        />
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleCopyToClipboard(generateFormUrl(currentFormId || 'current-form'), 'Form URL')}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
-                  </DialogContent>
-                </Dialog>
-              )}
-            </div>
+                    
+                    <div>
+                      <label className="text-sm font-medium text-gray-700">Embed Code</label>
+                      <div className="flex gap-2 mt-1">
+                        <textarea 
+                          value={generateEmbedCode(currentFormId || 'current-form')} 
+                          readOnly 
+                          className="flex-1 min-h-[80px] p-2 border border-gray-300 rounded-md resize-none text-xs font-mono"
+                        />
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleCopyToClipboard(generateEmbedCode(currentFormId || 'current-form'), 'Embed code')}
+                        >
+                          <Code className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
         </div>
       </div>
@@ -923,6 +904,25 @@ const Index = () => {
 
               {/* Tab Contents */}
               <TabsContent value="builder" className="mt-3 sm:mt-4">
+                {/* Status and New Button - moved from header */}
+                <div className="flex items-center justify-between mb-4 p-3 bg-white rounded-lg border">
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-gray-600">Status:</span>
+                      <Badge 
+                        variant={isDraft ? "secondary" : "default"}
+                        className={`text-xs px-2 py-1 ${isDraft ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}`}
+                      >
+                        {isDraft ? "Draft" : "Live"}
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <Button onClick={createNewForm} variant="outline" size="sm" className="gap-2">
+                    <Plus className="h-4 w-4" />
+                    <span>New Form</span>
+                  </Button>
+                </div>
                 <FormBuilder
                   formFields={formFields}
                   formTitle={formTitle}
