@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,7 +6,6 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Eye,
   Save,
@@ -221,16 +219,22 @@ const FormCanvas = ({
                         </div>
                       )}
                       {field.type === "radio" && (
-                        <RadioGroup className="mt-2" disabled>
+                        <div className="space-y-1 mt-2">
                           {field.options?.map((option) => (
-                            <div key={option} className="flex items-center space-x-2">
-                              <RadioGroupItem value={option} id={`radio-${field.id}-${option}`} />
-                              <Label htmlFor={`radio-${field.id}-${option}`} className="text-xs">
+                            <div
+                              key={option}
+                              className="flex items-center space-x-2"
+                            >
+                              <Radio id={`radio-${field.id}-${option}`} disabled />
+                              <Label
+                                htmlFor={`radio-${field.id}-${option}`}
+                                className="text-xs"
+                              >
                                 {option}
                               </Label>
                             </div>
                           ))}
-                        </RadioGroup>
+                        </div>
                       )}
                       {field.type === "date" && (
                         <Input
@@ -280,9 +284,12 @@ const SettingsPanel = ({
     );
   }
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value, type } = e.target;
-    const checked = (e.target as HTMLInputElement).checked;
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value, type, checked } = e.target;
 
     const updatedField = {
       ...selectedField,
@@ -362,7 +369,37 @@ const SettingsPanel = ({
             </div>
           )}
 
-        {(selectedField.type === "select" || selectedField.type === "radio") && (
+        {selectedField.type === "select" && (
+          <div>
+            <Label className="text-xs sm:text-sm">Options</Label>
+            <div className="space-y-2">
+              {selectedField.options?.map((option, index) => (
+                <div key={index} className="flex items-center space-x-2">
+                  <Input
+                    type="text"
+                    value={option}
+                    onChange={(e) => handleOptionChange(index, e.target.value)}
+                    className="text-xs sm:text-sm"
+                  />
+                  <Button variant="ghost" size="icon">
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="text-xs"
+                onClick={addOption}
+              >
+                Add Option
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {selectedField.type === "radio" && (
           <div>
             <Label className="text-xs sm:text-sm">Options</Label>
             <div className="space-y-2">
@@ -422,6 +459,17 @@ export const FormBuilder = () => {
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
+  const [activeTab, setActiveTab] = useState("build");
+
+  const handleOnDragEnd = (result: DropResult) => {
+    if (!result.destination) return;
+
+    const items = Array.from(formFields);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    setFormFields(items);
+  };
 
   return (
     <div className="flex flex-col lg:grid lg:grid-cols-12 gap-3 sm:gap-4 lg:gap-6 h-auto lg:h-[calc(100vh-200px)]">

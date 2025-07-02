@@ -7,7 +7,7 @@ import { ReportGeneration } from "@/components/ReportGeneration";
 import { Analytics } from "@/components/Analytics";
 import { FormLibraryManager } from "@/components/FormLibraryManager";
 import { sampleSubmissions } from "@/data/sampleSubmissions";
-import { FormSubmission, Form } from "@/types/form";
+import { FormSubmission } from "@/types/form";
 import { 
   Hammer, 
   FileCheck, 
@@ -27,33 +27,6 @@ export default function Index() {
           : submission
       )
     );
-  };
-
-  // Create a sample form object with all required properties
-  const sampleForm: Form = {
-    id: "1",
-    title: "Sample Form",
-    description: "A sample form for review",
-    fields: [],
-    settings: {
-      allowMultipleSubmissions: false,
-      requireLogin: false,
-      showProgressBar: true,
-      theme: 'light',
-    },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    status: 'published',
-    submissions: submissions.length,
-    analytics: {
-      views: 0,
-      submissions: submissions.length,
-      completionRate: 0,
-      emailsSent: 0,
-      emailsCompleted: 0,
-      averageCompletionTime: 0,
-      dropoffRate: 0,
-    }
   };
 
   return (
@@ -108,7 +81,7 @@ export default function Index() {
           <TabsContent value="review" className="space-y-4 sm:space-y-6">
             <SubmissionReview 
               submissions={submissions} 
-              form={sampleForm}
+              form={{ id: "1", title: "Sample Form", fields: [] }}
               onUpdateSubmission={handleUpdateSubmission}
             />
           </TabsContent>
