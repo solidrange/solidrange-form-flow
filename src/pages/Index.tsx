@@ -31,7 +31,9 @@ import {
   Edit,
   ArrowLeft,
   User,
-  Zap
+  Zap,
+  Dashboard,
+  Folder
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -484,10 +486,11 @@ const Index = () => {
     { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" />, mobileLabel: "Build" },
     { id: "library", label: "Library", icon: <Library className="h-4 w-4" />, mobileLabel: "Lib" },
     { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" />, mobileLabel: "View" },
-    { id: "drafts", label: "Drafts", icon: <FileText className="h-4 w-4" />, mobileLabel: "Draft" },
-    { id: "published", label: "Published", icon: <BookOpen className="h-4 w-4" />, mobileLabel: "Live" },
     ...(currentFormIsPublished() ? [{ id: "invitations", label: "Invitations", icon: <Mail className="h-4 w-4" />, mobileLabel: "Mail" }] : [])
   ];
+
+  // Check if there are unpublished drafts for notification dot
+  const hasUnpublishedDrafts = savedDrafts.length > 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -587,10 +590,21 @@ const Index = () => {
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3 sm:py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Main Tabs - Mobile Responsive */}
-          <TabsList className="grid w-full grid-cols-2 mb-3 sm:mb-4 h-10 sm:h-11">
+          <TabsList className="grid w-full grid-cols-4 mb-3 sm:mb-4 h-10 sm:h-11">
             <TabsTrigger value="build-form" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
               <Wrench className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden xs:inline">Build</span>
+            </TabsTrigger>
+            <TabsTrigger value="forms" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm relative">
+              <Folder className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Forms</span>
+              {hasUnpublishedDrafts && (
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="dashboard" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Dashboard className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Dashboard</span>
             </TabsTrigger>
             <TabsTrigger value="review-submissions" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
               <ClipboardList className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -688,6 +702,60 @@ const Index = () => {
                 />
               </TabsContent>
 
+              <TabsContent value="settings" className="mt-3 sm:mt-4">
+                <SettingsPanel
+                  form={{
+                    id: currentFormId || Date.now().toString(),
+                    title: formTitle,
+                    description: formDescription,
+                    fields: formFields,
+                    settings: formSettings,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                    status: status,
+                    submissions: 0,
+                    analytics: {
+                      views: 0,
+                      submissions: 0,
+                      completionRate: 0,
+                      emailsSent: 0,
+                      emailsCompleted: 0,
+                      averageCompletionTime: 0,
+                      dropoffRate: 0
+                    }
+                  }}
+                  onUpdate={(updatedForm) => {
+                    setFormSettings(updatedForm.settings);
+                    if (updatedForm.title !== formTitle) setFormTitle(updatedForm.title);
+                    if (updatedForm.description !== formDescription) setFormDescription(updatedForm.description);
+                  }}
+                />
+              </TabsContent>
+            </Tabs>
+          </TabsContent>
+
+          {/* Forms Section */}
+          <TabsContent value="forms" className="mt-3 sm:mt-6">
+            <Tabs defaultValue="drafts" className="w-full">
+              <TabsList className="grid w-full grid-cols-2 h-9 sm:h-10 mb-3 sm:mb-4">
+                <TabsTrigger value="drafts" className="flex items-center gap-1 text-xs sm:text-sm">
+                  <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Drafts</span>
+                  <span className="sm:hidden">Draft</span>
+                  {savedDrafts.length > 0 && (
+                    <Badge variant="secondary" className="ml-1 text-xs">{savedDrafts.length}</Badge>
+                  )}
+                </TabsTrigger>
+                <TabsTrigger value="published" className="flex items-center gap-1 text-xs sm:text-sm">
+                  <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="hidden sm:inline">Published</span>
+                  <span className="sm:hidden">Live</span>
+                  {publishedForms.length > 0 && (
+                    <Badge variant="default" className="ml-1 text-xs">{publishedForms.length}</Badge>
+                  )}
+                </TabsTrigger>
+              </TabsList>
+
               <TabsContent value="drafts" className="mt-3 sm:mt-4">
                 {savedDrafts.length === 0 ? (
                   <div className="text-center py-8 text-gray-500">
@@ -716,7 +784,10 @@ const Index = () => {
                               <Button 
                                 size="sm" 
                                 variant="outline"
-                                onClick={() => loadForm(draft)}
+                                onClick={() => {
+                                  loadForm(draft);
+                                  setActiveTab("build-form");
+                                }}
                                 className="text-xs px-2 py-1"
                               >
                                 <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -795,7 +866,10 @@ const Index = () => {
                               <Button 
                                 size="sm" 
                                 variant="outline"
-                                onClick={() => loadForm(form)}
+                                onClick={() => {
+                                  loadForm(form);
+                                  setActiveTab("build-form");
+                                }}
                                 className="text-xs px-2 py-1 whitespace-nowrap"
                               >
                                 <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -806,6 +880,7 @@ const Index = () => {
                                 variant="outline"
                                 onClick={() => {
                                   loadForm(form);
+                                  setActiveTab("build-form");
                                   setActiveBuildTab("invitations");
                                 }}
                                 className="text-xs px-2 py-1 whitespace-nowrap"
@@ -899,52 +974,22 @@ const Index = () => {
                   </div>
                 )}
               </TabsContent>
-
-              <TabsContent value="settings" className="mt-3 sm:mt-4">
-                <SettingsPanel
-                  form={{
-                    id: currentFormId || Date.now().toString(),
-                    title: formTitle,
-                    description: formDescription,
-                    fields: formFields,
-                    settings: formSettings,
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    status: status,
-                    submissions: 0,
-                    analytics: {
-                      views: 0,
-                      submissions: 0,
-                      completionRate: 0,
-                      emailsSent: 0,
-                      emailsCompleted: 0,
-                      averageCompletionTime: 0,
-                      dropoffRate: 0
-                    }
-                  }}
-                  onUpdate={(updatedForm) => {
-                    setFormSettings(updatedForm.settings);
-                    if (updatedForm.title !== formTitle) setFormTitle(updatedForm.title);
-                    if (updatedForm.description !== formDescription) setFormDescription(updatedForm.description);
-                  }}
-                />
-              </TabsContent>
             </Tabs>
+          </TabsContent>
+
+          {/* Dashboard Section */}
+          <TabsContent value="dashboard" className="mt-3 sm:mt-6">
+            <Analytics submissions={submissions} />
           </TabsContent>
 
           {/* Review Submissions Section */}
           <TabsContent value="review-submissions" className="mt-3 sm:mt-6">
             <Tabs defaultValue="submissions" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 h-9 sm:h-10 mb-3 sm:mb-4">
+              <TabsList className="grid w-full grid-cols-2 h-9 sm:h-10 mb-3 sm:mb-4">
                 <TabsTrigger value="submissions" className="flex items-center gap-1 text-xs sm:text-sm">
                   <FileCheck className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="hidden sm:inline">Submissions</span>
                   <span className="sm:hidden">Sub</span>
-                </TabsTrigger>
-                <TabsTrigger value="analytics" className="flex items-center gap-1 text-xs sm:text-sm">
-                  <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Analytics</span>
-                  <span className="sm:hidden">Stats</span>
                 </TabsTrigger>
                 <TabsTrigger value="reports" className="flex items-center gap-1 text-xs sm:text-sm">
                   <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -984,10 +1029,6 @@ const Index = () => {
                     });
                   }}
                 />
-              </TabsContent>
-
-              <TabsContent value="analytics" className="mt-3 sm:mt-4">
-                <Analytics submissions={submissions} />
               </TabsContent>
 
               <TabsContent value="reports" className="mt-3 sm:mt-4">
