@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CalendarIcon, Download, FileText, BarChart3, TrendingUp, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { sampleSubmissions } from "@/data/sampleSubmissions";
+import { toast } from "@/hooks/use-toast";
 
 interface ReportGenerationProps {
   submissions: any[];
@@ -74,30 +74,102 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
     }));
   };
 
-  const generateQuickReport = (type: string) => {
+  const generateQuickReport = async (type: string) => {
     console.log(`Generating quick ${type} report...`);
-    // Simulate report generation
-    setTimeout(() => {
+    
+    toast({
+      title: "Generating Report",
+      description: `Starting ${type} report generation...`,
+    });
+    
+    try {
+      // Import the ReportGenerator
+      const { ReportGenerator } = await import('@/utils/reportGenerator');
+      
+      // Create a basic config for quick reports
+      const quickConfig = {
+        title: `Quick ${type.charAt(0).toUpperCase() + type.slice(1)} Report`,
+        description: `Quick analysis of form submissions - ${type} report`,
+        includeSections: {
+          overview: true,
+          submissionStats: type === 'summary' || type === 'compliance',
+          riskAnalysis: type === 'risk' || type === 'compliance',
+          complianceStatus: type === 'compliance',
+          detailedResponses: false,
+          recommendations: true,
+        },
+        chartTypes: {
+          submissionTrends: 'bar' as const,
+          riskDistribution: 'pie' as const,
+          complianceStatus: 'bar' as const,
+        },
+        filterBy: {
+          dateRange: { start: '2024-01-01', end: '2024-12-31' },
+          submissionType: 'all' as const,
+          status: 'all' as const,
+          riskLevel: 'all' as const,
+        },
+        customRecommendations: "",
+        format: 'pdf' as const,
+        includeCharts: true
+      };
+
+      const generator = new ReportGenerator(submissions, quickConfig);
+      await generator.generate();
+      
       console.log(`${type} report generated successfully!`);
-    }, 2000);
+      toast({
+        title: "Report Generated",
+        description: `${type.charAt(0).toUpperCase() + type.slice(1)} report has been downloaded successfully!`,
+      });
+    } catch (error) {
+      console.error('Error generating quick report:', error);
+      toast({
+        title: "Report Generation Failed",
+        description: "There was an error generating the report. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
-  const generateCustomReport = () => {
+  const generateCustomReport = async () => {
     console.log("Generating custom report with config:", reportConfig);
-    // Simulate report generation with custom configuration
-    setTimeout(() => {
+    
+    toast({
+      title: "Generating Custom Report",
+      description: "Starting custom report generation with your settings...",
+    });
+    
+    try {
+      // Import the ReportGenerator
+      const { ReportGenerator } = await import('@/utils/reportGenerator');
+      
+      const generator = new ReportGenerator(submissions, reportConfig);
+      await generator.generate();
+      
       console.log("Custom report generated successfully!");
-    }, 3000);
+      toast({
+        title: "Custom Report Generated",
+        description: "Your custom report has been downloaded successfully!",
+      });
+    } catch (error) {
+      console.error('Error generating custom report:', error);
+      toast({
+        title: "Report Generation Failed",
+        description: "There was an error generating the custom report. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   // Calculate statistics for quick reports
   const stats = {
-    total: sampleSubmissions.length,
-    approved: sampleSubmissions.filter(s => s.status === 'approved').length,
-    rejected: sampleSubmissions.filter(s => s.status === 'rejected').length,
-    underReview: sampleSubmissions.filter(s => s.status === 'under_review').length,
-    highRisk: sampleSubmissions.filter(s => s.score?.riskLevel === 'high' || s.score?.riskLevel === 'critical').length,
-    avgScore: Math.round(sampleSubmissions.reduce((sum, s) => sum + (s.score?.percentage || 0), 0) / sampleSubmissions.length)
+    total: submissions.length,
+    approved: submissions.filter(s => s.status === 'approved').length,
+    rejected: submissions.filter(s => s.status === 'rejected').length,
+    underReview: submissions.filter(s => s.status === 'under_review').length,
+    highRisk: submissions.filter(s => s.score?.riskLevel === 'high' || s.score?.riskLevel === 'critical').length,
+    avgScore: submissions.length > 0 ? Math.round(submissions.reduce((sum, s) => sum + (s.score?.percentage || 0), 0) / submissions.length) : 0
   };
 
   return (
