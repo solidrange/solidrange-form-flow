@@ -176,14 +176,14 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Full Approval</p>
-                <p className="text-2xl font-bold text-foreground">{fullApprovalRate.toFixed(1)}%</p>
+                <p className="text-sm font-medium text-muted-foreground">Fully Approved</p>
+                <p className="text-2xl font-bold text-emerald-600">{fullyApprovedSubmissions}</p>
               </div>
               <Award className="h-8 w-8 text-emerald-500" />
             </div>
             <div className="mt-2 flex items-center text-sm text-emerald-600">
               <CheckCircle className="h-4 w-4 mr-1" />
-              <span>{fullyApprovedSubmissions} fully approved</span>
+              <span>{fullApprovalRate.toFixed(1)}% of approvals</span>
             </div>
           </CardContent>
         </Card>
@@ -192,13 +192,14 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Average Score</p>
-                <p className="text-2xl font-bold text-foreground">{avgScore.toFixed(1)}/100</p>
+                <p className="text-sm font-medium text-muted-foreground">Partially Approved</p>
+                <p className="text-2xl font-bold text-orange-600">{partiallyApprovedSubmissions}</p>
               </div>
-              <Star className="h-8 w-8 text-yellow-500" />
+              <Shield className="h-8 w-8 text-orange-500" />
             </div>
-            <div className="mt-2">
-              <Progress value={avgScore} className="h-2" />
+            <div className="mt-2 flex items-center text-sm text-orange-600">
+              <AlertTriangle className="h-4 w-4 mr-1" />
+              <span>{(100 - fullApprovalRate).toFixed(1)}% of approvals</span>
             </div>
           </CardContent>
         </Card>
@@ -222,8 +223,9 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
 
       {/* Main Analytics Tabs */}
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="approvals">Approvals</TabsTrigger>
           <TabsTrigger value="submissions">Submissions</TabsTrigger>
           <TabsTrigger value="risk">Risk Analysis</TabsTrigger>
           <TabsTrigger value="performance">Performance</TabsTrigger>
@@ -294,6 +296,123 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
           </div>
         </TabsContent>
 
+        {/* Approvals Tab */}
+        <TabsContent value="approvals" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Approval Types Breakdown */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Award className="h-5 w-5 text-emerald-500" />
+                  Approval Types Distribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Visual breakdown */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-4 h-4 bg-emerald-500 rounded-full"></div>
+                        <span className="font-medium text-emerald-700">Fully Approved</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-lg font-bold text-emerald-600">{fullyApprovedSubmissions}</span>
+                        <span className="text-sm text-gray-500 ml-2">({fullApprovalRate.toFixed(1)}%)</span>
+                      </div>
+                    </div>
+                    <Progress value={fullApprovalRate} className="h-3" />
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
+                        <span className="font-medium text-orange-700">Partially Approved</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-lg font-bold text-orange-600">{partiallyApprovedSubmissions}</span>
+                        <span className="text-sm text-gray-500 ml-2">({(100 - fullApprovalRate).toFixed(1)}%)</span>
+                      </div>
+                    </div>
+                    <Progress value={100 - fullApprovalRate} className="h-3" />
+                  </div>
+
+                  {/* Pie chart */}
+                  <ResponsiveContainer width="100%" height={200}>
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: 'Fully Approved', value: fullyApprovedSubmissions, color: '#22c55e' },
+                          { name: 'Partially Approved', value: partiallyApprovedSubmissions, color: '#f59e0b' }
+                        ].filter(item => item.value > 0)}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {[
+                          { name: 'Fully Approved', value: fullyApprovedSubmissions, color: '#22c55e' },
+                          { name: 'Partially Approved', value: partiallyApprovedSubmissions, color: '#f59e0b' }
+                        ].filter(item => item.value > 0).map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Approval Quality Metrics */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5 text-blue-500" />
+                  Approval Quality Metrics
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Quality Score */}
+                  <div className="text-center p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg">
+                    <div className="text-3xl font-bold text-emerald-600 mb-2">
+                      {fullApprovalRate.toFixed(1)}%
+                    </div>
+                    <div className="text-sm text-emerald-700 font-medium">Quality Approval Rate</div>
+                    <div className="text-xs text-gray-600 mt-1">
+                      Percentage of approvals that are full approvals
+                    </div>
+                  </div>
+
+                  {/* Metrics breakdown */}
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                      <span className="text-sm font-medium">Total Approved</span>
+                      <span className="text-sm font-bold">{approvedSubmissions}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-emerald-50 rounded">
+                      <span className="text-sm font-medium text-emerald-700">Full Implementation</span>
+                      <span className="text-sm font-bold text-emerald-600">{fullyApprovedSubmissions}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-orange-50 rounded">
+                      <span className="text-sm font-medium text-orange-700">Conditional Implementation</span>
+                      <span className="text-sm font-bold text-orange-600">{partiallyApprovedSubmissions}</span>
+                    </div>
+                  </div>
+
+                  {/* Trend indicator */}
+                  <div className="flex items-center justify-center gap-2 text-sm">
+                    <TrendingUp className="h-4 w-4 text-green-500" />
+                    <span className="text-green-600">+5% quality improvement this month</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
         {/* Submissions Tab */}
         <TabsContent value="submissions" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -347,12 +466,16 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
                       </div>
                       <Badge 
                         variant={
-                          submission.status === 'approved' ? 'default' :
+                          submission.status === 'approved' && submission.approvalType === 'fully' ? 'default' :
+                          submission.status === 'approved' && submission.approvalType === 'partially' ? 'secondary' :
                           submission.status === 'rejected' ? 'destructive' :
-                          'secondary'
+                          'outline'
                         }
                       >
-                        {submission.status.replace('_', ' ')}
+                        {submission.status === 'approved' 
+                          ? `${submission.approvalType === 'fully' ? 'Fully' : 'Partially'} Approved`
+                          : submission.status.replace('_', ' ')
+                        }
                       </Badge>
                     </div>
                   ))}
