@@ -11,6 +11,7 @@ export const sampleSubmissions: FormSubmission[] = [
     submissionType: "vendor",
     submittedAt: new Date("2024-01-15T10:30:00Z"),
     status: "approved",
+    approvalType: "fully",
     responses: {
       "company_name": "TechCorp Solutions",
       "business_type": "Technology Services",
@@ -136,6 +137,7 @@ export const sampleSubmissions: FormSubmission[] = [
     submissionType: "vendor",
     submittedAt: new Date("2024-01-25T09:45:00Z"),
     status: "approved",
+    approvalType: "fully",
     responses: {
       "company_name": "GlobalSecure Systems",
       "business_type": "Cybersecurity Services",
@@ -251,6 +253,7 @@ export const sampleSubmissions: FormSubmission[] = [
     submissionType: "internal",
     submittedAt: new Date("2024-02-05T11:00:00Z"),
     status: "approved",
+    approvalType: "partially",
     responses: {
       "department": "Human Resources",
       "project_name": "Employee Data Management System",
@@ -413,6 +416,7 @@ export const sampleSubmissions: FormSubmission[] = [
     submissionType: "internal",
     submittedAt: new Date("2024-02-15T10:15:00Z"),
     status: "approved",
+    approvalType: "partially",
     responses: {
       "department": "Marketing",
       "project_name": "Customer Analytics Platform", 
@@ -467,6 +471,7 @@ export const sampleSubmissions: FormSubmission[] = [
     submissionType: "vendor",
     submittedAt: new Date("2024-02-18T12:00:00Z"),
     status: "approved",
+    approvalType: "fully",
     responses: {
       "company_name": "ExcellentVendor Inc",
       "business_type": "Enterprise Software",
