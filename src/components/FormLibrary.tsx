@@ -3601,7 +3601,7 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
     
     return matchesSearch && matchesCategory && matchesSector;
   }).sort((a, b) => {
-    // When sector filtering is active, prioritize sector-specific forms over general forms
+    // When sector filtering is active, prioritize matching sector forms first, then general forms
     if (selectedSectors.length > 0) {
       const aIsGeneral = !a.sector;
       const bIsGeneral = !b.sector;
@@ -3613,18 +3613,20 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
         b.sector.some(s => selectedSectors.includes(s)) : 
         selectedSectors.includes(b.sector));
       
-      // Sector-specific matching forms come first
-      if (aMatchesSector && !bMatchesSector) return -1;
-      if (!aMatchesSector && bMatchesSector) return 1;
-      
-      // Among matching forms, sector-specific forms come before general forms
+      // Priority order: Sector-specific matching forms first, then general forms
+      if (aMatchesSector && bIsGeneral) return -1;
+      if (aIsGeneral && bMatchesSector) return 1;
       if (aMatchesSector && bMatchesSector) {
-        if (!aIsGeneral && bIsGeneral) return -1;
-        if (aIsGeneral && !bIsGeneral) return 1;
+        // Both are sector-specific matches, sort alphabetically
+        return a.name.localeCompare(b.name);
+      }
+      if (aIsGeneral && bIsGeneral) {
+        // Both are general forms, sort alphabetically
+        return a.name.localeCompare(b.name);
       }
     }
     
-    // Default alphabetical sorting
+    // Default alphabetical sorting when no sector filter
     return a.name.localeCompare(b.name);
   });
 
