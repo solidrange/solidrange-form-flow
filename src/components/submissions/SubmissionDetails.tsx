@@ -77,6 +77,13 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
         company: submission.companyName || 'Unknown Company',
         type: 'Vendor Submission'
       };
+    } else if (submission.submissionType === 'external') {
+      return {
+        name: submission.submitterName || 'External User',
+        email: submission.submitterEmail,
+        company: submission.companyName || 'External Organization',
+        type: 'External Submission'
+      };
     } else {
       return {
         name: submission.submitterName || 'Internal User',
@@ -99,6 +106,8 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
           <CardTitle className="text-lg flex items-center gap-2">
             {submission.submissionType === 'vendor' ? (
               <Building className="h-5 w-5 text-blue-600" />
+            ) : submission.submissionType === 'external' ? (
+              <User className="h-5 w-5 text-purple-600" />
             ) : (
               <User className="h-5 w-5 text-blue-600" />
             )}
@@ -121,7 +130,11 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
             </div>
             <div>
               <Label className="text-sm font-medium text-gray-500">Submission Type</Label>
-              <Badge variant={submission.submissionType === 'vendor' ? 'default' : 'secondary'}>
+              <Badge variant={
+                submission.submissionType === 'vendor' ? 'default' : 
+                submission.submissionType === 'external' ? 'outline' : 
+                'secondary'
+              }>
                 {submitterInfo.type}
               </Badge>
             </div>
@@ -224,41 +237,35 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
           <CardTitle className="text-lg">Form Responses</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          {form.fields.map((field) => {
-            const response = submission.responses[field.id];
+          {Object.entries(submission.responses).map(([fieldKey, response]) => {
             const hasResponse = response !== null && response !== undefined && response !== '' && 
                                !(Array.isArray(response) && response.length === 0);
             
             return (
-              <div key={field.id} className="border-b pb-3 last:border-b-0">
+              <div key={fieldKey} className="border-b pb-3 last:border-b-0">
                 <div className="flex items-center justify-between mb-2">
                   <Label className="font-medium flex items-center gap-2">
-                    {field.label}
-                    {field.required && <span className="text-red-500">*</span>}
+                    {fieldKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                   </Label>
                   <div className="flex items-center gap-2">
                     {/* Response status indicator */}
                     {hasResponse ? (
                       <CheckCircle className="h-4 w-4 text-green-500" />
-                    ) : field.required ? (
-                      <XCircle className="h-4 w-4 text-red-500" />
                     ) : (
-                      <div className="h-4 w-4" />
-                    )}
-                    {/* Scoring information */}
-                    {field.scoring?.enabled && (
-                      <Badge variant="outline">
-                        {field.scoring.maxPoints} pts
-                      </Badge>
+                      <XCircle className="h-4 w-4 text-red-500" />
                     )}
                   </div>
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded">
                   {hasResponse ? (
-                    <span>{Array.isArray(response) ? response.join(', ') : String(response)}</span>
+                    <span>
+                      {Array.isArray(response) ? response.join(', ') : 
+                       typeof response === 'object' ? JSON.stringify(response, null, 2) :
+                       String(response)}
+                    </span>
                   ) : (
-                    <span className={`italic ${field.required ? 'text-red-400' : 'text-gray-400'}`}>
-                      {field.required ? 'Required - No response' : 'No response'}
+                    <span className="italic text-gray-400">
+                      No response provided
                     </span>
                   )}
                 </div>

@@ -366,7 +366,7 @@ export interface FormSubmission {
   
   // Form Classification
   // ===================
-  submissionType: 'vendor' | 'internal';  // Whether this is from an external vendor or internal user
+  submissionType: 'vendor' | 'internal' | 'external';  // Whether this is from a vendor, internal user, or external user
   
   // Performance Tracking
   // ====================

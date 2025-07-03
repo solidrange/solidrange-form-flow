@@ -316,6 +316,56 @@ const statuses: Array<"approved" | "rejected" | "under_review"> = ["approved", "
 const approvalTypes: Array<"fully" | "partially"> = ["fully", "partially"];
 const riskLevels: Array<"low" | "medium" | "high" | "critical"> = ["low", "medium", "high", "critical"];
 
+// External organizations for external submissions
+const externalOrganizations = [
+  "City Government", "Healthcare Partners", "University Research", "Non-Profit Alliance", "Community Foundation",
+  "Public School District", "Regional Hospital", "Environmental Agency", "Social Services", "Legal Aid Society"
+];
+
+const externalFormFields = [
+  "organization_name", "contact_person", "organization_type", "project_purpose", "data_requirements",
+  "privacy_compliance", "data_sharing_scope", "access_duration", "security_measures", "reporting_frequency",
+  "stakeholder_groups", "public_benefit", "compliance_framework", "audit_requirements"
+];
+
+const generateExternalResponses = (orgName: string) => ({
+  organization_name: orgName,
+  contact_person: submitters[Math.floor(Math.random() * submitters.length)],
+  organization_type: ["Government Agency", "Educational Institution", "Healthcare Organization", "Non-Profit", "Research Institution"][Math.floor(Math.random() * 5)],
+  project_purpose: [
+    "Public health data analysis for community wellness programs",
+    "Educational research to improve student outcomes",
+    "Environmental monitoring and reporting initiatives", 
+    "Social services optimization and resource allocation",
+    "Community development and planning projects"
+  ][Math.floor(Math.random() * 5)],
+  data_requirements: [
+    "Aggregated demographic data without personal identifiers",
+    "Statistical reports on service utilization patterns",
+    "Anonymized performance metrics for benchmarking",
+    "Public dataset for research and policy development"
+  ][Math.floor(Math.random() * 4)],
+  privacy_compliance: [
+    "HIPAA compliant data handling procedures",
+    "FERPA educational privacy requirements", 
+    "Local government privacy policies",
+    "Research ethics board approval obtained"
+  ][Math.floor(Math.random() * 4)],
+  data_sharing_scope: [
+    "Limited to specific project duration",
+    "Ongoing partnership with quarterly reviews",
+    "One-time data export for analysis",
+    "Continuous access with usage monitoring"
+  ][Math.floor(Math.random() * 4)],
+  access_duration: `${Math.floor(Math.random() * 24) + 6} months`,
+  security_measures: "Encrypted transmission, secure storage, access controls, audit logging",
+  reporting_frequency: ["Monthly", "Quarterly", "Semi-annually", "Annually"][Math.floor(Math.random() * 4)],
+  stakeholder_groups: "Community leaders, government officials, research teams, service providers",
+  public_benefit: "Improved public services, evidence-based policy making, community health outcomes",
+  compliance_framework: ["Local government regulations", "Federal privacy laws", "Industry standards", "Research ethics guidelines"][Math.floor(Math.random() * 4)],
+  audit_requirements: "Annual compliance review, security assessment, data usage audit"
+});
+
 // Enhanced form field responses for realistic data
 const vendorFormFields = [
   "company_name", "business_type", "annual_revenue", "employee_count", "data_security_measures",
@@ -396,13 +446,24 @@ const generateInternalResponses = (department: string) => ({
 const additionalSubmissions: FormSubmission[] = [];
 
 for (let i = 6; i <= 100; i++) {
-  const isVendor = Math.random() > 0.25; // 75% vendor, 25% internal
+  const submissionTypeRand = Math.random();
+  const isVendor = submissionTypeRand > 0.5; // 50% vendor
+  const isExternal = !isVendor && submissionTypeRand > 0.25; // 25% external  
+  const isInternal = !isVendor && !isExternal; // 25% internal
+  
+  const submissionType: 'vendor' | 'internal' | 'external' = 
+    isVendor ? 'vendor' : isExternal ? 'external' : 'internal';
+    
   const status = statuses[Math.floor(Math.random() * statuses.length)];
   const approvalType = status === "approved" ? approvalTypes[Math.floor(Math.random() * approvalTypes.length)] : undefined;
   const riskLevel = riskLevels[Math.floor(Math.random() * riskLevels.length)];
   const submitter = submitters[Math.floor(Math.random() * submitters.length)];
-  const company = isVendor ? companies[Math.floor(Math.random() * companies.length)] : "Our Company";
-  const department = !isVendor ? departments[Math.floor(Math.random() * departments.length)] : undefined;
+  
+  const company = isVendor ? companies[Math.floor(Math.random() * companies.length)] : 
+                  isExternal ? externalOrganizations[Math.floor(Math.random() * externalOrganizations.length)] :
+                  "Our Company";
+                  
+  const department = isInternal ? departments[Math.floor(Math.random() * departments.length)] : undefined;
   
   // Score distribution based on risk level
   let score: number;
@@ -419,18 +480,24 @@ for (let i = 6; i <= 100; i++) {
 
   additionalSubmissions.push({
     id: `sub-${i.toString().padStart(3, '0')}`,
-    formId: isVendor ? "form-vendor-assessment" : "form-internal-assessment",
+    formId: isVendor ? "form-vendor-assessment" : 
+             isExternal ? "form-external-assessment" : 
+             "form-internal-assessment",
     submittedBy: submitter,
-    submitterEmail: `${submitter.toLowerCase().replace(' ', '.')}@${isVendor ? company.toLowerCase().replace(/[^a-z]/g, '') : 'ourcompany'}.com`,
+    submitterEmail: `${submitter.toLowerCase().replace(' ', '.')}@${
+      isVendor ? company.toLowerCase().replace(/[^a-z]/g, '') :
+      isExternal ? company.toLowerCase().replace(/[^a-z]/g, '') + '.org' :
+      'ourcompany'
+    }.com`,
     submitterName: submitter,
     companyName: company,
-    submissionType: isVendor ? "vendor" : "internal",
+    submissionType: submissionType,
     submittedAt: submissionDate,
     status,
     approvalType,
-    responses: isVendor 
-      ? generateVendorResponses(company)
-      : generateInternalResponses(department || departments[0]),
+    responses: isVendor ? generateVendorResponses(company) :
+               isExternal ? generateExternalResponses(company) :
+               generateInternalResponses(department || departments[0]),
     score: {
       total: score,
       maxTotal: 100,

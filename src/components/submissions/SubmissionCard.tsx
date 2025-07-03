@@ -97,6 +97,12 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
         secondary: submission.submitterName || 'Unknown User',
         email: submission.submitterEmail
       };
+    } else if (submission.submissionType === 'external') {
+      return {
+        primary: submission.companyName || 'External Organization',
+        secondary: submission.submitterName || 'External User',
+        email: submission.submitterEmail
+      };
     } else {
       return {
         primary: submission.submitterName || 'Internal User',
@@ -123,6 +129,8 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
           <div className="flex items-center gap-1 sm:gap-2 min-w-0 flex-1">
             {submission.submissionType === 'vendor' ? (
               <Building className="h-3 w-3 sm:h-4 sm:w-4 text-gray-500 shrink-0" />
+            ) : submission.submissionType === 'external' ? (
+              <User className="h-3 w-3 sm:h-4 sm:w-4 text-purple-500 shrink-0" />
             ) : (
               <User className="h-3 w-3 sm:h-4 sm:w-4 text-gray-500 shrink-0" />
             )}
@@ -169,7 +177,8 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
               </Badge>
             )}
             <Badge variant="outline" className="text-xs px-1 py-0 leading-tight">
-              {submission.submissionType === 'vendor' ? 'Vendor' : 'Internal'}
+              {submission.submissionType === 'vendor' ? 'Vendor' : 
+               submission.submissionType === 'external' ? 'External' : 'Internal'}
             </Badge>
           </div>
           

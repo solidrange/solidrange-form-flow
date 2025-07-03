@@ -80,7 +80,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
     acc[sub.submissionType] = (acc[sub.submissionType] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-  // Expected: vendor: 9, internal: 3
+  // Expected: vendor: ~50, internal: ~25, external: ~25
 
   // Average scores - calculate from actual data
   const submissionsWithScores = submissions.filter(s => s.score?.percentage);
@@ -481,15 +481,25 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                   {Object.entries(submissionTypes).map(([type, count]) => (
                     <div key={type} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Badge variant={type === 'vendor' ? 'default' : 'secondary'}>
-                          {type === 'vendor' ? 'Vendor' : 'Internal'}
+                        <Badge variant={
+                          type === 'vendor' ? 'default' : 
+                          type === 'external' ? 'outline' : 
+                          'secondary'
+                        }>
+                          {type === 'vendor' ? 'Vendor' : 
+                           type === 'external' ? 'External' : 
+                           'Internal'}
                         </Badge>
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium">{count}</span>
                         <div className="w-20 bg-gray-200 rounded-full h-2">
                           <div 
-                            className="bg-blue-500 h-2 rounded-full" 
+                            className={`h-2 rounded-full ${
+                              type === 'vendor' ? 'bg-blue-500' :
+                              type === 'external' ? 'bg-purple-500' :
+                              'bg-green-500'
+                            }`}
                             style={{ width: `${(count / totalSubmissions) * 100}%` }}
                           />
                         </div>
@@ -516,19 +526,19 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                         <p className="font-medium text-sm">{submission.companyName || submission.submitterName}</p>
                         <p className="text-xs text-gray-500">{submission.submittedAt.toLocaleDateString()}</p>
                       </div>
-                      <Badge 
-                        variant={
-                          submission.status === 'approved' && submission.approvalType === 'fully' ? 'default' :
-                          submission.status === 'approved' && submission.approvalType === 'partially' ? 'secondary' :
-                          submission.status === 'rejected' ? 'destructive' :
-                          'outline'
-                        }
-                      >
-                        {submission.status === 'approved' 
-                          ? `${submission.approvalType === 'fully' ? 'Fully' : 'Partially'} Approved`
-                          : submission.status.replace('_', ' ')
-                        }
-                      </Badge>
+                        <Badge 
+                          variant={
+                            submission.status === 'approved' && submission.approvalType === 'fully' ? 'default' :
+                            submission.status === 'approved' && submission.approvalType === 'partially' ? 'secondary' :
+                            submission.status === 'rejected' ? 'destructive' :
+                            'outline'
+                          }
+                        >
+                          {submission.status === 'approved' 
+                            ? `${submission.approvalType === 'fully' ? 'Fully' : 'Partially'} Approved`
+                            : submission.status.replace('_', ' ')
+                          }
+                        </Badge>
                     </div>
                   ))}
                 </div>
