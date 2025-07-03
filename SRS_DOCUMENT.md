@@ -162,9 +162,12 @@ Provides tools for reviewing, scoring, and approving form submissions.
 - **FR-RS-001**: System shall support configurable scoring criteria
 - **FR-RS-002**: System shall calculate weighted scores
 - **FR-RS-003**: System shall assign risk levels based on scores
-- **FR-RS-004**: System shall provide review workflow management
-- **FR-RS-005**: System shall maintain audit trail of review activities
-- **FR-RS-006**: System shall support bulk approval/rejection
+- **FR-RS-004**: System shall provide review workflow management with approval types
+- **FR-RS-005**: System shall maintain audit trail of review activities including approval types
+- **FR-RS-006**: System shall support bulk approval/rejection with approval type selection
+- **FR-RS-007**: System shall provide AI-driven approval suggestions based on scoring
+- **FR-RS-008**: System shall support "Fully Approved" and "Partially Approved" classifications
+- **FR-RS-009**: System shall track approval type analytics and reporting
 
 ### 3.6 Analytics and Reporting Module
 
@@ -370,15 +373,17 @@ graph LR
 
 #### UC-004: Review and Score Submission
 **Actor**: Reviewer
-**Description**: Evaluate and score a form submission
+**Description**: Evaluate and score a form submission with AI assistance
 **Preconditions**: Submission is available for review
 **Main Flow**:
 1. Reviewer accesses submission queue
 2. Reviewer selects submission to review
-3. Reviewer evaluates responses and documents
-4. Reviewer assigns scores and risk levels
-5. Reviewer adds comments and recommendations
-6. Reviewer approves or rejects submission
+3. System displays AI-generated approval recommendation based on scoring
+4. Reviewer evaluates responses and documents
+5. Reviewer assigns scores and risk levels
+6. Reviewer selects approval type (Fully Approved or Partially Approved)
+7. Reviewer adds comments and recommendations
+8. Reviewer approves or rejects submission with appropriate approval type
 
 ### 8.2 Secondary Use Cases
 
@@ -456,21 +461,25 @@ flowchart TD
     C -->|No| D[Return with Errors]
     C -->|Yes| E[Queue for Review]
     E --> F[Assign to Reviewer]
-    F --> G[Reviewer Evaluates]
-    G --> H[Calculate Scores]
-    H --> I[Determine Risk Level]
-    I --> J{Auto-Approve?}
-    J -->|Yes| K[Auto Approve]
-    J -->|No| L[Manual Decision]
-    L --> M{Approved?}
-    M -->|Yes| N[Approve Submission]
-    M -->|No| O[Reject Submission]
-    K --> P[Send Notification]
-    N --> P
-    O --> Q[Send Rejection Notice]
-    P --> R[Update Analytics]
-    Q --> R
-    R --> S[End]
+    F --> G[AI Generates Approval Suggestion]
+    G --> H[Reviewer Evaluates with AI Guidance]
+    H --> I[Calculate Scores]
+    I --> J[Determine Risk Level]
+    J --> K{Auto-Approve Threshold?}
+    K -->|Yes| L[Auto Approve as Fully]
+    K -->|No| M[Manual Decision Required]
+    M --> N{Approval Decision?}
+    N -->|Fully Approved| O[Approve with Full Implementation]
+    N -->|Partially Approved| P[Approve with Conditions]
+    N -->|Rejected| Q[Reject Submission]
+    L --> R[Send Full Approval Notification]
+    O --> R
+    P --> S[Send Conditional Approval Notice]
+    Q --> T[Send Rejection Notice]
+    R --> U[Update Analytics with Approval Type]
+    S --> U
+    T --> U
+    U --> V[End]
 ```
 
 ### 9.4 Report Generation Workflow

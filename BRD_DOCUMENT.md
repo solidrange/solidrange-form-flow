@@ -189,13 +189,17 @@ A unified platform that provides:
 #### BR-008: Review Workflow Management
 **Business Need**: Streamline approval processes with proper oversight
 **Requirements**:
-- Multi-level approval workflows
+- Multi-level approval workflows with granular approval types
+- **Fully Approved**: Complete implementation without conditions
+- **Partially Approved**: Conditional implementation with limitations
+- AI-driven approval suggestions based on scoring and risk assessment
 - Automatic assignment to reviewers
 - Review queue management
-- Approval/rejection with comments
+- Approval/rejection with detailed comments and approval type selection
 - Escalation for overdue reviews
+- Analytics integration for approval type tracking
 
-**Business Value**: Faster turnaround, clear accountability, audit compliance
+**Business Value**: Faster turnaround, clear accountability, audit compliance, improved decision consistency
 
 ### 3.5 Analytics and Reporting
 

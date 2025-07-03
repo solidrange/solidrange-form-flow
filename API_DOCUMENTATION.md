@@ -134,6 +134,7 @@ CREATE TABLE FormSubmissions (
     SubmittedBy UNIQUEIDENTIFIER FOREIGN KEY REFERENCES Users(Id),
     SubmittedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
     Status NVARCHAR(50) NOT NULL DEFAULT 'submitted', -- submitted, under_review, approved, rejected
+    ApprovalType NVARCHAR(20), -- fully, partially (required when status is approved)
     
     -- Submitter Information
     SubmitterEmail NVARCHAR(255) NOT NULL,
@@ -186,6 +187,7 @@ CREATE TABLE ReviewActivities (
     Id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
     SubmissionId UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES FormSubmissions(Id) ON DELETE CASCADE,
     Action NVARCHAR(50) NOT NULL, -- approved, rejected, under_review, resent, reminder_sent, info_requested
+    ApprovalType NVARCHAR(20), -- fully, partially (for approved actions)
     Comments NTEXT,
     ReviewedBy UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES Users(Id),
     ReviewedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),

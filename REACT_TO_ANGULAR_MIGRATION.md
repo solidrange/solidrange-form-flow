@@ -51,11 +51,13 @@ The current React application is a comprehensive **Enterprise Form Builder & Sub
 - **Recipient Management**: Add, edit, remove recipients with status tracking
 
 #### Submission Management
-- **Submission Review**: Comprehensive submission review interface
-- **Status Management**: Submitted, under review, approved, rejected
-- **Submission Details**: Full submission data with scoring
-- **Activity Logs**: Track all review activities and comments
-- **Bulk Actions**: Approve/reject multiple submissions
+- **Submission Review**: Comprehensive submission review interface with AI-driven suggestions
+- **Status Management**: Submitted, under review, approved (fully/partially), rejected
+- **Approval Types**: Fully approved (complete implementation) vs Partially approved (conditional)
+- **AI Recommendations**: Intelligent approval suggestions based on scoring and risk levels
+- **Submission Details**: Full submission data with scoring and approval type analytics
+- **Activity Logs**: Track all review activities, comments, and approval types
+- **Bulk Actions**: Approve/reject multiple submissions with approval type selection
 
 #### Scoring & Risk Assessment
 - **Scoring System**: Configure max points, passing scores, risk thresholds
@@ -295,7 +297,7 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
 | `SubmissionsList` | `SubmissionsListComponent` | SubmissionsModule | Submissions list with filtering |
 | `SubmissionCard` | `SubmissionCardComponent` | SubmissionsModule | Individual submission display |
 | `SubmissionDetails` | `SubmissionDetailsComponent` | SubmissionsModule | Detailed submission view |
-| `SubmissionActions` | `SubmissionActionsComponent` | SubmissionsModule | Approval/rejection actions |
+| `SubmissionActions` | `SubmissionActionsComponent` | SubmissionsModule | Approval/rejection actions with AI suggestions |
 | **Scoring & Weightage** |
 | `ScoringSettings` | `ScoringSettingsComponent` | ScoringModule | Scoring configuration |
 | `WeightageAndScoringSettings` | `WeightageAndScoringSettingsComponent` | ScoringModule | Weightage management |

@@ -157,7 +157,7 @@ src/
 | `SubmissionsList.tsx` | Submissions listing | SubmissionReview.tsx | Filtering, sorting, status management |
 | `SubmissionCard.tsx` | Individual submission display | SubmissionsList.tsx | Quick view, actions |
 | `SubmissionDetails.tsx` | Detailed submission view | SubmissionCard.tsx | Full responses, scoring, attachments |
-| `SubmissionActions.tsx` | Approval/rejection interface | SubmissionDetails.tsx | Review workflow, comments |
+| `SubmissionActions.tsx` | Approval/rejection interface with AI suggestions | SubmissionDetails.tsx | Review workflow, approval types (fully/partially), AI recommendations |
 
 ### Analytics and Reporting
 
@@ -228,8 +228,10 @@ graph TD
     C --> D[SubmissionsList.tsx displays submissions]
     D --> E[User clicks submission]
     E --> F[SubmissionDetails.tsx shows full data]
-    F --> G[SubmissionActions.tsx for approval/rejection]
-    G --> H[Activity logged in submission.activityLog]
+    F --> G[SubmissionActions.tsx displays AI suggestions]
+    G --> H[User selects approval type: Fully/Partially]
+    H --> I[SubmissionActions.tsx processes approval]
+    I --> J[Activity logged with approval type in submission.activityLog]
 ```
 
 ---
