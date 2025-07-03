@@ -4,12 +4,14 @@
 This document outlines the complete API specification and database schema for implementing the backend of the Form Builder and Submission Management system using .NET Core Web API. The system supports comprehensive form creation, email distribution, submission management, and advanced analytics with PDF export capabilities.
 
 ## Current System Features
-- **Advanced Form Builder**: Drag-and-drop interface with 15+ field types and conditional logic
-- **Email Campaign Management**: Automated invitations, reminders, and recipient tracking
-- **Submission Processing**: Real-time validation, automated scoring, and review workflows  
-- **Analytics & Reporting**: Comprehensive dashboards with PDF/Excel export capabilities
-- **Document Management**: File attachments and secure document handling
-- **Sharing & Embedding**: Public links, responsive embed codes, and fillable PDF export
+- **Advanced Form Builder**: Drag-and-drop interface with 15+ field types, conditional logic, and real-time preview
+- **Comprehensive Template Library**: 160+ industry-specific templates across 8 sectors with advanced filtering
+- **AI-Enhanced Email Campaigns**: Intelligent email optimization, automated reminders, and engagement tracking
+- **AI-Powered Submission Processing**: Machine learning-based scoring, approval recommendations, and automated workflows
+- **Advanced Analytics & Reporting**: Real-time dashboards with predictive insights, PDF/Excel export, and trend analysis
+- **Secure Document Management**: File attachments with virus scanning, cloud storage integration, and version control
+- **Intelligent Review System**: AI-assisted approval workflows with Fully/Partially Approved classifications
+- **Multi-Select Filtering**: Advanced template and submission filtering with real-time counts and smart categorization
 
 ## Technology Stack
 - **Framework**: .NET 8 Web API
@@ -188,15 +190,20 @@ CREATE TABLE ReviewActivities (
     SubmissionId UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES FormSubmissions(Id) ON DELETE CASCADE,
     Action NVARCHAR(50) NOT NULL, -- approved, rejected, under_review, resent, reminder_sent, info_requested
     ApprovalType NVARCHAR(20), -- fully, partially (for approved actions)
+    AIRecommendation NVARCHAR(MAX), -- JSON: AI suggestion details
+    AIConfidenceScore DECIMAL(5,2), -- AI confidence percentage
+    HumanOverride BIT DEFAULT 0, -- Whether human overrode AI
     Comments NTEXT,
     ReviewedBy UNIQUEIDENTIFIER NOT NULL FOREIGN KEY REFERENCES Users(Id),
     ReviewedAt DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
     
-    -- Additional metadata (JSON)
-    Metadata NVARCHAR(MAX),
+    -- Enhanced metadata (JSON)
+    Metadata NVARCHAR(MAX), -- AI analysis, decision reasoning, etc.
     
     INDEX IX_ReviewActivities_SubmissionId (SubmissionId),
-    INDEX IX_ReviewActivities_Action (Action)
+    INDEX IX_ReviewActivities_Action (Action),
+    INDEX IX_ReviewActivities_ApprovalType (ApprovalType),
+    INDEX IX_ReviewActivities_AIConfidenceScore (AIConfidenceScore)
 );
 ```
 

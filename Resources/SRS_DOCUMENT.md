@@ -26,13 +26,13 @@ This Software Requirements Specification (SRS) document describes the functional
 
 ### 1.2 Scope
 The system provides:
-- **Form Creation**: Drag-and-drop form builder with multiple field types
-- **Template Management**: Pre-built form templates for common use cases
-- **Email Distribution**: Automated email invitations and reminders
-- **Submission Management**: Collection, review, and scoring of form responses
-- **Analytics & Reporting**: Comprehensive reporting with PDF/Excel export
-- **Document Management**: File attachments and document handling
-- **Risk Assessment**: Scoring and risk categorization of submissions
+- **Advanced Form Creation**: Drag-and-drop form builder with 15+ field types and conditional logic
+- **Comprehensive Template Management**: 160+ industry-specific templates across 8 sectors with advanced filtering
+- **Intelligent Email Distribution**: AI-optimized email campaigns with automated reminders and engagement tracking
+- **AI-Enhanced Submission Management**: Collection, review, and scoring with machine learning recommendations
+- **Advanced Analytics & Reporting**: Real-time dashboards with PDF/Excel export and predictive insights
+- **Secure Document Management**: File attachments with virus scanning and cloud storage integration
+- **AI-Powered Risk Assessment**: Intelligent scoring, risk categorization, and approval recommendations
 
 ### 1.3 Intended Audience
 - **Form Creators**: Users who build and configure forms
@@ -118,14 +118,17 @@ Provides drag-and-drop interface for creating dynamic forms with various field t
 ### 3.2 Template Management Module
 
 #### 3.2.1 Description
-Manages pre-built form templates for common use cases and industries.
+Manages 160+ industry-specific form templates with advanced filtering and intelligent categorization.
 
 #### 3.2.2 Functional Requirements
-- **FR-TM-001**: System shall provide categorized form templates
-- **FR-TM-002**: System shall allow template customization
-- **FR-TM-003**: System shall enable template creation from existing forms
-- **FR-TM-004**: System shall support template sharing across users
-- **FR-TM-005**: System shall maintain template version history
+- **FR-TM-001**: System shall provide 160+ categorized form templates across 8 major sectors
+- **FR-TM-002**: System shall support advanced multi-select filtering with real-time counts
+- **FR-TM-003**: System shall implement smart categorization with "Multi-Sector", "Multi-Category", and "Other" classifications
+- **FR-TM-004**: System shall provide instant search and filtering with sector-specific icons and descriptions
+- **FR-TM-005**: System shall allow template customization with inheritance from sector-specific configurations
+- **FR-TM-006**: System shall support template sharing and collaboration across users and departments
+- **FR-TM-007**: System shall maintain template version history and usage analytics
+- **FR-TM-008**: System shall provide template recommendation engine based on user patterns and industry best practices
 
 ### 3.3 Email Distribution Module
 
@@ -159,15 +162,17 @@ Handles form submission collection, processing, and management.
 Provides tools for reviewing, scoring, and approving form submissions.
 
 #### 3.5.2 Functional Requirements
-- **FR-RS-001**: System shall support configurable scoring criteria
-- **FR-RS-002**: System shall calculate weighted scores
-- **FR-RS-003**: System shall assign risk levels based on scores
-- **FR-RS-004**: System shall provide review workflow management with approval types
-- **FR-RS-005**: System shall maintain audit trail of review activities including approval types
-- **FR-RS-006**: System shall support bulk approval/rejection with approval type selection
-- **FR-RS-007**: System shall provide AI-driven approval suggestions based on scoring
-- **FR-RS-008**: System shall support "Fully Approved" and "Partially Approved" classifications
-- **FR-RS-009**: System shall track approval type analytics and reporting
+- **FR-RS-001**: System shall support configurable scoring criteria with multiple risk categories and weightings
+- **FR-RS-002**: System shall calculate weighted scores using machine learning algorithms
+- **FR-RS-003**: System shall assign risk levels (Low, Medium, High, Critical) based on intelligent scoring
+- **FR-RS-004**: System shall provide AI-enhanced review workflow management with intelligent approval type recommendations
+- **FR-RS-005**: System shall maintain comprehensive audit trail of review activities including AI recommendations vs human decisions
+- **FR-RS-006**: System shall support bulk approval/rejection with AI-suggested approval type selection
+- **FR-RS-007**: System shall provide AI-driven approval suggestions with confidence scores (>85% for auto-approval)
+- **FR-RS-008**: System shall support "Fully Approved" and "Partially Approved" classifications with AI-generated conditions
+- **FR-RS-009**: System shall track approval type analytics, AI accuracy metrics, and decision pattern analysis
+- **FR-RS-010**: System shall support real-time AI model training based on reviewer feedback and decision outcomes
+- **FR-RS-011**: System shall provide AI explainability features showing reasoning behind recommendations
 
 ### 3.6 Analytics and Reporting Module
 
@@ -371,19 +376,27 @@ graph LR
 5. Recipient submits form
 6. System validates and stores submission
 
-#### UC-004: Review and Score Submission
+#### UC-004: AI-Enhanced Review and Score Submission
 **Actor**: Reviewer
-**Description**: Evaluate and score a form submission with AI assistance
-**Preconditions**: Submission is available for review
+**Description**: Evaluate and score a form submission with comprehensive AI assistance and intelligent recommendations
+**Preconditions**: Submission is available for review with AI analysis completed
 **Main Flow**:
-1. Reviewer accesses submission queue
+1. Reviewer accesses intelligent submission queue prioritized by AI risk assessment
 2. Reviewer selects submission to review
-3. System displays AI-generated approval recommendation based on scoring
-4. Reviewer evaluates responses and documents
-5. Reviewer assigns scores and risk levels
-6. Reviewer selects approval type (Fully Approved or Partially Approved)
-7. Reviewer adds comments and recommendations
-8. Reviewer approves or rejects submission with appropriate approval type
+3. System displays comprehensive AI analysis including:
+   - Risk score breakdown and reasoning
+   - Approval recommendation with confidence score
+   - Suggested approval type (Fully/Partially) with specific conditions
+   - Historical pattern analysis and similar case comparisons
+4. Reviewer evaluates responses and documents with AI-highlighted key areas
+5. Reviewer reviews AI-generated scoring with ability to override individual criteria
+6. Reviewer considers AI recommendation and selects approval type:
+   - **Fully Approved**: Complete implementation (AI confidence >85%)
+   - **Partially Approved**: Conditional implementation with AI-suggested limitations
+   - **Rejected**: With AI-generated rejection reasoning template
+7. Reviewer adds personalized comments building on AI-generated insights
+8. System tracks reviewer decision vs AI recommendation for continuous learning
+9. Reviewer submits final decision with approval type and rationale
 
 ### 8.2 Secondary Use Cases
 
@@ -452,34 +465,40 @@ flowchart TD
     K --> M[End]
 ```
 
-### 9.3 Submission Review Workflow
+### 9.3 AI-Enhanced Submission Review Workflow
 
 ```mermaid
 flowchart TD
-    A[Submission Received] --> B[Automatic Validation]
+    A[Submission Received] --> B[Automatic Validation & Data Extraction]
     B --> C{Validation Passed?}
-    C -->|No| D[Return with Errors]
-    C -->|Yes| E[Queue for Review]
-    E --> F[Assign to Reviewer]
-    F --> G[AI Generates Approval Suggestion]
-    G --> H[Reviewer Evaluates with AI Guidance]
-    H --> I[Calculate Scores]
-    I --> J[Determine Risk Level]
-    J --> K{Auto-Approve Threshold?}
-    K -->|Yes| L[Auto Approve as Fully]
-    K -->|No| M[Manual Decision Required]
-    M --> N{Approval Decision?}
-    N -->|Fully Approved| O[Approve with Full Implementation]
-    N -->|Partially Approved| P[Approve with Conditions]
-    N -->|Rejected| Q[Reject Submission]
-    L --> R[Send Full Approval Notification]
-    O --> R
-    P --> S[Send Conditional Approval Notice]
-    Q --> T[Send Rejection Notice]
-    R --> U[Update Analytics with Approval Type]
-    S --> U
-    T --> U
-    U --> V[End]
+    C -->|No| D[Return with Smart Error Messages]
+    C -->|Yes| E[AI Analysis & Risk Assessment]
+    E --> F[Generate Comprehensive AI Report]
+    F --> G[Intelligent Queue Prioritization]
+    G --> H[Auto-Assign Based on Expertise & Workload]
+    H --> I[AI Generates Approval Recommendation]
+    I --> J{AI Confidence Score?}
+    J -->|>85% Low Risk| K[Auto-Approve as Fully Approved]
+    J -->|60-85% Medium Risk| L[Queue for Review with Strong AI Recommendation]
+    J -->|<60% High Risk| M[Queue for Manual Review with AI Insights]
+    L --> N[Reviewer Evaluates with AI Guidance]
+    M --> N
+    N --> O[AI-Assisted Scoring & Risk Calculation]
+    O --> P[Reviewer Decision with AI Context]
+    P --> Q{Final Approval Decision?}
+    Q -->|Fully Approved| R[Approve with Full Implementation]
+    Q -->|Partially Approved| S[Approve with AI-Suggested Conditions]
+    Q -->|Rejected| T[Reject with AI-Generated Reasoning]
+    K --> U[Send Auto-Approval Notification]
+    R --> V[Send Full Approval Notification]
+    S --> W[Send Conditional Approval Notice with Specific Terms]
+    T --> X[Send Rejection Notice with Improvement Suggestions]
+    U --> Y[Update AI Model & Analytics]
+    V --> Y
+    W --> Y
+    X --> Y
+    Y --> Z[Generate Learning Insights for Continuous Improvement]
+    Z --> AA[End with Model Training Update]
 ```
 
 ### 9.4 Report Generation Workflow

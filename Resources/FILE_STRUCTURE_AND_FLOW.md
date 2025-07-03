@@ -15,12 +15,15 @@
 The Form Builder is a comprehensive enterprise application for creating, managing, and analyzing forms with advanced features like scoring, email distribution, and submission management.
 
 **Core Capabilities:**
-- Dynamic form building with drag & drop
-- Email distribution and invitation management
-- Submission review and approval workflows
-- Analytics and reporting
-- Scoring and risk assessment
-- File attachment management
+- **160+ Industry-Specific Templates** across 8 major sectors with advanced filtering
+- **AI-Powered Review System** with intelligent approval recommendations  
+- **Multi-Select Filtering** with real-time counts and smart categorization
+- **Flexible Approval Types** (Fully Approved vs Partially Approved)
+- **Dynamic Form Building** with drag & drop interface and live preview
+- **Email Campaign Management** with automated reminders and engagement tracking
+- **Advanced Analytics** with PDF/Excel export and trend analysis
+- **Weighted Scoring System** with risk assessment and automated workflows
+- **Document Management** with secure file attachments and validation
 
 ---
 
@@ -38,14 +41,19 @@ src/
 │   │   ├── accordion.tsx            # Collapsible content panels
 │   │   ├── alert-dialog.tsx         # Modal confirmation dialogs
 │   │   ├── alert.tsx                # Notification banners
-│   │   ├── button.tsx               # Clickable buttons
+│   │   ├── button.tsx               # Clickable buttons with design system
 │   │   ├── card.tsx                 # Content containers
 │   │   ├── dialog.tsx               # Modal windows
 │   │   ├── input.tsx                # Text input fields
 │   │   ├── select.tsx               # Dropdown selections
 │   │   ├── tabs.tsx                 # Tab navigation
 │   │   ├── toast.tsx                # Popup notifications
-│   │   └── ... (other UI primitives)
+│   │   ├── checkbox.tsx             # Checkbox inputs
+│   │   ├── radio-group.tsx          # Radio button groups
+│   │   ├── textarea.tsx             # Multi-line text inputs
+│   │   ├── badge.tsx                # Status and category badges
+│   │   ├── popover.tsx              # Dropdown content containers
+│   │   └── ... (35+ UI primitives total)
 │   │
 │   ├── forms/                       # Form-specific components
 │   │   ├── EmailDistributionSettings.tsx    # Email invitation configuration
@@ -73,8 +81,9 @@ src/
 │   ├── FormCanvas.tsx               # Form preview and editing area
 │   ├── FormCategoryManager.tsx      # Form categorization
 │   ├── FormInvitations.tsx          # Invitation management hub
-│   ├── FormLibrary.tsx              # Template library
+│   ├── FormLibrary.tsx              # Template library (160+ templates, 783 lines)
 │   ├── FormPreview.tsx              # Real-time form preview
+│   ├── MultiSelectFilter.tsx        # Advanced filtering component
 │   ├── ReportGeneration.tsx         # Report creation interface
 │   ├── ScoringSettings.tsx          # Scoring configuration
 │   ├── SettingsPanel.tsx            # Form settings management
@@ -133,10 +142,11 @@ src/
 |-----------|---------------|---------|--------------|
 | `FormBuilder.tsx` | Main form creation interface | Index.tsx (Build tab) | 3-column layout, field management, responsive design |
 | `FormCanvas.tsx` | Interactive form preview area | FormBuilder.tsx | Drag & drop, field arrangement, real-time preview |
-| `FieldPalette.tsx` | Available form field types | FormBuilder.tsx | Field categories, drag source |
-| `FieldEditor.tsx` | Field configuration panel | FormBuilder.tsx | Validation, scoring, properties |
-| `FormLibrary.tsx` | Template management | Index.tsx (Library tab) | Templates, categories, reusable forms |
-| `FormPreview.tsx` | Read-only form display | FormBuilder.tsx | User-facing form appearance |
+| `FieldPalette.tsx` | Available form field types | FormBuilder.tsx | 15+ field types, categorized palette |
+| `FieldEditor.tsx` | Field configuration panel | FormBuilder.tsx | Validation, scoring, properties, conditional logic |
+| `FormLibrary.tsx` | Template management (783 lines) | Index.tsx (Library tab) | 160+ templates across 8 sectors, advanced filtering |
+| `MultiSelectFilter.tsx` | Advanced filtering component | FormLibrary.tsx | Multi-select dropdowns, real-time counts |
+| `FormPreview.tsx` | Read-only form display | FormBuilder.tsx | User-facing form appearance, mobile responsive |
 
 ### Form Management Components
 
@@ -229,9 +239,11 @@ graph TD
     D --> E[User clicks submission]
     E --> F[SubmissionDetails.tsx shows full data]
     F --> G[SubmissionActions.tsx displays AI suggestions]
-    G --> H[User selects approval type: Fully/Partially]
-    H --> I[SubmissionActions.tsx processes approval]
-    I --> J[Activity logged with approval type in submission.activityLog]
+    G --> H[AI generates approval recommendation]
+    H --> I[User reviews AI suggestion and selects approval type]
+    I --> J[User chooses: Fully Approved/Partially Approved/Rejected]
+    J --> K[SubmissionActions.tsx processes decision]
+    K --> L[Activity logged with approval type and AI recommendation]
 ```
 
 ---
@@ -329,16 +341,18 @@ graph TD
 
 ### External Libraries Integration
 
-| Library | Usage | Components |
-|---------|-------|------------|
-| `recharts` | Data visualization | Analytics.tsx, ReportCharts.tsx |
-| `lucide-react` | Icons throughout UI | All components |
-| `react-router-dom` | Navigation | App.tsx |
-| `@tanstack/react-query` | Data fetching (future API) | App.tsx wrapper |
-| `shadcn/ui` | Base UI components | All ui/ components |
-| `tailwindcss` | Styling system | All components via className |
-| `jspdf` | PDF generation | FormSharingOptions.tsx |
-| `xlsx` | Excel export | ReportGeneration.tsx |
-| `html2canvas` | Screenshot capture | FormSharingOptions.tsx |
+| Library | Usage | Components | Features |
+|---------|-------|------------|----------|
+| `recharts` | Data visualization | Analytics.tsx, ReportCharts.tsx | Interactive charts, trend analysis |
+| `lucide-react` | 1000+ icons | All components | Consistent iconography, sector-specific icons |
+| `react-router-dom` | Client-side routing | App.tsx | SPA navigation |
+| `@tanstack/react-query` | Data fetching & caching | App.tsx wrapper | Server state management |
+| `shadcn/ui` | 35+ UI primitives | All ui/ components | Design system foundation |
+| `tailwindcss` | Utility-first CSS | All components | Responsive design, design tokens |
+| `jspdf` | PDF generation | FormSharingOptions.tsx | Form exports, reports |
+| `xlsx` | Excel export | ReportGeneration.tsx | Data exports, analytics |
+| `html2canvas` | Screenshot capture | FormSharingOptions.tsx | Form previews |
+| `class-variance-authority` | Component variants | UI components | Design system scaling |
+| `clsx` | Conditional classes | All components | Dynamic styling |
 
 This documentation provides a complete overview of how the Form Builder application is structured and how each file contributes to the overall functionality.
