@@ -276,28 +276,29 @@ export const SubmissionsList = ({
 
           {/* Advanced Filters */}
           <Collapsible open={showAdvancedFilters} onOpenChange={setShowAdvancedFilters}>
-            <CollapsibleContent className="space-y-4 pt-2">
+            <CollapsibleContent className="space-y-6 pt-4">
               {/* Row 1: Status and Approval Type */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Status Filter */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-semibold">Status</Label>
-                  <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-4">
+                  <Label className="text-sm font-semibold text-foreground">Status</Label>
+                  <div className="space-y-3">
                     {[
-                      { value: 'submitted', label: 'Submitted', icon: <FileText className="h-3 w-3" />, color: 'blue' },
-                      { value: 'under_review', label: 'Review', icon: <Clock className="h-3 w-3" />, color: 'orange' },
-                      { value: 'approved', label: 'Approved', icon: <CheckCircle className="h-3 w-3" />, color: 'green' },
-                      { value: 'rejected', label: 'Rejected', icon: <XCircle className="h-3 w-3" />, color: 'red' }
+                      { value: 'submitted', label: 'Submitted', icon: <FileText className="h-4 w-4" />, color: 'blue' },
+                      { value: 'under_review', label: 'Under Review', icon: <Clock className="h-4 w-4" />, color: 'orange' },
+                      { value: 'approved', label: 'Approved', icon: <CheckCircle className="h-4 w-4" />, color: 'green' },
+                      { value: 'rejected', label: 'Rejected', icon: <XCircle className="h-4 w-4" />, color: 'red' }
                     ].map(({ value, label, icon, color }) => (
-                      <div key={value} className="flex items-center space-x-2">
+                      <div key={value} className="flex items-center space-x-3">
                         <Checkbox
                           id={`status-${value}`}
                           checked={filters.status.includes(value)}
                           onCheckedChange={() => toggleFilterValue('status', value)}
+                          className="flex-shrink-0"
                         />
-                        <Label htmlFor={`status-${value}`} className="flex items-center gap-1 text-xs cursor-pointer truncate">
+                        <Label htmlFor={`status-${value}`} className="flex items-center gap-2 text-sm cursor-pointer min-w-0">
                           {icon}
-                          {label}
+                          <span className="whitespace-nowrap">{label}</span>
                         </Label>
                       </div>
                     ))}
@@ -305,22 +306,23 @@ export const SubmissionsList = ({
                 </div>
 
                 {/* Approval Type Filter */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-semibold">Approval Type</Label>
-                  <div className="space-y-2">
+                <div className="space-y-4">
+                  <Label className="text-sm font-semibold text-foreground">Approval Type</Label>
+                  <div className="space-y-3">
                     {[
-                      { value: 'fully', label: 'Fully', icon: <Award className="h-3 w-3" />, color: 'emerald' },
-                      { value: 'partially', label: 'Partially', icon: <Shield className="h-3 w-3" />, color: 'orange' }
+                      { value: 'fully', label: 'Fully Approved', icon: <Award className="h-4 w-4" />, color: 'emerald' },
+                      { value: 'partially', label: 'Partially Approved', icon: <Shield className="h-4 w-4" />, color: 'orange' }
                     ].map(({ value, label, icon }) => (
-                      <div key={value} className="flex items-center space-x-2">
+                      <div key={value} className="flex items-center space-x-3">
                         <Checkbox
                           id={`approval-${value}`}
                           checked={filters.approvalType.includes(value)}
                           onCheckedChange={() => toggleFilterValue('approvalType', value)}
+                          className="flex-shrink-0"
                         />
-                        <Label htmlFor={`approval-${value}`} className="flex items-center gap-1 text-xs cursor-pointer">
+                        <Label htmlFor={`approval-${value}`} className="flex items-center gap-2 text-sm cursor-pointer min-w-0">
                           {icon}
-                          {label}
+                          <span className="whitespace-nowrap">{label}</span>
                         </Label>
                       </div>
                     ))}
@@ -329,26 +331,27 @@ export const SubmissionsList = ({
               </div>
 
               {/* Row 2: Risk Level and Submission Type */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Risk Level Filter */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-semibold">Risk Level</Label>
-                  <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-4">
+                  <Label className="text-sm font-semibold text-foreground">Risk Level</Label>
+                  <div className="space-y-3">
                     {[
-                      { value: 'low', label: 'Low', color: 'green' },
-                      { value: 'medium', label: 'Medium', color: 'yellow' },
-                      { value: 'high', label: 'High', color: 'orange' },
-                      { value: 'critical', label: 'Critical', color: 'red' }
+                      { value: 'low', label: 'Low Risk', color: 'green' },
+                      { value: 'medium', label: 'Medium Risk', color: 'yellow' },
+                      { value: 'high', label: 'High Risk', color: 'orange' },
+                      { value: 'critical', label: 'Critical Risk', color: 'red' }
                     ].map(({ value, label, color }) => (
-                      <div key={value} className="flex items-center space-x-2">
+                      <div key={value} className="flex items-center space-x-3">
                         <Checkbox
                           id={`risk-${value}`}
                           checked={filters.riskLevel.includes(value)}
                           onCheckedChange={() => toggleFilterValue('riskLevel', value)}
+                          className="flex-shrink-0"
                         />
-                        <Label htmlFor={`risk-${value}`} className="flex items-center gap-1 text-xs cursor-pointer">
-                          <div className={`w-2 h-2 rounded-full bg-${color}-500`}></div>
-                          {label}
+                        <Label htmlFor={`risk-${value}`} className="flex items-center gap-2 text-sm cursor-pointer min-w-0">
+                          <div className={`w-3 h-3 rounded-full bg-${color}-500 flex-shrink-0`}></div>
+                          <span className="whitespace-nowrap">{label}</span>
                         </Label>
                       </div>
                     ))}
@@ -356,22 +359,23 @@ export const SubmissionsList = ({
                 </div>
 
                 {/* Submission Type Filter */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-semibold">Type</Label>
-                  <div className="space-y-2">
+                <div className="space-y-4">
+                  <Label className="text-sm font-semibold text-foreground">Submission Type</Label>
+                  <div className="space-y-3">
                     {[
-                      { value: 'vendor', label: 'Vendor', icon: <Building className="h-3 w-3" /> },
-                      { value: 'internal', label: 'Internal', icon: <User className="h-3 w-3" /> }
+                      { value: 'vendor', label: 'Vendor', icon: <Building className="h-4 w-4" /> },
+                      { value: 'internal', label: 'Internal', icon: <User className="h-4 w-4" /> }
                     ].map(({ value, label, icon }) => (
-                      <div key={value} className="flex items-center space-x-2">
+                      <div key={value} className="flex items-center space-x-3">
                         <Checkbox
                           id={`type-${value}`}
                           checked={filters.submissionType.includes(value)}
                           onCheckedChange={() => toggleFilterValue('submissionType', value)}
+                          className="flex-shrink-0"
                         />
-                        <Label htmlFor={`type-${value}`} className="flex items-center gap-1 text-xs cursor-pointer">
+                        <Label htmlFor={`type-${value}`} className="flex items-center gap-2 text-sm cursor-pointer min-w-0">
                           {icon}
-                          {label}
+                          <span className="whitespace-nowrap">{label}</span>
                         </Label>
                       </div>
                     ))}
@@ -380,15 +384,15 @@ export const SubmissionsList = ({
               </div>
 
               {/* Row 3: Date Range and Sort */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Date Range Filter */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-semibold">Date Range</Label>
+                <div className="space-y-4">
+                  <Label className="text-sm font-semibold text-foreground">Date Range</Label>
                   <Select value={filters.dateRange} onValueChange={(value) => updateFilter('dateRange', value)}>
-                    <SelectTrigger className="h-9">
+                    <SelectTrigger className="h-10 w-full">
                       <SelectValue />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="z-50 bg-background border shadow-lg">
                       <SelectItem value="all">All Time</SelectItem>
                       <SelectItem value="7d">Last 7 Days</SelectItem>
                       <SelectItem value="30d">Last 30 Days</SelectItem>
@@ -399,14 +403,14 @@ export const SubmissionsList = ({
                 </div>
 
                 {/* Sort Options */}
-                <div className="space-y-3">
-                  <Label className="text-sm font-semibold">Sort By</Label>
-                  <div className="flex gap-2">
+                <div className="space-y-4">
+                  <Label className="text-sm font-semibold text-foreground">Sort By</Label>
+                  <div className="flex gap-3">
                     <Select value={filters.sortBy} onValueChange={(value: any) => updateFilter('sortBy', value)}>
-                      <SelectTrigger className="flex-1 h-9">
+                      <SelectTrigger className="flex-1 h-10">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="z-50 bg-background border shadow-lg">
                         <SelectItem value="date">Date</SelectItem>
                         <SelectItem value="score">Score</SelectItem>
                         <SelectItem value="company">Company</SelectItem>
@@ -417,7 +421,7 @@ export const SubmissionsList = ({
                       variant="outline"
                       size="sm"
                       onClick={() => updateFilter('sortOrder', filters.sortOrder === 'asc' ? 'desc' : 'asc')}
-                      className="px-3 h-9"
+                      className="px-4 h-10 flex-shrink-0"
                     >
                       {filters.sortOrder === 'asc' ? <SortAsc className="h-4 w-4" /> : <SortDesc className="h-4 w-4" />}
                     </Button>
@@ -425,14 +429,14 @@ export const SubmissionsList = ({
                 </div>
               </div>
 
-              <Separator />
+              <Separator className="my-4" />
 
-              <div className="flex justify-between items-center">
-                <div className="text-sm text-gray-600">
+              <div className="flex justify-between items-center py-2">
+                <div className="text-sm text-muted-foreground">
                   {activeFiltersCount > 0 && `${activeFiltersCount} active filter${activeFiltersCount > 1 ? 's' : ''}`}
                 </div>
-                <Button variant="outline" size="sm" onClick={clearAllFilters}>
-                  <X className="h-4 w-4 mr-1" />
+                <Button variant="outline" size="sm" onClick={clearAllFilters} className="h-9 px-4">
+                  <X className="h-4 w-4 mr-2" />
                   Clear All
                 </Button>
               </div>
