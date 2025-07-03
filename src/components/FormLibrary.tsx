@@ -37,21 +37,20 @@ const formTemplates: FormTemplate[] = [
     ]
   },
   {
-    id: "health-9",
-    name: "Medical Device Incident Report",
-    description: "Report adverse events and malfunctions of medical devices",
-    category: "compliance",
+    id: "health-1",
+    name: "Patient Safety Incident Report",
+    description: "Healthcare patient safety and adverse event reporting",
+    category: "quality",
     sector: "health",
-    targetAudience: ["internal", "external"],
-    preview: "Device details, incident description, patient impact, regulatory reporting",
+    targetAudience: ["internal"],
+    preview: "Patient details, incident description, contributing factors, corrective actions",
     fields: [
-      { id: generateFieldId(7), type: "text", label: "Device Name/Model", required: true },
-      { id: generateFieldId(8), type: "text", label: "Serial Number", required: true },
-      { id: generateFieldId(9), type: "date", label: "Incident Date", required: true },
-      { id: generateFieldId(10), type: "textarea", label: "Incident Description", required: true },
-      { id: generateFieldId(11), type: "select", label: "Severity Level", required: true, options: ["Minor", "Moderate", "Severe", "Life-threatening"] },
-      { id: generateFieldId(12), type: "radio", label: "Patient Impact", required: true, options: ["None", "Temporary", "Permanent", "Fatal"] },
-      { id: generateFieldId(13), type: "textarea", label: "Corrective Actions Taken", required: false }
+      { id: generateFieldId(435), type: "text", label: "Patient ID", required: true },
+      { id: generateFieldId(436), type: "date", label: "Incident Date", required: true },
+      { id: generateFieldId(437), type: "text", label: "Reporter Name", required: true },
+      { id: generateFieldId(438), type: "select", label: "Incident Type", required: true, options: ["Medication Error", "Fall", "Equipment Malfunction", "Procedure Complication", "Other"] },
+      { id: generateFieldId(439), type: "textarea", label: "Incident Description", required: true },
+      { id: generateFieldId(440), type: "textarea", label: "Contributing Factors", required: false }
     ]
   },
 
@@ -1646,6 +1645,47 @@ const formTemplates: FormTemplate[] = [
     ]
   },
 
+  {
+    id: "gov-5",
+    name: "Administrative Policy Review",
+    description: "Government administrative policy review and recommendation",
+    category: "assessment",
+    sector: "government",
+    targetAudience: ["internal"],
+    preview: "Policy analysis, stakeholder impact, implementation feasibility, recommendations",
+    fields: [
+      { id: generateFieldId(374), type: "text", label: "Policy Title", required: true },
+      { id: generateFieldId(375), type: "text", label: "Policy Number", required: true },
+      { id: generateFieldId(376), type: "date", label: "Review Date", required: true },
+      { id: generateFieldId(377), type: "text", label: "Reviewer Name", required: true },
+      { id: generateFieldId(378), type: "checkbox", label: "Areas Reviewed", required: true, options: ["Legal Compliance", "Budget Impact", "Operational Feasibility", "Public Interest", "Stakeholder Impact"] },
+      { id: generateFieldId(379), type: "textarea", label: "Current Policy Summary", required: true },
+      { id: generateFieldId(380), type: "textarea", label: "Identified Issues", required: false },
+      { id: generateFieldId(381), type: "textarea", label: "Recommendations", required: true },
+      { id: generateFieldId(382), type: "select", label: "Priority Level", required: true, options: ["Low", "Medium", "High", "Critical"] }
+    ]
+  },
+
+  {
+    id: "gov-6", 
+    name: "Budget Allocation Request",
+    description: "Government department budget allocation and justification",
+    category: "finance",
+    sector: "government", 
+    targetAudience: ["internal"],
+    preview: "Budget category, amount requested, justification, expected outcomes",
+    fields: [
+      { id: generateFieldId(383), type: "text", label: "Department Name", required: true },
+      { id: generateFieldId(384), type: "text", label: "Budget Category", required: true },
+      { id: generateFieldId(385), type: "text", label: "Amount Requested", required: true },
+      { id: generateFieldId(386), type: "select", label: "Fiscal Year", required: true, options: ["2024", "2025", "2026", "Multi-Year"] },
+      { id: generateFieldId(387), type: "textarea", label: "Justification", required: true },
+      { id: generateFieldId(388), type: "textarea", label: "Expected Outcomes", required: true },
+      { id: generateFieldId(389), type: "radio", label: "Emergency Request?", required: true, options: ["Yes", "No"] },
+      { id: generateFieldId(390), type: "textarea", label: "Alternative Solutions Considered", required: false }
+    ]
+  },
+
   // INSURANCE SECTOR TEMPLATES
   {
     id: "ins-1",
@@ -1828,23 +1868,21 @@ const formTemplates: FormTemplate[] = [
 
   {
     id: "health-3",
-    name: "Medical Device Adverse Event",
-    description: "FDA medical device adverse event reporting",
-    category: "quality",
+    name: "Healthcare Quality Assurance Audit",
+    description: "Comprehensive quality assurance evaluation for healthcare facilities",
+    category: "audit",
     sector: "health",
     targetAudience: ["internal"],
-    preview: "Device information, patient outcome, event description, manufacturer notification",
+    preview: "Quality metrics, compliance standards, patient outcomes, staff competency",
     fields: [
-      { id: generateFieldId(455), type: "text", label: "Device Name", required: true },
-      { id: generateFieldId(456), type: "text", label: "Manufacturer", required: true },
-      { id: generateFieldId(457), type: "text", label: "Model Number", required: true },
-      { id: generateFieldId(458), type: "text", label: "Serial Number", required: false },
-      { id: generateFieldId(459), type: "date", label: "Event Date", required: true },
-      { id: generateFieldId(460), type: "select", label: "Patient Outcome", required: true, options: ["Death", "Life-threatening", "Hospitalization", "Disability", "Intervention Required", "No Adverse Outcome"] },
-      { id: generateFieldId(461), type: "textarea", label: "Event Description", required: true },
-      { id: generateFieldId(462), type: "radio", label: "Device Available for Evaluation?", required: true, options: ["Yes", "No"] },
-      { id: generateFieldId(463), type: "radio", label: "Manufacturer Notified?", required: true, options: ["Yes", "No"] },
-      { id: generateFieldId(464), type: "textarea", label: "Corrective Actions", required: false }
+      { id: generateFieldId(455), type: "text", label: "Facility Name", required: true },
+      { id: generateFieldId(456), type: "date", label: "Audit Date", required: true },
+      { id: generateFieldId(457), type: "text", label: "Auditor Name", required: true },
+      { id: generateFieldId(458), type: "checkbox", label: "Areas Audited", required: true, options: ["Patient Care", "Medication Management", "Infection Control", "Documentation", "Staff Training", "Equipment Maintenance"] },
+      { id: generateFieldId(459), type: "radio", label: "Overall Compliance Score", required: true, options: ["Excellent (90-100%)", "Good (80-89%)", "Satisfactory (70-79%)", "Needs Improvement (<70%)"] },
+      { id: generateFieldId(460), type: "textarea", label: "Key Findings", required: true },
+      { id: generateFieldId(461), type: "textarea", label: "Recommendations", required: true },
+      { id: generateFieldId(462), type: "date", label: "Follow-up Date", required: false }
     ]
   },
 
@@ -3613,20 +3651,16 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
         b.sector.some(s => selectedSectors.includes(s)) : 
         selectedSectors.includes(b.sector));
       
-      // Priority order: Sector-specific matching forms first, then general forms
-      if (aMatchesSector && bIsGeneral) return -1;
-      if (aIsGeneral && bMatchesSector) return 1;
-      if (aMatchesSector && bMatchesSector) {
-        // Both are sector-specific matches, sort alphabetically
-        return a.name.localeCompare(b.name);
-      }
-      if (aIsGeneral && bIsGeneral) {
-        // Both are general forms, sort alphabetically
-        return a.name.localeCompare(b.name);
-      }
+      // Priority order: 
+      // 1. Sector-specific matching forms first (alphabetically)
+      // 2. General forms second (alphabetically)
+      if (aMatchesSector && !bMatchesSector) return -1;
+      if (!aMatchesSector && bMatchesSector) return 1;
+      if (aMatchesSector && bMatchesSector && aIsGeneral && !bIsGeneral) return 1;
+      if (aMatchesSector && bMatchesSector && !aIsGeneral && bIsGeneral) return -1;
     }
     
-    // Default alphabetical sorting when no sector filter
+    // Default alphabetical sorting
     return a.name.localeCompare(b.name);
   });
 
