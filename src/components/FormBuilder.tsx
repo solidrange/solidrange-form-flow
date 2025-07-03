@@ -1,73 +1,146 @@
-import { useState } from "react";
-import { FormField, DocumentAttachment } from "@/types/form";
-import { FieldPalette } from "./FieldPalette";
-import { FieldEditor } from "./FieldEditor";
-import { FormCanvas } from "./FormCanvas";
-import { FileAttachmentManager } from "./FileAttachmentManager";
-import { FormCategoryManager } from "./FormCategoryManager";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { toast } from "@/hooks/use-toast";
-import { Lock, ArrowLeft, Sparkles, Layout, Paperclip, Menu, X, Plus } from "lucide-react";
+/**
+ * FORM BUILDER COMPONENT
+ * =======================
+ * 
+ * This is the main interface where users create and edit forms.
+ * Think of this as a digital form designer with three main areas:
+ * 1. Field Palette (left) - Tools to add new fields
+ * 2. Form Canvas (center) - The actual form being built
+ * 3. Field Editor (right) - Settings for the selected field
+ * 
+ * Business Context:
+ * This component handles the entire form creation process, from adding
+ * basic fields to configuring advanced settings like scoring and validation.
+ * It's designed to work on both desktop and mobile devices.
+ * 
+ * Key Features:
+ * - Drag & drop interface for building forms
+ * - Real-time preview of how the form will look
+ * - Field configuration and validation setup
+ * - File attachment management
+ * - Category management for organizing forms
+ * - Read-only mode for published forms
+ */
 
+import { useState } from "react";
+import { FormField, DocumentAttachment } from "@/types/form";    // Data type definitions
+import { FieldPalette } from "./FieldPalette";     // Left panel: Available form fields
+import { FieldEditor } from "./FieldEditor";       // Right panel: Field configuration
+import { FormCanvas } from "./FormCanvas";         // Center panel: Form preview and editing
+import { FileAttachmentManager } from "./FileAttachmentManager";  // File upload management
+import { FormCategoryManager } from "./FormCategoryManager";      // Form categorization
+import { Input } from "@/components/ui/input";         // Text input component
+import { Textarea } from "@/components/ui/textarea";   // Multi-line text input
+import { Label } from "@/components/ui/label";         // Form labels
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";  // Card layout
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";  // Tab navigation
+import { Badge } from "@/components/ui/badge";         // Status indicators
+import { Button } from "@/components/ui/button";       // Clickable buttons
+import { toast } from "@/hooks/use-toast";             // Notification messages
+import { Lock, ArrowLeft, Sparkles, Layout, Paperclip, Menu, X, Plus } from "lucide-react";  // Icons
+
+/**
+ * FormBuilder Component Properties
+ * ================================
+ * 
+ * These are all the data and functions that the FormBuilder needs to work.
+ * The parent component (usually the main dashboard) provides these.
+ */
 interface FormBuilderProps {
-  formFields: FormField[];
-  formTitle: string;
-  formDescription: string;
-  onAddField: (field: FormField) => void;
-  onUpdateField: (fieldId: string, updates: Partial<FormField>) => void;
-  onRemoveField: (fieldId: string) => void;
-  onUpdateTitle: (title: string) => void;
-  onUpdateDescription: (description: string) => void;
-  onReorderFields: (dragIndex: number, hoverIndex: number) => void;
-  attachments?: DocumentAttachment[];
-  onUpdateAttachments?: (attachments: DocumentAttachment[]) => void;
-  allowedFileTypes?: string[];
-  maxFileSize?: number;
-  formCategory?: string;
-  onCategoryChange?: (category: string) => void;
-  onSaveToLibrary?: () => void;
-  isPublished?: boolean;
-  onMoveToDraft?: () => void;
+  // Current form data
+  formFields: FormField[];           // All fields currently in the form
+  formTitle: string;                 // Title of the form being built
+  formDescription: string;           // Description of what the form is for
+  
+  // Functions to modify the form (callbacks to parent component)
+  onAddField: (field: FormField) => void;                              // Add a new field
+  onUpdateField: (fieldId: string, updates: Partial<FormField>) => void;  // Modify existing field
+  onRemoveField: (fieldId: string) => void;                            // Delete a field
+  onUpdateTitle: (title: string) => void;                              // Change form title
+  onUpdateDescription: (description: string) => void;                  // Change form description
+  onReorderFields: (dragIndex: number, hoverIndex: number) => void;    // Rearrange field order
+  
+  // File attachment settings (optional)
+  attachments?: DocumentAttachment[];                    // Currently attached files
+  onUpdateAttachments?: (attachments: DocumentAttachment[]) => void;  // Update file list
+  allowedFileTypes?: string[];                          // What file types are allowed
+  maxFileSize?: number;                                 // Maximum file size in MB
+  
+  // Form organization (optional)
+  formCategory?: string;                                // Category this form belongs to
+  onCategoryChange?: (category: string) => void;       // Function to change category
+  onSaveToLibrary?: () => void;                        // Function to save as template
+  
+  // Form state control (optional)
+  isPublished?: boolean;                               // Whether form is published (read-only)
+  onMoveToDraft?: () => void;                         // Function to move back to draft mode
 }
 
 /**
- * Modern Form Builder Component - Fully Mobile Responsive
- * Enterprise-ready form builder with modern design and mobile-first approach
+ * Main FormBuilder Component
+ * ==========================
+ * 
+ * This component provides a comprehensive interface for building forms.
+ * It automatically adapts between desktop (3-column layout) and mobile (stacked layout).
+ * 
+ * The component manages its own internal state for:
+ * - Which field is currently selected for editing
+ * - Whether mobile panels are shown/hidden
+ * - Input validation and error handling
  */
 export const FormBuilder = ({
-  formFields,
-  formTitle,
-  formDescription,
-  onAddField,
-  onUpdateField,
-  onRemoveField,
-  onUpdateTitle,
-  onUpdateDescription,
-  onReorderFields,
-  attachments = [],
-  onUpdateAttachments = () => {},
-  allowedFileTypes = ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png'],
-  maxFileSize = 10,
-  formCategory = "",
-  onCategoryChange = () => {},
-  onSaveToLibrary = () => {},
-  isPublished = false,
-  onMoveToDraft = () => {}
+  formFields,              // Current list of fields in the form
+  formTitle,               // Current form title
+  formDescription,         // Current form description
+  onAddField,              // Function to call when adding a new field
+  onUpdateField,           // Function to call when modifying a field
+  onRemoveField,           // Function to call when removing a field
+  onUpdateTitle,           // Function to call when changing the title
+  onUpdateDescription,     // Function to call when changing the description
+  onReorderFields,         // Function to call when rearranging fields
+  attachments = [],        // List of attached files (default: empty)
+  onUpdateAttachments = () => {},  // Function to call when files change (default: do nothing)
+  allowedFileTypes = ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png'],  // Allowed file types
+  maxFileSize = 10,        // Maximum file size in MB (default: 10MB)
+  formCategory = "",       // Current form category (default: none)
+  onCategoryChange = () => {},     // Function to call when category changes
+  onSaveToLibrary = () => {},      // Function to call when saving to library
+  isPublished = false,     // Whether form is published (default: draft mode)
+  onMoveToDraft = () => {}         // Function to call when moving to draft
 }: FormBuilderProps) => {
+  
+  // ===========================
+  // COMPONENT STATE MANAGEMENT
+  // ===========================
+  
+  // Track which field is currently selected for editing (null = none selected)
   const [selectedField, setSelectedField] = useState<string | null>(null);
-  const [showFieldPalette, setShowFieldPalette] = useState(false);
-  const [showFieldEditor, setShowFieldEditor] = useState(false);
+  
+  // Mobile-specific state: control visibility of popup panels
+  const [showFieldPalette, setShowFieldPalette] = useState(false);  // Show field selection panel
+  const [showFieldEditor, setShowFieldEditor] = useState(false);    // Show field editing panel
 
+  // ===========================
+  // UTILITY FUNCTIONS
+  // ===========================
+  
   /**
-   * Handles saving form to library with validation
+   * Save Form to Template Library
+   * ==============================
+   * 
+   * This function handles saving the current form as a reusable template.
+   * 
+   * Business Context:
+   * Users often create similar forms repeatedly. By saving successful forms
+   * as templates, they can quickly create new forms without starting from scratch.
+   * 
+   * Validation Rules:
+   * - Form must have a title (users need to identify it)
+   * - Form must have a category (for organization)
+   * - These rules ensure templates are useful and findable
    */
   const handleSaveToLibrary = () => {
+    // Check if user selected a category for organization
     if (!formCategory) {
       toast({
         title: "Category Required",
@@ -77,6 +150,7 @@ export const FormBuilder = ({
       return;
     }
 
+    // Check if form has a title for identification
     if (!formTitle.trim()) {
       toast({
         title: "Title Required", 
@@ -86,6 +160,7 @@ export const FormBuilder = ({
       return;
     }
 
+    // All validation passed - save the template
     onSaveToLibrary();
     toast({
       title: "Saved to Library",
@@ -94,7 +169,16 @@ export const FormBuilder = ({
   };
 
   /**
-   * Handles read-only actions for published forms
+   * Handle Read-Only Mode Actions
+   * ==============================
+   * 
+   * When a form is published, it becomes read-only to prevent accidental changes.
+   * This function shows an informative message when users try to edit published forms.
+   * 
+   * Business Context:
+   * Published forms might already have submissions or be shared with users.
+   * Changing them could break existing data or confuse people who have the link.
+   * Users must explicitly move forms back to draft mode to edit them.
    */
   const handleReadOnlyAction = () => {
     toast({
@@ -104,7 +188,13 @@ export const FormBuilder = ({
     });
   };
 
-  // Create safe handlers for published forms
+  // ===========================
+  // SAFE FUNCTION WRAPPERS
+  // ===========================
+  // 
+  // These create "safe" versions of the editing functions that respect the published status.
+  // When a form is published, these functions show the read-only message instead of editing.
+  
   const safeOnAddField = isPublished ? handleReadOnlyAction : onAddField;
   const safeOnUpdateField = isPublished ? () => handleReadOnlyAction() : onUpdateField;
   const safeOnRemoveField = isPublished ? () => handleReadOnlyAction() : onRemoveField;
@@ -112,15 +202,37 @@ export const FormBuilder = ({
   const safeOnUpdateDescription = isPublished ? () => handleReadOnlyAction() : onUpdateDescription;
   const safeOnReorderFields = isPublished ? () => handleReadOnlyAction() : onReorderFields;
 
+  // ===========================
+  // USER INTERFACE LAYOUT
+  // ===========================
+  // 
+  // The FormBuilder has two different layouts that automatically switch based on screen size:
+  // 1. Desktop Layout: Three-column design with side panels
+  // 2. Mobile Layout: Stacked design with popup overlays
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50/80 to-blue-50/40">
-      {/* Mobile Header with Controls */}
+      
+      {/* ===========================
+           MOBILE-ONLY HEADER BAR
+           ===========================
+           
+           This header appears only on mobile devices (hidden on desktop).
+           It provides quick access to the field palette and editor panels.
+           
+           Business Context:
+           Mobile users need easy access to form building tools, but screen space
+           is limited. This header provides essential controls without cluttering
+           the main work area.
+      */}
       <div className="lg:hidden bg-white border-b border-gray-200 p-3 sticky top-0 z-40">
         <div className="flex items-center justify-between">
           <h1 className="text-base font-semibold text-gray-900 truncate">Form Builder</h1>
           <div className="flex items-center gap-2">
+            {/* Only show editing buttons if form is not published */}
             {!isPublished && (
               <>
+                {/* Button to show field selection popup */}
                 <Button
                   variant="outline"
                   size="sm"
@@ -129,6 +241,7 @@ export const FormBuilder = ({
                 >
                   <Plus className="h-4 w-4" />
                 </Button>
+                {/* Button to show field editing popup */}
                 <Button
                   variant="outline"
                   size="sm"
@@ -143,11 +256,32 @@ export const FormBuilder = ({
         </div>
       </div>
 
-      {/* Desktop Layout */}
+      {/* ===========================
+           DESKTOP LAYOUT (3-COLUMN)
+           ===========================
+           
+           This layout appears only on large screens (desktop/tablet landscape).
+           It uses a three-column grid system:
+           - Column 1 (left): Field Palette or Published Form Notice
+           - Column 2 (center): Form Canvas with title, description, and fields
+           - Column 3 (right): Field Editor for configuring selected fields
+           
+           Business Context:
+           Desktop users have more screen space and typically use mouse interaction.
+           This layout optimizes for productivity with all tools visible at once.
+      */}
       <div className="hidden lg:grid lg:grid-cols-12 gap-6 p-6 h-[calc(100vh-120px)]">
-        {/* Field Palette - Left Sidebar */}
+        
+        {/* ===========================
+             LEFT COLUMN: FIELD PALETTE
+             ===========================
+             
+             For draft forms: Shows available field types to add
+             For published forms: Shows read-only notice with option to edit
+        */}
         <div className="col-span-3 animate-fade-in">
           {isPublished ? (
+            /* Published Form Notice - Replace field palette with information panel */
             <Card className="modern-card h-full">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-gray-900 text-base">
@@ -173,6 +307,7 @@ export const FormBuilder = ({
               </CardContent>
             </Card>
           ) : (
+            /* Draft Form - Show field palette for adding new fields */
             <div className="h-full">
               <FieldPalette onAddField={safeOnAddField} />
             </div>
