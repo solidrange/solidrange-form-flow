@@ -355,10 +355,10 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
                 <Label className="text-sm font-semibold">Risk Level</Label>
                 <div className="space-y-2">
                   {[
-                    { value: 'low', label: 'Low', color: 'green' },
-                    { value: 'medium', label: 'Medium', color: 'yellow' },
-                    { value: 'high', label: 'High', color: 'orange' },
-                    { value: 'critical', label: 'Critical', color: 'red' }
+                    { value: 'low', label: 'Low', color: 'bg-green-500' },
+                    { value: 'medium', label: 'Medium', color: 'bg-amber-500' },
+                    { value: 'high', label: 'High', color: 'bg-orange-500' },
+                    { value: 'critical', label: 'Critical', color: 'bg-red-500' }
                   ].map(({ value, label, color }) => (
                     <div key={value} className="flex items-center space-x-2">
                       <Checkbox
@@ -367,7 +367,7 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
                         onCheckedChange={() => toggleFilterValue('riskLevel', value)}
                       />
                       <Label htmlFor={`risk-${value}`} className="flex items-center gap-2 text-sm cursor-pointer">
-                        <div className={`w-3 h-3 rounded-full bg-${color}-500`}></div>
+                        <div className={`w-3 h-3 rounded-full ${color}`}></div>
                         {label}
                       </Label>
                     </div>

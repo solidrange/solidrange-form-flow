@@ -36,6 +36,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";  // Tab navigation
 import { Badge } from "@/components/ui/badge";         // Status indicators
 import { Button } from "@/components/ui/button";       // Clickable buttons
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Select dropdown
 import { toast } from "@/hooks/use-toast";             // Notification messages
 import { Lock, ArrowLeft, Sparkles, Layout, Paperclip, Menu, X, Plus } from "lucide-react";  // Icons
 
@@ -68,7 +69,9 @@ interface FormBuilderProps {
   
   // Form organization (optional)
   formCategory?: string;                                // Category this form belongs to
+  formTargetAudience?: string;                          // Target audience (vendor, external, internal)
   onCategoryChange?: (category: string) => void;       // Function to change category
+  onTargetAudienceChange?: (audience: string) => void; // Function to change target audience
   onSaveToLibrary?: () => void;                        // Function to save as template
   
   // Form state control (optional)
@@ -103,7 +106,9 @@ export const FormBuilder = ({
   allowedFileTypes = ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png'],  // Allowed file types
   maxFileSize = 10,        // Maximum file size in MB (default: 10MB)
   formCategory = "",       // Current form category (default: none)
+  formTargetAudience = "", // Current target audience (default: none)
   onCategoryChange = () => {},     // Function to call when category changes
+  onTargetAudienceChange = () => {}, // Function to call when target audience changes
   onSaveToLibrary = () => {},      // Function to call when saving to library
   isPublished = false,     // Whether form is published (default: draft mode)
   onMoveToDraft = () => {}         // Function to call when moving to draft
@@ -376,14 +381,34 @@ export const FormBuilder = ({
                   />
                 </div>
                 
-                {/* Category Manager */}
-                <FormCategoryManager
-                  selectedCategory={formCategory}
-                  onCategoryChange={onCategoryChange}
-                  onSaveToLibrary={handleSaveToLibrary}
-                  canSaveToLibrary={formFields.length > 0}
-                  readOnly={isPublished}
-                />
+                {/* Category and Target Audience */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <FormCategoryManager
+                    selectedCategory={formCategory}
+                    onCategoryChange={onCategoryChange}
+                    onSaveToLibrary={handleSaveToLibrary}
+                    canSaveToLibrary={formFields.length > 0}
+                    readOnly={isPublished}
+                  />
+                  
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-700">Target Audience</Label>
+                    <Select 
+                      value={formTargetAudience} 
+                      onValueChange={isPublished ? () => handleReadOnlyAction() : onTargetAudienceChange}
+                      disabled={isPublished}
+                    >
+                      <SelectTrigger className="border-gray-200 focus:border-blue-500">
+                        <SelectValue placeholder="Select audience" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="vendor">Vendor</SelectItem>
+                        <SelectItem value="external">External</SelectItem>
+                        <SelectItem value="internal">Internal</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </div>
             </CardHeader>
 
@@ -501,13 +526,33 @@ export const FormBuilder = ({
                 />
               </div>
               
-              <FormCategoryManager
-                selectedCategory={formCategory}
-                onCategoryChange={onCategoryChange}
-                onSaveToLibrary={handleSaveToLibrary}
-                canSaveToLibrary={formFields.length > 0}
-                readOnly={isPublished}
-              />
+              <div className="space-y-3">
+                <FormCategoryManager
+                  selectedCategory={formCategory}
+                  onCategoryChange={onCategoryChange}
+                  onSaveToLibrary={handleSaveToLibrary}
+                  canSaveToLibrary={formFields.length > 0}
+                  readOnly={isPublished}
+                />
+                
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-700">Target Audience</Label>
+                  <Select 
+                    value={formTargetAudience} 
+                    onValueChange={isPublished ? () => handleReadOnlyAction() : onTargetAudienceChange}
+                    disabled={isPublished}
+                  >
+                    <SelectTrigger className="border-gray-200 focus:border-blue-500">
+                      <SelectValue placeholder="Select audience" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="vendor">Vendor</SelectItem>
+                      <SelectItem value="external">External</SelectItem>
+                      <SelectItem value="internal">Internal</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </div>
           </CardHeader>
         </Card>

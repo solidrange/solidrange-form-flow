@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, Shield, AlertTriangle, Building } from "lucide-react";
+import { Search, Plus, Shield, AlertTriangle, Building, Users, User, Globe } from "lucide-react";
 
 interface FormLibraryProps {
   onUseTemplate?: (template: FormTemplate) => void;
@@ -24,6 +24,7 @@ const formTemplates: FormTemplate[] = [
     name: "Employee Onboarding",
     description: "Complete employee information collection and documentation",
     category: "registration",
+    targetAudience: ["internal"],
     preview: "Personal details, emergency contacts, documents",
     fields: [
       { id: generateFieldId(1), type: "text", label: "Full Name", required: true },
@@ -39,6 +40,7 @@ const formTemplates: FormTemplate[] = [
     name: "Customer Satisfaction Survey",
     description: "Gather feedback on products and services",
     category: "survey",
+    targetAudience: ["external", "vendor"],
     preview: "Rating scales, feedback questions, recommendations",
     fields: [
       { id: generateFieldId(7), type: "rating", label: "Overall Satisfaction", required: true },
@@ -54,6 +56,7 @@ const formTemplates: FormTemplate[] = [
     name: "Comprehensive Vendor Risk Assessment",
     description: "Complete risk evaluation covering financial, operational, security, and compliance aspects",
     category: "vendor-risk",
+    targetAudience: ["vendor"],
     preview: "Multi-category risk scoring with weighted assessments",
     riskCategories: ["Financial Stability", "Operational Risk", "Security & Privacy", "Compliance", "Business Continuity"],
     scoringModel: "weighted",
@@ -316,6 +319,7 @@ const formTemplates: FormTemplate[] = [
     name: "IT Vendor Security Assessment",
     description: "Focused security and technology risk evaluation for IT service providers",
     category: "vendor-risk",
+    targetAudience: ["vendor"],
     preview: "Technical security controls, data protection, and IT governance",
     riskCategories: ["Technical Security", "Data Protection", "Access Management", "Infrastructure"],
     scoringModel: "risk-matrix",
@@ -463,6 +467,7 @@ const formTemplates: FormTemplate[] = [
     name: "Financial Services Vendor Assessment", 
     description: "Specialized assessment for financial services vendors focusing on regulatory compliance",
     category: "vendor-risk",
+    targetAudience: ["vendor"],
     preview: "Regulatory compliance, financial stability, operational resilience",
     riskCategories: ["Regulatory Compliance", "Financial Health", "Operational Resilience", "Reputation Risk"],
     scoringModel: "weighted",
@@ -562,7 +567,8 @@ const formTemplates: FormTemplate[] = [
     id: "vra-4",
     name: "Third-Party Data Processor Assessment",
     description: "Privacy and data protection focused assessment for data processing vendors",
-    category: "vendor-risk", 
+    category: "vendor-risk",
+    targetAudience: ["vendor", "external"], 
     preview: "GDPR compliance, data security, cross-border transfers",
     riskCategories: ["Data Protection", "Privacy Controls", "Cross-border Compliance"],
     scoringModel: "percentage",
@@ -638,6 +644,7 @@ const formTemplates: FormTemplate[] = [
     name: "Critical Infrastructure Vendor Assessment",
     description: "Assessment for vendors supporting critical infrastructure and essential services",
     category: "vendor-risk",
+    targetAudience: ["vendor"],
     preview: "National security, operational resilience, supply chain security",
     riskCategories: ["National Security", "Supply Chain", "Operational Resilience"],
     scoringModel: "risk-matrix",
@@ -706,6 +713,188 @@ const formTemplates: FormTemplate[] = [
         }
       }
     ]
+  },
+
+  // External Company Assessment Templates
+  {
+    id: "ext-1",
+    name: "Business Partnership Assessment",
+    description: "Comprehensive evaluation for potential business partners and strategic alliances",
+    category: "external-assessment",
+    targetAudience: ["external"],
+    preview: "Company overview, capabilities, financial health, strategic alignment",
+    fields: [
+      { id: generateFieldId(60), type: "text", label: "Company Name", required: true },
+      { id: generateFieldId(61), type: "text", label: "Primary Contact", required: true },
+      { id: generateFieldId(62), type: "email", label: "Contact Email", required: true },
+      { id: generateFieldId(63), type: "text", label: "Company Website", required: false },
+      { 
+        id: generateFieldId(64), 
+        type: "select", 
+        label: "Partnership Type", 
+        required: true, 
+        options: ["Strategic Alliance", "Joint Venture", "Distribution Partner", "Technology Partner", "Other"]
+      },
+      { id: generateFieldId(65), type: "textarea", label: "Company Overview", required: true },
+      { 
+        id: generateFieldId(66), 
+        type: "select", 
+        label: "Years in Business", 
+        required: true, 
+        options: ["< 2 years", "2-5 years", "5-10 years", "10-20 years", "> 20 years"]
+      },
+      { 
+        id: generateFieldId(67), 
+        type: "checkbox", 
+        label: "Core Capabilities", 
+        required: true, 
+        options: ["Technology Development", "Manufacturing", "Distribution", "Marketing", "Research & Development", "Customer Support"]
+      },
+      { 
+        id: generateFieldId(68), 
+        type: "radio", 
+        label: "Previous Partnership Experience", 
+        required: true, 
+        options: ["Extensive experience", "Some experience", "Limited experience", "No experience"]
+      },
+      { id: generateFieldId(69), type: "textarea", label: "Key Differentiators", required: false },
+      { id: generateFieldId(70), type: "textarea", label: "Expected Benefits from Partnership", required: true }
+    ]
+  },
+
+  {
+    id: "ext-2",
+    name: "Supplier Capability Assessment",
+    description: "Evaluation form for non-vendor suppliers and service providers",
+    category: "external-assessment",
+    targetAudience: ["external"],
+    preview: "Service capabilities, quality standards, delivery performance",
+    fields: [
+      { id: generateFieldId(71), type: "text", label: "Supplier Company Name", required: true },
+      { id: generateFieldId(72), type: "text", label: "Service/Product Type", required: true },
+      { id: generateFieldId(73), type: "email", label: "Business Contact Email", required: true },
+      { 
+        id: generateFieldId(74), 
+        type: "select", 
+        label: "Service Category", 
+        required: true, 
+        options: ["Professional Services", "Logistics & Transportation", "Maintenance & Support", "Consulting", "Training", "Other"]
+      },
+      { 
+        id: generateFieldId(75), 
+        type: "checkbox", 
+        label: "Quality Certifications", 
+        required: false, 
+        options: ["ISO 9001", "ISO 14001", "Six Sigma", "Lean Manufacturing", "Industry Specific", "None"]
+      },
+      { 
+        id: generateFieldId(76), 
+        type: "radio", 
+        label: "Geographic Coverage", 
+        required: true, 
+        options: ["Local", "Regional", "National", "International"]
+      },
+      { 
+        id: generateFieldId(77), 
+        type: "select", 
+        label: "Typical Delivery Timeline", 
+        required: true, 
+        options: ["Same day", "1-3 days", "1-2 weeks", "2-4 weeks", "> 1 month"]
+      },
+      { id: generateFieldId(78), type: "textarea", label: "Service Description", required: true },
+      { id: generateFieldId(79), type: "textarea", label: "Quality Assurance Process", required: false }
+    ]
+  },
+
+  {
+    id: "ext-3",
+    name: "External Consultant Registration",
+    description: "Registration and qualification form for external consultants and contractors",
+    category: "external-assessment",
+    targetAudience: ["external"],
+    preview: "Professional background, expertise areas, availability",
+    fields: [
+      { id: generateFieldId(80), type: "text", label: "Consultant Name", required: true },
+      { id: generateFieldId(81), type: "email", label: "Professional Email", required: true },
+      { id: generateFieldId(82), type: "text", label: "Phone Number", required: true },
+      { id: generateFieldId(83), type: "text", label: "Company/Firm Name", required: false },
+      { 
+        id: generateFieldId(84), 
+        type: "checkbox", 
+        label: "Areas of Expertise", 
+        required: true, 
+        options: ["Strategy", "Operations", "Technology", "Finance", "HR", "Marketing", "Legal", "Risk Management"]
+      },
+      { 
+        id: generateFieldId(85), 
+        type: "select", 
+        label: "Years of Experience", 
+        required: true, 
+        options: ["< 5 years", "5-10 years", "10-15 years", "15-20 years", "> 20 years"]
+      },
+      { 
+        id: generateFieldId(86), 
+        type: "checkbox", 
+        label: "Industry Experience", 
+        required: true, 
+        options: ["Healthcare", "Financial Services", "Technology", "Manufacturing", "Retail", "Government", "Other"]
+      },
+      { 
+        id: generateFieldId(87), 
+        type: "radio", 
+        label: "Availability", 
+        required: true, 
+        options: ["Immediately", "Within 2 weeks", "Within 1 month", "Future projects only"]
+      },
+      { id: generateFieldId(88), type: "textarea", label: "Professional Summary", required: true },
+      { id: generateFieldId(89), type: "textarea", label: "Notable Projects or Achievements", required: false }
+    ]
+  },
+
+  {
+    id: "ext-4",
+    name: "Client Information Gathering",
+    description: "Comprehensive form for collecting information from external clients",
+    category: "external-assessment",
+    targetAudience: ["external"],
+    preview: "Client requirements, project scope, timeline expectations",
+    fields: [
+      { id: generateFieldId(90), type: "text", label: "Client Organization", required: true },
+      { id: generateFieldId(91), type: "text", label: "Primary Contact Person", required: true },
+      { id: generateFieldId(92), type: "email", label: "Contact Email", required: true },
+      { id: generateFieldId(93), type: "text", label: "Project Title", required: true },
+      { 
+        id: generateFieldId(94), 
+        type: "select", 
+        label: "Project Type", 
+        required: true, 
+        options: ["Software Development", "Consulting", "Integration", "Support Services", "Training", "Other"]
+      },
+      { id: generateFieldId(95), type: "textarea", label: "Project Description", required: true },
+      { 
+        id: generateFieldId(96), 
+        type: "checkbox", 
+        label: "Required Services", 
+        required: true, 
+        options: ["Analysis & Planning", "Design", "Development", "Testing", "Deployment", "Training", "Support"]
+      },
+      { 
+        id: generateFieldId(97), 
+        type: "select", 
+        label: "Expected Timeline", 
+        required: true, 
+        options: ["< 1 month", "1-3 months", "3-6 months", "6-12 months", "> 1 year"]
+      },
+      { 
+        id: generateFieldId(98), 
+        type: "radio", 
+        label: "Budget Range", 
+        required: false, 
+        options: ["< $50K", "$50K-$100K", "$100K-$500K", "$500K-$1M", "> $1M", "To be discussed"]
+      },
+      { id: generateFieldId(99), type: "textarea", label: "Success Criteria", required: true },
+      { id: generateFieldId(100), type: "textarea", label: "Special Requirements", required: false }
+    ]
   }
 ];
 
@@ -719,7 +908,7 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   // Available categories for filtering templates
-  const categories = ["all", "survey", "assessment", "registration", "feedback", "compliance", "risk", "vendor-risk"];
+  const categories = ["all", "survey", "assessment", "registration", "feedback", "compliance", "risk", "vendor-risk", "external-assessment"];
 
   /**
    * Filter templates based on search term and selected category
@@ -752,6 +941,8 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
         return <AlertTriangle className="h-4 w-4" />;
       case 'compliance':
         return <Building className="h-4 w-4" />;
+      case 'external-assessment':
+        return <Globe className="h-4 w-4" />;
       default:
         return null;
     }
@@ -768,6 +959,8 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
         return 'bg-orange-100 text-orange-800';
       case 'compliance':
         return 'bg-blue-100 text-blue-800';
+      case 'external-assessment':
+        return 'bg-green-100 text-green-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -795,6 +988,7 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
             <option key={category} value={category}>
               {category === "all" ? "All Categories" : 
                category === "vendor-risk" ? "Vendor Risk" :
+               category === "external-assessment" ? "External Assessment" :
                category.charAt(0).toUpperCase() + category.slice(1)}
             </option>
           ))}
@@ -809,20 +1003,33 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
               <div className="flex items-start justify-between">
                 <div>
                   <CardTitle className="text-lg">{template.name}</CardTitle>
-                  <div className="flex items-center gap-2 mt-2">
-                    <Badge 
-                      variant="secondary" 
-                      className={`${getCategoryColor(template.category)} flex items-center gap-1`}
-                    >
-                      {getCategoryIcon(template.category)}
-                      {template.category === "vendor-risk" ? "Vendor Risk" : template.category}
-                    </Badge>
-                    {template.scoringModel && (
-                      <Badge variant="outline" className="text-xs">
-                        {template.scoringModel}
-                      </Badge>
-                    )}
-                  </div>
+                   <div className="flex items-center gap-2 mt-2">
+                     <Badge 
+                       variant="secondary" 
+                       className={`${getCategoryColor(template.category)} flex items-center gap-1`}
+                     >
+                       {getCategoryIcon(template.category)}
+                       {template.category === "vendor-risk" ? "Vendor Risk" : 
+                        template.category === "external-assessment" ? "External" : template.category}
+                     </Badge>
+                     {template.targetAudience && (
+                       <div className="flex gap-1">
+                         {template.targetAudience.map((audience) => (
+                           <Badge key={audience} variant="outline" className="text-xs flex items-center gap-1">
+                             {audience === 'vendor' && <Building className="h-3 w-3" />}
+                             {audience === 'external' && <Globe className="h-3 w-3" />}
+                             {audience === 'internal' && <Users className="h-3 w-3" />}
+                             {audience}
+                           </Badge>
+                         ))}
+                       </div>
+                     )}
+                     {template.scoringModel && (
+                       <Badge variant="outline" className="text-xs">
+                         {template.scoringModel}
+                       </Badge>
+                     )}
+                   </div>
                 </div>
               </div>
               <p className="text-sm text-gray-600 mt-2">{template.description}</p>
