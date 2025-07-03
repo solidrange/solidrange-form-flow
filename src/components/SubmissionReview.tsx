@@ -274,7 +274,7 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
           {activeFiltersCount > 0 && (
             <Button variant="outline" size="sm" onClick={clearAllFilters} className="h-10">
               <X className="h-4 w-4 mr-2" />
-              Clear All ({activeFiltersCount})
+              Clear Filters ({activeFiltersCount})
             </Button>
           )}
         </div>

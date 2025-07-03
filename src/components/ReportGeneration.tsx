@@ -345,6 +345,125 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             includeCharts: true
           };
           break;
+
+        case 'quality-assurance':
+          quickConfig = {
+            title: `Quality Assurance Report ${variant ? `- ${variant}` : ''}`,
+            description: 'Quality assessment and assurance metrics',
+            includeSections: {
+              overview: true,
+              submissionStats: true,
+              riskAnalysis: true,
+              complianceStatus: true,
+              detailedResponses: variant === 'detailed',
+              recommendations: true,
+            },
+            chartTypes: {
+              submissionTrends: 'bar' as const,
+              riskDistribution: 'pie' as const,
+              complianceStatus: 'bar' as const,
+            },
+            filterBy: {
+              dateRange: { start: '2024-01-01', end: '2024-12-31' },
+              submissionType: 'all' as const,
+              status: 'all' as const,
+              riskLevel: 'all' as const,
+            },
+            customRecommendations: "Quality improvement recommendations and assurance strategies.",
+            format: 'pdf' as const,
+            includeCharts: true
+          };
+          break;
+
+        case 'process-efficiency':
+          quickConfig = {
+            title: `Process Efficiency Report ${variant ? `- ${variant}` : ''}`,
+            description: 'Analysis of process efficiency and bottlenecks',
+            includeSections: {
+              overview: true,
+              submissionStats: true,
+              riskAnalysis: variant === 'comprehensive',
+              complianceStatus: true,
+              detailedResponses: variant === 'bottlenecks',
+              recommendations: true,
+            },
+            chartTypes: {
+              submissionTrends: 'line' as const,
+              riskDistribution: 'bar' as const,
+              complianceStatus: 'bar' as const,
+            },
+            filterBy: {
+              dateRange: { start: '2024-01-01', end: '2024-12-31' },
+              submissionType: 'all' as const,
+              status: 'all' as const,
+              riskLevel: 'all' as const,
+            },
+            customRecommendations: "Process optimization recommendations and efficiency improvements.",
+            format: 'pdf' as const,
+            includeCharts: true
+          };
+          break;
+
+        case 'quarterly-review':
+          quickConfig = {
+            title: `Quarterly Review Report ${variant ? `- ${variant}` : ''}`,
+            description: 'Comprehensive quarterly performance review',
+            includeSections: {
+              overview: true,
+              submissionStats: true,
+              riskAnalysis: true,
+              complianceStatus: true,
+              detailedResponses: variant === 'detailed',
+              recommendations: true,
+            },
+            chartTypes: {
+              submissionTrends: 'line' as const,
+              riskDistribution: 'pie' as const,
+              complianceStatus: 'bar' as const,
+            },
+            filterBy: {
+              dateRange: { 
+                start: new Date(new Date().getFullYear(), Math.floor(new Date().getMonth() / 3) * 3, 1).toISOString().split('T')[0], 
+                end: new Date().toISOString().split('T')[0] 
+              },
+              submissionType: 'all' as const,
+              status: 'all' as const,
+              riskLevel: 'all' as const,
+            },
+            customRecommendations: "Quarterly strategic recommendations and next quarter planning.",
+            format: 'pdf' as const,
+            includeCharts: true
+          };
+          break;
+
+        case 'regulatory-audit':
+          quickConfig = {
+            title: `Regulatory Audit Report ${variant ? `- ${variant}` : ''}`,
+            description: 'Comprehensive regulatory compliance audit',
+            includeSections: {
+              overview: true,
+              submissionStats: variant === 'comprehensive',
+              riskAnalysis: true,
+              complianceStatus: true,
+              detailedResponses: variant === 'findings',
+              recommendations: true,
+            },
+            chartTypes: {
+              submissionTrends: 'bar' as const,
+              riskDistribution: 'pie' as const,
+              complianceStatus: 'bar' as const,
+            },
+            filterBy: {
+              dateRange: { start: '2024-01-01', end: '2024-12-31' },
+              submissionType: 'all' as const,
+              status: 'all' as const,
+              riskLevel: 'all' as const,
+            },
+            customRecommendations: "Regulatory compliance recommendations and audit findings resolution.",
+            format: 'pdf' as const,
+            includeCharts: true
+          };
+          break;
           
         default:
           // Default executive summary
@@ -600,11 +719,11 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             </Card>
 
             {/* Performance & Analytics Reports */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5" />
-                  Performance & Analytics
+            <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.2s' }}>
+              <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-green-700">
+                  <BarChart3 className="h-5 w-5 text-green-500" />
+                  Performance & Analytics Reports
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -612,10 +731,10 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('performance-analytics')} 
-                      className="w-full justify-start"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0"
                       variant="outline"
                     >
-                      <TrendingUp className="mr-2 h-4 w-4" />
+                      <Activity className="mr-2 h-4 w-4" />
                       Performance Analytics
                     </Button>
                     <div className="grid grid-cols-2 gap-2 pl-4">
@@ -639,10 +758,10 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('score-analysis')} 
-                      className="w-full justify-start"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white border-0"
                       variant="outline"
                     >
-                      <BarChart3 className="mr-2 h-4 w-4" />
+                      <Target className="mr-2 h-4 w-4" />
                       Score Analysis
                     </Button>
                     <div className="grid grid-cols-2 gap-2 pl-4">
@@ -666,47 +785,20 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
               </CardContent>
             </Card>
 
-            {/* Vendor & Trend Reports */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Vendor & Trend Analysis
+            {/* Submission & Trend Analysis */}
+            <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.3s' }}>
+              <CardHeader className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-purple-700">
+                  <LineChart className="h-5 w-5 text-purple-500" />
+                  Submission & Trend Analysis
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-1 gap-3">
                   <div className="space-y-2">
                     <Button 
-                      onClick={() => generateQuickReport('vendor-analysis')} 
-                      className="w-full justify-start"
-                      variant="outline"
-                    >
-                      <Users className="mr-2 h-4 w-4" />
-                      Vendor Analysis
-                    </Button>
-                    <div className="grid grid-cols-2 gap-2 pl-4">
-                      <Button 
-                        onClick={() => generateQuickReport('vendor-analysis', 'detailed')} 
-                        size="sm" 
-                        variant="ghost"
-                      >
-                        Detailed
-                      </Button>
-                      <Button 
-                        onClick={() => generateQuickReport('vendor-analysis', 'donut')} 
-                        size="sm" 
-                        variant="ghost"
-                      >
-                        Donut Charts
-                      </Button>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Button 
                       onClick={() => generateQuickReport('submission-trends')} 
-                      className="w-full justify-start"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white border-0"
                       variant="outline"
                     >
                       <TrendingUp className="mr-2 h-4 w-4" />
@@ -732,7 +824,168 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                         size="sm" 
                         variant="ghost"
                       >
-                        Bar Charts
+                        Bar Chart
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => generateQuickReport('vendor-analysis')} 
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-violet-500 to-indigo-600 hover:from-violet-600 hover:to-indigo-700 text-white border-0"
+                      variant="outline"
+                    >
+                      <Building className="mr-2 h-4 w-4" />
+                      Vendor Analysis
+                    </Button>
+                    <div className="grid grid-cols-2 gap-2 pl-4">
+                      <Button 
+                        onClick={() => generateQuickReport('vendor-analysis', 'detailed')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Detailed
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('vendor-analysis', 'donut')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Donut Charts
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Operational & Quality Reports */}
+            <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.4s' }}>
+              <CardHeader className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-amber-700">
+                  <Briefcase className="h-5 w-5 text-amber-500" />
+                  Operational & Quality Reports
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => generateQuickReport('quality-assurance')} 
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white border-0"
+                      variant="outline"
+                    >
+                      <CheckCircle className="mr-2 h-4 w-4" />
+                      Quality Assurance
+                    </Button>
+                    <div className="grid grid-cols-2 gap-2 pl-4">
+                      <Button 
+                        onClick={() => generateQuickReport('quality-assurance', 'detailed')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Detailed
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('quality-assurance', 'summary')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Summary
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => generateQuickReport('process-efficiency')} 
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-white border-0"
+                      variant="outline"
+                    >
+                      <Zap className="mr-2 h-4 w-4" />
+                      Process Efficiency
+                    </Button>
+                    <div className="grid grid-cols-2 gap-2 pl-4">
+                      <Button 
+                        onClick={() => generateQuickReport('process-efficiency', 'comprehensive')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Comprehensive
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('process-efficiency', 'bottlenecks')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Bottlenecks
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Time-based & Regulatory Reports */}
+            <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.5s' }}>
+              <CardHeader className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-teal-700">
+                  <Calendar className="h-5 w-5 text-teal-500" />
+                  Time-based & Regulatory Reports
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 gap-3">
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => generateQuickReport('quarterly-review')} 
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white border-0"
+                      variant="outline"
+                    >
+                      <Calendar className="mr-2 h-4 w-4" />
+                      Quarterly Review
+                    </Button>
+                    <div className="grid grid-cols-2 gap-2 pl-4">
+                      <Button 
+                        onClick={() => generateQuickReport('quarterly-review', 'detailed')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Detailed
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('quarterly-review', 'executive')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Executive
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Button 
+                      onClick={() => generateQuickReport('regulatory-audit')} 
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white border-0"
+                      variant="outline"
+                    >
+                      <Shield className="mr-2 h-4 w-4" />
+                      Regulatory Audit
+                    </Button>
+                    <div className="grid grid-cols-2 gap-2 pl-4">
+                      <Button 
+                        onClick={() => generateQuickReport('regulatory-audit', 'comprehensive')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Comprehensive
+                      </Button>
+                      <Button 
+                        onClick={() => generateQuickReport('regulatory-audit', 'findings')} 
+                        size="sm" 
+                        variant="ghost"
+                      >
+                        Findings
                       </Button>
                     </div>
                   </div>
