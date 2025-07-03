@@ -157,12 +157,14 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               onClick={() => onFilterSubmissions?.({})}
         >
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex-1">
                 <p className="text-sm font-medium text-muted-foreground">Total Submissions</p>
                 <p className="text-2xl font-bold text-foreground">{totalSubmissions}</p>
               </div>
-              <FileText className="h-8 w-8 text-blue-500" />
+              <div className="flex-shrink-0">
+                <FileText className="h-8 w-8 text-blue-500" />
+              </div>
             </div>
             <div className="mt-2">
               <Progress value={100} className="h-2" />
@@ -175,12 +177,14 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               onClick={() => onFilterSubmissions?.({ status: 'approved' })}
         >
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex-1">
                 <p className="text-sm font-medium text-muted-foreground">Approved</p>
                 <p className="text-2xl font-bold text-green-600">{approvedSubmissions}</p>
               </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
+              <div className="flex-shrink-0">
+                <CheckCircle className="h-8 w-8 text-green-500" />
+              </div>
             </div>
             <div className="mt-2">
               <Progress value={approvalRate} className="h-2" />
@@ -193,12 +197,14 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               onClick={() => onFilterSubmissions?.({ status: 'approved', approvalType: 'fully' })}
         >
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex-1">
                 <p className="text-sm font-medium text-muted-foreground">Fully Approved</p>
                 <p className="text-2xl font-bold text-emerald-600">{fullyApprovedSubmissions}</p>
               </div>
-              <Award className="h-8 w-8 text-emerald-500" />
+              <div className="flex-shrink-0">
+                <Award className="h-8 w-8 text-emerald-500" />
+              </div>
             </div>
             <div className="mt-2">
               <Progress value={fullApprovalRate} className="h-2" />
@@ -211,12 +217,14 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               onClick={() => onFilterSubmissions?.({ status: 'approved', approvalType: 'partially' })}
         >
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex-1">
                 <p className="text-sm font-medium text-muted-foreground">Partially Approved</p>
                 <p className="text-2xl font-bold text-orange-600">{partiallyApprovedSubmissions}</p>
               </div>
-              <Shield className="h-8 w-8 text-orange-500" />
+              <div className="flex-shrink-0">
+                <Shield className="h-8 w-8 text-orange-500" />
+              </div>
             </div>
             <div className="mt-2">
               <Progress value={100 - fullApprovalRate} className="h-2" />
@@ -229,12 +237,14 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               onClick={() => onFilterSubmissions?.({ status: 'rejected' })}
         >
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex-1">
                 <p className="text-sm font-medium text-muted-foreground">Rejected</p>
                 <p className="text-2xl font-bold text-red-600">{rejectedSubmissions}</p>
               </div>
-              <XCircle className="h-8 w-8 text-red-500" />
+              <div className="flex-shrink-0">
+                <XCircle className="h-8 w-8 text-red-500" />
+              </div>
             </div>
             <div className="mt-2">
               <Progress value={rejectionRate} className="h-2" />
@@ -247,12 +257,14 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               onClick={() => onFilterSubmissions?.({ status: 'under_review' })}
         >
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex-1">
                 <p className="text-sm font-medium text-muted-foreground">Pending Review</p>
                 <p className="text-2xl font-bold text-foreground">{pendingSubmissions}</p>
               </div>
-              <Clock className="h-8 w-8 text-orange-500 animate-pulse" />
+              <div className="flex-shrink-0">
+                <Clock className="h-8 w-8 text-orange-500 animate-pulse" />
+              </div>
             </div>
             <div className="mt-2">
               <Progress value={(pendingSubmissions / totalSubmissions) * 100} className="h-2" />

@@ -115,13 +115,33 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
     // Submission type filter
     if (filters.submissionType.length > 0 && !filters.submissionType.includes(submission.submissionType)) return false;
 
-    // Search term filter
+    // Search term filter - Enhanced to search across all form responses
     if (filters.searchTerm) {
       const searchLower = filters.searchTerm.toLowerCase();
       const companyMatch = submission.companyName?.toLowerCase().includes(searchLower);
       const submitterMatch = submission.submitterName?.toLowerCase().includes(searchLower);
       const emailMatch = submission.submitterEmail?.toLowerCase().includes(searchLower);
-      if (!companyMatch && !submitterMatch && !emailMatch) return false;
+      
+      // Search in form responses
+      const responseMatch = Object.values(submission.responses).some(value => {
+        if (typeof value === 'string') {
+          return value.toLowerCase().includes(searchLower);
+        }
+        if (Array.isArray(value)) {
+          return value.some(item => 
+            typeof item === 'string' && item.toLowerCase().includes(searchLower)
+          );
+        }
+        return false;
+      });
+
+      // Search in activity log comments
+      const activityMatch = submission.activityLog?.some(activity => 
+        activity.comments.toLowerCase().includes(searchLower) ||
+        activity.reviewedBy.toLowerCase().includes(searchLower)
+      );
+
+      if (!companyMatch && !submitterMatch && !emailMatch && !responseMatch && !activityMatch) return false;
     }
 
     // Company filter
@@ -260,14 +280,12 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
           <Button
             variant="outline"
             onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-            className="relative h-10 px-4"
+            className="h-10 px-4"
           >
             <MoreHorizontal className="h-4 w-4 mr-2" />
             Advanced Filters
             {activeFiltersCount > 0 && (
-              <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs">
-                {activeFiltersCount}
-              </Badge>
+              <span className="ml-1 text-xs">({activeFiltersCount})</span>
             )}
           </Button>
 

@@ -316,6 +316,83 @@ const statuses: Array<"approved" | "rejected" | "under_review"> = ["approved", "
 const approvalTypes: Array<"fully" | "partially"> = ["fully", "partially"];
 const riskLevels: Array<"low" | "medium" | "high" | "critical"> = ["low", "medium", "high", "critical"];
 
+// Enhanced form field responses for realistic data
+const vendorFormFields = [
+  "company_name", "business_type", "annual_revenue", "employee_count", "data_security_measures",
+  "compliance_certifications", "previous_incidents", "insurance_coverage", "primary_contact",
+  "business_address", "years_in_business", "key_clients", "service_description", "technology_stack",
+  "backup_procedures", "disaster_recovery", "privacy_policy", "data_retention", "third_party_vendors"
+];
+
+const internalFormFields = [
+  "department", "project_name", "data_classification", "access_requirements", "retention_period",
+  "third_party_integrations", "security_measures", "project_manager", "budget_allocation",
+  "timeline", "stakeholders", "risk_assessment", "compliance_requirements", "data_sources"
+];
+
+const generateVendorResponses = (companyName: string) => ({
+  company_name: companyName,
+  business_type: ["Technology Services", "Software Development", "Consulting", "Cloud Services", "Cybersecurity", "Data Analytics"][Math.floor(Math.random() * 6)],
+  annual_revenue: ["$500K - $1M", "$1M - $5M", "$5M - $10M", "$10M - $25M", "$25M+"][Math.floor(Math.random() * 5)],
+  employee_count: ["1-10", "10-25", "25-50", "50-100", "100-500", "500+"][Math.floor(Math.random() * 6)],
+  data_security_measures: [
+    "Basic security protocols, firewall protection",
+    "ISO 27001 certified, multi-factor authentication",
+    "SOC 2 Type II compliant, encrypted databases",
+    "Zero-trust architecture, 24/7 monitoring",
+    "Advanced threat detection, SIEM implementation"
+  ][Math.floor(Math.random() * 5)],
+  compliance_certifications: [
+    ["GDPR"],
+    ["ISO 27001", "GDPR"],
+    ["SOC 2", "ISO 27001", "GDPR"],
+    ["SOC 2", "ISO 27001", "GDPR", "PCI DSS"],
+    ["SOC 2", "ISO 27001", "GDPR", "PCI DSS", "FedRAMP"]
+  ][Math.floor(Math.random() * 5)],
+  previous_incidents: [
+    "No security incidents reported",
+    "Minor incident resolved quickly in 2023",
+    "One data breach in 2022, fully remediated",
+    "Multiple incidents, improvements implemented",
+    "Critical security breach, ongoing concerns"
+  ][Math.floor(Math.random() * 5)],
+  insurance_coverage: [
+    "None",
+    "$500K Professional Liability",
+    "$1M Cyber Liability Insurance",
+    "$2M Cyber Liability + Errors & Omissions",
+    "$10M Comprehensive Coverage"
+  ][Math.floor(Math.random() * 5)],
+  primary_contact: `${submitters[Math.floor(Math.random() * submitters.length)]}`,
+  business_address: `${Math.floor(Math.random() * 9999) + 1} Business Ave, Tech City, TC ${Math.floor(Math.random() * 90000) + 10000}`,
+  years_in_business: Math.floor(Math.random() * 20) + 1,
+  key_clients: ["Fortune 500 Companies", "Government Agencies", "Healthcare Organizations", "Financial Institutions"][Math.floor(Math.random() * 4)],
+  service_description: "Comprehensive technology solutions tailored to enterprise needs",
+  technology_stack: ["Cloud-native", "Microservices", "AI/ML", "Blockchain"][Math.floor(Math.random() * 4)],
+  backup_procedures: "Daily automated backups with 99.9% recovery guarantee",
+  disaster_recovery: "RTO: 4 hours, RPO: 1 hour, tested quarterly",
+  privacy_policy: "GDPR compliant privacy policy updated annually",
+  data_retention: "Data retained per regulatory requirements, secure deletion after retention period",
+  third_party_vendors: ["AWS", "Microsoft Azure", "Google Cloud"][Math.floor(Math.random() * 3)]
+});
+
+const generateInternalResponses = (department: string) => ({
+  department: department,
+  project_name: `${department} Digital Transformation Initiative`,
+  data_classification: ["Public", "Internal", "Confidential", "Restricted"][Math.floor(Math.random() * 4)],
+  access_requirements: `${department} staff only, role-based access controls`,
+  retention_period: `${Math.floor(Math.random() * 7) + 1} years per company policy`,
+  third_party_integrations: ["CRM System", "ERP Platform", "HR Management", "Financial System"][Math.floor(Math.random() * 4)],
+  security_measures: "Multi-factor authentication, encrypted storage, audit logging",
+  project_manager: submitters[Math.floor(Math.random() * submitters.length)],
+  budget_allocation: `$${Math.floor(Math.random() * 500) + 50}K allocated for Q${Math.floor(Math.random() * 4) + 1}`,
+  timeline: `${Math.floor(Math.random() * 12) + 3} months implementation`,
+  stakeholders: `${department} leadership, IT department, compliance team`,
+  risk_assessment: ["Low risk - standard procedures", "Medium risk - enhanced monitoring", "High risk - additional controls"][Math.floor(Math.random() * 3)],
+  compliance_requirements: ["SOX compliance", "GDPR requirements", "Industry regulations"][Math.floor(Math.random() * 3)],
+  data_sources: ["Internal databases", "Third-party APIs", "Legacy systems"][Math.floor(Math.random() * 3)]
+});
+
 const additionalSubmissions: FormSubmission[] = [];
 
 for (let i = 6; i <= 100; i++) {
@@ -352,8 +429,8 @@ for (let i = 6; i <= 100; i++) {
     status,
     approvalType,
     responses: isVendor 
-      ? { "company_name": company, "business_type": "Technology Services" }
-      : { "department": department, "project_name": `Project ${i}` },
+      ? generateVendorResponses(company)
+      : generateInternalResponses(department || departments[0]),
     score: {
       total: score,
       maxTotal: 100,

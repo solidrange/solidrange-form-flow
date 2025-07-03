@@ -248,21 +248,21 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
         <div>
           <Label>Specific Fields Needing Attention</Label>
           <div className="mt-2 space-y-2 max-h-32 overflow-y-auto">
-            {form.fields.map((field) => (
-              <div key={field.id} className="flex items-center space-x-2">
+            {Object.keys(submission.responses).map((fieldKey) => (
+              <div key={fieldKey} className="flex items-center space-x-2">
                 <Checkbox
-                  id={`field-${field.id}`}
-                  checked={specificFields.includes(field.id)}
+                  id={`field-${fieldKey}`}
+                  checked={specificFields.includes(fieldKey)}
                   onCheckedChange={(checked) => {
                     if (checked) {
-                      setSpecificFields([...specificFields, field.id]);
+                      setSpecificFields([...specificFields, fieldKey]);
                     } else {
-                      setSpecificFields(specificFields.filter(id => id !== field.id));
+                      setSpecificFields(specificFields.filter(id => id !== fieldKey));
                     }
                   }}
                 />
-                <Label htmlFor={`field-${field.id}`} className="text-sm">
-                  {field.label}
+                <Label htmlFor={`field-${fieldKey}`} className="text-sm">
+                  {fieldKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                 </Label>
               </div>
             ))}
@@ -424,7 +424,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
                 {activity.metadata?.specificFields && activity.metadata.specificFields.length > 0 && (
                   <p className="text-xs text-gray-600">
                     Fields: {activity.metadata.specificFields.map(fieldId => 
-                      form.fields.find(f => f.id === fieldId)?.label || fieldId
+                      fieldId.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
                     ).join(', ')}
                   </p>
                 )}
