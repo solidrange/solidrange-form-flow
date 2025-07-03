@@ -27,7 +27,9 @@ import {
   SortAsc,
   SortDesc,
   MoreHorizontal,
-  ChevronDown
+  ChevronDown,
+  Users,
+  Globe
 } from "lucide-react";
 import { SubmissionsList } from "./submissions/SubmissionsList";
 import { SubmissionDetails } from "./submissions/SubmissionDetails";
@@ -380,11 +382,11 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
                 <div className="space-y-3">
                   <Label className="text-sm font-semibold">Type</Label>
                   <div className="space-y-2">
-                    {[
-                      { value: 'vendor', label: 'Vendor', icon: <Building className="h-3 w-3" /> },
-                      { value: 'internal', label: 'Internal', icon: <User className="h-3 w-3" /> },
-                      { value: 'external', label: 'External', icon: <User className="h-3 w-3" /> }
-                    ].map(({ value, label, icon }) => (
+                     {[
+                       { value: 'vendor', label: 'Vendor', icon: <Building className="h-3 w-3" /> },
+                       { value: 'internal', label: 'Internal', icon: <Users className="h-3 w-3" /> },
+                       { value: 'external', label: 'External', icon: <Globe className="h-3 w-3" /> }
+                     ].map(({ value, label, icon }) => (
                       <div key={value} className="flex items-center space-x-2">
                         <Checkbox
                           id={`type-${value}`}

@@ -3161,6 +3161,7 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
 
   /**
    * Filter templates based on search term and selected category
+   * Then sort sector-specific forms first, followed by general forms
    */
   const filteredTemplates = formTemplates.filter(template => {
     const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -3170,6 +3171,19 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
                           !template.sector || // General forms with no sector
                           (Array.isArray(template.sector) ? template.sector.includes(selectedSector) : template.sector === selectedSector);
     return matchesSearch && matchesCategory && matchesSector;
+  }).sort((a, b) => {
+    // When filtering by a specific sector, prioritize sector-specific forms over general forms
+    if (selectedSector !== "all") {
+      const aHasSector = a.sector && (Array.isArray(a.sector) ? a.sector.includes(selectedSector) : a.sector === selectedSector);
+      const bHasSector = b.sector && (Array.isArray(b.sector) ? b.sector.includes(selectedSector) : b.sector === selectedSector);
+      
+      // Sector-specific forms come first
+      if (aHasSector && !bHasSector) return -1;
+      if (!aHasSector && bHasSector) return 1;
+    }
+    
+    // Otherwise, sort alphabetically by name
+    return a.name.localeCompare(b.name);
   });
 
   /**

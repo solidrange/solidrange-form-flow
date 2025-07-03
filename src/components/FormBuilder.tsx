@@ -37,6 +37,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";         // Status indicators
 import { Button } from "@/components/ui/button";       // Clickable buttons
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"; // Select dropdown
+import { MultiSelectAudience } from "./MultiSelectAudience";  // Multi-select audience component
+import { MultiSelectCategory } from "./MultiSelectCategory";  // Multi-select category component
 import { toast } from "@/hooks/use-toast";             // Notification messages
 import { Lock, ArrowLeft, Sparkles, Layout, Paperclip, Menu, X, Plus } from "lucide-react";  // Icons
 
@@ -68,10 +70,10 @@ interface FormBuilderProps {
   maxFileSize?: number;                                 // Maximum file size in MB
   
   // Form organization (optional)
-  formCategory?: string;                                // Category this form belongs to
-  formTargetAudience?: string;                          // Target audience (vendor, external, internal)
-  onCategoryChange?: (category: string) => void;       // Function to change category
-  onTargetAudienceChange?: (audience: string) => void; // Function to change target audience
+  formCategory?: string | string[];                    // Category(s) this form belongs to
+  formTargetAudience?: string | string[];              // Target audience(s) (vendor, external, internal)
+  onCategoryChange?: (category: string | string[]) => void;       // Function to change category
+  onTargetAudienceChange?: (audience: string | string[]) => void; // Function to change target audience
   onSaveToLibrary?: () => void;                        // Function to save as template
   
   // Form state control (optional)
@@ -105,8 +107,8 @@ export const FormBuilder = ({
   onUpdateAttachments = () => {},  // Function to call when files change (default: do nothing)
   allowedFileTypes = ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png'],  // Allowed file types
   maxFileSize = 10,        // Maximum file size in MB (default: 10MB)
-  formCategory = "",       // Current form category (default: none)
-  formTargetAudience = "", // Current target audience (default: none)
+  formCategory = [],       // Current form categories (default: none)
+  formTargetAudience = [], // Current target audiences (default: none)
   onCategoryChange = () => {},     // Function to call when category changes
   onTargetAudienceChange = () => {}, // Function to call when target audience changes
   onSaveToLibrary = () => {},      // Function to call when saving to library
@@ -146,10 +148,11 @@ export const FormBuilder = ({
    */
   const handleSaveToLibrary = () => {
     // Check if user selected a category for organization
-    if (!formCategory) {
+    const categories = Array.isArray(formCategory) ? formCategory : formCategory ? [formCategory] : [];
+    if (categories.length === 0) {
       toast({
         title: "Category Required",
-        description: "Please select a category before saving to library.",
+        description: "Please select at least one category before saving to library.",
         variant: "destructive",
       });
       return;
@@ -383,31 +386,17 @@ export const FormBuilder = ({
                 
                 {/* Category and Target Audience */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormCategoryManager
-                    selectedCategory={formCategory}
-                    onCategoryChange={onCategoryChange}
-                    onSaveToLibrary={handleSaveToLibrary}
-                    canSaveToLibrary={formFields.length > 0}
-                    readOnly={isPublished}
+                  <MultiSelectCategory
+                    selectedCategories={Array.isArray(formCategory) ? formCategory : formCategory ? [formCategory] : []}
+                    onCategoryChange={(categories) => onCategoryChange(categories)}
+                    disabled={isPublished}
                   />
                   
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-gray-700">Target Audience</Label>
-                    <Select 
-                      value={formTargetAudience} 
-                      onValueChange={isPublished ? () => handleReadOnlyAction() : onTargetAudienceChange}
-                      disabled={isPublished}
-                    >
-                      <SelectTrigger className="border-gray-200 focus:border-blue-500">
-                        <SelectValue placeholder="Select audience" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="vendor">Vendor</SelectItem>
-                        <SelectItem value="external">External</SelectItem>
-                        <SelectItem value="internal">Internal</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                  <MultiSelectAudience
+                    selectedAudiences={Array.isArray(formTargetAudience) ? formTargetAudience : formTargetAudience ? [formTargetAudience] : []}
+                    onAudienceChange={(audiences) => onTargetAudienceChange(audiences)}
+                    disabled={isPublished}
+                  />
                 </div>
               </div>
             </CardHeader>
@@ -527,31 +516,17 @@ export const FormBuilder = ({
               </div>
               
               <div className="space-y-3">
-                <FormCategoryManager
-                  selectedCategory={formCategory}
-                  onCategoryChange={onCategoryChange}
-                  onSaveToLibrary={handleSaveToLibrary}
-                  canSaveToLibrary={formFields.length > 0}
-                  readOnly={isPublished}
+                <MultiSelectCategory
+                  selectedCategories={Array.isArray(formCategory) ? formCategory : formCategory ? [formCategory] : []}
+                  onCategoryChange={(categories) => onCategoryChange(categories)}
+                  disabled={isPublished}
                 />
                 
-                <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">Target Audience</Label>
-                  <Select 
-                    value={formTargetAudience} 
-                    onValueChange={isPublished ? () => handleReadOnlyAction() : onTargetAudienceChange}
-                    disabled={isPublished}
-                  >
-                    <SelectTrigger className="border-gray-200 focus:border-blue-500">
-                      <SelectValue placeholder="Select audience" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="vendor">Vendor</SelectItem>
-                      <SelectItem value="external">External</SelectItem>
-                      <SelectItem value="internal">Internal</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                <MultiSelectAudience
+                  selectedAudiences={Array.isArray(formTargetAudience) ? formTargetAudience : formTargetAudience ? [formTargetAudience] : []}
+                  onAudienceChange={(audiences) => onTargetAudienceChange(audiences)}
+                  disabled={isPublished}
+                />
               </div>
             </div>
           </CardHeader>

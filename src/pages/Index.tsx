@@ -61,8 +61,8 @@ const Index = () => {
   const [formTitle, setFormTitle] = useState("Untitled Form");
   const [formDescription, setFormDescription] = useState("");
   const [formAttachments, setFormAttachments] = useState<DocumentAttachment[]>([]);
-  const [formCategory, setFormCategory] = useState<string>("");
-  const [formTargetAudience, setFormTargetAudience] = useState<string>("");
+  const [formCategory, setFormCategory] = useState<string | string[]>("");
+  const [formTargetAudience, setFormTargetAudience] = useState<string | string[]>("");
   const [savedDrafts, setSavedDrafts] = useState<Form[]>([]);
   const [publishedForms, setPublishedForms] = useState<Form[]>([]);
   const [currentFormId, setCurrentFormId] = useState<string | null>(null);
