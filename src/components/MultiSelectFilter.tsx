@@ -58,6 +58,7 @@ export const MultiSelectFilter = ({
       case "sme": return "SME";
       case "telecom": return "Telecom";
       case "multi-sector": return "Multi-Sector";
+      case "multi-category": return "Multi-Category";
       case "other": return "Other";
       default: return option.charAt(0).toUpperCase() + option.slice(1);
     }
