@@ -519,7 +519,76 @@ for (let i = 6; i <= 100; i++) {
   });
 }
 
+// Add 30 additional external submissions for better data representation
+const additionalExternalSubmissions: FormSubmission[] = [];
+
+for (let i = 101; i <= 130; i++) {
+  const status = statuses[Math.floor(Math.random() * statuses.length)];
+  const approvalType = status === "approved" ? approvalTypes[Math.floor(Math.random() * approvalTypes.length)] : undefined;
+  const riskLevel = riskLevels[Math.floor(Math.random() * riskLevels.length)];
+  const submitter = submitters[Math.floor(Math.random() * submitters.length)];
+  const organization = externalOrganizations[Math.floor(Math.random() * externalOrganizations.length)];
+  
+  // Score distribution based on risk level for external submissions
+  let score: number;
+  switch (riskLevel) {
+    case "low": score = 75 + Math.floor(Math.random() * 25); break;
+    case "medium": score = 55 + Math.floor(Math.random() * 25); break;
+    case "high": score = 25 + Math.floor(Math.random() * 35); break;
+    case "critical": score = 5 + Math.floor(Math.random() * 25); break;
+    default: score = 65;
+  }
+
+  const submissionDate = new Date(2024, Math.floor(Math.random() * 3), Math.floor(Math.random() * 28) + 1, Math.floor(Math.random() * 24), Math.floor(Math.random() * 60));
+  const reviewDate = new Date(submissionDate.getTime() + Math.floor(Math.random() * 10) * 24 * 60 * 60 * 1000);
+
+  additionalExternalSubmissions.push({
+    id: `sub-ext-${i.toString().padStart(3, '0')}`,
+    formId: "form-external-assessment",
+    submittedBy: submitter,
+    submitterEmail: `${submitter.toLowerCase().replace(' ', '.')}@${organization.toLowerCase().replace(/[^a-z]/g, '')}.org`,
+    submitterName: submitter,
+    companyName: organization,
+    submissionType: "external",
+    submittedAt: submissionDate,
+    status,
+    approvalType,
+    responses: generateExternalResponses(organization),
+    score: {
+      total: score,
+      maxTotal: 100,
+      percentage: score,
+      riskLevel,
+      reviewedBy: "External Review Team",
+      reviewedAt: reviewDate,
+      reviewComments: `External partnership assessment for ${organization}`,
+      breakdown: {
+        compliance: Math.max(0, score + Math.floor(Math.random() * 20) - 10),
+        security: Math.max(0, score + Math.floor(Math.random() * 20) - 10),
+        partnership: Math.max(0, score + Math.floor(Math.random() * 20) - 10),
+        public_benefit: Math.max(0, score + Math.floor(Math.random() * 20) - 10)
+      }
+    },
+    activityLog: [{
+      id: `act-ext-${i.toString().padStart(3, '0')}`,
+      action: status,
+      comments: `External submission ${status.replace('_', ' ')} - Partnership assessment completed`,
+      reviewedBy: "External Review Team",
+      reviewedAt: reviewDate
+    }],
+    attachments: Math.random() > 0.5 ? [{
+      id: `att-ext-${i}`,
+      name: `${organization.replace(/[^a-zA-Z]/g, '')}_Partnership_Agreement.pdf`,
+      url: `/documents/external/${organization.toLowerCase().replace(/[^a-z]/g, '')}-agreement.pdf`,
+      size: 150000 + Math.floor(Math.random() * 500000),
+      type: "application/pdf",
+      uploadedAt: submissionDate
+    }] : []
+  });
+}
+
 export const sampleSubmissions: FormSubmission[] = [
   ...baseSubmissions,
-  ...additionalSubmissions
+  ...additionalSubmissions,
+  ...additionalExternalSubmissions
 ];

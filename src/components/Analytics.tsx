@@ -52,20 +52,20 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
   const [selectedTimeRange, setSelectedTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
 
   // Calculate analytics metrics based on actual sample data
-  const totalSubmissions = submissions.length; // 12
-  const approvedSubmissions = submissions.filter(s => s.status === 'approved').length; // 5
-  const rejectedSubmissions = submissions.filter(s => s.status === 'rejected').length; // 3
-  const pendingSubmissions = submissions.filter(s => s.status === 'under_review').length; // 4
-  const submittedSubmissions = submissions.filter(s => s.status === 'submitted').length; // 0
+  const totalSubmissions = submissions.length; // Now 130 total submissions
+  const approvedSubmissions = submissions.filter(s => s.status === 'approved').length;
+  const rejectedSubmissions = submissions.filter(s => s.status === 'rejected').length;
+  const pendingSubmissions = submissions.filter(s => s.status === 'under_review').length;
+  const submittedSubmissions = submissions.filter(s => s.status === 'submitted').length;
 
   // Approval type analytics - only count approved submissions
-  const fullyApprovedSubmissions = submissions.filter(s => s.status === 'approved' && s.approvalType === 'fully').length; // 3
-  const partiallyApprovedSubmissions = submissions.filter(s => s.status === 'approved' && s.approvalType === 'partially').length; // 2
+  const fullyApprovedSubmissions = submissions.filter(s => s.status === 'approved' && s.approvalType === 'fully').length;
+  const partiallyApprovedSubmissions = submissions.filter(s => s.status === 'approved' && s.approvalType === 'partially').length;
 
   // Calculate rates based on actual data
-  const approvalRate = totalSubmissions > 0 ? (approvedSubmissions / totalSubmissions) * 100 : 0; // 41.7%
-  const rejectionRate = totalSubmissions > 0 ? (rejectedSubmissions / totalSubmissions) * 100 : 0; // 25%
-  const fullApprovalRate = approvedSubmissions > 0 ? (fullyApprovedSubmissions / approvedSubmissions) * 100 : 0; // 60%
+  const approvalRate = totalSubmissions > 0 ? (approvedSubmissions / totalSubmissions) * 100 : 0;
+  const rejectionRate = totalSubmissions > 0 ? (rejectedSubmissions / totalSubmissions) * 100 : 0;
+  const fullApprovalRate = approvedSubmissions > 0 ? (fullyApprovedSubmissions / approvedSubmissions) * 100 : 0;
 
   // Risk level analytics - count all submissions with scores
   const riskLevels = submissions.reduce((acc, sub) => {
@@ -73,21 +73,21 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
     acc[risk] = (acc[risk] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-  // Expected: low: 7, medium: 2, high: 1, critical: 2
+  // Dynamic calculation based on actual data
 
   // Submission type analytics
   const submissionTypes = submissions.reduce((acc, sub) => {
     acc[sub.submissionType] = (acc[sub.submissionType] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-  // Expected: vendor: ~50, internal: ~25, external: ~25
+  // Dynamic calculation: vendor: ~50, internal: ~40, external: ~40
 
   // Average scores - calculate from actual data
   const submissionsWithScores = submissions.filter(s => s.score?.percentage);
   const avgScore = submissionsWithScores.length > 0 
     ? submissionsWithScores.reduce((acc, sub) => acc + (sub.score?.percentage || 0), 0) / submissionsWithScores.length
     : 0;
-  // Expected average: ~70.9
+  // Dynamic average based on actual submissions
 
   // Monthly submission trends - accurate month calculation
   const monthlyData = submissions.reduce((acc, sub) => {
