@@ -152,7 +152,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
   return (
     <div className="space-y-6">
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-fade-in">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 animate-fade-in">
         <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
               onClick={() => onFilterSubmissions?.({})}
         >
@@ -164,9 +164,8 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               </div>
               <FileText className="h-8 w-8 text-blue-500" />
             </div>
-            <div className="mt-2 flex items-center text-sm text-green-600">
-              <TrendingUp className="h-4 w-4 mr-1" />
-              <span>Click to view all</span>
+            <div className="mt-2">
+              <Progress value={100} className="h-2" />
             </div>
           </CardContent>
         </Card>
@@ -178,8 +177,8 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Approval Rate</p>
-                <p className="text-2xl font-bold text-foreground">{approvalRate.toFixed(1)}%</p>
+                <p className="text-sm font-medium text-muted-foreground">Approved</p>
+                <p className="text-2xl font-bold text-green-600">{approvedSubmissions}</p>
               </div>
               <CheckCircle className="h-8 w-8 text-green-500" />
             </div>
@@ -201,9 +200,8 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               </div>
               <Award className="h-8 w-8 text-emerald-500" />
             </div>
-            <div className="mt-2 flex items-center text-sm text-emerald-600">
-              <CheckCircle className="h-4 w-4 mr-1" />
-              <span>Click to view all</span>
+            <div className="mt-2">
+              <Progress value={fullApprovalRate} className="h-2" />
             </div>
           </CardContent>
         </Card>
@@ -220,15 +218,32 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               </div>
               <Shield className="h-8 w-8 text-orange-500" />
             </div>
-            <div className="mt-2 flex items-center text-sm text-orange-600">
-              <AlertTriangle className="h-4 w-4 mr-1" />
-              <span>Click to view all</span>
+            <div className="mt-2">
+              <Progress value={100 - fullApprovalRate} className="h-2" />
             </div>
           </CardContent>
         </Card>
 
         <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
               style={{ animationDelay: '0.4s' }}
+              onClick={() => onFilterSubmissions?.({ status: 'rejected' })}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Rejected</p>
+                <p className="text-2xl font-bold text-red-600">{rejectedSubmissions}</p>
+              </div>
+              <XCircle className="h-8 w-8 text-red-500" />
+            </div>
+            <div className="mt-2">
+              <Progress value={rejectionRate} className="h-2" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+              style={{ animationDelay: '0.5s' }}
               onClick={() => onFilterSubmissions?.({ status: 'under_review' })}
         >
           <CardContent className="p-4">
@@ -239,9 +254,8 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               </div>
               <Clock className="h-8 w-8 text-orange-500 animate-pulse" />
             </div>
-            <div className="mt-2 flex items-center text-sm text-orange-600">
-              <AlertTriangle className="h-4 w-4 mr-1" />
-              <span>Click to review</span>
+            <div className="mt-2">
+              <Progress value={(pendingSubmissions / totalSubmissions) * 100} className="h-2" />
             </div>
           </CardContent>
         </Card>
