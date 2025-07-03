@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, Plus, Shield, AlertTriangle, Building, Users, User, Globe, Landmark, CreditCard, Stethoscope, Zap, Smartphone, Rocket, Store } from "lucide-react";
+import { MultiSelectFilter } from "./MultiSelectFilter";
 
 interface FormLibraryProps {
   onUseTemplate?: (template: FormTemplate) => void;
@@ -2579,22 +2580,23 @@ const formTemplates: FormTemplate[] = [
   },
 
   {
-    id: "gen-4",
-    name: "Annual Budget Planning",
-    description: "Comprehensive annual budget preparation for any organization",
-    category: "finance",
+    id: "telecom-new-2",
+    name: "Network Infrastructure Audit",
+    description: "Comprehensive telecommunications network infrastructure assessment",
+    category: "audit",
+    sector: "telecom",
     targetAudience: ["internal"],
-    preview: "Revenue projections, expense categories, capital investments, variance analysis",
+    preview: "Equipment inventory, performance metrics, security assessment, upgrade recommendations",
     fields: [
-      { id: generateFieldId(803), type: "text", label: "Department/Division", required: true },
-      { id: generateFieldId(804), type: "text", label: "Budget Year", required: true },
-      { id: generateFieldId(805), type: "text", label: "Projected Revenue", required: true },
-      { id: generateFieldId(806), type: "text", label: "Personnel Costs", required: true },
-      { id: generateFieldId(807), type: "text", label: "Operating Expenses", required: true },
-      { id: generateFieldId(808), type: "text", label: "Capital Expenditures", required: false },
-      { id: generateFieldId(809), type: "textarea", label: "Budget Assumptions", required: true },
-      { id: generateFieldId(810), type: "textarea", label: "Key Initiatives", required: false },
-      { id: generateFieldId(811), type: "text", label: "Budget Variance from Prior Year (%)", required: false }
+      { id: generateFieldId(803), type: "text", label: "Network Segment", required: true },
+      { id: generateFieldId(804), type: "select", label: "Infrastructure Type", required: true, options: ["Core Network", "Access Network", "Transport Network", "Data Centers", "Radio Access"] },
+      { id: generateFieldId(805), type: "text", label: "Equipment Age (years)", required: true },
+      { id: generateFieldId(806), type: "rating", label: "Performance Rating", required: true },
+      { id: generateFieldId(807), type: "checkbox", label: "Issues Found", required: false, options: ["Capacity Constraints", "Security Vulnerabilities", "Legacy Equipment", "Maintenance Backlog", "Compliance Gaps"] },
+      { id: generateFieldId(808), type: "select", label: "Priority Level", required: true, options: ["Low", "Medium", "High", "Critical"] },
+      { id: generateFieldId(809), type: "textarea", label: "Recommendations", required: true },
+      { id: generateFieldId(810), type: "text", label: "Estimated Upgrade Cost", required: false },
+      { id: generateFieldId(811), type: "date", label: "Recommended Timeline", required: false }
     ]
   },
 
@@ -3313,30 +3315,30 @@ const formTemplates: FormTemplate[] = [
  */
 export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [selectedSector, setSelectedSector] = useState<string>("all");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
 
   // Available categories and sectors for filtering templates
   const categories = ["all", "survey", "assessment", "registration", "feedback", "compliance", "risk", "vendor-risk", "external-assessment", "hr", "customer", "finance", "it", "security", "quality", "operations", "procurement", "marketing", "sales", "project", "training", "legal", "audit", "business"];
   const sectors = ["all", "government", "insurance", "fintech", "health", "energy", "telecom", "startups", "sme"];
 
   /**
-   * Filter templates based on search term and selected category
+   * Filter templates based on search term and selected categories/sectors
    * Then sort sector-specific forms first, followed by general forms
    */
   const filteredTemplates = formTemplates.filter(template => {
     const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          template.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || template.category === selectedCategory;
-    const matchesSector = selectedSector === "all" || 
+    const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(template.category);
+    const matchesSector = selectedSectors.length === 0 || 
                           !template.sector || // General forms with no sector
-                          (Array.isArray(template.sector) ? template.sector.includes(selectedSector) : template.sector === selectedSector);
+                          (Array.isArray(template.sector) ? template.sector.some(s => selectedSectors.includes(s)) : selectedSectors.includes(template.sector));
     return matchesSearch && matchesCategory && matchesSector;
   }).sort((a, b) => {
-    // When filtering by a specific sector, prioritize sector-specific forms over general forms
-    if (selectedSector !== "all") {
-      const aHasSector = a.sector && (Array.isArray(a.sector) ? a.sector.includes(selectedSector) : a.sector === selectedSector);
-      const bHasSector = b.sector && (Array.isArray(b.sector) ? b.sector.includes(selectedSector) : b.sector === selectedSector);
+    // When filtering by specific sectors, prioritize sector-specific forms over general forms
+    if (selectedSectors.length > 0) {
+      const aHasSector = a.sector && (Array.isArray(a.sector) ? a.sector.some(s => selectedSectors.includes(s)) : selectedSectors.includes(a.sector));
+      const bHasSector = b.sector && (Array.isArray(b.sector) ? b.sector.some(s => selectedSectors.includes(s)) : selectedSectors.includes(b.sector));
       
       // Sector-specific forms come first
       if (aHasSector && !bHasSector) return -1;
@@ -3453,42 +3455,31 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
           />
         </div>
         <div className="flex gap-2">
-          <select
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md bg-white"
-          >
-            {categories.map(category => (
-              <option key={category} value={category}>
-                {category === "all" ? "All Categories" : 
-                 category === "vendor-risk" ? "Vendor Risk" :
-                 category === "external-assessment" ? "External Assessment" :
-                 category === "hr" ? "HR" :
-                 category === "it" ? "IT" :
-                 category.charAt(0).toUpperCase() + category.slice(1)}
-              </option>
-            ))}
-          </select>
-          <select
-            value={selectedSector}
-            onChange={(e) => setSelectedSector(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-md bg-white"
-          >
-            {sectors.map(sector => {
-              const count = sector === "all" ? formTemplates.length : 
-                           formTemplates.filter(t => 
-                             !t.sector ? false : // Don't count general forms in sector counts
-                             Array.isArray(t.sector) ? t.sector.includes(sector) : t.sector === sector
-                           ).length;
-              return (
-                <option key={sector} value={sector}>
-                  {sector === "all" ? `All Sectors (${formTemplates.length})` : 
-                   sector === "sme" ? `SME (${count})` :
-                   `${sector.charAt(0).toUpperCase() + sector.slice(1)} (${count})`}
-                </option>
-              );
-            })}
-          </select>
+          <MultiSelectFilter
+            options={categories}
+            selectedValues={selectedCategories}
+            onSelectionChange={setSelectedCategories}
+            placeholder="All Categories"
+            showCounts={true}
+            getCounts={(category) => {
+              if (category === "all") return formTemplates.length;
+              return formTemplates.filter(t => t.category === category).length;
+            }}
+          />
+          <MultiSelectFilter
+            options={sectors}
+            selectedValues={selectedSectors}
+            onSelectionChange={setSelectedSectors}
+            placeholder="All Sectors"
+            showCounts={true}
+            getCounts={(sector) => {
+              if (sector === "all") return formTemplates.length;
+              return formTemplates.filter(t => 
+                !t.sector ? false : // Don't count general forms in sector counts
+                Array.isArray(t.sector) ? t.sector.includes(sector) : t.sector === sector
+              ).length;
+            }}
+          />
         </div>
       </div>
 
