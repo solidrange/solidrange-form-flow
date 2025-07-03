@@ -47,7 +47,7 @@ import { sampleSubmissions } from "@/data/sampleSubmissions";
 
 const Index = () => {
   // Tab navigation state
-  const [activeTab, setActiveTab] = useState("build-form");
+  const [activeTab, setActiveTab] = useState("dashboard");
   const [activeBuildTab, setActiveBuildTab] = useState("builder");
   const [submissionFilters, setSubmissionFilters] = useState<{
     status?: string;
