@@ -1,6 +1,7 @@
 import { FormSubmission } from "@/types/form";
 
-export const sampleSubmissions: FormSubmission[] = [
+// Base submissions with detailed data
+const baseSubmissions: FormSubmission[] = [
   {
     id: "sub-001",
     formId: "form-vendor-assessment",
@@ -297,405 +298,84 @@ export const sampleSubmissions: FormSubmission[] = [
         uploadedAt: new Date("2024-02-05T10:55:00Z")
       }
     ]
-  },
-  {
-    id: "sub-006",
-    formId: "form-vendor-assessment",
-    submittedBy: "Roberto Silva",
-    submitterEmail: "r.silva@mediumrisk.com",
-    submitterName: "Roberto Silva",
-    companyName: "MediumRisk Solutions",
-    submissionType: "vendor",
-    submittedAt: new Date("2024-02-10T13:30:00Z"),
-    status: "under_review",
-    responses: {
-      "company_name": "MediumRisk Solutions",
-      "business_type": "Cloud Services",
-      "annual_revenue": "$10M - $25M",
-      "employee_count": "100-250",
-      "data_security_measures": "SOC 2 Type I, working towards Type II",
-      "compliance_certifications": ["SOC 2 Type I"],
-      "previous_incidents": "One minor incident in 2023, promptly resolved",
-      "insurance_coverage": "$3M Cyber Liability",
-      "references": [
-        { company: "Mid-size Corp", contact: "security@midsizecorp.com" },
-        { company: "Regional Bank", contact: "vendor@regionalbank.com" }
-      ]
-    },
-    score: {
-      total: 75,
-      maxTotal: 100,
-      percentage: 75,
-      riskLevel: "medium",
-      reviewedBy: "Security Analyst",
-      reviewedAt: new Date("2024-02-11T14:00:00Z"),
-      reviewComments: "Reasonable security posture. Monitoring progress on SOC 2 Type II certification.",
-      breakdown: {
-        security: 72,
-        compliance: 78,
-        financial: 76,
-        operational: 74
-      }
-    },
-    activityLog: [
-      {
-        id: "act-006",
-        action: "under_review",
-        comments: "Reasonable security posture. Monitoring progress on SOC 2 Type II certification.",
-        reviewedBy: "Security Analyst",
-        reviewedAt: new Date("2024-02-11T14:00:00Z")
-      }
-    ],
-    attachments: [
-      {
-        id: "att-007",
-        name: "SOC2_TypeI_Report.pdf",
-        url: "/documents/soc2-type1.pdf",
-        size: 445000,
-        type: "application/pdf",
-        uploadedAt: new Date("2024-02-10T13:25:00Z")
-      }
-    ]
-  },
-  {
-    id: "sub-007",
-    formId: "form-vendor-assessment",
-    submittedBy: "Emily Foster",
-    submitterEmail: "e.foster@highriskco.net",
-    submitterName: "Emily Foster",
-    companyName: "HighRisk Co",
-    submissionType: "vendor",
-    submittedAt: new Date("2024-02-12T15:45:00Z"),
-    status: "rejected",
-    responses: {
-      "company_name": "HighRisk Co",
-      "business_type": "Data Analytics",
-      "annual_revenue": "$2M - $5M",
-      "employee_count": "25-50",
-      "data_security_measures": "Outdated security systems, no regular updates",
-      "compliance_certifications": [],
-      "previous_incidents": "Major data breach in 2023, ongoing legal issues",
-      "insurance_coverage": "$100K General Liability (insufficient)",
-      "references": [
-        { company: "Former Client", contact: "complaints@formerclient.com" }
-      ]
-    },
-    score: {
-      total: 35,
-      maxTotal: 100,
-      percentage: 35,
-      riskLevel: "high",
-      reviewedBy: "Risk Assessment Team",
-      reviewedAt: new Date("2024-02-13T10:00:00Z"),
-      reviewComments: "High risk due to recent breach and inadequate security measures. Rejected.",
-      breakdown: {
-        security: 25,
-        compliance: 30,
-        financial: 45,
-        operational: 40
-      }
-    },
-    activityLog: [
-      {
-        id: "act-007",
-        action: "rejected",
-        comments: "High risk due to recent breach and inadequate security measures. Rejected.",
-        reviewedBy: "Risk Assessment Team",
-        reviewedAt: new Date("2024-02-13T10:00:00Z")
-      }
-    ],
-    attachments: []
-  },
-  {
-    id: "sub-008",
-    formId: "form-internal-assessment",
-    submittedBy: "Michael Thompson",
-    submitterEmail: "m.thompson@ourcompany.com",
-    submitterName: "Michael Thompson",
-    companyName: "Our Company",
-    submissionType: "internal",
-    submittedAt: new Date("2024-02-15T10:15:00Z"),
-    status: "approved",
-    approvalType: "partially",
-    responses: {
-      "department": "Marketing",
-      "project_name": "Customer Analytics Platform", 
-      "data_classification": "Internal",
-      "access_requirements": "Marketing team and approved analysts",
-      "retention_period": "3 years",
-      "third_party_integrations": ["Analytics Platform", "CRM System"],
-      "security_measures": "Role-based access, data anonymization, regular backups"
-    },
-    score: {
-      total: 82,
-      maxTotal: 100,
-      percentage: 82,
-      riskLevel: "low",
-      reviewedBy: "Security Compliance",
-      reviewedAt: new Date("2024-02-16T11:30:00Z"),
-      reviewComments: "Good project design with appropriate data handling. Approved with standard monitoring.",
-      breakdown: {
-        security: 80,
-        compliance: 85,
-        privacy: 82,
-        operational: 81
-      }
-    },
-    activityLog: [
-      {
-        id: "act-008",
-        action: "approved",
-        comments: "Good project design with appropriate data handling. Approved with standard monitoring.",
-        reviewedBy: "Security Compliance",
-        reviewedAt: new Date("2024-02-16T11:30:00Z")
-      }
-    ],
-    attachments: [
-      {
-        id: "att-008",
-        name: "Data_Flow_Diagram.pdf",
-        url: "/documents/data-flow.pdf",
-        size: 167000,
-        type: "application/pdf",
-        uploadedAt: new Date("2024-02-15T10:10:00Z")
-      }
-    ]
-  },
-  {
-    id: "sub-009",
-    formId: "form-vendor-assessment",
-    submittedBy: "Lisa Park",
-    submitterEmail: "l.park@excellentvendor.com",
-    submitterName: "Lisa Park",
-    companyName: "ExcellentVendor Inc",
-    submissionType: "vendor",
-    submittedAt: new Date("2024-02-18T12:00:00Z"),
-    status: "approved",
-    approvalType: "fully",
-    responses: {
-      "company_name": "ExcellentVendor Inc",
-      "business_type": "Enterprise Software",
-      "annual_revenue": "$50M+",
-      "employee_count": "1000+",
-      "data_security_measures": "Enterprise-grade security, regular penetration testing, SIEM",
-      "compliance_certifications": ["ISO 27001", "SOC 2 Type II", "ISO 9001", "PCI DSS"],
-      "previous_incidents": "No incidents in 5+ years",
-      "insurance_coverage": "$25M Comprehensive Coverage",
-      "references": [
-        { company: "Fortune 100 Corp", contact: "vendor.management@fortune100.com" },
-        { company: "Global Manufacturing", contact: "procurement@globalmanuf.com" },
-        { company: "International Bank", contact: "risk@intlbank.com" }
-      ]
-    },
-    score: {
-      total: 96,
-      maxTotal: 100,
-      percentage: 96,
-      riskLevel: "low",
-      reviewedBy: "Vendor Management",
-      reviewedAt: new Date("2024-02-19T09:45:00Z"),
-      reviewComments: "Top-tier vendor with exceptional track record. Highly recommended for strategic partnerships.",
-      breakdown: {
-        security: 98,
-        compliance: 95,
-        financial: 94,
-        operational: 97
-      }
-    },
-    activityLog: [
-      {
-        id: "act-009",
-        action: "approved",
-        comments: "Top-tier vendor with exceptional track record. Highly recommended for strategic partnerships.",
-        reviewedBy: "Vendor Management",
-        reviewedAt: new Date("2024-02-19T09:45:00Z")
-      }
-    ],
-    attachments: [
-      {
-        id: "att-009",
-        name: "Enterprise_Security_Overview.pdf",
-        url: "/documents/enterprise-security.pdf",
-        size: 1450000,
-        type: "application/pdf",
-        uploadedAt: new Date("2024-02-18T11:55:00Z")
-      },
-      {
-        id: "att-010",
-        name: "Compliance_Certificates.pdf",
-        url: "/documents/compliance-certs.pdf",
-        size: 890000,
-        type: "application/pdf",
-        uploadedAt: new Date("2024-02-18T11:57:00Z")
-      }
-    ]
-  },
-  {
-    id: "sub-010",
-    formId: "form-vendor-assessment",
-    submittedBy: "Carlos Mendez",
-    submitterEmail: "c.mendez@emergingtech.io",
-    submitterName: "Carlos Mendez",
-    companyName: "EmergingTech Solutions",
-    submissionType: "vendor",
-    submittedAt: new Date("2024-02-20T14:30:00Z"),
-    status: "under_review",
-    responses: {
-      "company_name": "EmergingTech Solutions",
-      "business_type": "AI/ML Services",
-      "annual_revenue": "$3M - $10M",
-      "employee_count": "75-100",
-      "data_security_measures": "Modern security stack, AI-powered threat detection",
-      "compliance_certifications": ["SOC 2 Type II", "GDPR"],
-      "previous_incidents": "None reported",
-      "insurance_coverage": "$5M Tech E&O + Cyber Coverage",
-      "references": [
-        { company: "Tech Startup Hub", contact: "partners@techstartup.com" },
-        { company: "Innovation Corp", contact: "vendor.relations@innovationcorp.com" }
-      ]
-    },
-    score: {
-      total: 84,
-      maxTotal: 100,
-      percentage: 84,
-      riskLevel: "low",
-      reviewedBy: "Tech Review Team",
-      reviewedAt: new Date("2024-02-21T10:15:00Z"),
-      reviewComments: "Promising emerging vendor with strong technical capabilities. Conducting due diligence review.",
-      breakdown: {
-        security: 85,
-        compliance: 82,
-        financial: 80,
-        operational: 89
-      }
-    },
-    activityLog: [
-      {
-        id: "act-010",
-        action: "under_review",
-        comments: "Promising emerging vendor with strong technical capabilities. Conducting due diligence review.",
-        reviewedBy: "Tech Review Team",
-        reviewedAt: new Date("2024-02-21T10:15:00Z")
-      }
-    ],
-    attachments: [
-      {
-        id: "att-011",
-        name: "AI_Security_Framework.pdf",
-        url: "/documents/ai-security.pdf",
-        size: 678000,
-        type: "application/pdf",
-        uploadedAt: new Date("2024-02-20T14:25:00Z")
-      }
-    ]
-  },
-  {
-    id: "sub-011",
-    formId: "form-internal-assessment",
-    submittedBy: "Rachel Green",
-    submitterEmail: "r.green@ourcompany.com",
-    submitterName: "Rachel Green",
-    companyName: "Our Company",
-    submissionType: "internal",
-    submittedAt: new Date("2024-02-22T09:20:00Z"),
-    status: "under_review",
-    responses: {
-      "department": "Finance",
-      "project_name": "Financial Reporting Automation",
-      "data_classification": "Highly Confidential",
-      "access_requirements": "Finance executives and authorized auditors only",
-      "retention_period": "10 years (regulatory requirement)",
-      "third_party_integrations": ["ERP System", "Banking APIs", "Audit Platform"],
-      "security_measures": "Multi-factor authentication, encryption at rest and in transit, audit trails"
-    },
-    score: {
-      total: 91,
-      maxTotal: 100,
-      percentage: 91,
-      riskLevel: "low",
-      reviewedBy: "Finance Compliance",
-      reviewedAt: new Date("2024-02-23T14:45:00Z"),
-      reviewComments: "Critical financial system requiring additional security review. High compliance requirements.",
-      breakdown: {
-        security: 93,
-        compliance: 90,
-        privacy: 89,
-        operational: 92
-      }
-    },
-    activityLog: [
-      {
-        id: "act-011",
-        action: "under_review",
-        comments: "Critical financial system requiring additional security review. High compliance requirements.",
-        reviewedBy: "Finance Compliance",
-        reviewedAt: new Date("2024-02-23T14:45:00Z")
-      }
-    ],
-    attachments: [
-      {
-        id: "att-012",
-        name: "Security_Assessment.pdf",
-        url: "/documents/security-assessment.pdf",
-        size: 532000,
-        type: "application/pdf",
-        uploadedAt: new Date("2024-02-22T09:15:00Z")
-      },
-      {
-        id: "att-013",
-        name: "Compliance_Matrix.xlsx",
-        url: "/documents/compliance-matrix.xlsx",
-        size: 89000,
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        uploadedAt: new Date("2024-02-22T09:17:00Z")
-      }
-    ]
-  },
-  {
-    id: "sub-012",
-    formId: "form-vendor-assessment",
-    submittedBy: "Ahmed Hassan",
-    submitterEmail: "a.hassan@criticalrisk.com",
-    submitterName: "Ahmed Hassan",
-    companyName: "CriticalRisk Systems",
-    submissionType: "vendor",
-    submittedAt: new Date("2024-02-25T16:45:00Z"),
-    status: "rejected",
-    responses: {
-      "company_name": "CriticalRisk Systems",
-      "business_type": "Legacy System Maintenance",
-      "annual_revenue": "$250K - $500K",
-      "employee_count": "1-5",
-      "data_security_measures": "Basic antivirus, no formal security policies",
-      "compliance_certifications": [],
-      "previous_incidents": "Ransomware attack in 2023, systems compromised for 2 weeks",
-      "insurance_coverage": "Basic general liability only",
-      "references": []
-    },
-    score: {
-      total: 18,
-      maxTotal: 100,
-      percentage: 18,
-      riskLevel: "critical",
-      reviewedBy: "Security Team",
-      reviewedAt: new Date("2024-02-26T12:00:00Z"),
-      reviewComments: "Critical security deficiencies and recent ransomware incident. Immediate rejection.",
-      breakdown: {
-        security: 10,
-        compliance: 15,
-        financial: 25,
-        operational: 22
-      }
-    },
-    activityLog: [
-      {
-        id: "act-012",
-        action: "rejected",
-        comments: "Critical security deficiencies and recent ransomware incident. Immediate rejection.",
-        reviewedBy: "Security Team",
-        reviewedAt: new Date("2024-02-26T12:00:00Z")
-      }
-    ],
-    attachments: []
   }
+];
+
+// Generate additional submissions programmatically
+const companies = [
+  "TechFlow Systems", "DataStream Corp", "CloudFirst Ltd", "SecureBase Inc", "AgileWorks Co",
+  "NextGen Solutions", "SmartBridge Tech", "ProActive Systems", "FlexiCore Ltd", "ScaleUp Ventures",
+  "RapidDeploy Inc", "OptimalPath Co", "StreamlineOps", "CoreLogic Systems", "PowerTech Solutions",
+  "InnovateLab Inc", "QuantumLeap Co", "FutureProof Ltd", "ConnectWise Systems", "DataDriven Corp",
+  "CloudNative Inc", "SecurePath Co", "AgileCore Systems", "TechAdvantage Ltd", "SmartFlow Inc"
+];
+
+const departments = ["Engineering", "Sales", "Marketing", "Finance", "HR", "Operations", "Legal", "IT"];
+const submitters = ["John Smith", "Sarah Johnson", "Mike Chen", "Lisa Wong", "David Kim", "Emma Davis", "Alex Rodriguez", "Anna Lee"];
+const statuses: Array<"approved" | "rejected" | "under_review"> = ["approved", "rejected", "under_review"];
+const approvalTypes: Array<"fully" | "partially"> = ["fully", "partially"];
+const riskLevels: Array<"low" | "medium" | "high" | "critical"> = ["low", "medium", "high", "critical"];
+
+const additionalSubmissions: FormSubmission[] = [];
+
+for (let i = 6; i <= 100; i++) {
+  const isVendor = Math.random() > 0.25; // 75% vendor, 25% internal
+  const status = statuses[Math.floor(Math.random() * statuses.length)];
+  const approvalType = status === "approved" ? approvalTypes[Math.floor(Math.random() * approvalTypes.length)] : undefined;
+  const riskLevel = riskLevels[Math.floor(Math.random() * riskLevels.length)];
+  const submitter = submitters[Math.floor(Math.random() * submitters.length)];
+  const company = isVendor ? companies[Math.floor(Math.random() * companies.length)] : "Our Company";
+  const department = !isVendor ? departments[Math.floor(Math.random() * departments.length)] : undefined;
+  
+  // Score distribution based on risk level
+  let score: number;
+  switch (riskLevel) {
+    case "low": score = 80 + Math.floor(Math.random() * 20); break;
+    case "medium": score = 60 + Math.floor(Math.random() * 20); break;
+    case "high": score = 30 + Math.floor(Math.random() * 30); break;
+    case "critical": score = 10 + Math.floor(Math.random() * 20); break;
+    default: score = 70;
+  }
+
+  const submissionDate = new Date(2024, Math.floor(Math.random() * 3), Math.floor(Math.random() * 28) + 1, Math.floor(Math.random() * 24), Math.floor(Math.random() * 60));
+  const reviewDate = new Date(submissionDate.getTime() + Math.floor(Math.random() * 7) * 24 * 60 * 60 * 1000);
+
+  additionalSubmissions.push({
+    id: `sub-${i.toString().padStart(3, '0')}`,
+    formId: isVendor ? "form-vendor-assessment" : "form-internal-assessment",
+    submittedBy: submitter,
+    submitterEmail: `${submitter.toLowerCase().replace(' ', '.')}@${isVendor ? company.toLowerCase().replace(/[^a-z]/g, '') : 'ourcompany'}.com`,
+    submitterName: submitter,
+    companyName: company,
+    submissionType: isVendor ? "vendor" : "internal",
+    submittedAt: submissionDate,
+    status,
+    approvalType,
+    responses: isVendor 
+      ? { "company_name": company, "business_type": "Technology Services" }
+      : { "department": department, "project_name": `Project ${i}` },
+    score: {
+      total: score,
+      maxTotal: 100,
+      percentage: score,
+      riskLevel,
+      reviewedBy: "System Reviewer",
+      reviewedAt: reviewDate,
+      reviewComments: `Auto-generated review for ${company}`,
+      breakdown: {}
+    },
+    activityLog: [{
+      id: `act-${i.toString().padStart(3, '0')}`,
+      action: status,
+      comments: `${status.replace('_', ' ')} - Auto generated`,
+      reviewedBy: "System Reviewer",
+      reviewedAt: reviewDate
+    }],
+    attachments: []
+  });
+}
+
+export const sampleSubmissions: FormSubmission[] = [
+  ...baseSubmissions,
+  ...additionalSubmissions
 ];

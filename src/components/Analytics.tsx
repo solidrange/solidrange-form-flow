@@ -40,9 +40,15 @@ import {
 
 interface AnalyticsProps {
   submissions: FormSubmission[];
+  onFilterSubmissions?: (filters: {
+    status?: string;
+    approvalType?: string;
+    riskLevel?: string;
+    submissionType?: string;
+  }) => void;
 }
 
-const Analytics = ({ submissions }: AnalyticsProps) => {
+const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
   const [selectedTimeRange, setSelectedTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
 
   // Calculate analytics metrics based on actual sample data
@@ -147,7 +153,9 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
     <div className="space-y-6">
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-fade-in">
-        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in">
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+              onClick={() => onFilterSubmissions?.({})}
+        >
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -158,12 +166,15 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
             </div>
             <div className="mt-2 flex items-center text-sm text-green-600">
               <TrendingUp className="h-4 w-4 mr-1" />
-              <span>+{((totalSubmissions / 10) * 100).toFixed(0)}% this month</span>
+              <span>Click to view all</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.1s' }}>
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+              style={{ animationDelay: '0.1s' }}
+              onClick={() => onFilterSubmissions?.({ status: 'approved' })}
+        >
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -178,7 +189,10 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.2s' }}>
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+              style={{ animationDelay: '0.2s' }}
+              onClick={() => onFilterSubmissions?.({ status: 'approved', approvalType: 'fully' })}
+        >
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -189,12 +203,15 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
             </div>
             <div className="mt-2 flex items-center text-sm text-emerald-600">
               <CheckCircle className="h-4 w-4 mr-1" />
-              <span>{fullApprovalRate.toFixed(1)}% of approvals</span>
+              <span>Click to view all</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.3s' }}>
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+              style={{ animationDelay: '0.3s' }}
+              onClick={() => onFilterSubmissions?.({ status: 'approved', approvalType: 'partially' })}
+        >
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -205,12 +222,15 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
             </div>
             <div className="mt-2 flex items-center text-sm text-orange-600">
               <AlertTriangle className="h-4 w-4 mr-1" />
-              <span>{(100 - fullApprovalRate).toFixed(1)}% of approvals</span>
+              <span>Click to view all</span>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.4s' }}>
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+              style={{ animationDelay: '0.4s' }}
+              onClick={() => onFilterSubmissions?.({ status: 'under_review' })}
+        >
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -221,7 +241,7 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
             </div>
             <div className="mt-2 flex items-center text-sm text-orange-600">
               <AlertTriangle className="h-4 w-4 mr-1" />
-              <span>Needs attention</span>
+              <span>Click to review</span>
             </div>
           </CardContent>
         </Card>

@@ -49,6 +49,12 @@ const Index = () => {
   // Tab navigation state
   const [activeTab, setActiveTab] = useState("build-form");
   const [activeBuildTab, setActiveBuildTab] = useState("builder");
+  const [submissionFilters, setSubmissionFilters] = useState<{
+    status?: string;
+    approvalType?: string;
+    riskLevel?: string;
+    submissionType?: string;
+  }>({});
   
   // Form state management
   const [formFields, setFormFields] = useState<FormField[]>([]);
@@ -480,6 +486,19 @@ const Index = () => {
     return null;
   };
 
+  /**
+   * Handle filter navigation from dashboard to review section
+   */
+  const handleFilterSubmissions = (filters: {
+    status?: string;
+    approvalType?: string;
+    riskLevel?: string;
+    submissionType?: string;
+  }) => {
+    setSubmissionFilters(filters);
+    setActiveTab("review-submissions");
+  };
+
   // Create mobile-friendly tabs array for build section
   const buildTabs = [
     { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" />, mobileLabel: "Build" },
@@ -594,7 +613,7 @@ const Index = () => {
 
           {/* Dashboard Section */}
           <TabsContent value="dashboard" className="mt-3 sm:mt-6">
-            <Analytics submissions={submissions} />
+            <Analytics submissions={submissions} onFilterSubmissions={handleFilterSubmissions} />
           </TabsContent>
 
           {/* Review Submissions Section */}
@@ -636,6 +655,7 @@ const Index = () => {
                       dropoffRate: 0
                     }
                   }}
+                  initialFilters={submissionFilters}
                   onUpdateSubmission={(id, updates) => {
                     // Handle submission updates
                     console.log('Updating submission:', id, updates);

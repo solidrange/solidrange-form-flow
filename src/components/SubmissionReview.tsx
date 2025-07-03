@@ -11,10 +11,16 @@ import { SubmissionActions } from "./submissions/SubmissionActions";
 interface SubmissionReviewProps {
   submissions: FormSubmission[];
   form: Form;
+  initialFilters?: {
+    status?: string;
+    approvalType?: string;
+    riskLevel?: string;
+    submissionType?: string;
+  };
   onUpdateSubmission: (submissionId: string, updates: Partial<FormSubmission>) => void;
 }
 
-export const SubmissionReview = ({ submissions, form, onUpdateSubmission }: SubmissionReviewProps) => {
+export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSubmission }: SubmissionReviewProps) => {
   const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);
   const [filterStatus, setFilterStatus] = useState<string>("all");
 
@@ -33,6 +39,7 @@ export const SubmissionReview = ({ submissions, form, onUpdateSubmission }: Subm
           form={form}
           selectedSubmission={selectedSubmission}
           filterStatus={filterStatus}
+          initialFilters={initialFilters}
           onSelectSubmission={setSelectedSubmission}
           onFilterChange={setFilterStatus}
         />
