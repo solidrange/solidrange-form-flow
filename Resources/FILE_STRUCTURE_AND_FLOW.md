@@ -202,48 +202,48 @@ src/
 ### 1. User Journey: Creating a Form
 
 ```mermaid
-graph TD
-    A[User opens app] --> B[Index.tsx loads]
-    B --> C[Clicks 'Build' tab]
-    C --> D[FormBuilder.tsx renders]
-    D --> E[FieldPalette.tsx shows available fields]
-    E --> F[User drags field to FormCanvas.tsx]
-    F --> G[FieldEditor.tsx opens for configuration]
-    G --> H[User configures field properties]
-    H --> I[Repeat E-H for more fields]
-    I --> J[User saves form as draft]
-    J --> K[Form stored in savedDrafts state]
+flowchart TD
+    A["User opens app"] --> B["Index.tsx loads"]
+    B --> C["Clicks Build tab"]
+    C --> D["FormBuilder.tsx renders"]
+    D --> E["FieldPalette.tsx shows available fields"]
+    E --> F["User drags field to FormCanvas.tsx"]
+    F --> G["FieldEditor.tsx opens for configuration"]
+    G --> H["User configures field properties"]
+    H --> I["Repeat E-H for more fields"]
+    I --> J["User saves form as draft"]
+    J --> K["Form stored in savedDrafts state"]
 ```
 
 ### 2. User Journey: Publishing and Sharing
 
 ```mermaid
-graph TD
-    A[User has draft form] --> B[Clicks 'Publish' button]
-    B --> C[Form moved to publishedForms state]
-    C --> D[FormInvitations.tsx becomes available]
-    D --> E[User configures EmailDistributionSettings.tsx]
-    E --> F[User adds recipients via RecipientManagement.tsx]
-    F --> G[User customizes EmailTemplateCustomization.tsx]
-    G --> H[Invitations sent to recipients]
-    H --> I[FormInvitationStatistics.tsx tracks responses]
+flowchart TD
+    A["User has draft form"] --> B["Clicks Publish button"]
+    B --> C["Form moved to publishedForms state"]
+    C --> D["FormInvitations.tsx becomes available"]
+    D --> E["User configures EmailDistributionSettings.tsx"]
+    E --> F["User adds recipients via RecipientManagement.tsx"]
+    F --> G["User customizes EmailTemplateCustomization.tsx"]
+    G --> H["Invitations sent to recipients"]
+    H --> I["FormInvitationStatistics.tsx tracks responses"]
 ```
 
 ### 3. User Journey: Review Process
 
 ```mermaid
-graph TD
-    A[Form submissions received] --> B[User opens Review tab]
-    B --> C[SubmissionReview.tsx loads]
-    C --> D[SubmissionsList.tsx displays submissions]
-    D --> E[User clicks submission]
-    E --> F[SubmissionDetails.tsx shows full data]
-    F --> G[SubmissionActions.tsx displays AI suggestions]
-    G --> H[AI generates approval recommendation]
-    H --> I[User reviews AI suggestion and selects approval type]
-    I --> J[User chooses: Fully Approved/Partially Approved/Rejected]
-    J --> K[SubmissionActions.tsx processes decision]
-    K --> L[Activity logged with approval type and AI recommendation]
+flowchart TD
+    A["Form submissions received"] --> B["User opens Review tab"]
+    B --> C["SubmissionReview.tsx loads"]
+    C --> D["SubmissionsList.tsx displays submissions"]
+    D --> E["User clicks submission"]
+    E --> F["SubmissionDetails.tsx shows full data"]
+    F --> G["SubmissionActions.tsx displays AI suggestions"]
+    G --> H["AI generates approval recommendation"]
+    H --> I["User reviews AI suggestion and selects approval type"]
+    I --> J["User chooses: Fully Approved/Partially Approved/Rejected"]
+    J --> K["SubmissionActions.tsx processes decision"]
+    K --> L["Activity logged with approval type and AI recommendation"]
 ```
 
 ---
@@ -289,24 +289,24 @@ App.tsx
 ### State Management Pattern
 
 ```mermaid
-graph TD
-    A[Index.tsx - Main State Container] --> B[Form Data State]
-    A --> C[Submission Data State]
-    A --> D[UI State]
+flowchart TD
+    A["Index.tsx - Main State Container"] --> B["Form Data State"]
+    A --> C["Submission Data State"]
+    A --> D["UI State"]
     
-    B --> B1[formFields: FormField[]]
-    B --> B2[formTitle: string]
-    B --> B3[formDescription: string]
-    B --> B4[formSettings: FormSettings]
-    B --> B5[savedDrafts: Form[]]
-    B --> B6[publishedForms: Form[]]
+    B --> B1["formFields: FormField[]"]
+    B --> B2["formTitle: string"]
+    B --> B3["formDescription: string"]
+    B --> B4["formSettings: FormSettings"]
+    B --> B5["savedDrafts: Form[]"]
+    B --> B6["publishedForms: Form[]"]
     
-    C --> C1[submissions: FormSubmission[]]
-    C --> C2[emailRecipients: EmailRecipient[]]
+    C --> C1["submissions: FormSubmission[]"]
+    C --> C2["emailRecipients: EmailRecipient[]"]
     
-    D --> D1[activeTab: string]
-    D --> D2[selectedField: string]
-    D --> D3[currentFormId: string]
+    D --> D1["activeTab: string"]
+    D --> D2["selectedField: string"]
+    D --> D3["currentFormId: string"]
 ```
 
 ### Data Flow Between Components
