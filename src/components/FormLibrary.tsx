@@ -3581,22 +3581,50 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
     const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          template.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(template.category);
-    const matchesSector = selectedSectors.length === 0 || 
-                          !template.sector || // General forms with no sector
-                          (Array.isArray(template.sector) ? template.sector.some(s => selectedSectors.includes(s)) : selectedSectors.includes(template.sector));
-    return matchesSearch && matchesCategory && matchesSector;
-  }).sort((a, b) => {
-    // When filtering by specific sectors, prioritize sector-specific forms over general forms
-    if (selectedSectors.length > 0) {
-      const aHasSector = a.sector && (Array.isArray(a.sector) ? a.sector.some(s => selectedSectors.includes(s)) : selectedSectors.includes(a.sector));
-      const bHasSector = b.sector && (Array.isArray(b.sector) ? b.sector.some(s => selectedSectors.includes(s)) : selectedSectors.includes(b.sector));
-      
-      // Sector-specific forms come first
-      if (aHasSector && !bHasSector) return -1;
-      if (!aHasSector && bHasSector) return 1;
+    
+    // Sector filtering logic
+    let matchesSector = false;
+    if (selectedSectors.length === 0) {
+      // No sector filter applied - show all forms
+      matchesSector = true;
+    } else {
+      // Sector filter applied - show forms that match the selected sectors OR general forms (no sector)
+      if (!template.sector) {
+        // General form (no sector specified) - always include when sector filter is active
+        matchesSector = true;
+      } else {
+        // Sector-specific form - check if it matches any selected sector
+        const templateSectors = Array.isArray(template.sector) ? template.sector : [template.sector];
+        matchesSector = templateSectors.some(s => selectedSectors.includes(s));
+      }
     }
     
-    // Otherwise, sort alphabetically by name
+    return matchesSearch && matchesCategory && matchesSector;
+  }).sort((a, b) => {
+    // When sector filtering is active, prioritize sector-specific forms over general forms
+    if (selectedSectors.length > 0) {
+      const aIsGeneral = !a.sector;
+      const bIsGeneral = !b.sector;
+      
+      const aMatchesSector = a.sector && (Array.isArray(a.sector) ? 
+        a.sector.some(s => selectedSectors.includes(s)) : 
+        selectedSectors.includes(a.sector));
+      const bMatchesSector = b.sector && (Array.isArray(b.sector) ? 
+        b.sector.some(s => selectedSectors.includes(s)) : 
+        selectedSectors.includes(b.sector));
+      
+      // Sector-specific matching forms come first
+      if (aMatchesSector && !bMatchesSector) return -1;
+      if (!aMatchesSector && bMatchesSector) return 1;
+      
+      // Among matching forms, sector-specific forms come before general forms
+      if (aMatchesSector && bMatchesSector) {
+        if (!aIsGeneral && bIsGeneral) return -1;
+        if (aIsGeneral && !bIsGeneral) return 1;
+      }
+    }
+    
+    // Default alphabetical sorting
     return a.name.localeCompare(b.name);
   });
 
