@@ -1,7 +1,15 @@
 # Form Builder & Submission Management API Documentation
 
 ## Overview
-This document outlines the complete API specification and database schema required for implementing the backend of this Form Builder and Submission Management system using .NET Core Web API.
+This document outlines the complete API specification and database schema for implementing the backend of the Form Builder and Submission Management system using .NET Core Web API. The system supports comprehensive form creation, email distribution, submission management, and advanced analytics with PDF export capabilities.
+
+## Current System Features
+- **Advanced Form Builder**: Drag-and-drop interface with 15+ field types and conditional logic
+- **Email Campaign Management**: Automated invitations, reminders, and recipient tracking
+- **Submission Processing**: Real-time validation, automated scoring, and review workflows  
+- **Analytics & Reporting**: Comprehensive dashboards with PDF/Excel export capabilities
+- **Document Management**: File attachments and secure document handling
+- **Sharing & Embedding**: Public links, responsive embed codes, and fillable PDF export
 
 ## Technology Stack
 - **Framework**: .NET 8 Web API
