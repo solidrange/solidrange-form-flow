@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, Shield, AlertTriangle, Building, Users, User, Globe } from "lucide-react";
+import { Search, Plus, Shield, AlertTriangle, Building, Users, User, Globe, Landmark, CreditCard, Stethoscope, Zap, Smartphone, Rocket, Store } from "lucide-react";
 
 interface FormLibraryProps {
   onUseTemplate?: (template: FormTemplate) => void;
@@ -1493,6 +1493,565 @@ const formTemplates: FormTemplate[] = [
       { id: generateFieldId(334), type: "textarea", label: "Mitigation Strategies", required: true },
       { id: generateFieldId(335), type: "text", label: "Risk Owner", required: true }
     ]
+  },
+
+  // GOVERNMENT SECTOR TEMPLATES
+  {
+    id: "gov-1",
+    name: "Public Procurement Vendor Registration",
+    description: "Comprehensive vendor registration for government contracts",
+    category: "procurement",
+    sector: "government",
+    targetAudience: ["vendor"],
+    preview: "Business credentials, financial statements, security clearances, compliance certifications",
+    fields: [
+      { id: generateFieldId(336), type: "text", label: "Business Legal Name", required: true },
+      { id: generateFieldId(337), type: "text", label: "Tax Identification Number", required: true },
+      { id: generateFieldId(338), type: "text", label: "DUNS Number", required: true },
+      { id: generateFieldId(339), type: "checkbox", label: "Business Classifications", required: true, options: ["Small Business", "Minority-Owned", "Woman-Owned", "Veteran-Owned", "Disadvantaged Business"] },
+      { id: generateFieldId(340), type: "select", label: "Security Clearance Level", required: false, options: ["None", "Confidential", "Secret", "Top Secret", "TS/SCI"] },
+      { id: generateFieldId(341), type: "checkbox", label: "Compliance Certifications", required: true, options: ["FIPS 140-2", "FedRAMP", "FISMA", "Section 508", "FAR Compliance"] },
+      { id: generateFieldId(342), type: "textarea", label: "Government Contract Experience", required: true },
+      { id: generateFieldId(343), type: "text", label: "Bonding Capacity", required: false },
+      { id: generateFieldId(344), type: "radio", label: "Debarment Status", required: true, options: ["No Debarment", "Under Investigation", "Previously Debarred"] }
+    ]
+  },
+
+  {
+    id: "gov-2",
+    name: "FOIA Request Form",
+    description: "Freedom of Information Act request submission",
+    category: "legal",
+    sector: "government",
+    targetAudience: ["external"],
+    preview: "Request details, record description, fee category, contact information",
+    fields: [
+      { id: generateFieldId(345), type: "text", label: "Full Name", required: true },
+      { id: generateFieldId(346), type: "email", label: "Email Address", required: true },
+      { id: generateFieldId(347), type: "textarea", label: "Mailing Address", required: true },
+      { id: generateFieldId(348), type: "select", label: "Requester Category", required: true, options: ["Commercial Use", "Educational Institution", "News Media", "All Other Requesters"] },
+      { id: generateFieldId(349), type: "textarea", label: "Records Requested (Specific Description)", required: true },
+      { id: generateFieldId(350), type: "date", label: "Date Range Start", required: false },
+      { id: generateFieldId(351), type: "date", label: "Date Range End", required: false },
+      { id: generateFieldId(352), type: "select", label: "Preferred Format", required: false, options: ["Electronic", "Paper", "CD/DVD", "No Preference"] },
+      { id: generateFieldId(353), type: "text", label: "Maximum Fee Willing to Pay", required: false },
+      { id: generateFieldId(354), type: "textarea", label: "Fee Waiver Justification", required: false }
+    ]
+  },
+
+  {
+    id: "gov-3",
+    name: "Citizen Complaint Form",
+    description: "Public complaint and grievance submission",
+    category: "customer",
+    sector: "government",
+    targetAudience: ["external"],
+    preview: "Complaint details, department, incident information, resolution request",
+    fields: [
+      { id: generateFieldId(355), type: "text", label: "Your Name", required: true },
+      { id: generateFieldId(356), type: "email", label: "Email Address", required: true },
+      { id: generateFieldId(357), type: "text", label: "Phone Number", required: false },
+      { id: generateFieldId(358), type: "select", label: "Department/Agency", required: true, options: ["Public Works", "Police Department", "Fire Department", "Health Department", "Planning & Zoning", "Parks & Recreation", "Other"] },
+      { id: generateFieldId(359), type: "date", label: "Date of Incident", required: true },
+      { id: generateFieldId(360), type: "textarea", label: "Detailed Description of Complaint", required: true },
+      { id: generateFieldId(361), type: "text", label: "Location of Incident", required: false },
+      { id: generateFieldId(362), type: "select", label: "Priority Level", required: true, options: ["Low", "Medium", "High", "Emergency"] },
+      { id: generateFieldId(363), type: "textarea", label: "Desired Resolution", required: false }
+    ]
+  },
+
+  {
+    id: "gov-4",
+    name: "Security Clearance Application",
+    description: "Government security clearance background investigation form",
+    category: "security",
+    sector: "government",
+    targetAudience: ["internal", "external"],
+    preview: "Personal history, employment, education, references, foreign contacts",
+    fields: [
+      { id: generateFieldId(364), type: "text", label: "Full Legal Name", required: true },
+      { id: generateFieldId(365), type: "date", label: "Date of Birth", required: true },
+      { id: generateFieldId(366), type: "text", label: "Social Security Number", required: true },
+      { id: generateFieldId(367), type: "select", label: "Clearance Level Requested", required: true, options: ["Confidential", "Secret", "Top Secret", "TS/SCI"] },
+      { id: generateFieldId(368), type: "textarea", label: "Employment History (Last 10 Years)", required: true },
+      { id: generateFieldId(369), type: "textarea", label: "Education History", required: true },
+      { id: generateFieldId(370), type: "radio", label: "Foreign Travel in Last 7 Years?", required: true, options: ["Yes", "No"] },
+      { id: generateFieldId(371), type: "textarea", label: "Foreign Contacts", required: false },
+      { id: generateFieldId(372), type: "textarea", label: "Financial Issues or Bankruptcies", required: false },
+      { id: generateFieldId(373), type: "textarea", label: "References (3 Required)", required: true }
+    ]
+  },
+
+  // INSURANCE SECTOR TEMPLATES
+  {
+    id: "ins-1",
+    name: "Insurance Claim Report",
+    description: "Comprehensive insurance claim submission form",
+    category: "customer",
+    sector: "insurance",
+    targetAudience: ["external"],
+    preview: "Policy details, incident description, damages, witness information",
+    fields: [
+      { id: generateFieldId(374), type: "text", label: "Policy Number", required: true },
+      { id: generateFieldId(375), type: "text", label: "Policyholder Name", required: true },
+      { id: generateFieldId(376), type: "select", label: "Claim Type", required: true, options: ["Auto", "Property", "Life", "Health", "Disability", "Liability"] },
+      { id: generateFieldId(377), type: "date", label: "Date of Loss", required: true },
+      { id: generateFieldId(378), type: "text", label: "Time of Loss", required: true },
+      { id: generateFieldId(379), type: "textarea", label: "Location of Loss", required: true },
+      { id: generateFieldId(380), type: "textarea", label: "Description of Loss/Incident", required: true },
+      { id: generateFieldId(381), type: "text", label: "Estimated Damage Amount", required: false },
+      { id: generateFieldId(382), type: "radio", label: "Police Report Filed?", required: true, options: ["Yes", "No"] },
+      { id: generateFieldId(383), type: "textarea", label: "Witness Information", required: false },
+      { id: generateFieldId(384), type: "radio", label: "Injuries Involved?", required: true, options: ["Yes", "No"] }
+    ]
+  },
+
+  {
+    id: "ins-2",
+    name: "Underwriting Risk Assessment",
+    description: "Risk evaluation for insurance underwriting",
+    category: "risk",
+    sector: "insurance",
+    targetAudience: ["internal"],
+    preview: "Risk factors, exposure analysis, premium calculation, coverage recommendations",
+    fields: [
+      { id: generateFieldId(385), type: "text", label: "Applicant Name", required: true },
+      { id: generateFieldId(386), type: "select", label: "Insurance Type", required: true, options: ["Life", "Auto", "Property", "Business", "Health", "Disability"] },
+      { id: generateFieldId(387), type: "text", label: "Coverage Amount Requested", required: true },
+      { id: generateFieldId(388), type: "checkbox", label: "Risk Factors", required: true, options: ["High-Risk Occupation", "Medical History", "Previous Claims", "Credit Issues", "Geographic Risk"] },
+      { id: generateFieldId(389), type: "rating", label: "Overall Risk Rating", required: true },
+      { id: generateFieldId(390), type: "textarea", label: "Risk Mitigation Factors", required: false },
+      { id: generateFieldId(391), type: "text", label: "Recommended Premium", required: true },
+      { id: generateFieldId(392), type: "select", label: "Underwriting Decision", required: true, options: ["Approve Standard", "Approve Substandard", "Decline", "Request Additional Information"] },
+      { id: generateFieldId(393), type: "textarea", label: "Underwriter Comments", required: false }
+    ]
+  },
+
+  {
+    id: "ins-3",
+    name: "Agent Performance Review",
+    description: "Insurance agent performance evaluation and goal setting",
+    category: "hr",
+    sector: "insurance",
+    targetAudience: ["internal"],
+    preview: "Sales metrics, customer satisfaction, compliance, professional development",
+    fields: [
+      { id: generateFieldId(394), type: "text", label: "Agent Name", required: true },
+      { id: generateFieldId(395), type: "text", label: "Agent ID", required: true },
+      { id: generateFieldId(396), type: "date", label: "Review Period Start", required: true },
+      { id: generateFieldId(397), type: "date", label: "Review Period End", required: true },
+      { id: generateFieldId(398), type: "text", label: "Policies Sold", required: true },
+      { id: generateFieldId(399), type: "text", label: "Total Premium Written", required: true },
+      { id: generateFieldId(400), type: "rating", label: "Customer Satisfaction Score", required: true },
+      { id: generateFieldId(401), type: "checkbox", label: "Compliance Training Completed", required: true, options: ["Ethics", "Product Knowledge", "Regulatory Updates", "Sales Practices"] },
+      { id: generateFieldId(402), type: "textarea", label: "Goals for Next Period", required: true },
+      { id: generateFieldId(403), type: "rating", label: "Overall Performance Rating", required: true }
+    ]
+  },
+
+  // FINTECH SECTOR TEMPLATES
+  {
+    id: "fin-1",
+    name: "KYC/AML Customer Onboarding",
+    description: "Know Your Customer and Anti-Money Laundering compliance form",
+    category: "compliance",
+    sector: "fintech",
+    targetAudience: ["external"],
+    preview: "Identity verification, source of funds, PEP screening, risk assessment",
+    fields: [
+      { id: generateFieldId(404), type: "text", label: "Full Legal Name", required: true },
+      { id: generateFieldId(405), type: "date", label: "Date of Birth", required: true },
+      { id: generateFieldId(406), type: "text", label: "National ID/Passport Number", required: true },
+      { id: generateFieldId(407), type: "textarea", label: "Residential Address", required: true },
+      { id: generateFieldId(408), type: "select", label: "Source of Funds", required: true, options: ["Employment Income", "Business Income", "Investment Returns", "Inheritance", "Gift", "Other"] },
+      { id: generateFieldId(409), type: "text", label: "Employer/Business Name", required: true },
+      { id: generateFieldId(410), type: "text", label: "Annual Income", required: true },
+      { id: generateFieldId(411), type: "radio", label: "Politically Exposed Person (PEP)?", required: true, options: ["Yes", "No"] },
+      { id: generateFieldId(412), type: "radio", label: "Sanctions List Check Clear?", required: true, options: ["Yes", "No", "Under Review"] },
+      { id: generateFieldId(413), type: "select", label: "Risk Rating", required: true, options: ["Low", "Medium", "High"] },
+      { id: generateFieldId(414), type: "textarea", label: "Additional Risk Factors", required: false }
+    ]
+  },
+
+  {
+    id: "fin-2",
+    name: "Credit Risk Assessment",
+    description: "Credit risk evaluation for lending decisions",
+    category: "risk",
+    sector: "fintech",
+    targetAudience: ["internal"],
+    preview: "Credit history, income verification, debt-to-income ratio, collateral assessment",
+    fields: [
+      { id: generateFieldId(415), type: "text", label: "Applicant Name", required: true },
+      { id: generateFieldId(416), type: "text", label: "Credit Score", required: true },
+      { id: generateFieldId(417), type: "text", label: "Monthly Income", required: true },
+      { id: generateFieldId(418), type: "text", label: "Monthly Debt Payments", required: true },
+      { id: generateFieldId(419), type: "text", label: "Debt-to-Income Ratio", required: true },
+      { id: generateFieldId(420), type: "text", label: "Loan Amount Requested", required: true },
+      { id: generateFieldId(421), type: "select", label: "Loan Purpose", required: true, options: ["Personal", "Business", "Auto", "Mortgage", "Education", "Debt Consolidation"] },
+      { id: generateFieldId(422), type: "textarea", label: "Collateral Description", required: false },
+      { id: generateFieldId(423), type: "checkbox", label: "Negative Credit Events", required: false, options: ["Bankruptcy", "Foreclosure", "Late Payments", "Collections", "Charge-offs"] },
+      { id: generateFieldId(424), type: "select", label: "Credit Decision", required: true, options: ["Approve", "Decline", "Counter Offer", "Request Additional Information"] }
+    ]
+  },
+
+  {
+    id: "fin-3",
+    name: "Fraud Investigation Report",
+    description: "Financial fraud incident investigation and reporting",
+    category: "security",
+    sector: "fintech",
+    targetAudience: ["internal"],
+    preview: "Incident details, transaction analysis, evidence collection, recommendations",
+    fields: [
+      { id: generateFieldId(425), type: "text", label: "Case Number", required: true },
+      { id: generateFieldId(426), type: "text", label: "Investigating Officer", required: true },
+      { id: generateFieldId(427), type: "date", label: "Incident Date", required: true },
+      { id: generateFieldId(428), type: "select", label: "Fraud Type", required: true, options: ["Identity Theft", "Credit Card Fraud", "Wire Fraud", "Account Takeover", "Synthetic Identity", "Other"] },
+      { id: generateFieldId(429), type: "text", label: "Financial Loss Amount", required: true },
+      { id: generateFieldId(430), type: "textarea", label: "Incident Description", required: true },
+      { id: generateFieldId(431), type: "textarea", label: "Transaction Details", required: true },
+      { id: generateFieldId(432), type: "textarea", label: "Evidence Collected", required: true },
+      { id: generateFieldId(433), type: "radio", label: "Law Enforcement Notified?", required: true, options: ["Yes", "No"] },
+      { id: generateFieldId(434), type: "textarea", label: "Recommendations", required: true }
+    ]
+  },
+
+  // HEALTH SECTOR TEMPLATES
+  {
+    id: "health-1",
+    name: "Patient Safety Incident Report",
+    description: "Healthcare patient safety and adverse event reporting",
+    category: "quality",
+    sector: "health",
+    targetAudience: ["internal"],
+    preview: "Patient details, incident description, contributing factors, corrective actions",
+    fields: [
+      { id: generateFieldId(435), type: "text", label: "Patient ID", required: true },
+      { id: generateFieldId(436), type: "date", label: "Incident Date", required: true },
+      { id: generateFieldId(437), type: "text", label: "Reporter Name", required: true },
+      { id: generateFieldId(438), type: "select", label: "Incident Type", required: true, options: ["Medication Error", "Fall", "Infection", "Surgical Complication", "Equipment Failure", "Documentation Error"] },
+      { id: generateFieldId(439), type: "select", label: "Severity Level", required: true, options: ["No Harm", "Mild Harm", "Moderate Harm", "Severe Harm", "Death"] },
+      { id: generateFieldId(440), type: "textarea", label: "Incident Description", required: true },
+      { id: generateFieldId(441), type: "textarea", label: "Contributing Factors", required: false },
+      { id: generateFieldId(442), type: "textarea", label: "Immediate Actions Taken", required: true },
+      { id: generateFieldId(443), type: "textarea", label: "Corrective Actions Required", required: false },
+      { id: generateFieldId(444), type: "radio", label: "Family Notified?", required: true, options: ["Yes", "No", "N/A"] }
+    ]
+  },
+
+  {
+    id: "health-2",
+    name: "HIPAA Privacy Breach Report",
+    description: "Healthcare data breach incident reporting under HIPAA",
+    category: "compliance",
+    sector: "health",
+    targetAudience: ["internal"],
+    preview: "Breach details, affected records, notification requirements, remediation",
+    fields: [
+      { id: generateFieldId(445), type: "text", label: "Incident ID", required: true },
+      { id: generateFieldId(446), type: "date", label: "Discovery Date", required: true },
+      { id: generateFieldId(447), type: "date", label: "Estimated Breach Date", required: true },
+      { id: generateFieldId(448), type: "select", label: "Breach Type", required: true, options: ["Unauthorized Access", "Data Theft", "Lost Device", "Email Error", "Hacking", "Improper Disposal"] },
+      { id: generateFieldId(449), type: "text", label: "Number of Patients Affected", required: true },
+      { id: generateFieldId(450), type: "checkbox", label: "Types of PHI Involved", required: true, options: ["Names", "Addresses", "SSN", "Medical Records", "Insurance Info", "Financial Data"] },
+      { id: generateFieldId(451), type: "textarea", label: "Breach Description", required: true },
+      { id: generateFieldId(452), type: "radio", label: "Risk Assessment Completed?", required: true, options: ["Yes", "No", "In Progress"] },
+      { id: generateFieldId(453), type: "radio", label: "Requires HHS Notification?", required: true, options: ["Yes", "No", "Under Review"] },
+      { id: generateFieldId(454), type: "textarea", label: "Mitigation Actions", required: true }
+    ]
+  },
+
+  {
+    id: "health-3",
+    name: "Medical Device Adverse Event",
+    description: "FDA medical device adverse event reporting",
+    category: "quality",
+    sector: "health",
+    targetAudience: ["internal"],
+    preview: "Device information, patient outcome, event description, manufacturer notification",
+    fields: [
+      { id: generateFieldId(455), type: "text", label: "Device Name", required: true },
+      { id: generateFieldId(456), type: "text", label: "Manufacturer", required: true },
+      { id: generateFieldId(457), type: "text", label: "Model Number", required: true },
+      { id: generateFieldId(458), type: "text", label: "Serial Number", required: false },
+      { id: generateFieldId(459), type: "date", label: "Event Date", required: true },
+      { id: generateFieldId(460), type: "select", label: "Patient Outcome", required: true, options: ["Death", "Life-threatening", "Hospitalization", "Disability", "Intervention Required", "No Adverse Outcome"] },
+      { id: generateFieldId(461), type: "textarea", label: "Event Description", required: true },
+      { id: generateFieldId(462), type: "radio", label: "Device Available for Evaluation?", required: true, options: ["Yes", "No"] },
+      { id: generateFieldId(463), type: "radio", label: "Manufacturer Notified?", required: true, options: ["Yes", "No"] },
+      { id: generateFieldId(464), type: "textarea", label: "Corrective Actions", required: false }
+    ]
+  },
+
+  // ENERGY SECTOR TEMPLATES
+  {
+    id: "energy-1",
+    name: "Environmental Impact Assessment",
+    description: "Environmental impact evaluation for energy projects",
+    category: "compliance",
+    sector: "energy",
+    targetAudience: ["external"],
+    preview: "Project scope, environmental factors, mitigation measures, regulatory compliance",
+    fields: [
+      { id: generateFieldId(465), type: "text", label: "Project Name", required: true },
+      { id: generateFieldId(466), type: "text", label: "Project Location", required: true },
+      { id: generateFieldId(467), type: "select", label: "Project Type", required: true, options: ["Solar", "Wind", "Nuclear", "Hydroelectric", "Natural Gas", "Coal", "Transmission Line"] },
+      { id: generateFieldId(468), type: "text", label: "Project Capacity (MW)", required: true },
+      { id: generateFieldId(469), type: "checkbox", label: "Environmental Factors", required: true, options: ["Air Quality", "Water Resources", "Wildlife", "Noise", "Visual Impact", "Cultural Sites"] },
+      { id: generateFieldId(470), type: "textarea", label: "Environmental Impact Description", required: true },
+      { id: generateFieldId(471), type: "textarea", label: "Mitigation Measures", required: true },
+      { id: generateFieldId(472), type: "radio", label: "EIS Required?", required: true, options: ["Yes", "No", "Under Determination"] },
+      { id: generateFieldId(473), type: "textarea", label: "Regulatory Permits Required", required: false },
+      { id: generateFieldId(474), type: "date", label: "Expected Construction Start", required: false }
+    ]
+  },
+
+  {
+    id: "energy-2",
+    name: "Grid Connection Request",
+    description: "Utility grid interconnection application",
+    category: "operations",
+    sector: "energy",
+    targetAudience: ["external"],
+    preview: "Generation details, technical specifications, interconnection requirements",
+    fields: [
+      { id: generateFieldId(475), type: "text", label: "Facility Name", required: true },
+      { id: generateFieldId(476), type: "text", label: "Applicant Company", required: true },
+      { id: generateFieldId(477), type: "text", label: "Maximum Output (MW)", required: true },
+      { id: generateFieldId(478), type: "select", label: "Generation Type", required: true, options: ["Solar PV", "Wind", "Natural Gas", "Energy Storage", "Hydroelectric", "Biomass"] },
+      { id: generateFieldId(479), type: "text", label: "Connection Voltage Level", required: true },
+      { id: generateFieldId(480), type: "textarea", label: "Proposed Connection Point", required: true },
+      { id: generateFieldId(481), type: "date", label: "Requested In-Service Date", required: true },
+      { id: generateFieldId(482), type: "checkbox", label: "Study Requirements", required: true, options: ["Feasibility Study", "System Impact Study", "Facilities Study"] },
+      { id: generateFieldId(483), type: "text", label: "Estimated Construction Cost", required: false },
+      { id: generateFieldId(484), type: "textarea", label: "Special Requirements", required: false }
+    ]
+  },
+
+  {
+    id: "energy-3",
+    name: "Safety Incident Report",
+    description: "Energy facility safety incident reporting",
+    category: "safety",
+    sector: "energy",
+    targetAudience: ["internal"],
+    preview: "Incident details, injuries, environmental impact, corrective actions",
+    fields: [
+      { id: generateFieldId(485), type: "text", label: "Facility Name", required: true },
+      { id: generateFieldId(486), type: "date", label: "Incident Date", required: true },
+      { id: generateFieldId(487), type: "text", label: "Incident Time", required: true },
+      { id: generateFieldId(488), type: "select", label: "Incident Type", required: true, options: ["Personal Injury", "Equipment Failure", "Environmental Release", "Fire/Explosion", "Electrical Incident", "Near Miss"] },
+      { id: generateFieldId(489), type: "select", label: "Severity Level", required: true, options: ["Minor", "Moderate", "Major", "Critical"] },
+      { id: generateFieldId(490), type: "textarea", label: "Incident Description", required: true },
+      { id: generateFieldId(491), type: "text", label: "Injuries/Fatalities", required: false },
+      { id: generateFieldId(492), type: "textarea", label: "Environmental Impact", required: false },
+      { id: generateFieldId(493), type: "textarea", label: "Immediate Actions", required: true },
+      { id: generateFieldId(494), type: "radio", label: "Regulatory Notification Required?", required: true, options: ["Yes", "No"] }
+    ]
+  },
+
+  // TELCO SECTOR TEMPLATES
+  {
+    id: "telco-1",
+    name: "Network Outage Report",
+    description: "Telecommunications network outage incident reporting",
+    category: "operations",
+    sector: "telco",
+    targetAudience: ["internal"],
+    preview: "Outage details, affected services, customer impact, restoration timeline",
+    fields: [
+      { id: generateFieldId(495), type: "text", label: "Outage ID", required: true },
+      { id: generateFieldId(496), type: "date", label: "Outage Start Date", required: true },
+      { id: generateFieldId(497), type: "text", label: "Outage Start Time", required: true },
+      { id: generateFieldId(498), type: "select", label: "Affected Network", required: true, options: ["Mobile", "Fixed Line", "Internet", "Data Center", "Fiber Backbone", "Satellite"] },
+      { id: generateFieldId(499), type: "text", label: "Affected Customers", required: true },
+      { id: generateFieldId(500), type: "checkbox", label: "Services Affected", required: true, options: ["Voice", "Data", "SMS", "Emergency Services", "Roaming", "VoLTE"] },
+      { id: generateFieldId(501), type: "textarea", label: "Root Cause", required: true },
+      { id: generateFieldId(502), type: "text", label: "Geographic Coverage", required: true },
+      { id: generateFieldId(503), type: "text", label: "Estimated Restoration Time", required: false },
+      { id: generateFieldId(504), type: "radio", label: "FCC Notification Required?", required: true, options: ["Yes", "No"] },
+      { id: generateFieldId(505), type: "textarea", label: "Customer Communication", required: true }
+    ]
+  },
+
+  {
+    id: "telco-2",
+    name: "5G Site Deployment Plan",
+    description: "5G cell site deployment planning and approval",
+    category: "project",
+    sector: "telco",
+    targetAudience: ["internal"],
+    preview: "Site specifications, coverage area, equipment requirements, deployment timeline",
+    fields: [
+      { id: generateFieldId(506), type: "text", label: "Site ID", required: true },
+      { id: generateFieldId(507), type: "textarea", label: "Site Address", required: true },
+      { id: generateFieldId(508), type: "select", label: "Site Type", required: true, options: ["Macro", "Small Cell", "Indoor DAS", "Microcell", "Femtocell"] },
+      { id: generateFieldId(509), type: "text", label: "Coverage Radius (km)", required: true },
+      { id: generateFieldId(510), type: "checkbox", label: "Technology Support", required: true, options: ["5G NR", "LTE", "3G", "2G", "Wi-Fi 6"] },
+      { id: generateFieldId(511), type: "text", label: "Antenna Height (m)", required: true },
+      { id: generateFieldId(512), type: "checkbox", label: "Equipment Required", required: true, options: ["Base Station", "Antenna", "Power System", "Cooling", "Backup Generator"] },
+      { id: generateFieldId(513), type: "date", label: "Planned Deployment Date", required: true },
+      { id: generateFieldId(514), type: "text", label: "Estimated Cost", required: true },
+      { id: generateFieldId(515), type: "textarea", label: "Regulatory Approvals Needed", required: false }
+    ]
+  },
+
+  {
+    id: "telco-3",
+    name: "Customer Service Quality Assessment",
+    description: "Telecommunications customer service performance evaluation",
+    category: "quality",
+    sector: "telco",
+    targetAudience: ["internal"],
+    preview: "Service metrics, customer satisfaction, issue resolution, improvement areas",
+    fields: [
+      { id: generateFieldId(516), type: "text", label: "Agent Name", required: true },
+      { id: generateFieldId(517), type: "date", label: "Evaluation Date", required: true },
+      { id: generateFieldId(518), type: "text", label: "Customer Account Number", required: true },
+      { id: generateFieldId(519), type: "select", label: "Call Type", required: true, options: ["Billing Inquiry", "Technical Support", "Service Request", "Complaint", "New Service", "Cancellation"] },
+      { id: generateFieldId(520), type: "rating", label: "Call Handling Quality", required: true },
+      { id: generateFieldId(521), type: "rating", label: "Technical Knowledge", required: true },
+      { id: generateFieldId(522), type: "rating", label: "Customer Courtesy", required: true },
+      { id: generateFieldId(523), type: "text", label: "Call Duration (minutes)", required: true },
+      { id: generateFieldId(524), type: "radio", label: "Issue Resolved?", required: true, options: ["Yes", "No", "Escalated"] },
+      { id: generateFieldId(525), type: "textarea", label: "Improvement Recommendations", required: false }
+    ]
+  },
+
+  // STARTUPS SECTOR TEMPLATES
+  {
+    id: "startup-1",
+    name: "Investor Pitch Deck Submission",
+    description: "Startup pitch deck and investment proposal",
+    category: "business",
+    sector: "startups",
+    targetAudience: ["external"],
+    preview: "Company overview, market analysis, financial projections, funding requirements",
+    fields: [
+      { id: generateFieldId(526), type: "text", label: "Company Name", required: true },
+      { id: generateFieldId(527), type: "text", label: "Founder/CEO Name", required: true },
+      { id: generateFieldId(528), type: "email", label: "Contact Email", required: true },
+      { id: generateFieldId(529), type: "select", label: "Industry", required: true, options: ["Technology", "Healthcare", "Fintech", "E-commerce", "SaaS", "Biotech", "Clean Energy", "Other"] },
+      { id: generateFieldId(530), type: "select", label: "Funding Stage", required: true, options: ["Pre-Seed", "Seed", "Series A", "Series B", "Series C+", "Bridge Round"] },
+      { id: generateFieldId(531), type: "text", label: "Funding Amount Requested", required: true },
+      { id: generateFieldId(532), type: "textarea", label: "Problem Statement", required: true },
+      { id: generateFieldId(533), type: "textarea", label: "Solution Description", required: true },
+      { id: generateFieldId(534), type: "text", label: "Current Monthly Revenue", required: false },
+      { id: generateFieldId(535), type: "text", label: "Team Size", required: true },
+      { id: generateFieldId(536), type: "textarea", label: "Competitive Advantage", required: true }
+    ]
+  },
+
+  {
+    id: "startup-2",
+    name: "Employee Equity Grant",
+    description: "Startup employee equity and stock option grant",
+    category: "hr",
+    sector: "startups",
+    targetAudience: ["internal"],
+    preview: "Employee details, equity type, vesting schedule, grant terms",
+    fields: [
+      { id: generateFieldId(537), type: "text", label: "Employee Name", required: true },
+      { id: generateFieldId(538), type: "text", label: "Employee ID", required: true },
+      { id: generateFieldId(539), type: "text", label: "Position/Title", required: true },
+      { id: generateFieldId(540), type: "date", label: "Grant Date", required: true },
+      { id: generateFieldId(541), type: "select", label: "Equity Type", required: true, options: ["Stock Options", "Restricted Stock", "RSUs", "ESPP", "Phantom Equity"] },
+      { id: generateFieldId(542), type: "text", label: "Number of Shares", required: true },
+      { id: generateFieldId(543), type: "text", label: "Strike Price", required: false },
+      { id: generateFieldId(544), type: "select", label: "Vesting Schedule", required: true, options: ["4 years, 1 year cliff", "3 years, 6 month cliff", "Immediate", "Custom"] },
+      { id: generateFieldId(545), type: "date", label: "Vesting Start Date", required: true },
+      { id: generateFieldId(546), type: "textarea", label: "Special Terms", required: false }
+    ]
+  },
+
+  {
+    id: "startup-3",
+    name: "Product Market Fit Survey",
+    description: "Customer feedback survey for product-market fit assessment",
+    category: "survey",
+    sector: "startups",
+    targetAudience: ["external"],
+    preview: "Product usage, satisfaction, improvement suggestions, recommendation likelihood",
+    fields: [
+      { id: generateFieldId(547), type: "text", label: "Company/Organization", required: false },
+      { id: generateFieldId(548), type: "select", label: "User Role", required: true, options: ["End User", "Decision Maker", "Influencer", "Administrator", "Other"] },
+      { id: generateFieldId(549), type: "select", label: "Usage Frequency", required: true, options: ["Daily", "Weekly", "Monthly", "Rarely", "Never"] },
+      { id: generateFieldId(550), type: "radio", label: "How would you feel if you could no longer use our product?", required: true, options: ["Very disappointed", "Somewhat disappointed", "Not disappointed", "N/A - I don't use it"] },
+      { id: generateFieldId(551), type: "textarea", label: "What is the main benefit you receive from our product?", required: true },
+      { id: generateFieldId(552), type: "select", label: "What type of person do you think would benefit most from our product?", required: true, options: ["Small Business Owner", "Enterprise Manager", "Individual Professional", "Student", "Other"] },
+      { id: generateFieldId(553), type: "textarea", label: "How can we improve our product?", required: false },
+      { id: generateFieldId(554), type: "radio", label: "Would you recommend our product to others?", required: true, options: ["Definitely", "Probably", "Not Sure", "Probably Not", "Definitely Not"] }
+    ]
+  },
+
+  // SME SECTOR TEMPLATES
+  {
+    id: "sme-1",
+    name: "Small Business Loan Application",
+    description: "Comprehensive small business loan application form",
+    category: "finance",
+    sector: "sme",
+    targetAudience: ["external"],
+    preview: "Business details, financial information, loan purpose, collateral",
+    fields: [
+      { id: generateFieldId(555), type: "text", label: "Business Name", required: true },
+      { id: generateFieldId(556), type: "text", label: "Tax ID/EIN", required: true },
+      { id: generateFieldId(557), type: "select", label: "Business Type", required: true, options: ["Sole Proprietorship", "LLC", "Corporation", "Partnership", "S-Corp"] },
+      { id: generateFieldId(558), type: "date", label: "Business Start Date", required: true },
+      { id: generateFieldId(559), type: "text", label: "Annual Revenue", required: true },
+      { id: generateFieldId(560), type: "text", label: "Number of Employees", required: true },
+      { id: generateFieldId(561), type: "text", label: "Loan Amount Requested", required: true },
+      { id: generateFieldId(562), type: "select", label: "Loan Purpose", required: true, options: ["Working Capital", "Equipment Purchase", "Real Estate", "Expansion", "Debt Consolidation", "Inventory"] },
+      { id: generateFieldId(563), type: "textarea", label: "Business Description", required: true },
+      { id: generateFieldId(564), type: "text", label: "Personal Credit Score", required: true },
+      { id: generateFieldId(565), type: "textarea", label: "Collateral Available", required: false }
+    ]
+  },
+
+  {
+    id: "sme-2",
+    name: "Business Process Audit",
+    description: "Small business operations and process efficiency audit",
+    category: "audit",
+    sector: "sme",
+    targetAudience: ["internal", "external"],
+    preview: "Process evaluation, efficiency metrics, improvement recommendations",
+    fields: [
+      { id: generateFieldId(566), type: "text", label: "Business Name", required: true },
+      { id: generateFieldId(567), type: "text", label: "Process/Department", required: true },
+      { id: generateFieldId(568), type: "date", label: "Audit Date", required: true },
+      { id: generateFieldId(569), type: "text", label: "Auditor Name", required: true },
+      { id: generateFieldId(570), type: "checkbox", label: "Areas Reviewed", required: true, options: ["Sales Process", "Customer Service", "Inventory Management", "Financial Controls", "HR Processes", "Technology Systems"] },
+      { id: generateFieldId(571), type: "rating", label: "Process Efficiency", required: true },
+      { id: generateFieldId(572), type: "rating", label: "Documentation Quality", required: true },
+      { id: generateFieldId(573), type: "rating", label: "Staff Training Level", required: true },
+      { id: generateFieldId(574), type: "textarea", label: "Key Findings", required: true },
+      { id: generateFieldId(575), type: "textarea", label: "Improvement Recommendations", required: true },
+      { id: generateFieldId(576), type: "select", label: "Priority Level", required: true, options: ["High", "Medium", "Low"] }
+    ]
+  },
+
+  {
+    id: "sme-3",
+    name: "Digital Transformation Assessment",
+    description: "Small business digital readiness and technology assessment",
+    category: "assessment",
+    sector: "sme",
+    targetAudience: ["external"],
+    preview: "Current technology, digital capabilities, transformation needs, roadmap",
+    fields: [
+      { id: generateFieldId(577), type: "text", label: "Business Name", required: true },
+      { id: generateFieldId(578), type: "select", label: "Industry", required: true, options: ["Retail", "Manufacturing", "Professional Services", "Healthcare", "Construction", "Hospitality", "Other"] },
+      { id: generateFieldId(579), type: "text", label: "Number of Employees", required: true },
+      { id: generateFieldId(580), type: "checkbox", label: "Current Technology", required: true, options: ["CRM System", "ERP/Accounting Software", "E-commerce Platform", "Cloud Storage", "Mobile Apps", "Social Media"] },
+      { id: generateFieldId(581), type: "radio", label: "Website Functionality", required: true, options: ["No Website", "Basic Information Only", "E-commerce Enabled", "Fully Integrated"] },
+      { id: generateFieldId(582), type: "select", label: "Digital Marketing Maturity", required: true, options: ["None", "Basic", "Intermediate", "Advanced"] },
+      { id: generateFieldId(583), type: "rating", label: "Staff Digital Skills", required: true },
+      { id: generateFieldId(584), type: "text", label: "IT Budget ($)", required: false },
+      { id: generateFieldId(585), type: "checkbox", label: "Transformation Goals", required: true, options: ["Improve Efficiency", "Reduce Costs", "Better Customer Experience", "Data Analytics", "Remote Work Capability"] },
+      { id: generateFieldId(586), type: "textarea", label: "Biggest Digital Challenges", required: true }
+    ]
   }
 ];
 
@@ -1504,9 +2063,11 @@ const formTemplates: FormTemplate[] = [
 export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedSector, setSelectedSector] = useState<string>("all");
 
-  // Available categories for filtering templates
+  // Available categories and sectors for filtering templates
   const categories = ["all", "survey", "assessment", "registration", "feedback", "compliance", "risk", "vendor-risk", "external-assessment", "hr", "customer", "finance", "it", "security", "quality", "operations", "procurement", "marketing", "sales", "project", "training", "legal", "audit", "business"];
+  const sectors = ["all", "government", "insurance", "fintech", "health", "energy", "telco", "startups", "sme"];
 
   /**
    * Filter templates based on search term and selected category
@@ -1515,7 +2076,8 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
     const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          template.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = selectedCategory === "all" || template.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+    const matchesSector = selectedSector === "all" || template.sector === selectedSector || !template.sector;
+    return matchesSearch && matchesCategory && matchesSector;
   });
 
   /**
@@ -1541,6 +2103,32 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
         return <Building className="h-4 w-4" />;
       case 'external-assessment':
         return <Globe className="h-4 w-4" />;
+      default:
+        return null;
+    }
+  };
+
+  /**
+   * Get icon for specific sector types
+   */
+  const getSectorIcon = (sector: string) => {
+    switch (sector) {
+      case 'government':
+        return <Landmark className="h-3 w-3" />;
+      case 'insurance':
+        return <Shield className="h-3 w-3" />;
+      case 'fintech':
+        return <CreditCard className="h-3 w-3" />;
+      case 'health':
+        return <Stethoscope className="h-3 w-3" />;
+      case 'energy':
+        return <Zap className="h-3 w-3" />;
+      case 'telco':
+        return <Smartphone className="h-3 w-3" />;
+      case 'startups':
+        return <Rocket className="h-3 w-3" />;
+      case 'sme':
+        return <Store className="h-3 w-3" />;
       default:
         return null;
     }
@@ -1597,22 +2185,37 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
             className="pl-10"
           />
         </div>
-        <select
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
-          className="px-3 py-2 border border-gray-300 rounded-md bg-white"
-        >
-          {categories.map(category => (
-            <option key={category} value={category}>
-              {category === "all" ? "All Categories" : 
-               category === "vendor-risk" ? "Vendor Risk" :
-               category === "external-assessment" ? "External Assessment" :
-               category === "hr" ? "HR" :
-               category === "it" ? "IT" :
-               category.charAt(0).toUpperCase() + category.slice(1)}
-            </option>
-          ))}
-        </select>
+        <div className="flex gap-2">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-md bg-white"
+          >
+            {categories.map(category => (
+              <option key={category} value={category}>
+                {category === "all" ? "All Categories" : 
+                 category === "vendor-risk" ? "Vendor Risk" :
+                 category === "external-assessment" ? "External Assessment" :
+                 category === "hr" ? "HR" :
+                 category === "it" ? "IT" :
+                 category.charAt(0).toUpperCase() + category.slice(1)}
+              </option>
+            ))}
+          </select>
+          <select
+            value={selectedSector}
+            onChange={(e) => setSelectedSector(e.target.value)}
+            className="px-3 py-2 border border-gray-300 rounded-md bg-white"
+          >
+            {sectors.map(sector => (
+              <option key={sector} value={sector}>
+                {sector === "all" ? "All Sectors" : 
+                 sector === "sme" ? "SME" :
+                 sector.charAt(0).toUpperCase() + sector.slice(1)}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {/* Template Grid */}
@@ -1632,6 +2235,13 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
                        {template.category === "vendor-risk" ? "Vendor Risk" : 
                         template.category === "external-assessment" ? "External" : template.category}
                      </Badge>
+                     {template.sector && (
+                       <Badge variant="outline" className="text-xs flex items-center gap-1">
+                         {getSectorIcon(template.sector)}
+                         {template.sector === "sme" ? "SME" : 
+                          template.sector.charAt(0).toUpperCase() + template.sector.slice(1)}
+                       </Badge>
+                     )}
                      {template.targetAudience && (
                        <div className="flex gap-1">
                          {template.targetAudience.map((audience) => (

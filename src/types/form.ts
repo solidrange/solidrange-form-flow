@@ -91,6 +91,7 @@ export interface FormTemplate {
   name: string;                  // Template name (e.g., "Vendor Risk Assessment")
   description: string;           // What this template is used for
   category: string;              // Template category (e.g., "vendor-risk", "hr", "customer")
+  sector?: string;               // Industry sector (government, insurance, fintech, health, etc.)
   targetAudience?: string[];     // Target audience for this template (vendor, external, internal)
   fields: FormField[];           // All the fields included in this template
   preview?: string;              // Optional preview image or description
