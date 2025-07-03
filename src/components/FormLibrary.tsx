@@ -36,17 +36,21 @@ const formTemplates: FormTemplate[] = [
     ]
   },
   {
-    id: "2",
-    name: "Customer Satisfaction Survey",
-    description: "Gather feedback on products and services",
-    category: "survey",
-    targetAudience: ["external", "vendor"],
-    preview: "Rating scales, feedback questions, recommendations",
+    id: "health-9",
+    name: "Medical Device Incident Report",
+    description: "Report adverse events and malfunctions of medical devices",
+    category: "compliance",
+    sector: "health",
+    targetAudience: ["internal", "external"],
+    preview: "Device details, incident description, patient impact, regulatory reporting",
     fields: [
-      { id: generateFieldId(7), type: "rating", label: "Overall Satisfaction", required: true },
-      { id: generateFieldId(8), type: "radio", label: "Would you recommend us?", required: true, options: ["Yes", "No", "Maybe"] },
-      { id: generateFieldId(9), type: "select", label: "How did you hear about us?", required: false, options: ["Social Media", "Website", "Referral", "Advertisement"] },
-      { id: generateFieldId(10), type: "textarea", label: "Additional Comments", required: false }
+      { id: generateFieldId(7), type: "text", label: "Device Name/Model", required: true },
+      { id: generateFieldId(8), type: "text", label: "Serial Number", required: true },
+      { id: generateFieldId(9), type: "date", label: "Incident Date", required: true },
+      { id: generateFieldId(10), type: "textarea", label: "Incident Description", required: true },
+      { id: generateFieldId(11), type: "select", label: "Severity Level", required: true, options: ["Minor", "Moderate", "Severe", "Life-threatening"] },
+      { id: generateFieldId(12), type: "radio", label: "Patient Impact", required: true, options: ["None", "Temporary", "Permanent", "Fatal"] },
+      { id: generateFieldId(13), type: "textarea", label: "Corrective Actions Taken", required: false }
     ]
   },
 
@@ -3141,6 +3145,163 @@ const formTemplates: FormTemplate[] = [
       { id: generateFieldId(1040), type: "checkbox", label: "Financial Concerns", required: false, options: ["Cash Flow", "Customer Payments", "Seasonal Fluctuations", "Competition", "Rising Costs"] },
       { id: generateFieldId(1041), type: "textarea", label: "Growth Plans", required: false },
       { id: generateFieldId(1042), type: "radio", label: "Financial Advisor Needed?", required: false, options: ["Yes", "No", "Maybe"] }
+    ]
+  },
+
+  // NEW UNIQUE SECTOR-SPECIFIC TEMPLATES
+
+  // TELECOM - 5G Network Deployment
+  {
+    id: "telecom-new-1",
+    name: "5G Network Site Deployment",
+    description: "Assessment and planning for 5G cell site installation",
+    category: "project", 
+    sector: "telecom",
+    targetAudience: ["internal"],
+    preview: "Site survey, regulatory approvals, equipment specs, community impact",
+    fields: [
+      { id: generateFieldId(1050), type: "text", label: "Site Location", required: true },
+      { id: generateFieldId(1051), type: "select", label: "Deployment Type", required: true, options: ["Macro Cell", "Small Cell", "Indoor DAS", "mmWave"] },
+      { id: generateFieldId(1052), type: "number", label: "Coverage Radius (meters)", required: true },
+      { id: generateFieldId(1053), type: "checkbox", label: "Regulatory Requirements", required: true, options: ["FCC Compliance", "Local Zoning", "Environmental Review", "Historic Preservation"] },
+      { id: generateFieldId(1054), type: "textarea", label: "Community Concerns", required: false },
+      { id: generateFieldId(1055), type: "date", label: "Target Activation Date", required: true }
+    ]
+  },
+
+  // HEALTH - Clinical Trial Protocol
+  {
+    id: "health-new-1", 
+    name: "Clinical Trial Patient Screening",
+    description: "Pre-screening assessment for clinical trial participants",
+    category: "assessment",
+    sector: "health",
+    targetAudience: ["external"],
+    preview: "Medical history, eligibility criteria, informed consent, safety considerations",
+    fields: [
+      { id: generateFieldId(1056), type: "text", label: "Patient ID", required: true },
+      { id: generateFieldId(1057), type: "select", label: "Study Phase", required: true, options: ["Phase I", "Phase II", "Phase III", "Phase IV"] },
+      { id: generateFieldId(1058), type: "number", label: "Age", required: true },
+      { id: generateFieldId(1059), type: "checkbox", label: "Inclusion Criteria Met", required: true, options: ["Age Range", "Diagnosis", "Disease Stage", "Previous Treatment"] },
+      { id: generateFieldId(1060), type: "checkbox", label: "Exclusion Criteria", required: true, options: ["Pregnancy", "Other Medications", "Chronic Conditions", "Recent Procedures"] },
+      { id: generateFieldId(1061), type: "radio", label: "Informed Consent Obtained", required: true, options: ["Yes", "No", "Pending"] }
+    ]
+  },
+
+  // STARTUPS - Accelerator Application
+  {
+    id: "startup-new-1",
+    name: "Startup Accelerator Application", 
+    description: "Application form for startup accelerator program admission",
+    category: "business",
+    sector: "startups",
+    targetAudience: ["external"],
+    preview: "Business model, team background, market analysis, funding needs",
+    fields: [
+      { id: generateFieldId(1062), type: "text", label: "Startup Name", required: true },
+      { id: generateFieldId(1063), type: "select", label: "Industry Vertical", required: true, options: ["FinTech", "HealthTech", "EdTech", "CleanTech", "AI/ML", "Blockchain", "IoT", "Other"] },
+      { id: generateFieldId(1064), type: "textarea", label: "Problem Statement", required: true },
+      { id: generateFieldId(1065), type: "textarea", label: "Solution Description", required: true },
+      { id: generateFieldId(1066), type: "select", label: "Development Stage", required: true, options: ["Idea", "Prototype", "MVP", "Early Revenue", "Scaling"] },
+      { id: generateFieldId(1067), type: "number", label: "Team Size", required: true },
+      { id: generateFieldId(1068), type: "text", label: "Funding Sought", required: true }
+    ]
+  },
+
+  // INSURANCE - Catastrophe Claims
+  {
+    id: "ins-new-1",
+    name: "Catastrophic Event Claims Processing",
+    description: "Large-scale disaster insurance claims assessment",
+    category: "claims",
+    sector: "insurance", 
+    targetAudience: ["external"],
+    preview: "Event details, property damage, business interruption, emergency response",
+    fields: [
+      { id: generateFieldId(1069), type: "select", label: "Catastrophe Type", required: true, options: ["Hurricane", "Earthquake", "Wildfire", "Flood", "Tornado", "Hail Storm"] },
+      { id: generateFieldId(1070), type: "date", label: "Event Date", required: true },
+      { id: generateFieldId(1071), type: "text", label: "Property Address", required: true },
+      { id: generateFieldId(1072), type: "select", label: "Damage Severity", required: true, options: ["Minor", "Moderate", "Major", "Total Loss"] },
+      { id: generateFieldId(1073), type: "checkbox", label: "Affected Areas", required: true, options: ["Structure", "Contents", "Landscaping", "Vehicles", "Outbuildings"] },
+      { id: generateFieldId(1074), type: "number", label: "Estimated Damage Amount", required: true },
+      { id: generateFieldId(1075), type: "radio", label: "Emergency Services Required", required: true, options: ["Yes", "No", "Already Provided"] }
+    ]
+  },
+
+  // ENERGY - Smart Grid Integration  
+  {
+    id: "energy-new-1",
+    name: "Smart Grid Technology Integration",
+    description: "Assessment for smart grid infrastructure deployment",
+    category: "project",
+    sector: "energy",
+    targetAudience: ["internal"],
+    preview: "Grid modernization, IoT sensors, data analytics, customer engagement",
+    fields: [
+      { id: generateFieldId(1076), type: "text", label: "Grid Segment", required: true },
+      { id: generateFieldId(1077), type: "checkbox", label: "Technologies to Deploy", required: true, options: ["Smart Meters", "Distribution Automation", "Energy Storage", "Demand Response", "Grid Analytics"] },
+      { id: generateFieldId(1078), type: "number", label: "Customers Affected", required: true },
+      { id: generateFieldId(1079), type: "text", label: "Investment Amount", required: true },
+      { id: generateFieldId(1080), type: "textarea", label: "Expected Benefits", required: true },
+      { id: generateFieldId(1081), type: "select", label: "Implementation Timeline", required: true, options: ["3-6 months", "6-12 months", "1-2 years", "2+ years"] }
+    ]
+  },
+
+  // SME - Digital Marketing Assessment
+  {
+    id: "sme-new-1", 
+    name: "Digital Marketing Readiness Assessment",
+    description: "Small business digital marketing capabilities evaluation",
+    category: "marketing",
+    sector: "sme",
+    targetAudience: ["internal"],
+    preview: "Online presence, social media, email marketing, analytics capabilities",
+    fields: [
+      { id: generateFieldId(1082), type: "text", label: "Business Name", required: true },
+      { id: generateFieldId(1083), type: "select", label: "Industry Type", required: true, options: ["Retail", "Service", "Manufacturing", "Technology", "Healthcare", "Restaurant", "Other"] },
+      { id: generateFieldId(1084), type: "radio", label: "Have Website?", required: true, options: ["Yes", "No", "Under Development"] },
+      { id: generateFieldId(1085), type: "checkbox", label: "Social Media Presence", required: false, options: ["Facebook", "Instagram", "Twitter", "LinkedIn", "TikTok", "YouTube"] },
+      { id: generateFieldId(1086), type: "select", label: "Email Marketing", required: true, options: ["Active", "Inactive", "Never Used", "Planning to Start"] },
+      { id: generateFieldId(1087), type: "number", label: "Monthly Marketing Budget", required: false },
+      { id: generateFieldId(1088), type: "textarea", label: "Marketing Challenges", required: true }
+    ]
+  },
+
+  // FINTECH - Blockchain Implementation
+  {
+    id: "fin-new-1",
+    name: "Blockchain Technology Implementation", 
+    description: "Assessment for blockchain solution deployment in financial services",
+    category: "project",
+    sector: "fintech",
+    targetAudience: ["internal"],
+    preview: "Use case definition, technology selection, regulatory compliance, integration planning",
+    fields: [
+      { id: generateFieldId(1089), type: "select", label: "Use Case", required: true, options: ["Payments", "Trade Finance", "Identity Verification", "Smart Contracts", "Asset Tokenization", "Supply Chain"] },
+      { id: generateFieldId(1090), type: "select", label: "Blockchain Type", required: true, options: ["Public", "Private", "Consortium", "Hybrid"] },
+      { id: generateFieldId(1091), type: "checkbox", label: "Technical Requirements", required: true, options: ["High Throughput", "Low Latency", "Privacy", "Interoperability", "Energy Efficiency"] },
+      { id: generateFieldId(1092), type: "textarea", label: "Regulatory Considerations", required: true },
+      { id: generateFieldId(1093), type: "select", label: "Implementation Phase", required: true, options: ["Proof of Concept", "Pilot", "Production", "Scale-up"] },
+      { id: generateFieldId(1094), type: "text", label: "Expected Timeline", required: true }
+    ]
+  },
+
+  // GOVERNMENT - Citizen Engagement Platform
+  {
+    id: "gov-new-1",
+    name: "Digital Citizen Engagement Platform",
+    description: "Platform assessment for citizen participation and feedback systems",
+    category: "project", 
+    sector: "government",
+    targetAudience: ["internal"],
+    preview: "Community needs, engagement methods, technology requirements, accessibility features",
+    fields: [
+      { id: generateFieldId(1095), type: "text", label: "Municipality/Agency", required: true },
+      { id: generateFieldId(1096), type: "number", label: "Population Served", required: true },
+      { id: generateFieldId(1097), type: "checkbox", label: "Engagement Goals", required: true, options: ["Public Consultations", "Budget Participation", "Service Feedback", "Community Reporting", "Town Halls"] },
+      { id: generateFieldId(1098), type: "select", label: "Digital Literacy Level", required: true, options: ["Low", "Medium", "High", "Mixed"] },
+      { id: generateFieldId(1099), type: "checkbox", label: "Accessibility Requirements", required: true, options: ["Screen Readers", "Multiple Languages", "Mobile Friendly", "Offline Access", "Simple Navigation"] },
+      { id: generateFieldId(1100), type: "textarea", label: "Success Metrics", required: true }
     ]
   }
 ];
