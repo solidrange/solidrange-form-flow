@@ -1017,6 +1017,42 @@ const formTemplates: FormTemplate[] = [
   },
 
   {
+    id: "multi-1",
+    name: "Cross-Sector Compliance Assessment",
+    description: "Multi-industry compliance evaluation for organizations operating across sectors",
+    category: "compliance",
+    sector: ["government", "fintech", "health"],
+    targetAudience: ["internal", "external"],
+    preview: "Regulatory requirements, industry standards, compliance gaps, remediation plan",
+    fields: [
+      { id: generateFieldId(148), type: "text", label: "Organization Name", required: true },
+      { id: generateFieldId(149), type: "checkbox", label: "Operating Sectors", required: true, options: ["Government", "Financial Services", "Healthcare", "Energy", "Telecommunications", "Other"] },
+      { id: generateFieldId(150), type: "checkbox", label: "Applicable Regulations", required: true, options: ["GDPR", "HIPAA", "SOX", "PCI DSS", "SOC 2", "ISO 27001", "NIST"] },
+      { id: generateFieldId(151), type: "textarea", label: "Current Compliance Status", required: true },
+      { id: generateFieldId(152), type: "textarea", label: "Identified Gaps", required: false },
+      { id: generateFieldId(153), type: "textarea", label: "Remediation Plan", required: true }
+    ]
+  },
+
+  {
+    id: "multi-2",
+    name: "Universal Data Protection Impact Assessment",
+    description: "Comprehensive data protection assessment for any organization handling personal data",
+    category: "compliance",
+    sector: ["government", "fintech", "health", "insurance"],
+    targetAudience: ["internal"],
+    preview: "Data processing activities, risk assessment, mitigation measures, compliance verification",
+    fields: [
+      { id: generateFieldId(154), type: "text", label: "Organization Name", required: true },
+      { id: generateFieldId(155), type: "checkbox", label: "Types of Personal Data", required: true, options: ["Basic Identity", "Financial", "Health", "Biometric", "Location", "Behavioral"] },
+      { id: generateFieldId(156), type: "checkbox", label: "Processing Activities", required: true, options: ["Collection", "Storage", "Analysis", "Sharing", "Transfer", "Deletion"] },
+      { id: generateFieldId(157), type: "select", label: "Data Volume", required: true, options: ["Low (<1000 records)", "Medium (1000-10000)", "High (10000-100000)", "Very High (>100000)"] },
+      { id: generateFieldId(158), type: "textarea", label: "Risk Assessment", required: true },
+      { id: generateFieldId(159), type: "textarea", label: "Mitigation Measures", required: true }
+    ]
+  },
+
+  {
     id: "cust-2",
     name: "Service Request",
     description: "Customer service request and support ticket",
@@ -3609,7 +3645,7 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
 
   // Available categories and sectors for filtering templates
   const categories = ["all", "survey", "assessment", "registration", "feedback", "compliance", "risk", "vendor-risk", "external-assessment", "hr", "customer", "finance", "it", "security", "quality", "operations", "procurement", "marketing", "sales", "project", "training", "legal", "audit", "business"];
-  const sectors = ["all", "government", "insurance", "fintech", "health", "energy", "telecom", "startups", "sme"];
+  const sectors = ["all", "government", "insurance", "fintech", "health", "energy", "telecom", "startups", "sme", "other"];
 
   /**
    * Filter templates based on search term and selected categories/sectors
@@ -3625,25 +3661,28 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
     if (selectedSectors.length === 0) {
       // No sector filter applied - show all forms
       matchesSector = true;
-    } else {
-      // Sector filter applied - show forms that match the selected sectors OR general forms (no sector)
+    } else if (selectedSectors.includes("other")) {
+      // "Other" sector selected - show forms with no sector, multiple sectors, or general forms
       if (!template.sector) {
-        // General form (no sector specified) - always include when sector filter is active
+        // General form (no sector specified)
         matchesSector = true;
-      } else {
-        // Sector-specific form - check if it matches any selected sector
+      } else if (Array.isArray(template.sector) && template.sector.length > 1) {
+        // Multi-sector form
+        matchesSector = true;
+      }
+    } else {
+      // Specific sector(s) selected - ONLY show forms that match those sectors exactly
+      if (template.sector) {
         const templateSectors = Array.isArray(template.sector) ? template.sector : [template.sector];
-        matchesSector = templateSectors.some(s => selectedSectors.includes(s));
+        // Only match if it's a single-sector form matching the selected sector
+        matchesSector = templateSectors.length === 1 && templateSectors.some(s => selectedSectors.includes(s));
       }
     }
     
     return matchesSearch && matchesCategory && matchesSector;
   }).sort((a, b) => {
-    // When sector filtering is active, prioritize matching sector forms first, then general forms
-    if (selectedSectors.length > 0) {
-      const aIsGeneral = !a.sector;
-      const bIsGeneral = !b.sector;
-      
+    // When sector filtering is active, prioritize matching sector forms first
+    if (selectedSectors.length > 0 && !selectedSectors.includes("other")) {
       const aMatchesSector = a.sector && (Array.isArray(a.sector) ? 
         a.sector.some(s => selectedSectors.includes(s)) : 
         selectedSectors.includes(a.sector));
@@ -3651,13 +3690,8 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
         b.sector.some(s => selectedSectors.includes(s)) : 
         selectedSectors.includes(b.sector));
       
-      // Priority order: 
-      // 1. Sector-specific matching forms first (alphabetically)
-      // 2. General forms second (alphabetically)
-      if (aMatchesSector && !bMatchesSector) return -1;
-      if (!aMatchesSector && bMatchesSector) return 1;
-      if (aMatchesSector && bMatchesSector && aIsGeneral && !bIsGeneral) return 1;
-      if (aMatchesSector && bMatchesSector && !aIsGeneral && bIsGeneral) return -1;
+      // All displayed forms should match the sector, so just sort alphabetically
+      return a.name.localeCompare(b.name);
     }
     
     // Default alphabetical sorting
