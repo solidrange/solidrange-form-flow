@@ -25,6 +25,66 @@
 
 ## 1. Migration Overview
 
+### 1.0 Application Features Overview
+The current React application is a comprehensive **Enterprise Form Builder & Submission Management System** with the following key features:
+
+#### Core Form Building Features
+- **Dynamic Form Builder**: Drag-and-drop interface with field palette
+- **Field Types**: Text, textarea, select, checkbox, radio, date, number, file upload
+- **Field Configuration**: Validation rules, required fields, scoring weightage
+- **Form Templates**: Pre-built templates with categorization
+- **Form Library**: Save and reuse form templates
+- **Real-time Preview**: Live form preview with responsive design
+- **Form Categories**: Organize forms by categories (vendor-risk, internal, etc.)
+
+#### Advanced Form Management
+- **Form Status Management**: Draft and published states
+- **Form Sharing**: URL sharing, embedding options, responsive iframe codes
+- **PDF Export**: Fillable PDF generation with form structure preservation
+- **Form Settings**: Multiple submissions, login requirements, progress bars, themes
+
+#### Email Distribution & Invitations
+- **Email Invitations**: Send form invitations to recipients
+- **Email Templates**: Customizable email templates with form links
+- **Reminder System**: Automated reminders with configurable intervals
+- **Invitation Statistics**: Track completion rates, started/not started metrics
+- **Recipient Management**: Add, edit, remove recipients with status tracking
+
+#### Submission Management
+- **Submission Review**: Comprehensive submission review interface
+- **Status Management**: Submitted, under review, approved, rejected
+- **Submission Details**: Full submission data with scoring
+- **Activity Logs**: Track all review activities and comments
+- **Bulk Actions**: Approve/reject multiple submissions
+
+#### Scoring & Risk Assessment
+- **Scoring System**: Configure max points, passing scores, risk thresholds
+- **Field Weightage**: Assign weights to form fields for scoring
+- **Risk Levels**: Low, medium, high, critical risk classification
+- **Score Breakdown**: Detailed scoring analysis per field
+- **Risk Thresholds**: Configurable risk level boundaries
+
+#### Analytics & Reporting
+- **Comprehensive Dashboard**: Overview of all form metrics
+- **Submission Analytics**: Total submissions, approval rates, completion rates
+- **Risk Analysis**: Risk distribution charts and metrics
+- **Performance Tracking**: Top performing companies/submissions
+- **Trend Analysis**: Monthly submission trends and patterns
+- **Email Analytics**: Email open rates, completion tracking
+
+#### File & Document Management
+- **File Attachments**: Support for multiple file types
+- **Document Requirements**: Required document configuration
+- **File Size Limits**: Configurable file size restrictions
+- **File Type Validation**: Allowed file type restrictions
+
+#### Advanced Features
+- **Form Expiration**: Set expiration dates for forms
+- **Approval Workflows**: Multi-stage approval processes
+- **Custom Themes**: Light/dark themes with custom CSS
+- **Mobile Responsive**: Fully responsive design for all devices
+- **Real-time Updates**: Live updates for form status changes
+
 ### 1.1 Current React Stack
 - **Frontend Framework**: React 18.3.1 with TypeScript
 - **Build Tool**: Vite
@@ -37,6 +97,13 @@
 - **Charts**: Recharts
 - **Date Handling**: date-fns
 - **File Processing**: xlsx, jspdf, html2canvas
+- **PDF Generation**: jsPDF with autotable
+- **Canvas Operations**: html2canvas
+- **Drag & Drop**: HTML5 Drag and Drop API
+- **Notifications**: Sonner (toast notifications)
+- **Icon Library**: Lucide React
+- **Query Management**: TanStack React Query
+- **Theme Management**: next-themes
 
 ### 1.2 Target Angular Stack
 - **Frontend Framework**: Angular 17+ with TypeScript
@@ -208,15 +275,41 @@ export class FormBuilderComponent implements OnInit, OnDestroy {
 
 | React Component | Angular Component | Module | Notes |
 |----------------|-------------------|---------|-------|
-| `FormBuilder` | `FormBuilderComponent` | FormsModule | Main form creation component |
-| `FormCanvas` | `FormCanvasComponent` | FormsModule | Drag-and-drop canvas |
-| `FieldPalette` | `FieldPaletteComponent` | FormsModule | Field selection palette |
-| `FieldEditor` | `FieldEditorComponent` | FormsModule | Field configuration |
-| `FormPreview` | `FormPreviewComponent` | FormsModule | Form preview functionality |
-| `SubmissionsList` | `SubmissionsListComponent` | SubmissionsModule | Submissions management |
-| `SubmissionDetails` | `SubmissionDetailsComponent` | SubmissionsModule | Individual submission view |
-| `Analytics` | `AnalyticsComponent` | AnalyticsModule | Analytics dashboard |
-| `ReportGeneration` | `ReportGenerationComponent` | ReportsModule | Report creation |
+| **Core Form Building** |
+| `FormBuilder` | `FormBuilderComponent` | FormsModule | Main form creation with tabbed interface |
+| `FormCanvas` | `FormCanvasComponent` | FormsModule | Drag-and-drop canvas with field management |
+| `FieldPalette` | `FieldPaletteComponent` | FormsModule | Field selection with categories |
+| `FieldEditor` | `FieldEditorComponent` | FormsModule | Field configuration and validation |
+| `FormPreview` | `FormPreviewComponent` | FormsModule | Real-time form preview |
+| `FormLibrary` | `FormLibraryComponent` | FormsModule | Template library with categories |
+| `SettingsPanel` | `SettingsPanelComponent` | FormsModule | Form settings and configuration |
+| **Form Management** |
+| `FormInvitations` | `FormInvitationsComponent` | FormsModule | Sharing and invitation management |
+| `FormSharingOptions` | `FormSharingOptionsComponent` | FormsModule | URL sharing, embedding, PDF export |
+| `EmailTemplateCustomization` | `EmailTemplateCustomizationComponent` | FormsModule | Email template editor |
+| `EmailDistributionSettings` | `EmailDistributionSettingsComponent` | FormsModule | Email distribution configuration |
+| `RecipientManagement` | `RecipientManagementComponent` | FormsModule | Recipient management and tracking |
+| `FormInvitationStatistics` | `FormInvitationStatisticsComponent` | FormsModule | Invitation analytics and metrics |
+| **Submission Management** |
+| `SubmissionReview` | `SubmissionReviewComponent` | SubmissionsModule | Submission review interface |
+| `SubmissionsList` | `SubmissionsListComponent` | SubmissionsModule | Submissions list with filtering |
+| `SubmissionCard` | `SubmissionCardComponent` | SubmissionsModule | Individual submission display |
+| `SubmissionDetails` | `SubmissionDetailsComponent` | SubmissionsModule | Detailed submission view |
+| `SubmissionActions` | `SubmissionActionsComponent` | SubmissionsModule | Approval/rejection actions |
+| **Scoring & Weightage** |
+| `ScoringSettings` | `ScoringSettingsComponent` | ScoringModule | Scoring configuration |
+| `WeightageAndScoringSettings` | `WeightageAndScoringSettingsComponent` | ScoringModule | Weightage management |
+| `WeightageEditor` | `WeightageEditorComponent` | ScoringModule | Field weightage editor |
+| **Analytics & Reporting** |
+| `Analytics` | `AnalyticsComponent` | AnalyticsModule | Comprehensive analytics dashboard |
+| `ReportGeneration` | `ReportGenerationComponent` | ReportsModule | Report creation and export |
+| `ReportCharts` | `ReportChartsComponent` | ReportsModule | Chart visualization |
+| `ReportCustomization` | `ReportCustomizationComponent` | ReportsModule | Report customization options |
+| **File & Document Management** |
+| `FileAttachmentManager` | `FileAttachmentManagerComponent` | FilesModule | File upload and management |
+| `FormCategoryManager` | `FormCategoryManagerComponent` | FormsModule | Form categorization |
+| **Email & Communication** |
+| `EmailTracking` | `EmailTrackingComponent` | CommunicationModule | Email tracking and analytics |
 
 ---
 
@@ -541,9 +634,14 @@ describe('FormBuilderComponent', () => {
    ```bash
    ng add @angular/material
    ng add @angular/cdk
-   npm install @ngrx/store @ngrx/effects
+   npm install @ngrx/store @ngrx/effects @ngrx/store-devtools
    npm install chart.js ng2-charts
-   npm install xlsx jspdf html2canvas
+   npm install xlsx jspdf jspdf-autotable html2canvas
+   npm install @angular/animations
+   npm install ngx-file-drop
+   npm install ngx-charts
+   npm install @angular/google-maps
+   npm install moment
    ```
 
 3. **Setup project structure**
@@ -554,39 +652,97 @@ describe('FormBuilderComponent', () => {
    ng generate module features/submissions
    ng generate module features/reports
    ng generate module features/analytics
+   ng generate module features/scoring
+   ng generate module features/files
+   ng generate module features/communication
    ```
 
 ### Phase 2: Core Infrastructure (Week 2)
 1. **Setup services and models**
    ```bash
+   # Core Services
    ng generate service core/services/form
    ng generate service core/services/submission
    ng generate service core/services/analytics
+   ng generate service core/services/email
+   ng generate service core/services/scoring
+   ng generate service core/services/file-upload
+   ng generate service core/services/report
+   ng generate service core/services/pdf-export
+   
+   # Data Models
    ng generate interface models/form
    ng generate interface models/submission
+   ng generate interface models/form-field
+   ng generate interface models/email-recipient
+   ng generate interface models/submission-score
+   ng generate interface models/document-attachment
+   ng generate interface models/review-activity
+   ng generate interface models/form-template
    ```
 
 2. **Configure routing**
    ```bash
    ng generate module features/forms/forms-routing
    ng generate module features/submissions/submissions-routing
+   ng generate module features/analytics/analytics-routing
+   ng generate module features/reports/reports-routing
+   ng generate module features/scoring/scoring-routing
    ```
 
 3. **Setup state management (NgRx)**
    ```bash
    ng generate store State --root --module app.module.ts
    ng generate feature features/forms/store/forms
+   ng generate feature features/submissions/store/submissions
+   ng generate feature features/analytics/store/analytics
+   ng generate feature features/scoring/store/scoring
    ```
 
 ### Phase 3: Component Migration (Weeks 3-6)
 1. **Create core components**
    ```bash
+   # Core Form Building Components
    ng generate component features/forms/form-builder
    ng generate component features/forms/form-canvas
    ng generate component features/forms/field-palette
    ng generate component features/forms/field-editor
+   ng generate component features/forms/form-preview
+   ng generate component features/forms/form-library
+   ng generate component features/forms/settings-panel
+   
+   # Form Management Components
+   ng generate component features/forms/form-invitations
+   ng generate component features/forms/form-sharing-options
+   ng generate component features/forms/email-template-customization
+   ng generate component features/forms/email-distribution-settings
+   ng generate component features/forms/recipient-management
+   ng generate component features/forms/form-invitation-statistics
+   
+   # Submission Management Components
+   ng generate component features/submissions/submission-review
    ng generate component features/submissions/submissions-list
+   ng generate component features/submissions/submission-card
    ng generate component features/submissions/submission-details
+   ng generate component features/submissions/submission-actions
+   
+   # Scoring & Weightage Components
+   ng generate component features/scoring/scoring-settings
+   ng generate component features/scoring/weightage-and-scoring-settings
+   ng generate component features/scoring/weightage-editor
+   
+   # Analytics & Reporting Components
+   ng generate component features/analytics/analytics-dashboard
+   ng generate component features/reports/report-generation
+   ng generate component features/reports/report-charts
+   ng generate component features/reports/report-customization
+   
+   # File & Document Management
+   ng generate component features/files/file-attachment-manager
+   ng generate component features/forms/form-category-manager
+   
+   # Email & Communication
+   ng generate component features/communication/email-tracking
    ```
 
 2. **Migrate component logic systematically**
@@ -848,11 +1004,14 @@ export class FormBuilderComponent implements OnDestroy {
 
 | Phase | Duration | Tasks | Deliverables |
 |-------|----------|-------|--------------|
-| **Phase 1: Setup** | 1 week | Project creation, dependencies, structure | Working Angular project |
-| **Phase 2: Infrastructure** | 1 week | Services, routing, state management | Core architecture |
-| **Phase 3: Components** | 4 weeks | Component migration, UI implementation | Functional components |
-| **Phase 4: Features** | 2 weeks | Advanced features, integrations | Complete features |
-| **Phase 5: Testing** | 2 weeks | Testing, optimization, deployment | Production-ready app |
+| **Phase 1: Setup** | 1 week | Project creation, dependencies, structure | Working Angular project with 9 feature modules |
+| **Phase 2: Infrastructure** | 1 week | Services, routing, state management, data models | Core architecture with NgRx store |
+| **Phase 3: Form Building** | 2 weeks | FormBuilder, Canvas, Fields, Library, Settings | Core form building functionality |
+| **Phase 4: Submissions** | 2 weeks | Review, Management, Scoring, Workflows | Submission management system |
+| **Phase 5: Analytics** | 1 week | Dashboard, Charts, Reports, PDF Export | Analytics and reporting features |
+| **Phase 6: Email System** | 1 week | Invitations, Templates, Distribution, Tracking | Email distribution system |
+| **Phase 7: Integration** | 1 week | File management, advanced features, mobile | Complete feature integration |
+| **Phase 8: Testing** | 2 weeks | Unit tests, integration tests, e2e tests | Production-ready app with tests |
 
 ### 13.2 Risk Mitigation
 - **Parallel Development**: Keep React version running during migration
@@ -861,12 +1020,20 @@ export class FormBuilderComponent implements OnDestroy {
 - **User Training**: Angular-specific training for development team
 
 ### 13.3 Success Criteria
-- ✅ All React components successfully migrated
-- ✅ Feature parity maintained
+- ✅ All React components successfully migrated (40+ components)
+- ✅ Feature parity maintained across all modules
+- ✅ Form building functionality fully operational
+- ✅ Email distribution system working
+- ✅ Scoring and weightage systems migrated
+- ✅ Analytics dashboard fully functional
+- ✅ PDF export functionality operational
+- ✅ File upload and management working
+- ✅ Responsive design maintained
 - ✅ Performance equal or better than React version
 - ✅ Test coverage >= 80%
-- ✅ Bundle size optimized
+- ✅ Bundle size optimized with lazy loading
 - ✅ Team trained on Angular development
+- ✅ All user workflows tested and validated
 
 ---
 
