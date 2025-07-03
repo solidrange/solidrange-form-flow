@@ -15,7 +15,7 @@
 The Form Builder is a comprehensive enterprise application for creating, managing, and analyzing forms with advanced features like scoring, email distribution, and submission management.
 
 **Core Capabilities:**
-- **160+ Industry-Specific Templates** across 8 major sectors with advanced filtering
+- **169 Industry-Specific Templates** across 8 major sectors with advanced filtering
 - **AI-Powered Review System** with intelligent approval recommendations  
 - **Multi-Select Filtering** with real-time counts and smart categorization
 - **Flexible Approval Types** (Fully Approved vs Partially Approved)
@@ -81,7 +81,7 @@ src/
 │   ├── FormCanvas.tsx               # Form preview and editing area
 │   ├── FormCategoryManager.tsx      # Form categorization
 │   ├── FormInvitations.tsx          # Invitation management hub
-│   ├── FormLibrary.tsx              # Template library (160+ templates, 783 lines)
+│   ├── FormLibrary.tsx              # Template library (169 templates, 3331 lines)
 │   ├── FormPreview.tsx              # Real-time form preview
 │   ├── MultiSelectFilter.tsx        # Advanced filtering component
 │   ├── ReportGeneration.tsx         # Report creation interface
@@ -144,7 +144,7 @@ src/
 | `FormCanvas.tsx` | Interactive form preview area | FormBuilder.tsx | Drag & drop, field arrangement, real-time preview |
 | `FieldPalette.tsx` | Available form field types | FormBuilder.tsx | 15+ field types, categorized palette |
 | `FieldEditor.tsx` | Field configuration panel | FormBuilder.tsx | Validation, scoring, properties, conditional logic |
-| `FormLibrary.tsx` | Template management (783 lines) | Index.tsx (Library tab) | 160+ templates across 8 sectors, advanced filtering |
+| `FormLibrary.tsx` | Template management (3331 lines) | Index.tsx (Library tab) | 169 templates across 8 sectors, advanced filtering |
 | `MultiSelectFilter.tsx` | Advanced filtering component | FormLibrary.tsx | Multi-select dropdowns, real-time counts |
 | `FormPreview.tsx` | Read-only form display | FormBuilder.tsx | User-facing form appearance, mobile responsive |
 

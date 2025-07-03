@@ -27,7 +27,7 @@ This Software Requirements Specification (SRS) document describes the functional
 ### 1.2 Scope
 The system provides:
 - **Advanced Form Creation**: Drag-and-drop form builder with 15+ field types and conditional logic
-- **Comprehensive Template Management**: 160+ industry-specific templates across 8 sectors with advanced filtering
+- **Comprehensive Template Management**: 169 industry-specific templates across 8 sectors with advanced filtering
 - **Intelligent Email Distribution**: AI-optimized email campaigns with automated reminders and engagement tracking
 - **AI-Enhanced Submission Management**: Collection, review, and scoring with machine learning recommendations
 - **Advanced Analytics & Reporting**: Real-time dashboards with PDF/Excel export and predictive insights
@@ -121,7 +121,7 @@ Provides drag-and-drop interface for creating dynamic forms with various field t
 Manages 160+ industry-specific form templates with advanced filtering and intelligent categorization.
 
 #### 3.2.2 Functional Requirements
-- **FR-TM-001**: System shall provide 160+ categorized form templates across 8 major sectors
+- **FR-TM-001**: System shall provide 169 categorized form templates across 8 major sectors
 - **FR-TM-002**: System shall support advanced multi-select filtering with real-time counts
 - **FR-TM-003**: System shall implement smart categorization with "Multi-Sector", "Multi-Category", and "Other" classifications
 - **FR-TM-004**: System shall provide instant search and filtering with sector-specific icons and descriptions

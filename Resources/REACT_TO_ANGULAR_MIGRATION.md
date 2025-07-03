@@ -32,7 +32,7 @@ The current React application is a comprehensive **Enterprise Form Builder & Sub
 - **Dynamic Form Builder**: Drag-and-drop interface with field palette
 - **Field Types**: Text, textarea, select, checkbox, radio, date, number, file upload
 - **Field Configuration**: Validation rules, required fields, scoring weightage
-- **Form Templates**: Pre-built templates with categorization
+- **Form Templates**: 169 pre-built templates with categorization across 8 sectors
 - **Form Library**: Save and reuse form templates
 - **Real-time Preview**: Live form preview with responsive design
 - **Form Categories**: Organize forms by categories (vendor-risk, internal, etc.)
