@@ -23,9 +23,14 @@ import {
   Plus,
   Trash2,
   Copy,
-  Share
+  Share,
+  FileDown,
+  Monitor,
+  Smartphone,
+  Tablet
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import jsPDF from "jspdf";
 
 interface FormInvitationsProps {
   form: Form;
@@ -64,9 +69,180 @@ export const FormInvitations = ({ form, onUpdateForm }: FormInvitationsProps) =>
   /**
    * Generate embed code for the form
    */
-  const generateEmbedCode = () => {
+  const generateEmbedCode = (width = "100%", height = "600px") => {
     const formUrl = generateFormUrl();
-    return `<iframe src="${formUrl}" width="100%" height="600" frameborder="0" title="${form.title}"></iframe>`;
+    return `<iframe src="${formUrl}" width="${width}" height="${height}" frameborder="0" title="${form.title}" style="border: none;"></iframe>`;
+  };
+
+  /**
+   * Generate responsive embed code
+   */
+  const generateResponsiveEmbedCode = () => {
+    const formUrl = generateFormUrl();
+    return `<div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
+  <iframe src="${formUrl}" 
+    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;" 
+    title="${form.title}">
+  </iframe>
+</div>`;
+  };
+
+  /**
+   * Export form as fillable PDF
+   */
+  const exportToPDF = () => {
+    try {
+      const doc = new jsPDF();
+      let yPosition = 20;
+
+      // Add form title
+      doc.setFontSize(20);
+      doc.text(form.title, 20, yPosition);
+      yPosition += 15;
+
+      // Add form description if available
+      if (form.description) {
+        doc.setFontSize(12);
+        const descLines = doc.splitTextToSize(form.description, 170);
+        doc.text(descLines, 20, yPosition);
+        yPosition += descLines.length * 6 + 10;
+      }
+
+      // Add form fields
+      form.fields.forEach((field, index) => {
+        // Check if we need a new page
+        if (yPosition > 250) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        // Field label
+        doc.setFontSize(12);
+        doc.setFont("helvetica", "bold");
+        const labelText = `${index + 1}. ${field.label}${field.required ? ' *' : ''}`;
+        doc.text(labelText, 20, yPosition);
+        yPosition += 8;
+
+        // Field description
+        if (field.description) {
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(10);
+          const descLines = doc.splitTextToSize(field.description, 170);
+          doc.text(descLines, 25, yPosition);
+          yPosition += descLines.length * 5 + 5;
+        }
+
+        // Create fillable field based on type
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(12);
+
+        switch (field.type) {
+          case 'text':
+          case 'email':
+          case 'tel':
+          case 'url':
+            // Text input field
+            doc.rect(20, yPosition, 170, 8);
+            yPosition += 15;
+            break;
+
+          case 'textarea':
+            // Multi-line text area
+            for (let i = 0; i < 3; i++) {
+              doc.rect(20, yPosition + (i * 8), 170, 8);
+            }
+            yPosition += 30;
+            break;
+
+          case 'number':
+            // Number input field
+            doc.rect(20, yPosition, 80, 8);
+            if (field.placeholder) {
+              doc.setFontSize(10);
+              doc.text(`(${field.placeholder})`, 105, yPosition + 6);
+            }
+            yPosition += 15;
+            break;
+
+          case 'select':
+          case 'radio':
+            // Radio buttons or dropdown options
+            if (field.options) {
+              field.options.forEach((option, optIndex) => {
+                if (field.type === 'radio') {
+                  doc.circle(25, yPosition + 3, 2);
+                  doc.text(option, 35, yPosition + 6);
+                } else {
+                  doc.text(`☐ ${option}`, 25, yPosition + 6);
+                }
+                yPosition += 10;
+              });
+            }
+            break;
+
+          case 'checkbox':
+            // Checkbox options
+            if (field.options) {
+              field.options.forEach((option) => {
+                doc.rect(22, yPosition, 6, 6);
+                doc.text(option, 35, yPosition + 6);
+                yPosition += 10;
+              });
+            } else {
+              doc.rect(22, yPosition, 6, 6);
+              yPosition += 10;
+            }
+            break;
+
+          case 'date':
+            // Date field
+            doc.rect(20, yPosition, 80, 8);
+            doc.setFontSize(10);
+            doc.text('MM/DD/YYYY', 105, yPosition + 6);
+            yPosition += 15;
+            break;
+
+          case 'file':
+            // File upload instruction
+            doc.text('Attach file: ___________________', 20, yPosition + 6);
+            yPosition += 15;
+            break;
+
+          default:
+            // Default text field
+            doc.rect(20, yPosition, 170, 8);
+            yPosition += 15;
+        }
+
+        yPosition += 5; // Space between fields
+      });
+
+      // Add footer with submission instructions
+      if (yPosition > 220) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "italic");
+      doc.text('Instructions: Fill out all required fields (*) and submit this form.', 20, yPosition + 20);
+      doc.text(`Form URL: ${generateFormUrl()}`, 20, yPosition + 30);
+
+      // Save the PDF
+      doc.save(`${form.title.replace(/[^a-zA-Z0-9]/g, '_')}_fillable.pdf`);
+
+      toast({
+        title: "PDF Exported",
+        description: "Fillable PDF form has been downloaded successfully.",
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "Export Failed",
+        description: "Failed to generate PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   /**
@@ -526,6 +702,39 @@ export const FormInvitations = ({ form, onUpdateForm }: FormInvitationsProps) =>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
+                <Label>Embed Options</Label>
+                <div className="grid grid-cols-3 gap-2 mt-2 mb-4">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyToClipboard(generateEmbedCode("100%", "600px"), 'Desktop embed code')}
+                    className="flex items-center gap-2"
+                  >
+                    <Monitor className="h-4 w-4" />
+                    Desktop
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyToClipboard(generateEmbedCode("100%", "500px"), 'Tablet embed code')}
+                    className="flex items-center gap-2"
+                  >
+                    <Tablet className="h-4 w-4" />
+                    Tablet
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => copyToClipboard(generateResponsiveEmbedCode(), 'Responsive embed code')}
+                    className="flex items-center gap-2"
+                  >
+                    <Smartphone className="h-4 w-4" />
+                    Responsive
+                  </Button>
+                </div>
+              </div>
+
+              <div>
                 <Label htmlFor="embed-code">HTML Embed Code</Label>
                 <div className="flex gap-2 mt-2">
                   <Textarea
@@ -551,6 +760,39 @@ export const FormInvitations = ({ form, onUpdateForm }: FormInvitationsProps) =>
                   <li>• Paste it into your website's HTML</li>
                   <li>• Adjust width and height as needed</li>
                   <li>• Test the embedded form on your site</li>
+                </ul>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* PDF Export */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileDown className="h-5 w-5" />
+                Export Options
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label>Export Form as PDF</Label>
+                <p className="text-sm text-gray-600 mt-1 mb-4">
+                  Generate a fillable PDF version of your form for offline use or printing.
+                </p>
+                <Button onClick={exportToPDF} className="w-full">
+                  <FileDown className="h-4 w-4 mr-2" />
+                  Download Fillable PDF
+                </Button>
+              </div>
+
+              <div className="p-4 bg-orange-50 rounded-lg">
+                <h4 className="font-medium text-orange-900 mb-2">PDF Features</h4>
+                <ul className="text-sm text-orange-800 space-y-1">
+                  <li>• Fillable form fields for all input types</li>
+                  <li>• Proper field labels and descriptions</li>
+                  <li>• Required field indicators (*)</li>
+                  <li>• Form submission instructions included</li>
+                  <li>• Professional formatting and layout</li>
                 </ul>
               </div>
             </CardContent>
