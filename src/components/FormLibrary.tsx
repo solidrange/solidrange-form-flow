@@ -1274,19 +1274,78 @@ const formTemplates: FormTemplate[] = [
 
   {
     id: "fin-2",
-    name: "Budget Request",
-    description: "Annual or project budget request form",
+    name: "Capital Expenditure Request",
+    description: "Request for major capital investment approval",
     category: "finance",
     targetAudience: ["internal"],
-    preview: "Budget categories, justifications, ROI projections",
+    preview: "Asset details, cost-benefit analysis, depreciation schedule, funding source",
     fields: [
-      { id: generateFieldId(245), type: "text", label: "Department/Project", required: true },
-      { id: generateFieldId(246), type: "text", label: "Budget Owner", required: true },
-      { id: generateFieldId(247), type: "select", label: "Budget Type", required: true, options: ["Annual Operating", "Project", "Capital Expenditure", "Emergency"] },
-      { id: generateFieldId(248), type: "text", label: "Total Budget Requested", required: true },
-      { id: generateFieldId(249), type: "textarea", label: "Budget Breakdown", required: true },
-      { id: generateFieldId(250), type: "textarea", label: "Business Justification", required: true },
-      { id: generateFieldId(251), type: "textarea", label: "Expected ROI", required: false }
+      { id: generateFieldId(245), type: "text", label: "Asset/Equipment Name", required: true },
+      { id: generateFieldId(246), type: "text", label: "Requesting Department", required: true },
+      { id: generateFieldId(247), type: "select", label: "Asset Category", required: true, options: ["IT Equipment", "Manufacturing Equipment", "Vehicles", "Real Estate", "Software Licenses", "Other"] },
+      { id: generateFieldId(248), type: "text", label: "Total Investment Amount", required: true },
+      { id: generateFieldId(249), type: "number", label: "Useful Life (years)", required: true },
+      { id: generateFieldId(250), type: "textarea", label: "Business Case & ROI", required: true },
+      { id: generateFieldId(251), type: "select", label: "Funding Source", required: true, options: ["Operating Budget", "Capital Reserve", "Bank Financing", "Lease", "Grant Funding"] },
+      { id: generateFieldId(252), type: "date", label: "Required By Date", required: true },
+      { id: generateFieldId(253), type: "textarea", label: "Alternative Solutions Considered", required: false }
+    ]
+  },
+
+  {
+    id: "fin-new-1",
+    name: "Emergency Fund Request",
+    description: "Urgent funding request for unexpected expenses",
+    category: "finance",
+    targetAudience: ["internal"],
+    preview: "Emergency details, impact assessment, immediate actions, temporary funding",
+    fields: [
+      { id: generateFieldId(254), type: "text", label: "Emergency Situation", required: true },
+      { id: generateFieldId(255), type: "select", label: "Urgency Level", required: true, options: ["Critical - Immediate", "High - Within 24hrs", "Medium - Within Week", "Low - Within Month"] },
+      { id: generateFieldId(256), type: "text", label: "Amount Requested", required: true },
+      { id: generateFieldId(257), type: "textarea", label: "Situation Description", required: true },
+      { id: generateFieldId(258), type: "textarea", label: "Business Impact if Not Funded", required: true },
+      { id: generateFieldId(259), type: "textarea", label: "Immediate Actions Taken", required: true },
+      { id: generateFieldId(260), type: "date", label: "Funds Needed By", required: true },
+      { id: generateFieldId(261), type: "text", label: "Alternative Funding Sources", required: false }
+    ]
+  },
+
+  {
+    id: "fin-new-2", 
+    name: "Department Budget Variance Request",
+    description: "Request to reallocate budget between categories within department",
+    category: "finance",
+    targetAudience: ["internal"],
+    preview: "Budget reallocation, variance explanation, impact analysis, approval workflow",
+    fields: [
+      { id: generateFieldId(262), type: "text", label: "Department Name", required: true },
+      { id: generateFieldId(263), type: "text", label: "Budget Period", required: true },
+      { id: generateFieldId(264), type: "text", label: "Source Budget Category", required: true },
+      { id: generateFieldId(265), type: "text", label: "Target Budget Category", required: true },
+      { id: generateFieldId(266), type: "text", label: "Amount to Transfer", required: true },
+      { id: generateFieldId(267), type: "textarea", label: "Reason for Reallocation", required: true },
+      { id: generateFieldId(268), type: "textarea", label: "Impact on Original Category", required: true },
+      { id: generateFieldId(269), type: "select", label: "Frequency", required: true, options: ["One-time", "Recurring Monthly", "Recurring Quarterly", "Annual Adjustment"] }
+    ]
+  },
+
+  {
+    id: "fin-new-3",
+    name: "Travel & Entertainment Budget Request", 
+    description: "Request for travel, training, and business entertainment expenses",
+    category: "finance",
+    targetAudience: ["internal"],
+    preview: "Travel details, business purpose, cost breakdown, policy compliance",
+    fields: [
+      { id: generateFieldId(270), type: "text", label: "Employee Name", required: true },
+      { id: generateFieldId(271), type: "select", label: "Request Type", required: true, options: ["Business Travel", "Training/Conference", "Client Entertainment", "Team Building", "Recruitment"] },
+      { id: generateFieldId(272), type: "text", label: "Destination/Venue", required: true },
+      { id: generateFieldId(273), type: "date", label: "Start Date", required: true },
+      { id: generateFieldId(274), type: "date", label: "End Date", required: true },
+      { id: generateFieldId(275), type: "text", label: "Estimated Total Cost", required: true },
+      { id: generateFieldId(276), type: "textarea", label: "Business Purpose & Expected Outcomes", required: true },
+      { id: generateFieldId(277), type: "checkbox", label: "Expense Categories", required: true, options: ["Airfare", "Accommodation", "Meals", "Ground Transportation", "Conference Fees", "Other"] }
     ]
   },
 
@@ -3304,6 +3363,198 @@ const formTemplates: FormTemplate[] = [
       { id: generateFieldId(1098), type: "select", label: "Digital Literacy Level", required: true, options: ["Low", "Medium", "High", "Mixed"] },
       { id: generateFieldId(1099), type: "checkbox", label: "Accessibility Requirements", required: true, options: ["Screen Readers", "Multiple Languages", "Mobile Friendly", "Offline Access", "Simple Navigation"] },
       { id: generateFieldId(1100), type: "textarea", label: "Success Metrics", required: true }
+    ]
+  },
+
+  // ADDITIONAL UNIQUE FORMS FOR ALL SECTORS
+
+  // GOVERNMENT SECTOR - Citizen Services
+  {
+    id: "gov-new-2",
+    name: "Permit Application Processing",
+    description: "Comprehensive permit application for construction and business permits",
+    category: "legal",
+    sector: "government",
+    targetAudience: ["external"],
+    preview: "Permit type, property details, compliance requirements, fee calculation",
+    fields: [
+      { id: generateFieldId(1101), type: "select", label: "Permit Type", required: true, options: ["Building Permit", "Business License", "Zoning Variance", "Special Event", "Demolition", "Sign Permit"] },
+      { id: generateFieldId(1102), type: "text", label: "Property Address", required: true },
+      { id: generateFieldId(1103), type: "text", label: "Applicant Name", required: true },
+      { id: generateFieldId(1104), type: "text", label: "Project Description", required: true },
+      { id: generateFieldId(1105), type: "text", label: "Estimated Value", required: true },
+      { id: generateFieldId(1106), type: "date", label: "Proposed Start Date", required: true },
+      { id: generateFieldId(1107), type: "textarea", label: "Environmental Considerations", required: false },
+      { id: generateFieldId(1108), type: "checkbox", label: "Required Documentation", required: true, options: ["Site Plans", "Financial Records", "Insurance Certificate", "Environmental Assessment"] }
+    ]
+  },
+
+  // INSURANCE SECTOR - Claims Processing  
+  {
+    id: "ins-new-2",
+    name: "Auto Insurance Claim Filing",
+    description: "Comprehensive automobile insurance claim submission form",
+    category: "claims",
+    sector: "insurance",
+    targetAudience: ["external"],
+    preview: "Accident details, vehicle information, damage assessment, police report",
+    fields: [
+      { id: generateFieldId(1109), type: "text", label: "Policy Number", required: true },
+      { id: generateFieldId(1110), type: "date", label: "Date of Incident", required: true },
+      { id: generateFieldId(1111), type: "text", label: "Location of Incident", required: true },
+      { id: generateFieldId(1112), type: "textarea", label: "Description of Incident", required: true },
+      { id: generateFieldId(1113), type: "text", label: "Vehicle Make/Model/Year", required: true },
+      { id: generateFieldId(1114), type: "radio", label: "Police Report Filed", required: true, options: ["Yes", "No", "Unknown"] },
+      { id: generateFieldId(1115), type: "checkbox", label: "Damage Areas", required: true, options: ["Front End", "Rear End", "Driver Side", "Passenger Side", "Roof", "Interior"] },
+      { id: generateFieldId(1116), type: "select", label: "Estimated Repair Cost", required: true, options: ["Under $1,000", "$1,000-$5,000", "$5,000-$15,000", "Over $15,000", "Total Loss"] }
+    ]
+  },
+
+  // FINTECH SECTOR - Compliance
+  {
+    id: "fin-new-4",
+    name: "Anti-Money Laundering Transaction Monitoring",
+    description: "Suspicious transaction activity reporting for AML compliance",
+    category: "compliance",
+    sector: "fintech",
+    targetAudience: ["internal"],
+    preview: "Transaction details, risk indicators, investigation notes, regulatory reporting",
+    fields: [
+      { id: generateFieldId(1117), type: "text", label: "Transaction ID", required: true },
+      { id: generateFieldId(1118), type: "text", label: "Customer ID", required: true },
+      { id: generateFieldId(1119), type: "text", label: "Transaction Amount", required: true },
+      { id: generateFieldId(1120), type: "date", label: "Transaction Date", required: true },
+      { id: generateFieldId(1121), type: "checkbox", label: "Suspicious Indicators", required: true, options: ["Unusual Amount", "Frequent Transactions", "Round Numbers", "Geographical Risk", "Customer Behavior Change"] },
+      { id: generateFieldId(1122), type: "textarea", label: "Investigation Notes", required: true },
+      { id: generateFieldId(1123), type: "select", label: "Risk Level", required: true, options: ["Low", "Medium", "High", "Critical"] },
+      { id: generateFieldId(1124), type: "radio", label: "SAR Filing Required", required: true, options: ["Yes", "No", "Under Review"] }
+    ]
+  },
+
+  // HEALTH SECTOR - Patient Care
+  {
+    id: "health-new-2",
+    name: "Telemedicine Consultation Setup",
+    description: "Patient registration and setup for telehealth appointments",
+    category: "customer",
+    sector: "health",
+    targetAudience: ["external"],
+    preview: "Technology requirements, medical history, consent forms, scheduling preferences",
+    fields: [
+      { id: generateFieldId(1125), type: "text", label: "Patient Name", required: true },
+      { id: generateFieldId(1126), type: "date", label: "Date of Birth", required: true },
+      { id: generateFieldId(1127), type: "text", label: "Preferred Consultation Date/Time", required: true },
+      { id: generateFieldId(1128), type: "select", label: "Consultation Type", required: true, options: ["Follow-up", "New Patient", "Urgent Care", "Mental Health", "Specialist Referral"] },
+      { id: generateFieldId(1129), type: "checkbox", label: "Technology Available", required: true, options: ["Smartphone", "Tablet", "Computer", "High-speed Internet", "Camera", "Microphone"] },
+      { id: generateFieldId(1130), type: "textarea", label: "Chief Complaint", required: true },
+      { id: generateFieldId(1131), type: "radio", label: "Previous Telemedicine Experience", required: true, options: ["Yes", "No", "Limited"] },
+      { id: generateFieldId(1132), type: "checkbox", label: "Consent Acknowledgments", required: true, options: ["Privacy Policy", "Technology Limitations", "Emergency Procedures", "Recording Consent"] }
+    ]
+  },
+
+  // ENERGY SECTOR - Operations
+  {
+    id: "energy-new-2",
+    name: "Power Plant Maintenance Scheduling",
+    description: "Preventive and corrective maintenance planning for power generation facilities",
+    category: "operations",
+    sector: "energy",
+    targetAudience: ["internal"],
+    preview: "Equipment details, maintenance type, scheduling constraints, resource requirements",
+    fields: [
+      { id: generateFieldId(1133), type: "text", label: "Equipment/Unit ID", required: true },
+      { id: generateFieldId(1134), type: "select", label: "Facility Type", required: true, options: ["Natural Gas", "Coal", "Nuclear", "Hydroelectric", "Solar", "Wind", "Biomass"] },
+      { id: generateFieldId(1135), type: "select", label: "Maintenance Type", required: true, options: ["Preventive", "Corrective", "Emergency", "Predictive", "Overhaul"] },
+      { id: generateFieldId(1136), type: "date", label: "Proposed Start Date", required: true },
+      { id: generateFieldId(1137), type: "number", label: "Estimated Duration (hours)", required: true },
+      { id: generateFieldId(1138), type: "text", label: "Required Outage Capacity (MW)", required: true },
+      { id: generateFieldId(1139), type: "textarea", label: "Work Description", required: true },
+      { id: generateFieldId(1140), type: "checkbox", label: "Resource Requirements", required: true, options: ["Specialized Contractors", "Heavy Equipment", "Safety Permits", "Environmental Clearance"] }
+    ]
+  },
+
+  // TELECOM SECTOR - Network Management
+  {
+    id: "telecom-new-3", 
+    name: "Network Capacity Planning Request",
+    description: "Telecommunications network capacity analysis and expansion planning",
+    category: "project",
+    sector: "telecom",
+    targetAudience: ["internal"],
+    preview: "Traffic analysis, growth projections, infrastructure requirements, investment planning",
+    fields: [
+      { id: generateFieldId(1141), type: "text", label: "Network Region/Market", required: true },
+      { id: generateFieldId(1142), type: "select", label: "Network Layer", required: true, options: ["Core Network", "Metro Network", "Access Network", "Backhaul", "Edge Computing"] },
+      { id: generateFieldId(1143), type: "text", label: "Current Utilization (%)", required: true },
+      { id: generateFieldId(1144), type: "text", label: "Projected Growth (%)", required: true },
+      { id: generateFieldId(1145), type: "date", label: "Capacity Threshold Date", required: true },
+      { id: generateFieldId(1146), type: "textarea", label: "Traffic Drivers", required: true },
+      { id: generateFieldId(1147), type: "select", label: "Proposed Solution", required: true, options: ["Add Capacity", "New Technology", "Traffic Engineering", "Alternative Routing", "Service Migration"] },
+      { id: generateFieldId(1148), type: "text", label: "Estimated Investment", required: true }
+    ]
+  },
+
+  // STARTUPS SECTOR - Funding
+  {
+    id: "startup-new-2",
+    name: "Venture Capital Pitch Deck Submission",
+    description: "Comprehensive startup funding application for venture capital investment",
+    category: "business",
+    sector: "startups", 
+    targetAudience: ["external"],
+    preview: "Business model, market analysis, financial projections, team credentials",
+    fields: [
+      { id: generateFieldId(1149), type: "text", label: "Company Name", required: true },
+      { id: generateFieldId(1150), type: "select", label: "Funding Stage", required: true, options: ["Pre-Seed", "Seed", "Series A", "Series B", "Series C+", "Bridge Round"] },
+      { id: generateFieldId(1151), type: "text", label: "Funding Amount Sought", required: true },
+      { id: generateFieldId(1152), type: "select", label: "Industry Sector", required: true, options: ["SaaS", "E-commerce", "FinTech", "HealthTech", "EdTech", "AI/ML", "Blockchain", "IoT", "CleanTech"] },
+      { id: generateFieldId(1153), type: "textarea", label: "Problem Statement", required: true },
+      { id: generateFieldId(1154), type: "textarea", label: "Solution Description", required: true },
+      { id: generateFieldId(1155), type: "text", label: "Total Addressable Market", required: true },
+      { id: generateFieldId(1156), type: "text", label: "Current Monthly Revenue", required: false },
+      { id: generateFieldId(1157), type: "text", label: "Customer Acquisition Cost", required: false }
+    ]
+  },
+
+  // SME SECTOR - Business Operations
+  {
+    id: "sme-new-3",
+    name: "Small Business Tax Preparation Checklist",
+    description: "Comprehensive tax document collection and preparation for small businesses",
+    category: "finance",
+    sector: "sme",
+    targetAudience: ["internal"],
+    preview: "Financial documents, deductions, business expenses, compliance requirements",
+    fields: [
+      { id: generateFieldId(1158), type: "text", label: "Business Name", required: true },
+      { id: generateFieldId(1159), type: "select", label: "Business Entity Type", required: true, options: ["Sole Proprietorship", "Partnership", "LLC", "S-Corp", "C-Corp"] },
+      { id: generateFieldId(1160), type: "text", label: "Tax Year", required: true },
+      { id: generateFieldId(1161), type: "text", label: "Gross Revenue", required: true },
+      { id: generateFieldId(1162), type: "checkbox", label: "Available Financial Documents", required: true, options: ["Profit & Loss Statement", "Balance Sheet", "Bank Statements", "Receipts", "1099s", "W-2s"] },
+      { id: generateFieldId(1163), type: "checkbox", label: "Business Deductions", required: false, options: ["Home Office", "Vehicle Expenses", "Travel", "Equipment", "Professional Services", "Marketing"] },
+      { id: generateFieldId(1164), type: "textarea", label: "Special Circumstances", required: false },
+      { id: generateFieldId(1165), type: "date", label: "Preferred Completion Date", required: true }
+    ]
+  },
+
+  // CROSS-SECTOR - Innovation
+  {
+    id: "cross-new-1",
+    name: "Innovation Project Proposal",
+    description: "New technology or process innovation proposal for any organization",
+    category: "project",
+    targetAudience: ["internal"],
+    preview: "Innovation concept, feasibility analysis, resource requirements, expected impact",
+    fields: [
+      { id: generateFieldId(1166), type: "text", label: "Innovation Title", required: true },
+      { id: generateFieldId(1167), type: "select", label: "Innovation Type", required: true, options: ["Product Innovation", "Process Innovation", "Service Innovation", "Technology Innovation", "Business Model Innovation"] },
+      { id: generateFieldId(1168), type: "textarea", label: "Current Challenge/Opportunity", required: true },
+      { id: generateFieldId(1169), type: "textarea", label: "Proposed Solution", required: true },
+      { id: generateFieldId(1170), type: "select", label: "Development Stage", required: true, options: ["Concept", "Research", "Prototype", "Pilot", "Implementation"] },
+      { id: generateFieldId(1171), type: "text", label: "Estimated Development Cost", required: true },
+      { id: generateFieldId(1172), type: "text", label: "Timeline to Market", required: true },
+      { id: generateFieldId(1173), type: "textarea", label: "Expected Benefits", required: true },
+      { id: generateFieldId(1174), type: "checkbox", label: "Required Resources", required: true, options: ["R&D Team", "External Partners", "Specialized Equipment", "Technology Licenses", "Regulatory Approval"] }
     ]
   }
 ];
