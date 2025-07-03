@@ -62,6 +62,7 @@ const Index = () => {
   const [formDescription, setFormDescription] = useState("");
   const [formAttachments, setFormAttachments] = useState<DocumentAttachment[]>([]);
   const [formCategory, setFormCategory] = useState<string>("");
+  const [formTargetAudience, setFormTargetAudience] = useState<string>("");
   const [savedDrafts, setSavedDrafts] = useState<Form[]>([]);
   const [publishedForms, setPublishedForms] = useState<Form[]>([]);
   const [currentFormId, setCurrentFormId] = useState<string | null>(null);
@@ -164,6 +165,7 @@ const Index = () => {
     setFormTitle("Untitled Form");
     setFormDescription("");
     setFormCategory("");
+    setFormTargetAudience("");
     setFormAttachments([]);
     setCurrentFormId(null);
     setToDraft();
@@ -416,6 +418,7 @@ const Index = () => {
     setFormTitle(template.name);
     setFormDescription(template.description);
     setFormCategory(template.category);
+    setFormTargetAudience(template.targetAudience?.[0] || "");
     const fieldsWithIds = template.fields.map(field => ({
       ...field,
       id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
@@ -958,7 +961,9 @@ const Index = () => {
                   allowedFileTypes={formSettings.documents?.allowedTypes || ['pdf', 'doc', 'docx']}
                   maxFileSize={formSettings.documents?.maxSize || 10}
                   formCategory={formCategory}
+                  formTargetAudience={formTargetAudience}
                   onCategoryChange={setFormCategory}
+                  onTargetAudienceChange={setFormTargetAudience}
                   onSaveToLibrary={handleSaveToLibrary}
                   isPublished={currentFormIsPublished()}
                   onMoveToDraft={() => handleMoveToDraft()}

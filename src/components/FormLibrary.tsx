@@ -895,6 +895,604 @@ const formTemplates: FormTemplate[] = [
       { id: generateFieldId(99), type: "textarea", label: "Success Criteria", required: true },
       { id: generateFieldId(100), type: "textarea", label: "Special Requirements", required: false }
     ]
+  },
+
+  // HR & INTERNAL TEMPLATES
+  {
+    id: "hr-1",
+    name: "Employee Performance Review",
+    description: "Annual performance evaluation and goal setting for employees",
+    category: "hr",
+    targetAudience: ["internal"],
+    preview: "Performance metrics, achievements, goals, development plans",
+    fields: [
+      { id: generateFieldId(101), type: "text", label: "Employee Name", required: true },
+      { id: generateFieldId(102), type: "text", label: "Position", required: true },
+      { id: generateFieldId(103), type: "text", label: "Department", required: true },
+      { id: generateFieldId(104), type: "date", label: "Review Period Start", required: true },
+      { id: generateFieldId(105), type: "date", label: "Review Period End", required: true },
+      { id: generateFieldId(106), type: "rating", label: "Overall Performance Rating", required: true },
+      { id: generateFieldId(107), type: "textarea", label: "Key Achievements", required: true },
+      { id: generateFieldId(108), type: "textarea", label: "Areas for Improvement", required: false },
+      { id: generateFieldId(109), type: "textarea", label: "Goals for Next Period", required: true },
+      { id: generateFieldId(110), type: "checkbox", label: "Training Needs", required: false, options: ["Leadership", "Technical Skills", "Communication", "Project Management", "Other"] }
+    ]
+  },
+
+  {
+    id: "hr-2", 
+    name: "Exit Interview",
+    description: "Comprehensive exit interview for departing employees",
+    category: "hr",
+    targetAudience: ["internal"],
+    preview: "Reasons for leaving, feedback, suggestions for improvement",
+    fields: [
+      { id: generateFieldId(111), type: "text", label: "Employee Name", required: true },
+      { id: generateFieldId(112), type: "date", label: "Last Working Day", required: true },
+      { id: generateFieldId(113), type: "select", label: "Reason for Leaving", required: true, options: ["New Job Opportunity", "Career Growth", "Salary", "Work-Life Balance", "Management Issues", "Company Culture", "Other"] },
+      { id: generateFieldId(114), type: "rating", label: "Overall Job Satisfaction", required: true },
+      { id: generateFieldId(115), type: "rating", label: "Management Satisfaction", required: true },
+      { id: generateFieldId(116), type: "textarea", label: "What Did You Like Most About Working Here?", required: false },
+      { id: generateFieldId(117), type: "textarea", label: "What Could Be Improved?", required: false },
+      { id: generateFieldId(118), type: "radio", label: "Would You Recommend This Company to Others?", required: true, options: ["Yes", "No", "Maybe"] }
+    ]
+  },
+
+  {
+    id: "hr-3",
+    name: "Training Request",
+    description: "Employee training and development request form",
+    category: "hr",
+    targetAudience: ["internal"],
+    preview: "Training type, justification, budget, timeline",
+    fields: [
+      { id: generateFieldId(119), type: "text", label: "Employee Name", required: true },
+      { id: generateFieldId(120), type: "text", label: "Training Program", required: true },
+      { id: generateFieldId(121), type: "select", label: "Training Type", required: true, options: ["Conference", "Online Course", "Certification", "Workshop", "External Training", "Internal Training"] },
+      { id: generateFieldId(122), type: "textarea", label: "Business Justification", required: true },
+      { id: generateFieldId(123), type: "text", label: "Estimated Cost", required: true },
+      { id: generateFieldId(124), type: "date", label: "Preferred Date", required: false },
+      { id: generateFieldId(125), type: "textarea", label: "Expected Benefits", required: true }
+    ]
+  },
+
+  {
+    id: "hr-4",
+    name: "Internal Job Application",
+    description: "Application form for internal job postings",
+    category: "hr",
+    targetAudience: ["internal"],
+    preview: "Position details, qualifications, experience, motivation",
+    fields: [
+      { id: generateFieldId(126), type: "text", label: "Current Position", required: true },
+      { id: generateFieldId(127), type: "text", label: "Applied Position", required: true },
+      { id: generateFieldId(128), type: "text", label: "Department", required: true },
+      { id: generateFieldId(129), type: "textarea", label: "Relevant Experience", required: true },
+      { id: generateFieldId(130), type: "textarea", label: "Why Are You Interested?", required: true },
+      { id: generateFieldId(131), type: "checkbox", label: "Required Skills", required: true, options: ["Leadership", "Project Management", "Technical Expertise", "Communication", "Problem Solving"] },
+      { id: generateFieldId(132), type: "text", label: "Notice Period", required: true }
+    ]
+  },
+
+  {
+    id: "hr-5",
+    name: "Expense Reimbursement",
+    description: "Employee expense reimbursement request",
+    category: "finance",
+    targetAudience: ["internal"],
+    preview: "Expense details, receipts, approvals",
+    fields: [
+      { id: generateFieldId(133), type: "text", label: "Employee Name", required: true },
+      { id: generateFieldId(134), type: "text", label: "Employee ID", required: true },
+      { id: generateFieldId(135), type: "date", label: "Expense Date", required: true },
+      { id: generateFieldId(136), type: "select", label: "Expense Category", required: true, options: ["Travel", "Meals", "Office Supplies", "Training", "Client Entertainment", "Other"] },
+      { id: generateFieldId(137), type: "text", label: "Amount", required: true },
+      { id: generateFieldId(138), type: "textarea", label: "Business Purpose", required: true },
+      { id: generateFieldId(139), type: "text", label: "Project/Client Code", required: false }
+    ]
+  },
+
+  // CUSTOMER & EXTERNAL TEMPLATES
+  {
+    id: "cust-1",
+    name: "Customer Registration",
+    description: "New customer account setup and information collection",
+    category: "customer",
+    targetAudience: ["external"],
+    preview: "Company details, contact information, service requirements",
+    fields: [
+      { id: generateFieldId(140), type: "text", label: "Company Name", required: true },
+      { id: generateFieldId(141), type: "text", label: "Primary Contact", required: true },
+      { id: generateFieldId(142), type: "email", label: "Business Email", required: true },
+      { id: generateFieldId(143), type: "text", label: "Phone Number", required: true },
+      { id: generateFieldId(144), type: "textarea", label: "Company Address", required: true },
+      { id: generateFieldId(145), type: "select", label: "Industry", required: true, options: ["Technology", "Healthcare", "Finance", "Manufacturing", "Retail", "Education", "Government", "Other"] },
+      { id: generateFieldId(146), type: "select", label: "Company Size", required: true, options: ["1-10", "11-50", "51-200", "201-1000", "1000+"] },
+      { id: generateFieldId(147), type: "checkbox", label: "Services Interested In", required: true, options: ["Consulting", "Software Development", "Support", "Training", "Integration"] }
+    ]
+  },
+
+  {
+    id: "cust-2",
+    name: "Service Request",
+    description: "Customer service request and support ticket",
+    category: "customer",
+    targetAudience: ["external"],
+    preview: "Issue description, priority, contact details",
+    fields: [
+      { id: generateFieldId(148), type: "text", label: "Customer Name", required: true },
+      { id: generateFieldId(149), type: "email", label: "Contact Email", required: true },
+      { id: generateFieldId(150), type: "select", label: "Request Type", required: true, options: ["Technical Support", "Account Issue", "Billing Inquiry", "Feature Request", "Bug Report", "General Question"] },
+      { id: generateFieldId(151), type: "select", label: "Priority", required: true, options: ["Low", "Medium", "High", "Critical"] },
+      { id: generateFieldId(152), type: "textarea", label: "Issue Description", required: true },
+      { id: generateFieldId(153), type: "textarea", label: "Steps to Reproduce", required: false },
+      { id: generateFieldId(154), type: "text", label: "Preferred Contact Method", required: false }
+    ]
+  },
+
+  {
+    id: "cust-3",
+    name: "Product Feedback",
+    description: "Customer feedback on products and services",
+    category: "customer",
+    targetAudience: ["external"],
+    preview: "Product experience, ratings, improvement suggestions",
+    fields: [
+      { id: generateFieldId(155), type: "text", label: "Product/Service", required: true },
+      { id: generateFieldId(156), type: "rating", label: "Overall Satisfaction", required: true },
+      { id: generateFieldId(157), type: "rating", label: "Ease of Use", required: true },
+      { id: generateFieldId(158), type: "rating", label: "Value for Money", required: true },
+      { id: generateFieldId(159), type: "textarea", label: "What Do You Like Most?", required: false },
+      { id: generateFieldId(160), type: "textarea", label: "What Could Be Improved?", required: false },
+      { id: generateFieldId(161), type: "radio", label: "Would You Recommend This Product?", required: true, options: ["Definitely", "Probably", "Not Sure", "Probably Not", "Definitely Not"] }
+    ]
+  },
+
+  {
+    id: "cust-4",
+    name: "Event Registration",
+    description: "Registration form for events, webinars, and conferences",
+    category: "marketing",
+    targetAudience: ["external"],
+    preview: "Event details, attendee information, preferences",
+    fields: [
+      { id: generateFieldId(162), type: "text", label: "Full Name", required: true },
+      { id: generateFieldId(163), type: "email", label: "Email Address", required: true },
+      { id: generateFieldId(164), type: "text", label: "Job Title", required: true },
+      { id: generateFieldId(165), type: "text", label: "Company", required: true },
+      { id: generateFieldId(166), type: "select", label: "Event Session", required: true, options: ["Morning Session", "Afternoon Session", "Full Day", "Virtual Only"] },
+      { id: generateFieldId(167), type: "checkbox", label: "Dietary Requirements", required: false, options: ["Vegetarian", "Vegan", "Gluten-Free", "Dairy-Free", "None"] },
+      { id: generateFieldId(168), type: "textarea", label: "Special Requirements", required: false }
+    ]
+  },
+
+  {
+    id: "cust-5",
+    name: "Partnership Inquiry",
+    description: "Inquiry form for potential business partnerships",
+    category: "business",
+    targetAudience: ["external"],
+    preview: "Partnership type, company background, proposal details",
+    fields: [
+      { id: generateFieldId(169), type: "text", label: "Company Name", required: true },
+      { id: generateFieldId(170), type: "text", label: "Contact Person", required: true },
+      { id: generateFieldId(171), type: "email", label: "Business Email", required: true },
+      { id: generateFieldId(172), type: "select", label: "Partnership Type", required: true, options: ["Strategic Alliance", "Distribution", "Technology Integration", "Joint Venture", "Supplier", "Reseller"] },
+      { id: generateFieldId(173), type: "textarea", label: "Company Overview", required: true },
+      { id: generateFieldId(174), type: "textarea", label: "Partnership Proposal", required: true },
+      { id: generateFieldId(175), type: "text", label: "Expected Start Date", required: false }
+    ]
+  },
+
+  // COMPLIANCE & LEGAL TEMPLATES
+  {
+    id: "comp-1",
+    name: "GDPR Data Processing Agreement",
+    description: "GDPR compliance assessment for data processors",
+    category: "compliance",
+    targetAudience: ["vendor", "external"],
+    preview: "Data protection measures, processing activities, compliance status",
+    fields: [
+      { id: generateFieldId(176), type: "text", label: "Organization Name", required: true },
+      { id: generateFieldId(177), type: "textarea", label: "Data Processing Activities", required: true },
+      { id: generateFieldId(178), type: "checkbox", label: "Types of Personal Data", required: true, options: ["Contact Information", "Financial Data", "Health Data", "Biometric Data", "Special Categories"] },
+      { id: generateFieldId(179), type: "radio", label: "Data Protection Officer Appointed?", required: true, options: ["Yes", "No"] },
+      { id: generateFieldId(180), type: "radio", label: "Data Breach Notification Procedure?", required: true, options: ["Yes", "No"] },
+      { id: generateFieldId(181), type: "textarea", label: "Technical Security Measures", required: true },
+      { id: generateFieldId(182), type: "textarea", label: "Organizational Security Measures", required: true }
+    ]
+  },
+
+  {
+    id: "comp-2",
+    name: "SOX Compliance Assessment",
+    description: "Sarbanes-Oxley compliance evaluation",
+    category: "compliance",
+    targetAudience: ["vendor", "internal"],
+    preview: "Financial controls, audit procedures, documentation",
+    fields: [
+      { id: generateFieldId(183), type: "text", label: "Department/Function", required: true },
+      { id: generateFieldId(184), type: "radio", label: "Financial Reporting Controls Documented?", required: true, options: ["Yes", "No", "Partially"] },
+      { id: generateFieldId(185), type: "radio", label: "Regular Testing of Controls?", required: true, options: ["Quarterly", "Semi-annually", "Annually", "Not Tested"] },
+      { id: generateFieldId(186), type: "textarea", label: "Key Financial Processes", required: true },
+      { id: generateFieldId(187), type: "radio", label: "Segregation of Duties Implemented?", required: true, options: ["Yes", "No", "Partially"] },
+      { id: generateFieldId(188), type: "textarea", label: "Control Deficiencies Identified", required: false }
+    ]
+  },
+
+  {
+    id: "comp-3",
+    name: "ISO 27001 Assessment",
+    description: "Information security management system assessment",
+    category: "compliance",
+    targetAudience: ["vendor", "internal"],
+    preview: "Security policies, risk management, incident response",
+    fields: [
+      { id: generateFieldId(189), type: "text", label: "Organization Name", required: true },
+      { id: generateFieldId(190), type: "radio", label: "Information Security Policy Established?", required: true, options: ["Yes", "No", "In Development"] },
+      { id: generateFieldId(191), type: "radio", label: "Risk Assessment Conducted?", required: true, options: ["Yes", "No", "Planned"] },
+      { id: generateFieldId(192), type: "checkbox", label: "Security Controls Implemented", required: true, options: ["Access Control", "Cryptography", "Physical Security", "Operations Security", "Network Security"] },
+      { id: generateFieldId(193), type: "radio", label: "Incident Response Plan?", required: true, options: ["Yes", "No", "In Development"] },
+      { id: generateFieldId(194), type: "radio", label: "Regular Security Training?", required: true, options: ["Yes", "No", "Planned"] }
+    ]
+  },
+
+  // IT & TECHNOLOGY TEMPLATES
+  {
+    id: "it-1",
+    name: "Software License Audit",
+    description: "Software license compliance and usage assessment",
+    category: "it",
+    targetAudience: ["vendor", "internal"],
+    preview: "License inventory, usage metrics, compliance status",
+    fields: [
+      { id: generateFieldId(195), type: "text", label: "Software Product", required: true },
+      { id: generateFieldId(196), type: "text", label: "Vendor", required: true },
+      { id: generateFieldId(197), type: "text", label: "License Type", required: true },
+      { id: generateFieldId(198), type: "text", label: "Number of Licenses Purchased", required: true },
+      { id: generateFieldId(199), type: "text", label: "Number of Installations", required: true },
+      { id: generateFieldId(200), type: "date", label: "License Expiry Date", required: false },
+      { id: generateFieldId(201), type: "textarea", label: "Usage Details", required: false }
+    ]
+  },
+
+  {
+    id: "it-2",
+    name: "System Access Request",
+    description: "Request for system access and permissions",
+    category: "it",
+    targetAudience: ["internal"],
+    preview: "User details, system requirements, access levels",
+    fields: [
+      { id: generateFieldId(202), type: "text", label: "Employee Name", required: true },
+      { id: generateFieldId(203), type: "text", label: "Employee ID", required: true },
+      { id: generateFieldId(204), type: "text", label: "Department", required: true },
+      { id: generateFieldId(205), type: "text", label: "System/Application", required: true },
+      { id: generateFieldId(206), type: "select", label: "Access Level", required: true, options: ["Read Only", "Read/Write", "Administrator", "Super User"] },
+      { id: generateFieldId(207), type: "textarea", label: "Business Justification", required: true },
+      { id: generateFieldId(208), type: "text", label: "Supervisor Approval", required: true }
+    ]
+  },
+
+  {
+    id: "it-3",
+    name: "Security Incident Report",
+    description: "Report security incidents and breaches",
+    category: "security",
+    targetAudience: ["internal"],
+    preview: "Incident details, impact assessment, response actions",
+    fields: [
+      { id: generateFieldId(209), type: "text", label: "Incident Reporter", required: true },
+      { id: generateFieldId(210), type: "date", label: "Incident Date", required: true },
+      { id: generateFieldId(211), type: "text", label: "Incident Time", required: true },
+      { id: generateFieldId(212), type: "select", label: "Incident Type", required: true, options: ["Data Breach", "Malware", "Unauthorized Access", "Phishing", "System Compromise", "Other"] },
+      { id: generateFieldId(213), type: "textarea", label: "Incident Description", required: true },
+      { id: generateFieldId(214), type: "select", label: "Severity", required: true, options: ["Low", "Medium", "High", "Critical"] },
+      { id: generateFieldId(215), type: "textarea", label: "Immediate Actions Taken", required: false }
+    ]
+  },
+
+  // QUALITY & OPERATIONS TEMPLATES
+  {
+    id: "qual-1",
+    name: "Quality Assurance Checklist",
+    description: "Quality control and assurance evaluation",
+    category: "quality",
+    targetAudience: ["internal"],
+    preview: "Quality standards, testing procedures, compliance checks",
+    fields: [
+      { id: generateFieldId(216), type: "text", label: "Product/Service", required: true },
+      { id: generateFieldId(217), type: "text", label: "QA Inspector", required: true },
+      { id: generateFieldId(218), type: "date", label: "Inspection Date", required: true },
+      { id: generateFieldId(219), type: "checkbox", label: "Quality Criteria", required: true, options: ["Specifications Met", "Documentation Complete", "Testing Passed", "Packaging Correct", "Labeling Accurate"] },
+      { id: generateFieldId(220), type: "radio", label: "Overall Quality Rating", required: true, options: ["Excellent", "Good", "Acceptable", "Needs Improvement", "Rejected"] },
+      { id: generateFieldId(221), type: "textarea", label: "Issues Identified", required: false },
+      { id: generateFieldId(222), type: "textarea", label: "Corrective Actions", required: false }
+    ]
+  },
+
+  {
+    id: "qual-2",
+    name: "Supplier Quality Assessment",
+    description: "Supplier quality and performance evaluation",
+    category: "quality",
+    targetAudience: ["vendor"],
+    preview: "Quality systems, certifications, performance metrics",
+    fields: [
+      { id: generateFieldId(223), type: "text", label: "Supplier Name", required: true },
+      { id: generateFieldId(224), type: "text", label: "Product/Service Category", required: true },
+      { id: generateFieldId(225), type: "checkbox", label: "Quality Certifications", required: false, options: ["ISO 9001", "ISO 14001", "Six Sigma", "AS9100", "TS 16949", "None"] },
+      { id: generateFieldId(226), type: "radio", label: "Quality Management System", required: true, options: ["Fully Implemented", "Partially Implemented", "In Development", "Not Implemented"] },
+      { id: generateFieldId(227), type: "rating", label: "Delivery Performance", required: true },
+      { id: generateFieldId(228), type: "rating", label: "Quality Performance", required: true },
+      { id: generateFieldId(229), type: "textarea", label: "Quality Improvement Initiatives", required: false }
+    ]
+  },
+
+  {
+    id: "ops-1",
+    name: "Process Improvement Suggestion",
+    description: "Employee suggestions for process improvements",
+    category: "operations",
+    targetAudience: ["internal"],
+    preview: "Current process, proposed changes, expected benefits",
+    fields: [
+      { id: generateFieldId(230), type: "text", label: "Employee Name", required: true },
+      { id: generateFieldId(231), type: "text", label: "Department", required: true },
+      { id: generateFieldId(232), type: "text", label: "Process Name", required: true },
+      { id: generateFieldId(233), type: "textarea", label: "Current Process Description", required: true },
+      { id: generateFieldId(234), type: "textarea", label: "Proposed Improvement", required: true },
+      { id: generateFieldId(235), type: "textarea", label: "Expected Benefits", required: true },
+      { id: generateFieldId(236), type: "text", label: "Implementation Timeline", required: false }
+    ]
+  },
+
+  // FINANCE & PROCUREMENT TEMPLATES
+  {
+    id: "fin-1",
+    name: "Purchase Order Request",
+    description: "Request for purchase order approval",
+    category: "finance",
+    targetAudience: ["internal"],
+    preview: "Vendor details, items, costs, approvals",
+    fields: [
+      { id: generateFieldId(237), type: "text", label: "Requestor Name", required: true },
+      { id: generateFieldId(238), type: "text", label: "Department", required: true },
+      { id: generateFieldId(239), type: "text", label: "Vendor Name", required: true },
+      { id: generateFieldId(240), type: "textarea", label: "Items/Services Description", required: true },
+      { id: generateFieldId(241), type: "text", label: "Total Amount", required: true },
+      { id: generateFieldId(242), type: "date", label: "Required Date", required: true },
+      { id: generateFieldId(243), type: "text", label: "Budget Code", required: true },
+      { id: generateFieldId(244), type: "textarea", label: "Business Justification", required: true }
+    ]
+  },
+
+  {
+    id: "fin-2",
+    name: "Budget Request",
+    description: "Annual or project budget request form",
+    category: "finance",
+    targetAudience: ["internal"],
+    preview: "Budget categories, justifications, ROI projections",
+    fields: [
+      { id: generateFieldId(245), type: "text", label: "Department/Project", required: true },
+      { id: generateFieldId(246), type: "text", label: "Budget Owner", required: true },
+      { id: generateFieldId(247), type: "select", label: "Budget Type", required: true, options: ["Annual Operating", "Project", "Capital Expenditure", "Emergency"] },
+      { id: generateFieldId(248), type: "text", label: "Total Budget Requested", required: true },
+      { id: generateFieldId(249), type: "textarea", label: "Budget Breakdown", required: true },
+      { id: generateFieldId(250), type: "textarea", label: "Business Justification", required: true },
+      { id: generateFieldId(251), type: "textarea", label: "Expected ROI", required: false }
+    ]
+  },
+
+  {
+    id: "proc-1",
+    name: "Vendor Prequalification",
+    description: "Prequalification assessment for new vendors",
+    category: "procurement",
+    targetAudience: ["vendor"],
+    preview: "Company credentials, capabilities, financial status",
+    fields: [
+      { id: generateFieldId(252), type: "text", label: "Company Name", required: true },
+      { id: generateFieldId(253), type: "text", label: "Registration Number", required: true },
+      { id: generateFieldId(254), type: "text", label: "Years in Business", required: true },
+      { id: generateFieldId(255), type: "textarea", label: "Core Competencies", required: true },
+      { id: generateFieldId(256), type: "text", label: "Annual Revenue", required: true },
+      { id: generateFieldId(257), type: "checkbox", label: "Certifications", required: false, options: ["ISO 9001", "ISO 14001", "OHSAS 18001", "Industry Specific", "None"] },
+      { id: generateFieldId(258), type: "textarea", label: "Major Clients", required: false },
+      { id: generateFieldId(259), type: "textarea", label: "Key Personnel Qualifications", required: true }
+    ]
+  },
+
+  // MARKETING & SALES TEMPLATES
+  {
+    id: "mkt-1",
+    name: "Marketing Campaign Feedback",
+    description: "Feedback collection for marketing campaigns",
+    category: "marketing",
+    targetAudience: ["external"],
+    preview: "Campaign awareness, effectiveness, brand perception",
+    fields: [
+      { id: generateFieldId(260), type: "text", label: "Name", required: false },
+      { id: generateFieldId(261), type: "email", label: "Email", required: false },
+      { id: generateFieldId(262), type: "radio", label: "Did You See Our Recent Campaign?", required: true, options: ["Yes", "No", "Not Sure"] },
+      { id: generateFieldId(263), type: "checkbox", label: "Where Did You See It?", required: false, options: ["Social Media", "Email", "Website", "Print", "TV/Radio", "Other"] },
+      { id: generateFieldId(264), type: "rating", label: "Campaign Effectiveness", required: false },
+      { id: generateFieldId(265), type: "textarea", label: "What Message Did You Take Away?", required: false },
+      { id: generateFieldId(266), type: "radio", label: "Likelihood to Purchase", required: false, options: ["Very Likely", "Likely", "Neutral", "Unlikely", "Very Unlikely"] }
+    ]
+  },
+
+  {
+    id: "sales-1",
+    name: "Lead Qualification",
+    description: "Sales lead qualification and scoring",
+    category: "sales",
+    targetAudience: ["external"],
+    preview: "Contact details, needs assessment, buying timeline",
+    fields: [
+      { id: generateFieldId(267), type: "text", label: "Company Name", required: true },
+      { id: generateFieldId(268), type: "text", label: "Contact Person", required: true },
+      { id: generateFieldId(269), type: "email", label: "Email Address", required: true },
+      { id: generateFieldId(270), type: "text", label: "Phone Number", required: true },
+      { id: generateFieldId(271), type: "select", label: "Company Size", required: true, options: ["1-10", "11-50", "51-200", "201-1000", "1000+"] },
+      { id: generateFieldId(272), type: "select", label: "Budget Range", required: false, options: ["< $10K", "$10K-$50K", "$50K-$100K", "$100K-$500K", "> $500K"] },
+      { id: generateFieldId(273), type: "select", label: "Timeline", required: true, options: ["Immediate", "1-3 months", "3-6 months", "6-12 months", "> 1 year"] },
+      { id: generateFieldId(274), type: "textarea", label: "Current Challenges", required: true }
+    ]
+  },
+
+  // PROJECT MANAGEMENT TEMPLATES
+  {
+    id: "pm-1",
+    name: "Project Initiation Request",
+    description: "Request to initiate a new project",
+    category: "project",
+    targetAudience: ["internal"],
+    preview: "Project scope, objectives, resources, timeline",
+    fields: [
+      { id: generateFieldId(275), type: "text", label: "Project Name", required: true },
+      { id: generateFieldId(276), type: "text", label: "Project Sponsor", required: true },
+      { id: generateFieldId(277), type: "textarea", label: "Project Description", required: true },
+      { id: generateFieldId(278), type: "textarea", label: "Business Objectives", required: true },
+      { id: generateFieldId(279), type: "date", label: "Proposed Start Date", required: true },
+      { id: generateFieldId(280), type: "date", label: "Target Completion Date", required: true },
+      { id: generateFieldId(281), type: "text", label: "Estimated Budget", required: true },
+      { id: generateFieldId(282), type: "textarea", label: "Resource Requirements", required: true }
+    ]
+  },
+
+  {
+    id: "pm-2",
+    name: "Project Status Report",
+    description: "Weekly/monthly project status update",
+    category: "project",
+    targetAudience: ["internal"],
+    preview: "Progress metrics, milestones, risks, issues",
+    fields: [
+      { id: generateFieldId(283), type: "text", label: "Project Name", required: true },
+      { id: generateFieldId(284), type: "text", label: "Project Manager", required: true },
+      { id: generateFieldId(285), type: "date", label: "Report Date", required: true },
+      { id: generateFieldId(286), type: "select", label: "Overall Status", required: true, options: ["On Track", "At Risk", "Behind Schedule", "Completed"] },
+      { id: generateFieldId(287), type: "text", label: "Percent Complete", required: true },
+      { id: generateFieldId(288), type: "textarea", label: "Key Accomplishments", required: true },
+      { id: generateFieldId(289), type: "textarea", label: "Upcoming Milestones", required: false },
+      { id: generateFieldId(290), type: "textarea", label: "Risks and Issues", required: false }
+    ]
+  },
+
+  // TRAINING & DEVELOPMENT TEMPLATES
+  {
+    id: "train-1",
+    name: "Training Evaluation",
+    description: "Post-training feedback and evaluation",
+    category: "training",
+    targetAudience: ["internal", "external"],
+    preview: "Training effectiveness, content quality, instructor performance",
+    fields: [
+      { id: generateFieldId(291), type: "text", label: "Training Program", required: true },
+      { id: generateFieldId(292), type: "date", label: "Training Date", required: true },
+      { id: generateFieldId(293), type: "text", label: "Instructor Name", required: true },
+      { id: generateFieldId(294), type: "rating", label: "Overall Training Quality", required: true },
+      { id: generateFieldId(295), type: "rating", label: "Content Relevance", required: true },
+      { id: generateFieldId(296), type: "rating", label: "Instructor Effectiveness", required: true },
+      { id: generateFieldId(297), type: "textarea", label: "What Did You Learn?", required: false },
+      { id: generateFieldId(298), type: "textarea", label: "How Will You Apply This?", required: false },
+      { id: generateFieldId(299), type: "textarea", label: "Suggestions for Improvement", required: false }
+    ]
+  },
+
+  {
+    id: "train-2",
+    name: "Skills Assessment",
+    description: "Employee skills and competency assessment",
+    category: "training",
+    targetAudience: ["internal"],
+    preview: "Skill levels, training needs, development goals",
+    fields: [
+      { id: generateFieldId(300), type: "text", label: "Employee Name", required: true },
+      { id: generateFieldId(301), type: "text", label: "Position", required: true },
+      { id: generateFieldId(302), type: "checkbox", label: "Technical Skills", required: true, options: ["Programming", "Data Analysis", "Project Management", "Design", "Testing", "Documentation"] },
+      { id: generateFieldId(303), type: "checkbox", label: "Soft Skills", required: true, options: ["Communication", "Leadership", "Problem Solving", "Teamwork", "Time Management", "Customer Service"] },
+      { id: generateFieldId(304), type: "textarea", label: "Skill Gaps Identified", required: false },
+      { id: generateFieldId(305), type: "textarea", label: "Development Goals", required: false }
+    ]
+  },
+
+  // LEGAL & CONTRACTS TEMPLATES
+  {
+    id: "legal-1",
+    name: "Contract Review Request",
+    description: "Request for legal review of contracts",
+    category: "legal",
+    targetAudience: ["internal"],
+    preview: "Contract details, review requirements, timeline",
+    fields: [
+      { id: generateFieldId(306), type: "text", label: "Contract Title", required: true },
+      { id: generateFieldId(307), type: "text", label: "Counterparty", required: true },
+      { id: generateFieldId(308), type: "select", label: "Contract Type", required: true, options: ["Service Agreement", "Purchase Agreement", "NDA", "Employment Contract", "Partnership Agreement", "License Agreement"] },
+      { id: generateFieldId(309), type: "text", label: "Contract Value", required: false },
+      { id: generateFieldId(310), type: "date", label: "Required Review Date", required: true },
+      { id: generateFieldId(311), type: "textarea", label: "Key Terms to Review", required: false },
+      { id: generateFieldId(312), type: "textarea", label: "Special Considerations", required: false }
+    ]
+  },
+
+  {
+    id: "legal-2",
+    name: "Intellectual Property Disclosure",
+    description: "Disclosure of intellectual property and inventions",
+    category: "legal",
+    targetAudience: ["internal"],
+    preview: "Invention details, inventors, commercial potential",
+    fields: [
+      { id: generateFieldId(313), type: "text", label: "Invention Title", required: true },
+      { id: generateFieldId(314), type: "text", label: "Primary Inventor", required: true },
+      { id: generateFieldId(315), type: "text", label: "Co-Inventors", required: false },
+      { id: generateFieldId(316), type: "textarea", label: "Technical Description", required: true },
+      { id: generateFieldId(317), type: "textarea", label: "Commercial Applications", required: true },
+      { id: generateFieldId(318), type: "radio", label: "Prior Public Disclosure?", required: true, options: ["Yes", "No"] },
+      { id: generateFieldId(319), type: "textarea", label: "Related Prior Art", required: false }
+    ]
+  },
+
+  // AUDIT & RISK TEMPLATES
+  {
+    id: "audit-1",
+    name: "Internal Audit Checklist",
+    description: "Internal audit procedures and findings",
+    category: "audit",
+    targetAudience: ["internal"],
+    preview: "Audit scope, procedures, findings, recommendations",
+    fields: [
+      { id: generateFieldId(320), type: "text", label: "Audit Area", required: true },
+      { id: generateFieldId(321), type: "text", label: "Auditor Name", required: true },
+      { id: generateFieldId(322), type: "date", label: "Audit Date", required: true },
+      { id: generateFieldId(323), type: "textarea", label: "Audit Scope", required: true },
+      { id: generateFieldId(324), type: "checkbox", label: "Procedures Performed", required: true, options: ["Document Review", "Interviews", "Observation", "Testing", "Analysis", "Confirmation"] },
+      { id: generateFieldId(325), type: "textarea", label: "Key Findings", required: true },
+      { id: generateFieldId(326), type: "textarea", label: "Recommendations", required: true },
+      { id: generateFieldId(327), type: "select", label: "Overall Rating", required: true, options: ["Satisfactory", "Needs Improvement", "Unsatisfactory"] }
+    ]
+  },
+
+  {
+    id: "risk-1",
+    name: "Risk Assessment",
+    description: "Operational risk identification and assessment",
+    category: "risk",
+    targetAudience: ["internal"],
+    preview: "Risk identification, impact analysis, mitigation strategies",
+    fields: [
+      { id: generateFieldId(328), type: "text", label: "Risk Category", required: true },
+      { id: generateFieldId(329), type: "textarea", label: "Risk Description", required: true },
+      { id: generateFieldId(330), type: "select", label: "Probability", required: true, options: ["Very Low", "Low", "Medium", "High", "Very High"] },
+      { id: generateFieldId(331), type: "select", label: "Impact", required: true, options: ["Very Low", "Low", "Medium", "High", "Very High"] },
+      { id: generateFieldId(332), type: "textarea", label: "Potential Consequences", required: true },
+      { id: generateFieldId(333), type: "textarea", label: "Current Controls", required: false },
+      { id: generateFieldId(334), type: "textarea", label: "Mitigation Strategies", required: true },
+      { id: generateFieldId(335), type: "text", label: "Risk Owner", required: true }
+    ]
   }
 ];
 
@@ -908,7 +1506,7 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   // Available categories for filtering templates
-  const categories = ["all", "survey", "assessment", "registration", "feedback", "compliance", "risk", "vendor-risk", "external-assessment"];
+  const categories = ["all", "survey", "assessment", "registration", "feedback", "compliance", "risk", "vendor-risk", "external-assessment", "hr", "customer", "finance", "it", "security", "quality", "operations", "procurement", "marketing", "sales", "project", "training", "legal", "audit", "business"];
 
   /**
    * Filter templates based on search term and selected category
@@ -956,11 +1554,31 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
       case 'vendor-risk':
         return 'bg-red-100 text-red-800';
       case 'risk':
+      case 'audit':
         return 'bg-orange-100 text-orange-800';
       case 'compliance':
+      case 'legal':
         return 'bg-blue-100 text-blue-800';
       case 'external-assessment':
+      case 'customer':
         return 'bg-green-100 text-green-800';
+      case 'hr':
+      case 'training':
+        return 'bg-purple-100 text-purple-800';
+      case 'it':
+      case 'security':
+        return 'bg-indigo-100 text-indigo-800';
+      case 'finance':
+      case 'procurement':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'marketing':
+      case 'sales':
+        return 'bg-pink-100 text-pink-800';
+      case 'project':
+      case 'operations':
+        return 'bg-teal-100 text-teal-800';
+      case 'quality':
+        return 'bg-emerald-100 text-emerald-800';
       default:
         return 'bg-gray-100 text-gray-800';
     }
@@ -989,6 +1607,8 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
               {category === "all" ? "All Categories" : 
                category === "vendor-risk" ? "Vendor Risk" :
                category === "external-assessment" ? "External Assessment" :
+               category === "hr" ? "HR" :
+               category === "it" ? "IT" :
                category.charAt(0).toUpperCase() + category.slice(1)}
             </option>
           ))}

@@ -22,7 +22,7 @@ export interface ReportConfig {
   };
   filterBy: {
     dateRange: { start: string; end: string };
-    submissionType: 'all' | 'vendor' | 'internal';
+    submissionType: 'all' | 'vendor' | 'internal' | 'external';
     status: 'all' | 'submitted' | 'under_review' | 'approved' | 'rejected';
     riskLevel: 'all' | 'low' | 'medium' | 'high' | 'critical';
   };

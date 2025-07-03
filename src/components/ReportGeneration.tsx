@@ -55,7 +55,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
     },
     filterBy: {
       dateRange: { start: '2024-01-01', end: '2024-12-31' },
-      submissionType: 'all' as 'all' | 'vendor' | 'internal',
+      submissionType: 'all' as 'all' | 'vendor' | 'internal' | 'external',
       status: 'all' as 'all' | 'submitted' | 'under_review' | 'approved' | 'rejected',
       riskLevel: 'all' as 'all' | 'low' | 'medium' | 'high' | 'critical',
     },
@@ -1188,6 +1188,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                       <SelectContent>
                         <SelectItem value="all">All Types</SelectItem>
                         <SelectItem value="vendor">Vendor</SelectItem>
+                        <SelectItem value="external">External</SelectItem>
                         <SelectItem value="internal">Internal</SelectItem>
                       </SelectContent>
                     </Select>
