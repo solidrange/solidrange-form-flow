@@ -8,7 +8,27 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarIcon, Download, FileText, BarChart3, TrendingUp, Users } from "lucide-react";
+import { 
+  CalendarIcon, 
+  Download, 
+  FileText, 
+  BarChart3, 
+  TrendingUp, 
+  Users,
+  PieChart,
+  Target,
+  Zap,
+  Shield,
+  Award,
+  Activity,
+  Calendar,
+  Clock,
+  LineChart,
+  Building,
+  Briefcase,
+  CheckCircle,
+  AlertCircle
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
 
@@ -415,11 +435,13 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold mb-2">Report Generation</h2>
-        <p className="text-gray-600">Generate comprehensive reports and analytics for your form submissions.</p>
-      </div>
+      <div className="space-y-6 animate-fade-in">
+        <div className="animate-slide-up">
+          <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+            Report Generation
+          </h2>
+          <p className="text-muted-foreground">Generate comprehensive reports and analytics for your form submissions.</p>
+        </div>
 
       <Tabs defaultValue="quick" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
@@ -430,10 +452,10 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
         <TabsContent value="quick" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Executive & Summary Reports */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5" />
+            <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-blue-700">
+                  <TrendingUp className="h-5 w-5 text-blue-500" />
                   Executive & Summary Reports
                 </CardTitle>
               </CardHeader>
@@ -442,10 +464,10 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('executive-summary')} 
-                      className="w-full justify-start"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0"
                       variant="outline"
                     >
-                      <FileText className="mr-2 h-4 w-4" />
+                      <Award className="mr-2 h-4 w-4" />
                       Executive Summary
                     </Button>
                     <div className="grid grid-cols-2 gap-2 pl-4">
@@ -497,10 +519,10 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             </Card>
 
             {/* Risk & Compliance Reports */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5" />
+            <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.1s' }}>
+              <CardHeader className="bg-gradient-to-r from-red-50 to-orange-50 rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-red-700">
+                  <Shield className="h-5 w-5 text-red-500" />
                   Risk & Compliance Reports
                 </CardTitle>
               </CardHeader>
@@ -509,10 +531,10 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('risk-analysis')} 
-                      className="w-full justify-start"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 text-white border-0"
                       variant="outline"
                     >
-                      <BarChart3 className="mr-2 h-4 w-4" />
+                      <AlertCircle className="mr-2 h-4 w-4" />
                       Risk Analysis
                     </Button>
                     <div className="grid grid-cols-3 gap-2 pl-4">

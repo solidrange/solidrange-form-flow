@@ -34,7 +34,8 @@ import {
   Target,
   Calendar,
   Building,
-  Shield
+  Shield,
+  Award
 } from "lucide-react";
 
 interface AnalyticsProps {
@@ -51,8 +52,13 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
   const pendingSubmissions = submissions.filter(s => s.status === 'under_review').length;
   const submittedSubmissions = submissions.filter(s => s.status === 'submitted').length;
 
+  // Approval type analytics
+  const fullyApprovedSubmissions = submissions.filter(s => s.status === 'approved' && s.approvalType === 'fully').length;
+  const partiallyApprovedSubmissions = submissions.filter(s => s.status === 'approved' && s.approvalType === 'partially').length;
+
   const approvalRate = totalSubmissions > 0 ? (approvedSubmissions / totalSubmissions) * 100 : 0;
   const rejectionRate = totalSubmissions > 0 ? (rejectedSubmissions / totalSubmissions) * 100 : 0;
+  const fullApprovalRate = approvedSubmissions > 0 ? (fullyApprovedSubmissions / approvedSubmissions) * 100 : 0;
 
   // Risk level analytics
   const riskLevels = submissions.reduce((acc, sub) => {
@@ -91,9 +97,10 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
     return acc;
   }, [] as Array<{ month: string; submissions: number; approved: number; rejected: number }>);
 
-  // Status distribution data
+  // Status distribution data with approval types
   const statusData = [
-    { name: 'Approved', value: approvedSubmissions, color: '#22c55e' },
+    { name: 'Fully Approved', value: fullyApprovedSubmissions, color: '#22c55e' },
+    { name: 'Partially Approved', value: partiallyApprovedSubmissions, color: '#84cc16' },
     { name: 'Rejected', value: rejectedSubmissions, color: '#ef4444' },
     { name: 'Under Review', value: pendingSubmissions, color: '#f59e0b' },
     { name: 'Submitted', value: submittedSubmissions, color: '#3b82f6' }
@@ -133,13 +140,13 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
   return (
     <div className="space-y-6">
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 animate-fade-in">
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Submissions</p>
-                <p className="text-2xl font-bold">{totalSubmissions}</p>
+                <p className="text-sm font-medium text-muted-foreground">Total Submissions</p>
+                <p className="text-2xl font-bold text-foreground">{totalSubmissions}</p>
               </div>
               <FileText className="h-8 w-8 text-blue-500" />
             </div>
@@ -150,12 +157,12 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.1s' }}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Approval Rate</p>
-                <p className="text-2xl font-bold">{approvalRate.toFixed(1)}%</p>
+                <p className="text-sm font-medium text-muted-foreground">Approval Rate</p>
+                <p className="text-2xl font-bold text-foreground">{approvalRate.toFixed(1)}%</p>
               </div>
               <CheckCircle className="h-8 w-8 text-green-500" />
             </div>
@@ -165,12 +172,28 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.2s' }}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Average Score</p>
-                <p className="text-2xl font-bold">{avgScore.toFixed(1)}/100</p>
+                <p className="text-sm font-medium text-muted-foreground">Full Approval</p>
+                <p className="text-2xl font-bold text-foreground">{fullApprovalRate.toFixed(1)}%</p>
+              </div>
+              <Award className="h-8 w-8 text-emerald-500" />
+            </div>
+            <div className="mt-2 flex items-center text-sm text-emerald-600">
+              <CheckCircle className="h-4 w-4 mr-1" />
+              <span>{fullyApprovedSubmissions} fully approved</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.3s' }}>
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground">Average Score</p>
+                <p className="text-2xl font-bold text-foreground">{avgScore.toFixed(1)}/100</p>
               </div>
               <Star className="h-8 w-8 text-yellow-500" />
             </div>
@@ -180,14 +203,14 @@ const Analytics = ({ submissions }: AnalyticsProps) => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.4s' }}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Pending Review</p>
-                <p className="text-2xl font-bold">{pendingSubmissions}</p>
+                <p className="text-sm font-medium text-muted-foreground">Pending Review</p>
+                <p className="text-2xl font-bold text-foreground">{pendingSubmissions}</p>
               </div>
-              <Clock className="h-8 w-8 text-orange-500" />
+              <Clock className="h-8 w-8 text-orange-500 animate-pulse" />
             </div>
             <div className="mt-2 flex items-center text-sm text-orange-600">
               <AlertTriangle className="h-4 w-4 mr-1" />

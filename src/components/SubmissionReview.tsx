@@ -25,9 +25,9 @@ export const SubmissionReview = ({ submissions, form, onUpdateSubmission }: Subm
   };
 
   return (
-    <div className="flex flex-col lg:grid lg:grid-cols-12 gap-2 sm:gap-4 lg:gap-6 h-auto lg:h-[calc(100vh-200px)]">
+    <div className="flex flex-col lg:grid lg:grid-cols-12 gap-2 sm:gap-4 lg:gap-6 h-auto lg:h-[calc(100vh-200px)] animate-fade-in">
       {/* Submissions List - Full width on mobile, left column on desktop */}
-      <div className="lg:col-span-4 order-1 lg:order-1">
+      <div className="lg:col-span-4 order-1 lg:order-1 animate-slide-in-left">
         <SubmissionsList
           submissions={submissions}
           form={form}
@@ -39,20 +39,20 @@ export const SubmissionReview = ({ submissions, form, onUpdateSubmission }: Subm
       </div>
 
       {/* Submission Details - Full width on mobile, right column on desktop */}
-      <div className="lg:col-span-8 order-2 lg:order-2">
+      <div className="lg:col-span-8 order-2 lg:order-2 animate-slide-in-right">
         {selectedSub ? (
-          <Card className="h-full">
+          <Card className="h-full hover:shadow-modern-lg transition-all duration-300">
             <CardHeader className="pb-2 sm:pb-3">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
                 <CardTitle className="text-sm sm:text-base lg:text-lg truncate">
                   Review Submission
                 </CardTitle>
                 <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto">
-                  <Button variant="outline" size="sm" className="text-xs px-2 py-1 whitespace-nowrap">
+                  <Button variant="outline" size="sm" className="text-xs px-2 py-1 whitespace-nowrap hover:scale-105 transition-transform duration-200">
                     <Download className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span className="hidden sm:inline ml-1">Export</span>
                   </Button>
-                  <Button variant="outline" size="sm" className="text-xs px-2 py-1 whitespace-nowrap">
+                  <Button variant="outline" size="sm" className="text-xs px-2 py-1 whitespace-nowrap hover:scale-105 transition-transform duration-200">
                     <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
                     <span className="hidden sm:inline ml-1">Print</span>
                   </Button>

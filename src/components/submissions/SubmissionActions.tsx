@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CheckCircle, XCircle, Eye, RefreshCw, AlertTriangle, Mail, Clock, FileText } from "lucide-react";
+import { CheckCircle, XCircle, Eye, RefreshCw, AlertTriangle, Mail, Clock, FileText, Target } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 
 interface SubmissionActionsProps {
@@ -24,6 +24,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
   const [urgencyLevel, setUrgencyLevel] = useState<'low' | 'medium' | 'high'>('medium');
   const [requiredDocuments, setRequiredDocuments] = useState<string[]>([]);
   const [specificFields, setSpecificFields] = useState<string[]>([]);
+  const [approvalType, setApprovalType] = useState<'fully' | 'partially'>('fully');
 
   const calculateCompletionPercentage = (submission: FormSubmission) => {
     if (form.fields.length === 0) return 0;
@@ -38,6 +39,33 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
     }).length;
     
     return Math.round((completedRequiredFields / requiredFields.length) * 100);
+  };
+
+  // AI suggestion logic based on scoring
+  const getApprovalSuggestion = (submission: FormSubmission) => {
+    if (!submission.score) return { type: 'fully' as const, reason: 'No scoring data available' };
+    
+    const score = submission.score.percentage;
+    const riskLevel = submission.score.riskLevel;
+    
+    if (score >= 85 && (riskLevel === 'low' || riskLevel === 'medium')) {
+      return { 
+        type: 'fully' as const, 
+        reason: `High score (${score}%) with ${riskLevel} risk level indicates full compliance` 
+      };
+    } else if (score >= 60 && score < 85) {
+      return { 
+        type: 'partially' as const, 
+        reason: `Moderate score (${score}%) suggests partial approval with conditions` 
+      };
+    } else if (score < 60 || riskLevel === 'high' || riskLevel === 'critical') {
+      return { 
+        type: 'partially' as const, 
+        reason: `Low score (${score}%) or ${riskLevel} risk requires conditional approval` 
+      };
+    }
+    
+    return { type: 'fully' as const, reason: 'Standard approval criteria met' };
   };
 
   const isFormComplete = () => {
@@ -69,6 +97,15 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
       return;
     }
 
+    if (status === 'approved' && !approvalType) {
+      toast({
+        title: "Approval Type Required",
+        description: "Please select whether this is a full or partial approval.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     const metadata = status === 'rejected' ? {
       reason: rejectionReason,
       urgency: urgencyLevel
@@ -76,12 +113,16 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
       urgency: urgencyLevel,
       specificFields: specificFields.length > 0 ? specificFields : undefined,
       requiredDocuments: requiredDocuments.length > 0 ? requiredDocuments : undefined
+    } : status === 'approved' ? {
+      approvalType: approvalType,
+      urgency: urgencyLevel
     } : undefined;
 
     const activityLog = addActivityLog(status, reviewComments, metadata);
 
     onUpdateSubmission(submission.id, {
       status,
+      approvalType: status === 'approved' ? approvalType : undefined,
       activityLog,
       score: {
         ...submission.score,
@@ -92,7 +133,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
     });
     
     const statusMessages = {
-      approved: "Submission Approved",
+      approved: `Submission ${approvalType === 'fully' ? 'Fully' : 'Partially'} Approved`,
       rejected: "Submission Rejected", 
       under_review: "Submission Under Review"
     };
@@ -166,6 +207,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
     setRequiredDocuments([]);
     setSpecificFields([]);
     setActionType('simple');
+    setApprovalType('fully');
   };
 
   const renderAdvancedOptions = () => {
@@ -320,7 +362,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
           <div className="flex items-center gap-3 flex-wrap">
             <Button 
               onClick={() => handleStatusChange('approved')}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-green-600 hover:bg-green-700 hover:scale-105 transition-transform duration-200 animate-bounce-in"
             >
               <CheckCircle className="h-4 w-4 mr-2" />
               Approve
@@ -328,6 +370,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
             <Button 
               onClick={() => handleStatusChange('rejected')}
               variant="destructive"
+              className="hover:scale-105 transition-transform duration-200"
             >
               <XCircle className="h-4 w-4 mr-2" />
               Reject
@@ -405,10 +448,10 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
   return (
     <div className="space-y-6">
       {/* Activity Log */}
-      <Card>
+      <Card className="animate-fade-in">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Clock className="h-5 w-5" />
+            <Clock className="h-5 w-5 text-blue-500" />
             Activity Log
           </CardTitle>
         </CardHeader>
@@ -418,12 +461,12 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
       </Card>
 
       {/* Review Actions */}
-      <Card>
+      <Card className="animate-slide-up">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             Review Actions
             {!isFormComplete() && submission.status === 'submitted' && (
-              <AlertTriangle className="h-5 w-5 text-orange-500" />
+              <AlertTriangle className="h-5 w-5 text-orange-500 animate-bounce" />
             )}
           </CardTitle>
           {!isFormComplete() && submission.status === 'submitted' && (
@@ -451,6 +494,67 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
           </div>
 
           {renderAdvancedOptions()}
+
+          {/* AI Suggestion Box */}
+          {submission.score && isFormComplete() && submission.status !== 'approved' && (
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 animate-fade-in">
+              <h4 className="text-sm font-medium text-blue-800 mb-2 flex items-center gap-2">
+                <Target className="h-4 w-4" />
+                AI Recommendation
+              </h4>
+              {(() => {
+                const suggestion = getApprovalSuggestion(submission);
+                return (
+                  <div className="space-y-2">
+                    <p className="text-sm text-blue-700">
+                      Suggested: <span className="font-medium capitalize">{suggestion.type} Approval</span>
+                    </p>
+                    <p className="text-xs text-blue-600">{suggestion.reason}</p>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setApprovalType(suggestion.type)}
+                      className="text-blue-700 border-blue-300 hover:bg-blue-100"
+                    >
+                      Apply Suggestion
+                    </Button>
+                  </div>
+                );
+              })()}
+            </div>
+          )}
+
+          {/* Approval Type Selection for Approved Submissions */}
+          {(submission.status === 'submitted' || submission.status === 'under_review') && isFormComplete() && (
+            <div className="space-y-2 animate-fade-in">
+              <Label htmlFor="approval-type">Approval Type (Required for Approval)</Label>
+              <Select value={approvalType} onValueChange={(value: 'fully' | 'partially') => setApprovalType(value)}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="fully">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                      Fully Approved - Complete implementation
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="partially">
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4 text-orange-500" />
+                      Partially Approved - Conditional implementation
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-gray-500">
+                {approvalType === 'fully' 
+                  ? 'Full approval means all requirements are met and can be implemented as-is.'
+                  : 'Partial approval means implementation with conditions or limitations.'
+                }
+              </p>
+            </div>
+          )}
 
           <div>
             <Label htmlFor="review-comments">

@@ -331,6 +331,7 @@ export interface ReviewActivity {
     rejectionReason?: string;           // Specific reason for rejection
     infoRequestType?: string;           // What kind of additional info is needed?
     customInstructions?: string;        // Special instructions for the submitter
+    approvalType?: 'fully' | 'partially';  // Type of approval for approved submissions
   };
 }
 
@@ -351,6 +352,7 @@ export interface FormSubmission {
   submittedAt: Date;                    // When this was submitted
   submittedBy: string;                  // Who submitted this form
   status: 'submitted' | 'under_review' | 'approved' | 'rejected';  // Current review status
+  approvalType?: 'fully' | 'partially';          // Type of approval granted
   score?: SubmissionScore;              // Calculated score (if form uses scoring)
   activityLog: ReviewActivity[];        // History of all review actions taken
   
