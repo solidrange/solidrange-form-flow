@@ -3645,11 +3645,38 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
 
   // Available categories and sectors for filtering templates
   const categories = ["all", "survey", "assessment", "registration", "feedback", "compliance", "risk", "vendor-risk", "external-assessment", "hr", "customer", "finance", "it", "security", "quality", "operations", "procurement", "marketing", "sales", "project", "training", "legal", "audit", "business"];
-  const sectors = ["all", "government", "insurance", "fintech", "health", "energy", "telecom", "startups", "sme", "other"];
+  const sectors = ["all", "government", "insurance", "fintech", "health", "energy", "telecom", "startups", "sme", "multi-sector", "other"];
+
+  // Count functions for filters
+  const getSectorCount = (sector: string) => {
+    if (sector === "all") {
+      return formTemplates.length;
+    } else if (sector === "multi-sector") {
+      return formTemplates.filter(template => 
+        template.sector && Array.isArray(template.sector) && template.sector.length > 1
+      ).length;
+    } else if (sector === "other") {
+      return formTemplates.filter(template => !template.sector).length;
+    } else {
+      return formTemplates.filter(template => {
+        if (!template.sector) return false;
+        const templateSectors = Array.isArray(template.sector) ? template.sector : [template.sector];
+        return templateSectors.length === 1 && templateSectors.includes(sector);
+      }).length;
+    }
+  };
+
+  const getCategoryCount = (category: string) => {
+    if (category === "all") {
+      return formTemplates.length;
+    } else {
+      return formTemplates.filter(template => template.category === category).length;
+    }
+  };
 
   /**
    * Filter templates based on search term and selected categories/sectors
-   * Then sort sector-specific forms first, followed by general forms
+   * Then sort alphabetically
    */
   const filteredTemplates = formTemplates.filter(template => {
     const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -3661,15 +3688,12 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
     if (selectedSectors.length === 0) {
       // No sector filter applied - show all forms
       matchesSector = true;
+    } else if (selectedSectors.includes("multi-sector")) {
+      // "Multi-Sector" selected - show forms with multiple sectors only
+      matchesSector = template.sector && Array.isArray(template.sector) && template.sector.length > 1;
     } else if (selectedSectors.includes("other")) {
-      // "Other" sector selected - show forms with no sector, multiple sectors, or general forms
-      if (!template.sector) {
-        // General form (no sector specified)
-        matchesSector = true;
-      } else if (Array.isArray(template.sector) && template.sector.length > 1) {
-        // Multi-sector form
-        matchesSector = true;
-      }
+      // "Other" sector selected - show forms with no sector
+      matchesSector = !template.sector;
     } else {
       // Specific sector(s) selected - ONLY show forms that match those sectors exactly
       if (template.sector) {
@@ -3747,6 +3771,10 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
         return <Rocket className="h-3 w-3" />;
       case 'sme':
         return <Store className="h-3 w-3" />;
+      case 'multi-sector':
+        return <Globe className="h-3 w-3" />;
+      case 'other':
+        return <Building className="h-3 w-3" />;
       default:
         return null;
     }
@@ -3810,10 +3838,7 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
             onSelectionChange={setSelectedCategories}
             placeholder="All Categories"
             showCounts={true}
-            getCounts={(category) => {
-              if (category === "all") return formTemplates.length;
-              return formTemplates.filter(t => t.category === category).length;
-            }}
+            getCounts={getCategoryCount}
           />
           <MultiSelectFilter
             options={sectors}
@@ -3821,13 +3846,7 @@ export const FormLibrary = ({ onUseTemplate }: FormLibraryProps) => {
             onSelectionChange={setSelectedSectors}
             placeholder="All Sectors"
             showCounts={true}
-            getCounts={(sector) => {
-              if (sector === "all") return formTemplates.length;
-              return formTemplates.filter(t => 
-                !t.sector ? false : // Don't count general forms in sector counts
-                Array.isArray(t.sector) ? t.sector.includes(sector) : t.sector === sector
-              ).length;
-            }}
+            getCounts={getSectorCount}
           />
         </div>
       </div>
