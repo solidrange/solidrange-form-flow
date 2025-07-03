@@ -445,11 +445,11 @@ export const FormInvitations = ({ form, onUpdateForm }: FormInvitationsProps) =>
         </Badge>
       </div>
 
-      <Tabs defaultValue="email" className="w-full">
+      <Tabs defaultValue="invite" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="email" className="flex items-center gap-2">
+          <TabsTrigger value="invite" className="flex items-center gap-2">
             <Mail className="h-4 w-4" />
-            Email Invitations
+            Invitations
           </TabsTrigger>
           <TabsTrigger value="share" className="flex items-center gap-2">
             <Share className="h-4 w-4" />
@@ -457,189 +457,265 @@ export const FormInvitations = ({ form, onUpdateForm }: FormInvitationsProps) =>
           </TabsTrigger>
         </TabsList>
 
-        {/* Email Invitations Tab */}
-        <TabsContent value="email" className="space-y-6">
-          {/* Email Settings */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                Email Distribution Settings
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Switch
-                  id="email-enabled"
-                  checked={emailSettings.enabled}
-                  onCheckedChange={(enabled) => updateEmailSettings({ enabled })}
-                />
-                <Label htmlFor="email-enabled">Enable email distribution</Label>
-              </div>
-
-              {emailSettings.enabled && (
-                <>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="reminder-enabled">Enable Reminders</Label>
-                      <div className="flex items-center space-x-2 mt-2">
-                        <Switch
-                          id="reminder-enabled"
-                          checked={emailSettings.reminderEnabled}
-                          onCheckedChange={(reminderEnabled) => updateEmailSettings({ reminderEnabled })}
-                        />
-                        <span className="text-sm text-gray-600">Send reminder emails</span>
+        {/* Invitations Tab */}
+        <TabsContent value="invite" className="space-y-6">
+          {form.status === 'published' ? (
+            <>
+              {/* Invitation Statistics */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Invitation Statistics
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="text-center p-4 bg-blue-50 rounded-lg">
+                      <div className="text-2xl font-bold text-blue-600">
+                        {emailSettings.recipients.length}
                       </div>
+                      <div className="text-sm text-blue-800">Total Invites</div>
                     </div>
-                    <div>
-                      <Label htmlFor="reminder-interval">Reminder Interval (days)</Label>
-                      <Input
-                        id="reminder-interval"
-                        type="number"
-                        min="1"
-                        max="30"
-                        value={emailSettings.reminderIntervalDays}
-                        onChange={(e) => updateEmailSettings({ reminderIntervalDays: parseInt(e.target.value) || 7 })}
-                        className="mt-2"
-                      />
+                    <div className="text-center p-4 bg-green-50 rounded-lg">
+                      <div className="text-2xl font-bold text-green-600">
+                        {emailSettings.recipients.filter(r => r.status === 'completed').length}
+                      </div>
+                      <div className="text-sm text-green-800">Completed</div>
+                    </div>
+                    <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                      <div className="text-2xl font-bold text-yellow-600">
+                        {emailSettings.recipients.filter(r => ['sent', 'opened'].includes(r.status)).length}
+                      </div>
+                      <div className="text-sm text-yellow-800">Started</div>
+                    </div>
+                    <div className="text-center p-4 bg-red-50 rounded-lg">
+                      <div className="text-2xl font-bold text-red-600">
+                        {emailSettings.recipients.filter(r => r.status === 'pending').length}
+                      </div>
+                      <div className="text-sm text-red-800">Not Started</div>
                     </div>
                   </div>
-
-                  <div>
-                    <Label htmlFor="max-reminders">Maximum Reminders</Label>
-                    <Input
-                      id="max-reminders"
-                      type="number"
-                      min="0"
-                      max="10"
-                      value={emailSettings.maxReminders}
-                      onChange={(e) => updateEmailSettings({ maxReminders: parseInt(e.target.value) || 3 })}
-                      className="mt-2 w-32"
+                  
+                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm font-medium">Completion Rate:</span>
+                      <span className="text-lg font-bold text-blue-600">
+                        {emailSettings.recipients.length > 0 
+                          ? Math.round((emailSettings.recipients.filter(r => r.status === 'completed').length / emailSettings.recipients.length) * 100)
+                          : 0}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                      <div 
+                        className="bg-blue-600 h-2 rounded-full" 
+                        style={{ 
+                          width: `${emailSettings.recipients.length > 0 
+                            ? (emailSettings.recipients.filter(r => r.status === 'completed').length / emailSettings.recipients.length) * 100
+                            : 0}%` 
+                        }}
+                      ></div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              {/* Email Settings */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    Email Distribution Settings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="email-enabled"
+                      checked={emailSettings.enabled}
+                      onCheckedChange={(enabled) => updateEmailSettings({ enabled })}
                     />
+                    <Label htmlFor="email-enabled">Enable email distribution</Label>
                   </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
 
-          {/* Add Recipients */}
-          {emailSettings.enabled && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Add Recipients</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <Label htmlFor="recipient-email">Email Address *</Label>
-                    <Input
-                      id="recipient-email"
-                      type="email"
-                      placeholder="user@example.com"
-                      value={newRecipientEmail}
-                      onChange={(e) => setNewRecipientEmail(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && addRecipient()}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="recipient-name">Name (Optional)</Label>
-                    <Input
-                      id="recipient-name"
-                      placeholder="John Doe"
-                      value={newRecipientName}
-                      onChange={(e) => setNewRecipientName(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && addRecipient()}
-                    />
-                  </div>
-                  <div className="flex items-end">
-                    <Button onClick={addRecipient} className="w-full">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Recipient
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Recipients List */}
-          {emailSettings.enabled && emailSettings.recipients.length > 0 && (
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle>Recipients ({emailSettings.recipients.length})</CardTitle>
-                  <Button onClick={sendInvitations} className="flex items-center gap-2">
-                    <Send className="h-4 w-4" />
-                    Send Invitations
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {emailSettings.recipients.map((recipient) => (
-                    <div key={recipient.id} className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center gap-3">
-                        {getStatusIcon(recipient.status)}
+                  {emailSettings.enabled && (
+                    <>
+                      <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <div className="font-medium">{recipient.name || recipient.email}</div>
-                          {recipient.name && (
-                            <div className="text-sm text-gray-500">{recipient.email}</div>
-                          )}
+                          <Label htmlFor="reminder-enabled">Enable Reminders</Label>
+                          <div className="flex items-center space-x-2 mt-2">
+                            <Switch
+                              id="reminder-enabled"
+                              checked={emailSettings.reminderEnabled}
+                              onCheckedChange={(reminderEnabled) => updateEmailSettings({ reminderEnabled })}
+                            />
+                            <span className="text-sm text-gray-600">Send reminder emails</span>
+                          </div>
+                        </div>
+                        <div>
+                          <Label htmlFor="reminder-interval">Reminder Interval (days)</Label>
+                          <Input
+                            id="reminder-interval"
+                            type="number"
+                            min="1"
+                            max="30"
+                            value={emailSettings.reminderIntervalDays}
+                            onChange={(e) => updateEmailSettings({ reminderIntervalDays: parseInt(e.target.value) || 7 })}
+                            className="mt-2"
+                          />
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge className={getStatusColor(recipient.status)}>
-                          {recipient.status.charAt(0).toUpperCase() + recipient.status.slice(1)}
-                        </Badge>
-                        {recipient.remindersSent > 0 && (
-                          <Badge variant="outline" className="text-xs">
-                            {recipient.remindersSent} reminders
-                          </Badge>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeRecipient(recipient.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
+
+                      <div>
+                        <Label htmlFor="max-reminders">Maximum Reminders</Label>
+                        <Input
+                          id="max-reminders"
+                          type="number"
+                          min="0"
+                          max="10"
+                          value={emailSettings.maxReminders}
+                          onChange={(e) => updateEmailSettings({ maxReminders: parseInt(e.target.value) || 3 })}
+                          className="mt-2 w-32"
+                        />
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Add Recipients */}
+              {emailSettings.enabled && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Add Recipients</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label htmlFor="recipient-email">Email Address *</Label>
+                        <Input
+                          id="recipient-email"
+                          type="email"
+                          placeholder="user@example.com"
+                          value={newRecipientEmail}
+                          onChange={(e) => setNewRecipientEmail(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && addRecipient()}
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="recipient-name">Name (Optional)</Label>
+                        <Input
+                          id="recipient-name"
+                          placeholder="John Doe"
+                          value={newRecipientName}
+                          onChange={(e) => setNewRecipientName(e.target.value)}
+                          onKeyPress={(e) => e.key === 'Enter' && addRecipient()}
+                        />
+                      </div>
+                      <div className="flex items-end">
+                        <Button onClick={addRecipient} className="w-full">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Add Recipient
                         </Button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+                  </CardContent>
+                </Card>
+              )}
 
-          {/* Email Template Customization */}
-          {emailSettings.enabled && (
+              {/* Recipients List */}
+              {emailSettings.enabled && emailSettings.recipients.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <CardTitle>Recipients ({emailSettings.recipients.length})</CardTitle>
+                      <Button onClick={sendInvitations} className="flex items-center gap-2">
+                        <Send className="h-4 w-4" />
+                        Send Invitations
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {emailSettings.recipients.map((recipient) => (
+                        <div key={recipient.id} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div className="flex items-center gap-3">
+                            {getStatusIcon(recipient.status)}
+                            <div>
+                              <div className="font-medium">{recipient.name || recipient.email}</div>
+                              {recipient.name && (
+                                <div className="text-sm text-gray-500">{recipient.email}</div>
+                              )}
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Badge className={getStatusColor(recipient.status)}>
+                              {recipient.status.charAt(0).toUpperCase() + recipient.status.slice(1)}
+                            </Badge>
+                            {recipient.remindersSent > 0 && (
+                              <Badge variant="outline" className="text-xs">
+                                {recipient.remindersSent} reminders
+                              </Badge>
+                            )}
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => removeRecipient(recipient.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
+              {/* Email Template Customization */}
+              {emailSettings.enabled && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Email Template</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="email-subject">Subject Line</Label>
+                      <Input
+                        id="email-subject"
+                        value={emailSubject}
+                        onChange={(e) => setEmailSubject(e.target.value)}
+                        placeholder="Email subject"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="email-message">Message</Label>
+                      <Textarea
+                        id="email-message"
+                        value={emailMessage}
+                        onChange={(e) => setEmailMessage(e.target.value)}
+                        placeholder="Email message"
+                        rows={6}
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        Use [FORM_LINK] to insert the form link into your message
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </>
+          ) : (
             <Card>
-              <CardHeader>
-                <CardTitle>Email Template</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="email-subject">Subject Line</Label>
-                  <Input
-                    id="email-subject"
-                    value={emailSubject}
-                    onChange={(e) => setEmailSubject(e.target.value)}
-                    placeholder="Email subject"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email-message">Message</Label>
-                  <Textarea
-                    id="email-message"
-                    value={emailMessage}
-                    onChange={(e) => setEmailMessage(e.target.value)}
-                    placeholder="Email message"
-                    rows={6}
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Use [FORM_LINK] to insert the form link into your message
-                  </p>
-                </div>
+              <CardContent className="text-center py-12">
+                <h3 className="text-lg font-medium text-gray-600 mb-2">
+                  Invitations Available for Published Forms Only
+                </h3>
+                <p className="text-gray-500 mb-4">
+                  Publish your form to enable email invitations and track recipient responses.
+                </p>
+                <p className="text-sm text-blue-600">
+                  Note: All invitation data will be preserved when switching between draft and published states.
+                </p>
               </CardContent>
             </Card>
           )}
