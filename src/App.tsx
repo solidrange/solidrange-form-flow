@@ -26,12 +26,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";    // Hover help text
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";  // Data fetching system
 import { BrowserRouter, Routes, Route } from "react-router-dom";  // Page navigation system
 import { ThemeProvider } from "@/contexts/ThemeContext";  // Light/dark theme system
-import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/AppSidebar";
-import Dashboard from "./pages/Dashboard";
-import Forms from "./pages/Forms";
-import Submissions from "./pages/Submissions";
-import Reports from "./pages/Reports";
+import Index from "./pages/Index";      // Main Form Builder page
 import NotFound from "./pages/NotFound"; // 404 error page
 
 // Create a client for managing data requests and caching
@@ -53,35 +48,23 @@ const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <TooltipProvider>
-        <SidebarProvider>
-          <div className="min-h-screen flex w-full">
-            {/* Notification systems - these show popup messages to users */}
-            <Toaster />
-            <Sonner />
-            
-            {/* Page routing system - decides which page to show based on URL */}
-            <BrowserRouter>
-              <AppSidebar />
-              <SidebarInset>
-                <header className="flex h-16 shrink-0 items-center gap-2 px-4 border-b">
-                  <SidebarTrigger className="-ml-1" />
-                  <div className="flex-1">
-                    <h1 className="font-semibold">Solidrange Form Builder</h1>
-                  </div>
-                </header>
-                <div className="flex-1 overflow-auto">
-                  <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/forms" element={<Forms />} />
-                    <Route path="/submissions" element={<Submissions />} />
-                    <Route path="/reports" element={<Reports />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </div>
-              </SidebarInset>
-            </BrowserRouter>
-          </div>
-        </SidebarProvider>
+        <div className="relative min-h-screen">
+          {/* Notification systems - these show popup messages to users */}
+          <Toaster />
+          <Sonner />
+          
+          {/* Page routing system - decides which page to show based on URL */}
+          <BrowserRouter>
+            <Routes>
+              {/* Main page: Form Builder dashboard */}
+              <Route path="/" element={<Index />} />
+              
+              {/* Catch-all route: Show "Not Found" page for any invalid URL */}
+              {/* IMPORTANT: This must be the last route */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </div>
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>
