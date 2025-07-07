@@ -16,8 +16,7 @@ export default function Submissions() {
 
   // Filter submissions based on search and filters
   const filteredSubmissions = submissions.filter(submission => {
-    const matchesSearch = submission.formTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         submission.submitterName.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = submission.submitterName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === "all" || submission.status === statusFilter;
     const matchesType = typeFilter === "all" || submission.submissionType === typeFilter;
     
@@ -27,7 +26,7 @@ export default function Submissions() {
   // Calculate stats
   const stats = {
     total: submissions.length,
-    pending: submissions.filter(s => s.status === "pending").length,
+    pending: submissions.filter(s => s.status === "submitted").length,
     approved: submissions.filter(s => s.status === "approved").length,
     rejected: submissions.filter(s => s.status === "rejected").length,
   };
@@ -171,7 +170,7 @@ export default function Submissions() {
               <div key={submission.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/50">
                 <div className="flex-1">
                   <div className="flex items-center gap-3">
-                    <h4 className="font-medium">{submission.formTitle}</h4>
+                    <h4 className="font-medium">Form Submission #{submission.id}</h4>
                     <Badge variant={getStatusColor(submission.status)} className="flex items-center gap-1">
                       {getStatusIcon(submission.status)}
                       {submission.status}
@@ -179,9 +178,9 @@ export default function Submissions() {
                   </div>
                   <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                     <span>Submitted by: {submission.submitterName}</span>
-                    <span>Date: {new Date(submission.createdAt).toLocaleDateString()}</span>
+                    <span>Date: {new Date(submission.submittedAt).toLocaleDateString()}</span>
                     {submission.score && (
-                      <span>Score: {submission.score}/100</span>
+                      <span>Score: {submission.score.percentage}%</span>
                     )}
                   </div>
                 </div>

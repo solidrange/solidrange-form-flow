@@ -296,21 +296,21 @@ export default function Forms() {
 
           <TabsContent value="builder" className="flex-1">
             <FormBuilder
-              fields={formFields}
+              formFields={formFields}
+              formTitle={formTitle}
+              formDescription={formDescription}
               onAddField={addField}
               onUpdateField={updateField}
               onRemoveField={removeField}
+              onUpdateTitle={setFormTitle}
+              onUpdateDescription={setFormDescription}
               onReorderFields={reorderFields}
-              formTitle={formTitle}
-              setFormTitle={setFormTitle}
-              formDescription={formDescription}
-              setFormDescription={setFormDescription}
+              attachments={formAttachments}
+              onUpdateAttachments={setFormAttachments}
               formCategory={formCategory}
-              setFormCategory={setFormCategory}
               formTargetAudience={formTargetAudience}
-              setFormTargetAudience={setFormTargetAudience}
-              formAttachments={formAttachments}
-              setFormAttachments={setFormAttachments}
+              onCategoryChange={setFormCategory}
+              onTargetAudienceChange={setFormTargetAudience}
             />
           </TabsContent>
 
@@ -320,17 +320,42 @@ export default function Forms() {
 
           <TabsContent value="preview" className="flex-1">
             <FormPreview
-              fields={formFields}
-              title={formTitle}
-              description={formDescription}
-              settings={formSettings}
+              formFields={formFields}
+              formTitle={formTitle}
+              formDescription={formDescription}
+              formSettings={formSettings}
+              attachments={formAttachments}
             />
           </TabsContent>
 
           <TabsContent value="settings" className="flex-1">
             <SettingsPanel
-              settings={formSettings}
-              onUpdateSettings={updateFormSettings}
+              form={{
+                id: currentFormId || Date.now().toString(),
+                title: formTitle,
+                description: formDescription,
+                fields: formFields,
+                settings: formSettings,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                status: isDraft ? 'draft' : 'published',
+                submissions: 0,
+                analytics: {
+                  views: 0,
+                  submissions: 0,
+                  completionRate: 0,
+                  emailsSent: 0,
+                  emailsCompleted: 0,
+                  averageCompletionTime: 0,
+                  dropoffRate: 0
+                }
+              }}
+              onUpdate={(updatedForm) => {
+                setFormTitle(updatedForm.title);
+                setFormDescription(updatedForm.description);
+                setFormFields(updatedForm.fields);
+                setFormSettings(updatedForm.settings);
+              }}
             />
           </TabsContent>
 
@@ -338,10 +363,12 @@ export default function Forms() {
             <TabsContent value="invitations" className="flex-1">
               <FormInvitations
                 form={getCurrentForm()}
-                onUpdateForm={(formId, updates) => {
-                  setPublishedForms(prev => prev.map(form => 
-                    form.id === formId ? { ...form, ...updates, updatedAt: new Date() } : form
-                  ));
+                onUpdateForm={(updates) => {
+                  if (currentFormId) {
+                    setPublishedForms(prev => prev.map(form => 
+                      form.id === currentFormId ? { ...form, ...updates, updatedAt: new Date() } : form
+                    ));
+                  }
                 }}
               />
             </TabsContent>

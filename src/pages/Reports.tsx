@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { BarChart3, FileText, Download, TrendingUp, Users, Clock, Target } from "lucide-react";
+import { sampleSubmissions } from "@/data/sampleSubmissions";
 
 export default function Reports() {
   const [activeTab, setActiveTab] = useState("analytics");
@@ -101,11 +102,14 @@ export default function Reports() {
         </TabsList>
 
         <TabsContent value="analytics" className="space-y-4">
-          <Analytics />
+          <Analytics 
+            submissions={sampleSubmissions} 
+            onFilterSubmissions={(filters) => console.log('Filter submissions:', filters)}
+          />
         </TabsContent>
 
         <TabsContent value="reports" className="space-y-4">
-          <ReportGeneration />
+          <ReportGeneration submissions={sampleSubmissions} />
         </TabsContent>
 
         <TabsContent value="history" className="space-y-4">

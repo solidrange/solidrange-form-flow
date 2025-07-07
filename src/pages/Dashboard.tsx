@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FileText, Users, TrendingUp, Clock, Plus, Eye, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { sampleSubmissions } from "@/data/sampleSubmissions";
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -12,7 +13,7 @@ export default function Dashboard() {
   const stats = {
     totalForms: 12,
     activeForms: 8,
-    totalSubmissions: 147,
+    totalSubmissions: sampleSubmissions.length,
     avgCompletionRate: 85,
   };
 
@@ -22,11 +23,13 @@ export default function Dashboard() {
     { id: 3, title: "Event Registration", submissions: 12, status: "draft", lastModified: "3 days ago" },
   ];
 
-  const recentSubmissions = [
-    { id: 1, formTitle: "Employee Feedback Survey", submitter: "John Doe", status: "pending", date: "10 min ago" },
-    { id: 2, formTitle: "Customer Satisfaction Form", submitter: "Jane Smith", status: "approved", date: "1 hour ago" },
-    { id: 3, formTitle: "Event Registration", submitter: "Mike Johnson", status: "pending", date: "2 hours ago" },
-  ];
+  const recentSubmissions = sampleSubmissions.slice(0, 3).map(submission => ({
+    id: submission.id,
+    formTitle: `Form #${submission.formId}`,
+    submitter: submission.submitterName,
+    status: submission.status,
+    date: new Date(submission.submittedAt).toLocaleString(),
+  }));
 
   return (
     <div className="p-6 space-y-6">
