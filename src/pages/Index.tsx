@@ -276,8 +276,9 @@ const Index = () => {
       return;
     }
 
+    const formId = currentFormId || Date.now().toString();
     const formData: Form = {
-      id: currentFormId || Date.now().toString(),
+      id: formId,
       title: formTitle,
       description: formDescription,
       fields: formFields,
@@ -306,14 +307,19 @@ const Index = () => {
         draft.id === currentFormId ? formData : draft
       ));
     } else {
-      // Create new draft
+      // Create new draft and set current form ID
       setSavedDrafts(prev => [...prev, formData]);
-      setCurrentFormId(formData.id);
+      setCurrentFormId(formId);
     }
+    
+    // After saving, create a new blank form so user can continue building
+    setTimeout(() => {
+      createNewForm();
+    }, 100);
     
     toast({
       title: "Draft Saved",
-      description: "Your form has been saved as a draft.",
+      description: "Your form has been saved as a draft. You can now build a new form.",
     });
   };
 
@@ -353,8 +359,9 @@ const Index = () => {
       setSavedDrafts(prev => prev.filter(draft => draft.id !== formToPublish.id));
     } else {
       // Publishing current form
+      const formId = currentFormId || Date.now().toString();
       const formData: Form = {
-        id: currentFormId || Date.now().toString(),
+        id: formId,
         title: formTitle,
         description: formDescription,
         fields: formFields,
@@ -383,13 +390,18 @@ const Index = () => {
         setPublishedForms(prev => [...prev.filter(form => form.id !== currentFormId), formData]);
       } else {
         setPublishedForms(prev => [...prev, formData]);
-        setCurrentFormId(formData.id);
+        setCurrentFormId(formId);
       }
+      
+      // After publishing, create a new blank form so user can continue building
+      setTimeout(() => {
+        createNewForm();
+      }, 100);
     }
     
     toast({
       title: "Form Published",
-      description: "Your form has been published successfully and is now available for invitations.",
+      description: "Your form has been published successfully. You can now build a new form.",
     });
   };
 
