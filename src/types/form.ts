@@ -276,6 +276,9 @@ export interface Form {
   updatedAt: Date;              // When this form was last modified
   status: 'draft' | 'published'; // Whether the form is still being built or ready for use
   submissions: number;           // How many times this form has been submitted
+  category?: string;             // Form category (e.g., "vendor-risk", "hr", "customer")
+  targetAudience?: string[];     // Target audience for this form (vendor, external, internal)
+  attachments?: DocumentAttachment[]; // Any files attached to this form
   
   /**
    * Analytics Data
