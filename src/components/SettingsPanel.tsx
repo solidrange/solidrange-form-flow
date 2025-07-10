@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { WeightageAndScoringSettings } from "./WeightageAndScoringSettings";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface SettingsPanelProps {
   form: Form;
@@ -16,6 +17,7 @@ interface SettingsPanelProps {
 }
 
 export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
+  const { theme: globalTheme, setTheme } = useTheme();
   const [isExpirationEnabled, setIsExpirationEnabled] = useState(form.settings.expiration?.enabled || false);
   const [isEmailDistributionEnabled, setIsEmailDistributionEnabled] = useState(form.settings.emailDistribution?.enabled || false);
   const [isApprovalEnabled, setIsApprovalEnabled] = useState(form.settings.approval?.enabled || false);
@@ -133,6 +135,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
   };
 
   const handleThemeChange = (theme: 'light' | 'dark' | 'custom') => {
+    // Update form settings
     onUpdate({
       ...form,
       settings: {
@@ -140,6 +143,11 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
         theme
       }
     });
+    
+    // Update global theme (if not custom)
+    if (theme !== 'custom') {
+      setTheme(theme);
+    }
   };
 
   const handleCustomCssChange = (customCss: string) => {
@@ -218,6 +226,9 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
                 <SelectItem value="custom">Custom</SelectItem>
               </SelectContent>
             </Select>
+            <p className="text-xs text-muted-foreground mt-1">
+              Current global theme: {globalTheme}
+            </p>
           </div>
 
           {/* Custom CSS editor for custom theme */}
