@@ -508,8 +508,7 @@ const Index = () => {
   const buildTabs = [
     { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" />, mobileLabel: "Build" },
     { id: "library", label: "Library", icon: <Library className="h-4 w-4" />, mobileLabel: "Lib" },
-    { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" />, mobileLabel: "View" },
-    ...(currentFormIsPublished() ? [{ id: "invitations", label: "Invitations", icon: <Mail className="h-4 w-4" />, mobileLabel: "Mail" }] : [])
+    { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" />, mobileLabel: "View" }
   ];
 
   // Check if there are unpublished drafts for notification dot
@@ -820,6 +819,27 @@ const Index = () => {
                                 <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                                 <span className="hidden sm:inline ml-1">Load</span>
                               </Button>
+                              
+                              <Dialog>
+                                <DialogTrigger asChild>
+                                  <Button size="sm" variant="outline" className="text-xs px-2 py-1 whitespace-nowrap">
+                                    <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
+                                    <span className="hidden sm:inline ml-1">Invitations</span>
+                                  </Button>
+                                </DialogTrigger>
+                                <DialogContent className="mx-2 max-w-4xl w-full">
+                                  <DialogHeader>
+                                    <DialogTitle className="text-lg">Form Invitations: {form.title}</DialogTitle>
+                                  </DialogHeader>
+                                  <div className="max-h-[70vh] overflow-y-auto">
+                                    <FormInvitations
+                                      form={form}
+                                      onUpdateForm={(updates) => updatePublishedForm(form.id, updates)}
+                                    />
+                                  </div>
+                                </DialogContent>
+                              </Dialog>
+
                               <Dialog>
                                 <DialogTrigger asChild>
                                   <Button size="sm" variant="outline" className="text-xs px-2 py-1 whitespace-nowrap">
@@ -979,21 +999,6 @@ const Index = () => {
                 <FormLibrary onUseTemplate={useTemplate} />
               </TabsContent>
 
-              {currentFormIsPublished() && (
-                <TabsContent value="invitations" className="mt-3 sm:mt-4">
-                  {getCurrentForm() ? (
-                    <FormInvitations
-                      form={getCurrentForm()!}
-                      onUpdateForm={(updates) => updatePublishedForm(getCurrentForm()!.id, updates)}
-                    />
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <Mail className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                      <p className="text-sm">No published form selected</p>
-                    </div>
-                  )}
-                </TabsContent>
-              )}
 
               <TabsContent value="preview" className="mt-3 sm:mt-4">
                 <FormPreview
