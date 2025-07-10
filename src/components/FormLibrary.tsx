@@ -442,6 +442,600 @@ const formTemplates: FormTemplate[] = [
     ]
   },
 
+  // BUSINESS IMPACT ANALYSIS FORMS BY SECTOR
+  
+  // Government Sector - Business Impact Analysis Forms
+  {
+    id: "gov-bia-1",
+    name: "Government Service Disruption Analysis",
+    description: "Assess impact of government service interruptions on citizens and operations",
+    category: "business",
+    sector: "government",
+    targetAudience: ["internal"],
+    preview: "Service criticality, citizen impact, recovery priorities, resource requirements",
+    fields: [
+      { id: generateFieldId(2000), type: "text", label: "Service/Department Name", required: true },
+      { id: generateFieldId(2001), type: "select", label: "Service Type", required: true, options: ["Essential Services", "Public Safety", "Administrative", "Infrastructure", "Social Services"] },
+      { id: generateFieldId(2002), type: "select", label: "Citizen Impact Level", required: true, options: ["Critical", "High", "Medium", "Low"] },
+      { id: generateFieldId(2003), type: "text", label: "Daily Citizens Served", required: true },
+      { id: generateFieldId(2004), type: "textarea", label: "Impact on Public Safety", required: true },
+      { id: generateFieldId(2005), type: "select", label: "Maximum Tolerable Downtime", required: true, options: ["0-2 hours", "2-8 hours", "8-24 hours", "1-3 days", "> 3 days"] },
+      { id: generateFieldId(2006), type: "textarea", label: "Recovery Resource Requirements", required: true }
+    ]
+  },
+  {
+    id: "gov-bia-2", 
+    name: "Public Infrastructure Impact Assessment",
+    description: "Evaluate business continuity risks for critical public infrastructure",
+    category: "business",
+    sector: "government",
+    targetAudience: ["internal"],
+    preview: "Infrastructure dependencies, failure scenarios, community impact, restoration priorities",
+    fields: [
+      { id: generateFieldId(2010), type: "text", label: "Infrastructure Asset", required: true },
+      { id: generateFieldId(2011), type: "select", label: "Infrastructure Type", required: true, options: ["Transportation", "Utilities", "Communications", "Emergency Services", "Public Buildings"] },
+      { id: generateFieldId(2012), type: "checkbox", label: "Dependencies", required: true, options: ["Power Grid", "Water System", "Communications", "Transportation", "IT Systems"] },
+      { id: generateFieldId(2013), type: "textarea", label: "Community Impact Description", required: true },
+      { id: generateFieldId(2014), type: "select", label: "Economic Impact Level", required: true, options: ["Minimal", "Low", "Moderate", "High", "Severe"] },
+      { id: generateFieldId(2015), type: "text", label: "Estimated Recovery Cost", required: true },
+      { id: generateFieldId(2016), type: "textarea", label: "Alternative Service Arrangements", required: false }
+    ]
+  },
+  {
+    id: "gov-bia-3",
+    name: "Emergency Response Capability Analysis", 
+    description: "Assess impact on emergency response and public safety capabilities",
+    category: "business",
+    sector: "government",
+    targetAudience: ["internal"],
+    preview: "Response capacity, resource availability, coordination impact, public safety risks",
+    fields: [
+      { id: generateFieldId(2020), type: "text", label: "Emergency Service Unit", required: true },
+      { id: generateFieldId(2021), type: "select", label: "Service Category", required: true, options: ["Police", "Fire", "EMS", "Emergency Management", "Public Health"] },
+      { id: generateFieldId(2022), type: "text", label: "Coverage Area Population", required: true },
+      { id: generateFieldId(2023), type: "select", label: "Response Time Impact", required: true, options: ["No Impact", "Minimal Delay", "Moderate Delay", "Significant Delay", "Service Unavailable"] },
+      { id: generateFieldId(2024), type: "textarea", label: "Public Safety Risk Assessment", required: true },
+      { id: generateFieldId(2025), type: "checkbox", label: "Backup Resources Available", required: true, options: ["Mutual Aid Agreements", "Reserve Personnel", "Alternative Equipment", "Temporary Facilities", "None"] },
+      { id: generateFieldId(2026), type: "textarea", label: "Coordination Impact with Other Agencies", required: true }
+    ]
+  },
+  {
+    id: "gov-bia-4",
+    name: "Regulatory Compliance Impact Analysis",
+    description: "Evaluate impact on regulatory compliance and legal obligations",
+    category: "business", 
+    sector: "government",
+    targetAudience: ["internal"],
+    preview: "Compliance requirements, legal deadlines, regulatory risks, mitigation strategies",
+    fields: [
+      { id: generateFieldId(2030), type: "text", label: "Regulatory Function", required: true },
+      { id: generateFieldId(2031), type: "checkbox", label: "Affected Regulations", required: true, options: ["Federal Laws", "State Regulations", "Local Ordinances", "Industry Standards", "International Treaties"] },
+      { id: generateFieldId(2032), type: "textarea", label: "Critical Compliance Deadlines", required: true },
+      { id: generateFieldId(2033), type: "select", label: "Non-Compliance Risk Level", required: true, options: ["Low", "Medium", "High", "Critical"] },
+      { id: generateFieldId(2034), type: "textarea", label: "Potential Legal Consequences", required: true },
+      { id: generateFieldId(2035), type: "textarea", label: "Compliance Monitoring Impact", required: true },
+      { id: generateFieldId(2036), type: "textarea", label: "Regulatory Reporting Delays", required: false }
+    ]
+  },
+
+  // Insurance Sector - Business Impact Analysis Forms
+  {
+    id: "ins-bia-1",
+    name: "Claims Processing Disruption Analysis",
+    description: "Assess impact of claims processing system disruptions on customer service",
+    category: "business",
+    sector: "insurance", 
+    targetAudience: ["internal"],
+    preview: "Claims volume impact, customer satisfaction, regulatory compliance, financial exposure",
+    fields: [
+      { id: generateFieldId(2040), type: "text", label: "Claims Processing Unit", required: true },
+      { id: generateFieldId(2041), type: "select", label: "Insurance Line", required: true, options: ["Auto", "Property", "Life", "Health", "Commercial", "Specialty"] },
+      { id: generateFieldId(2042), type: "text", label: "Daily Claims Volume", required: true },
+      { id: generateFieldId(2043), type: "select", label: "Customer Impact Severity", required: true, options: ["Minimal", "Moderate", "Significant", "Severe"] },
+      { id: generateFieldId(2044), type: "text", label: "Average Claim Value", required: true },
+      { id: generateFieldId(2045), type: "textarea", label: "Regulatory Reporting Impact", required: true },
+      { id: generateFieldId(2046), type: "select", label: "Maximum Processing Delay Tolerance", required: true, options: ["Same Day", "24 Hours", "48 Hours", "72 Hours", "1 Week"] }
+    ]
+  },
+  {
+    id: "ins-bia-2", 
+    name: "Underwriting Operations Impact Assessment",
+    description: "Evaluate business continuity risks for underwriting and policy issuance",
+    category: "business",
+    sector: "insurance",
+    targetAudience: ["internal"],
+    preview: "Policy issuance delays, revenue impact, competitive position, agent relationships",
+    fields: [
+      { id: generateFieldId(2050), type: "text", label: "Underwriting Department", required: true },
+      { id: generateFieldId(2051), type: "select", label: "Product Line", required: true, options: ["Personal Lines", "Commercial Lines", "Specialty Products", "Life Insurance", "Reinsurance"] },
+      { id: generateFieldId(2052), type: "text", label: "Daily Policy Volume", required: true },
+      { id: generateFieldId(2053), type: "text", label: "Average Policy Premium", required: true },
+      { id: generateFieldId(2054), type: "textarea", label: "Agent/Broker Relationship Impact", required: true },
+      { id: generateFieldId(2055), type: "select", label: "Competitive Disadvantage Risk", required: true, options: ["None", "Low", "Medium", "High", "Critical"] },
+      { id: generateFieldId(2056), type: "textarea", label: "Revenue Loss Estimation", required: true }
+    ]
+  },
+  {
+    id: "ins-bia-3",
+    name: "Customer Service Continuity Analysis",
+    description: "Assess impact on customer service operations and policyholder support",
+    category: "business",
+    sector: "insurance",
+    targetAudience: ["internal"], 
+    preview: "Service level impact, customer retention, call center operations, digital channels",
+    fields: [
+      { id: generateFieldId(2060), type: "text", label: "Customer Service Function", required: true },
+      { id: generateFieldId(2061), type: "checkbox", label: "Service Channels", required: true, options: ["Phone Support", "Online Portal", "Mobile App", "Email", "In-Person"] },
+      { id: generateFieldId(2062), type: "text", label: "Daily Customer Contacts", required: true },
+      { id: generateFieldId(2063), type: "select", label: "Service Level Agreement Impact", required: true, options: ["No Impact", "Minor Degradation", "Moderate Impact", "Significant Delays", "Service Unavailable"] },
+      { id: generateFieldId(2064), type: "textarea", label: "Customer Retention Risk", required: true },
+      { id: generateFieldId(2065), type: "textarea", label: "Alternative Service Options", required: false },
+      { id: generateFieldId(2066), type: "select", label: "Brand Reputation Impact", required: true, options: ["None", "Minor", "Moderate", "Significant", "Severe"] }
+    ]
+  },
+  {
+    id: "ins-bia-4",
+    name: "Financial Reporting and Compliance Impact",
+    description: "Evaluate impact on financial reporting, regulatory compliance, and solvency requirements",
+    category: "business",
+    sector: "insurance",
+    targetAudience: ["internal"],
+    preview: "Regulatory deadlines, solvency monitoring, financial reporting, compliance risks",
+    fields: [
+      { id: generateFieldId(2070), type: "text", label: "Financial/Compliance Function", required: true },
+      { id: generateFieldId(2071), type: "checkbox", label: "Affected Reporting Requirements", required: true, options: ["State Insurance Filings", "Federal Reporting", "Solvency Monitoring", "Quarterly Reports", "Annual Statements"] },
+      { id: generateFieldId(2072), type: "textarea", label: "Critical Reporting Deadlines", required: true },
+      { id: generateFieldId(2073), type: "select", label: "Regulatory Penalty Risk", required: true, options: ["None", "Low", "Medium", "High", "Severe"] },
+      { id: generateFieldId(2074), type: "textarea", label: "Solvency Ratio Impact", required: true },
+      { id: generateFieldId(2075), type: "textarea", label: "Audit and Examination Impact", required: false },
+      { id: generateFieldId(2076), type: "select", label: "Capital Adequacy Impact", required: true, options: ["No Impact", "Minor", "Moderate", "Significant", "Critical"] }
+    ]
+  },
+
+  // Fintech Sector - Business Impact Analysis Forms
+  {
+    id: "fintech-bia-1",
+    name: "Payment Processing Disruption Analysis",
+    description: "Assess impact of payment processing system failures on transactions and revenue",
+    category: "business",
+    sector: "fintech",
+    targetAudience: ["internal"],
+    preview: "Transaction volume, revenue impact, customer trust, regulatory compliance",
+    fields: [
+      { id: generateFieldId(2080), type: "text", label: "Payment System/Platform", required: true },
+      { id: generateFieldId(2081), type: "select", label: "Payment Type", required: true, options: ["Credit Card Processing", "Digital Wallets", "Bank Transfers", "Cryptocurrency", "Mobile Payments"] },
+      { id: generateFieldId(2082), type: "text", label: "Daily Transaction Volume", required: true },
+      { id: generateFieldId(2083), type: "text", label: "Average Transaction Value", required: true },
+      { id: generateFieldId(2084), type: "textarea", label: "Customer Trust Impact", required: true },
+      { id: generateFieldId(2085), type: "select", label: "Regulatory Compliance Risk", required: true, options: ["Low", "Medium", "High", "Critical"] },
+      { id: generateFieldId(2086), type: "textarea", label: "Revenue Loss Per Hour", required: true }
+    ]
+  },
+  {
+    id: "fintech-bia-2",
+    name: "Digital Banking Platform Impact Assessment", 
+    description: "Evaluate business continuity risks for digital banking and financial services",
+    category: "business",
+    sector: "fintech",
+    targetAudience: ["internal"],
+    preview: "Service availability, customer access, transaction processing, competitive impact",
+    fields: [
+      { id: generateFieldId(2090), type: "text", label: "Digital Platform/Service", required: true },
+      { id: generateFieldId(2091), type: "checkbox", label: "Service Features", required: true, options: ["Account Management", "Loan Applications", "Investment Services", "Money Transfers", "Bill Payments"] },
+      { id: generateFieldId(2092), type: "text", label: "Active User Base", required: true },
+      { id: generateFieldId(2093), type: "select", label: "Service Availability Impact", required: true, options: ["Fully Available", "Partially Available", "Limited Functionality", "Completely Unavailable"] },
+      { id: generateFieldId(2094), type: "textarea", label: "Customer Migration Risk", required: true },
+      { id: generateFieldId(2095), type: "select", label: "Competitive Disadvantage", required: true, options: ["None", "Minimal", "Moderate", "Significant", "Severe"] },
+      { id: generateFieldId(2096), type: "textarea", label: "Alternative Access Methods", required: false }
+    ]
+  },
+  {
+    id: "fintech-bia-3",
+    name: "Data Security and Privacy Breach Impact",
+    description: "Assess impact of data security incidents on fintech operations and customer trust",
+    category: "business", 
+    sector: "fintech",
+    targetAudience: ["internal"],
+    preview: "Data exposure, regulatory penalties, customer impact, recovery requirements",
+    fields: [
+      { id: generateFieldId(2100), type: "text", label: "Affected System/Database", required: true },
+      { id: generateFieldId(2101), type: "checkbox", label: "Data Types Affected", required: true, options: ["Personal Information", "Financial Data", "Transaction History", "Account Credentials", "Biometric Data"] },
+      { id: generateFieldId(2102), type: "text", label: "Number of Affected Customers", required: true },
+      { id: generateFieldId(2103), type: "select", label: "Regulatory Notification Requirements", required: true, options: ["Immediate", "24 Hours", "72 Hours", "30 Days", "Not Required"] },
+      { id: generateFieldId(2104), type: "textarea", label: "Customer Notification Strategy", required: true },
+      { id: generateFieldId(2105), type: "text", label: "Estimated Regulatory Penalties", required: true },
+      { id: generateFieldId(2106), type: "textarea", label: "Customer Compensation Requirements", required: false }
+    ]
+  },
+  {
+    id: "fintech-bia-4",
+    name: "Regulatory Compliance and Reporting Impact",
+    description: "Evaluate impact on financial regulatory compliance and mandatory reporting",
+    category: "business",
+    sector: "fintech", 
+    targetAudience: ["internal"],
+    preview: "Compliance obligations, reporting deadlines, regulatory risks, license implications",
+    fields: [
+      { id: generateFieldId(2110), type: "text", label: "Compliance Function", required: true },
+      { id: generateFieldId(2111), type: "checkbox", label: "Regulatory Requirements", required: true, options: ["Anti-Money Laundering", "Know Your Customer", "Data Protection", "Capital Requirements", "Consumer Protection"] },
+      { id: generateFieldId(2112), type: "textarea", label: "Critical Reporting Deadlines", required: true },
+      { id: generateFieldId(2113), type: "select", label: "License/Authorization Risk", required: true, options: ["No Risk", "Low Risk", "Medium Risk", "High Risk", "License at Risk"] },
+      { id: generateFieldId(2114), type: "textarea", label: "Regulatory Examination Impact", required: true },
+      { id: generateFieldId(2115), type: "text", label: "Potential Fines/Penalties", required: true },
+      { id: generateFieldId(2116), type: "textarea", label: "Business Operations Restrictions", required: false }
+    ]
+  },
+
+  // Health Sector - Business Impact Analysis Forms
+  {
+    id: "health-bia-1",
+    name: "Patient Care Disruption Analysis",
+    description: "Assess impact of healthcare service disruptions on patient care and safety",
+    category: "business",
+    sector: "health",
+    targetAudience: ["internal"],
+    preview: "Patient safety, care quality, clinical operations, emergency procedures",
+    fields: [
+      { id: generateFieldId(2120), type: "text", label: "Healthcare Service/Department", required: true },
+      { id: generateFieldId(2121), type: "select", label: "Service Type", required: true, options: ["Emergency Care", "Inpatient Services", "Outpatient Services", "Surgical Services", "Diagnostic Services"] },
+      { id: generateFieldId(2122), type: "text", label: "Daily Patient Volume", required: true },
+      { id: generateFieldId(2123), type: "select", label: "Patient Safety Impact", required: true, options: ["No Impact", "Low Risk", "Moderate Risk", "High Risk", "Life Threatening"] },
+      { id: generateFieldId(2124), type: "textarea", label: "Critical Care Dependencies", required: true },
+      { id: generateFieldId(2125), type: "select", label: "Maximum Service Interruption", required: true, options: ["0-30 minutes", "30-60 minutes", "1-2 hours", "2-4 hours", "Not Acceptable"] },
+      { id: generateFieldId(2126), type: "textarea", label: "Alternative Care Arrangements", required: true }
+    ]
+  },
+  {
+    id: "health-bia-2",
+    name: "Medical Records and IT Systems Impact",
+    description: "Evaluate impact of medical records and healthcare IT system disruptions",
+    category: "business",
+    sector: "health",
+    targetAudience: ["internal"],
+    preview: "Electronic health records, clinical systems, patient data access, workflow impact",
+    fields: [
+      { id: generateFieldId(2130), type: "text", label: "IT System/Application", required: true },
+      { id: generateFieldId(2131), type: "checkbox", label: "System Functions", required: true, options: ["Electronic Health Records", "Medical Imaging", "Laboratory Systems", "Pharmacy Systems", "Patient Scheduling"] },
+      { id: generateFieldId(2132), type: "text", label: "Number of Users Affected", required: true },
+      { id: generateFieldId(2133), type: "select", label: "Clinical Workflow Impact", required: true, options: ["No Impact", "Minor Delays", "Moderate Disruption", "Significant Delays", "Complete Stoppage"] },
+      { id: generateFieldId(2134), type: "textarea", label: "Patient Data Access Impact", required: true },
+      { id: generateFieldId(2135), type: "textarea", label: "Manual Backup Procedures", required: true },
+      { id: generateFieldId(2136), type: "select", label: "Regulatory Compliance Risk", required: true, options: ["Low", "Medium", "High", "Critical"] }
+    ]
+  },
+  {
+    id: "health-bia-3",
+    name: "Medical Supply Chain Disruption Impact",
+    description: "Assess impact of medical supply chain interruptions on patient care",
+    category: "business",
+    sector: "health",
+    targetAudience: ["internal"],
+    preview: "Supply availability, patient care impact, alternative sources, inventory management",
+    fields: [
+      { id: generateFieldId(2140), type: "text", label: "Medical Supply/Equipment", required: true },
+      { id: generateFieldId(2141), type: "select", label: "Supply Category", required: true, options: ["Life-Critical Medications", "Surgical Supplies", "Diagnostic Equipment", "Personal Protective Equipment", "General Medical Supplies"] },
+      { id: generateFieldId(2142), type: "text", label: "Current Inventory Level", required: true },
+      { id: generateFieldId(2143), type: "select", label: "Patient Care Impact", required: true, options: ["No Impact", "Delayed Care", "Modified Treatment", "Deferred Procedures", "Emergency Situation"] },
+      { id: generateFieldId(2144), type: "textarea", label: "Alternative Supply Sources", required: true },
+      { id: generateFieldId(2145), type: "select", label: "Criticality Level", required: true, options: ["Low", "Medium", "High", "Life Critical"] },
+      { id: generateFieldId(2146), type: "textarea", label: "Clinical Substitution Options", required: false }
+    ]
+  },
+  {
+    id: "health-bia-4",
+    name: "Healthcare Regulatory Compliance Impact",
+    description: "Evaluate impact on healthcare regulatory compliance and accreditation",
+    category: "business",
+    sector: "health",
+    targetAudience: ["internal"],
+    preview: "Regulatory requirements, accreditation standards, compliance deadlines, patient rights",
+    fields: [
+      { id: generateFieldId(2150), type: "text", label: "Compliance Function/Department", required: true },
+      { id: generateFieldId(2151), type: "checkbox", label: "Regulatory Requirements", required: true, options: ["HIPAA Privacy", "Joint Commission Standards", "CMS Requirements", "State Health Regulations", "FDA Compliance"] },
+      { id: generateFieldId(2152), type: "textarea", label: "Critical Compliance Deadlines", required: true },
+      { id: generateFieldId(2153), type: "select", label: "Accreditation Risk", required: true, options: ["No Risk", "Low Risk", "Medium Risk", "High Risk", "Accreditation at Risk"] },
+      { id: generateFieldId(2154), type: "textarea", label: "Patient Rights Impact", required: true },
+      { id: generateFieldId(2155), type: "textarea", label: "Quality Reporting Impact", required: true },
+      { id: generateFieldId(2156), type: "select", label: "Regulatory Penalty Risk", required: true, options: ["None", "Low", "Medium", "High", "Severe"] }
+    ]
+  },
+
+  // Energy Sector - Business Impact Analysis Forms
+  {
+    id: "energy-bia-1",
+    name: "Power Generation Disruption Analysis",
+    description: "Assess impact of power generation facility disruptions on grid stability and customers",
+    category: "business",
+    sector: "energy",
+    targetAudience: ["internal"],
+    preview: "Generation capacity, grid impact, customer outages, environmental concerns",
+    fields: [
+      { id: generateFieldId(2160), type: "text", label: "Generation Facility/Unit", required: true },
+      { id: generateFieldId(2161), type: "select", label: "Generation Type", required: true, options: ["Coal", "Natural Gas", "Nuclear", "Hydroelectric", "Wind", "Solar", "Other Renewable"] },
+      { id: generateFieldId(2162), type: "text", label: "Generation Capacity (MW)", required: true },
+      { id: generateFieldId(2163), type: "text", label: "Customers Affected", required: true },
+      { id: generateFieldId(2164), type: "select", label: "Grid Stability Impact", required: true, options: ["No Impact", "Minor Fluctuation", "Moderate Impact", "Significant Strain", "Critical Instability"] },
+      { id: generateFieldId(2165), type: "textarea", label: "Environmental/Safety Concerns", required: true },
+      { id: generateFieldId(2166), type: "select", label: "Maximum Outage Duration", required: true, options: ["< 1 hour", "1-4 hours", "4-12 hours", "12-24 hours", "> 24 hours"] }
+    ]
+  },
+  {
+    id: "energy-bia-2",
+    name: "Transmission and Distribution Impact Assessment",
+    description: "Evaluate impact of transmission/distribution system failures on service delivery",
+    category: "business",
+    sector: "energy",
+    targetAudience: ["internal"],
+    preview: "Service area impact, customer categories, restoration priorities, economic losses",
+    fields: [
+      { id: generateFieldId(2170), type: "text", label: "Transmission/Distribution Asset", required: true },
+      { id: generateFieldId(2171), type: "select", label: "Asset Type", required: true, options: ["Transmission Lines", "Distribution Lines", "Substations", "Transformers", "Switching Equipment"] },
+      { id: generateFieldId(2172), type: "text", label: "Service Area Population", required: true },
+      { id: generateFieldId(2173), type: "checkbox", label: "Customer Categories Affected", required: true, options: ["Residential", "Commercial", "Industrial", "Critical Infrastructure", "Emergency Services"] },
+      { id: generateFieldId(2174), type: "textarea", label: "Economic Impact Assessment", required: true },
+      { id: generateFieldId(2175), type: "textarea", label: "Restoration Priority Criteria", required: true },
+      { id: generateFieldId(2176), type: "text", label: "Estimated Restoration Time", required: true }
+    ]
+  },
+  {
+    id: "energy-bia-3",
+    name: "Renewable Energy System Impact Analysis",
+    description: "Assess impact of renewable energy system disruptions on sustainability goals",
+    category: "business",
+    sector: "energy",
+    targetAudience: ["internal"],
+    preview: "Green energy targets, carbon emissions, regulatory compliance, financial incentives",
+    fields: [
+      { id: generateFieldId(2180), type: "text", label: "Renewable Energy System", required: true },
+      { id: generateFieldId(2181), type: "select", label: "Renewable Type", required: true, options: ["Solar Farm", "Wind Farm", "Hydroelectric", "Geothermal", "Biomass", "Energy Storage"] },
+      { id: generateFieldId(2182), type: "text", label: "Installed Capacity (MW)", required: true },
+      { id: generateFieldId(2183), type: "textarea", label: "Sustainability Goals Impact", required: true },
+      { id: generateFieldId(2184), type: "text", label: "Carbon Emission Increase", required: true },
+      { id: generateFieldId(2185), type: "textarea", label: "Regulatory Compliance Impact", required: true },
+      { id: generateFieldId(2186), type: "text", label: "Financial Incentive Loss", required: false }
+    ]
+  },
+  {
+    id: "energy-bia-4",
+    name: "Energy Trading and Market Operations Impact",
+    description: "Evaluate impact on energy trading operations and market participation",
+    category: "business",
+    sector: "energy",
+    targetAudience: ["internal"],
+    preview: "Trading positions, market obligations, financial exposure, regulatory requirements",
+    fields: [
+      { id: generateFieldId(2190), type: "text", label: "Trading/Market Function", required: true },
+      { id: generateFieldId(2191), type: "checkbox", label: "Market Activities", required: true, options: ["Day-Ahead Trading", "Real-Time Trading", "Capacity Markets", "Ancillary Services", "Renewable Credits"] },
+      { id: generateFieldId(2192), type: "text", label: "Daily Trading Volume (MWh)", required: true },
+      { id: generateFieldId(2193), type: "textarea", label: "Market Obligation Impact", required: true },
+      { id: generateFieldId(2194), type: "text", label: "Financial Exposure Risk", required: true },
+      { id: generateFieldId(2195), type: "select", label: "Regulatory Reporting Impact", required: true, options: ["No Impact", "Delayed Reporting", "Incomplete Data", "Non-Compliance Risk"] },
+      { id: generateFieldId(2196), type: "textarea", label: "Customer Contract Obligations", required: true }
+    ]
+  },
+
+  // Telecom Sector - Business Impact Analysis Forms
+  {
+    id: "telecom-bia-1",
+    name: "Network Service Disruption Analysis",
+    description: "Assess impact of telecommunications network outages on service delivery",
+    category: "business",
+    sector: "telecom",
+    targetAudience: ["internal"],
+    preview: "Service coverage, customer impact, emergency communications, revenue loss",
+    fields: [
+      { id: generateFieldId(2200), type: "text", label: "Network Component/Service", required: true },
+      { id: generateFieldId(2201), type: "select", label: "Service Type", required: true, options: ["Voice Services", "Data/Internet", "Mobile/Cellular", "Emergency Services", "Business Services"] },
+      { id: generateFieldId(2202), type: "text", label: "Customers Affected", required: true },
+      { id: generateFieldId(2203), type: "text", label: "Geographic Coverage Area", required: true },
+      { id: generateFieldId(2204), type: "select", label: "Emergency Services Impact", required: true, options: ["No Impact", "Partial Degradation", "Significant Impact", "Complete Loss"] },
+      { id: generateFieldId(2205), type: "text", label: "Revenue Loss Per Hour", required: true },
+      { id: generateFieldId(2206), type: "textarea", label: "Alternative Service Options", required: true }
+    ]
+  },
+  {
+    id: "telecom-bia-2",
+    name: "Data Center and IT Infrastructure Impact",
+    description: "Evaluate impact of data center and core IT infrastructure failures",
+    category: "business",
+    sector: "telecom",
+    targetAudience: ["internal"],
+    preview: "Service applications, customer data, billing systems, network management",
+    fields: [
+      { id: generateFieldId(2210), type: "text", label: "Data Center/IT System", required: true },
+      { id: generateFieldId(2211), type: "checkbox", label: "Affected Systems", required: true, options: ["Billing Systems", "Customer Management", "Network Management", "Service Provisioning", "Authentication"] },
+      { id: generateFieldId(2212), type: "text", label: "Processing Capacity Impact", required: true },
+      { id: generateFieldId(2213), type: "select", label: "Customer Service Impact", required: true, options: ["No Impact", "Limited Functionality", "Degraded Service", "Major Disruption", "Complete Outage"] },
+      { id: generateFieldId(2214), type: "textarea", label: "Data Backup and Recovery", required: true },
+      { id: generateFieldId(2215), type: "select", label: "Service Restoration Time", required: true, options: ["< 1 hour", "1-4 hours", "4-12 hours", "12-24 hours", "> 24 hours"] },
+      { id: generateFieldId(2216), type: "textarea", label: "Business Continuity Measures", required: true }
+    ]
+  },
+  {
+    id: "telecom-bia-3",
+    name: "Customer Experience and Support Impact",
+    description: "Assess impact on customer experience and support service delivery",
+    category: "business",
+    sector: "telecom",
+    targetAudience: ["internal"],
+    preview: "Support channels, customer satisfaction, service requests, competitive impact",
+    fields: [
+      { id: generateFieldId(2220), type: "text", label: "Customer Support Function", required: true },
+      { id: generateFieldId(2221), type: "checkbox", label: "Support Channels", required: true, options: ["Call Center", "Online Chat", "Mobile App", "Self-Service Portal", "Retail Stores"] },
+      { id: generateFieldId(2222), type: "text", label: "Daily Customer Interactions", required: true },
+      { id: generateFieldId(2223), type: "select", label: "Service Level Impact", required: true, options: ["No Impact", "Increased Wait Times", "Limited Functionality", "Significant Delays", "Service Unavailable"] },
+      { id: generateFieldId(2224), type: "textarea", label: "Customer Satisfaction Impact", required: true },
+      { id: generateFieldId(2225), type: "select", label: "Competitive Advantage Loss", required: true, options: ["None", "Minimal", "Moderate", "Significant", "Severe"] },
+      { id: generateFieldId(2226), type: "textarea", label: "Customer Retention Risk", required: true }
+    ]
+  },
+  {
+    id: "telecom-bia-4",
+    name: "Regulatory Compliance and Reporting Impact",
+    description: "Evaluate impact on telecommunications regulatory compliance and obligations",
+    category: "business",
+    sector: "telecom",
+    targetAudience: ["internal"],
+    preview: "Regulatory requirements, service quality standards, emergency communications, compliance deadlines",
+    fields: [
+      { id: generateFieldId(2230), type: "text", label: "Regulatory Function", required: true },
+      { id: generateFieldId(2231), type: "checkbox", label: "Regulatory Requirements", required: true, options: ["Service Quality Standards", "Emergency Services Compliance", "Consumer Protection", "Universal Service", "Data Privacy"] },
+      { id: generateFieldId(2232), type: "textarea", label: "Critical Compliance Deadlines", required: true },
+      { id: generateFieldId(2233), type: "select", label: "Regulatory Penalty Risk", required: true, options: ["Low", "Medium", "High", "Severe"] },
+      { id: generateFieldId(2234), type: "textarea", label: "Service Quality Impact", required: true },
+      { id: generateFieldId(2235), type: "textarea", label: "Emergency Communications Impact", required: true },
+      { id: generateFieldId(2236), type: "text", label: "License/Authorization Risk", required: false }
+    ]
+  },
+
+  // Startups Sector - Business Impact Analysis Forms
+  {
+    id: "startup-bia-1",
+    name: "Product Development Disruption Analysis",
+    description: "Assess impact of product development interruptions on startup growth and funding",
+    category: "business",
+    sector: "startups",
+    targetAudience: ["internal"],
+    preview: "Development milestones, funding requirements, market position, investor confidence",
+    fields: [
+      { id: generateFieldId(2240), type: "text", label: "Product/Development Area", required: true },
+      { id: generateFieldId(2241), type: "select", label: "Development Stage", required: true, options: ["MVP Development", "Beta Testing", "Product Launch", "Feature Enhancement", "Scaling"] },
+      { id: generateFieldId(2242), type: "textarea", label: "Critical Milestones at Risk", required: true },
+      { id: generateFieldId(2243), type: "select", label: "Funding Timeline Impact", required: true, options: ["No Impact", "Minor Delay", "Moderate Delay", "Significant Delay", "Funding at Risk"] },
+      { id: generateFieldId(2244), type: "textarea", label: "Investor Confidence Impact", required: true },
+      { id: generateFieldId(2245), type: "select", label: "Market Position Risk", required: true, options: ["No Risk", "Low Risk", "Medium Risk", "High Risk", "Critical Risk"] },
+      { id: generateFieldId(2246), type: "textarea", label: "Competitive Advantage Loss", required: true }
+    ]
+  },
+  {
+    id: "startup-bia-2",
+    name: "Customer Acquisition and Retention Impact",
+    description: "Evaluate impact on customer acquisition, retention, and revenue growth",
+    category: "business",
+    sector: "startups",
+    targetAudience: ["internal"],
+    preview: "Customer pipeline, revenue targets, growth metrics, market share",
+    fields: [
+      { id: generateFieldId(2250), type: "text", label: "Customer Function/Channel", required: true },
+      { id: generateFieldId(2251), type: "checkbox", label: "Affected Channels", required: true, options: ["Sales Team", "Marketing Campaigns", "Online Platform", "Partner Channels", "Customer Success"] },
+      { id: generateFieldId(2252), type: "text", label: "Customer Acquisition Rate", required: true },
+      { id: generateFieldId(2253), type: "text", label: "Monthly Revenue Target", required: true },
+      { id: generateFieldId(2254), type: "select", label: "Revenue Growth Impact", required: true, options: ["No Impact", "5-10% Reduction", "10-25% Reduction", "25-50% Reduction", "> 50% Reduction"] },
+      { id: generateFieldId(2255), type: "textarea", label: "Customer Churn Risk", required: true },
+      { id: generateFieldId(2256), type: "textarea", label: "Brand Reputation Impact", required: true }
+    ]
+  },
+  {
+    id: "startup-bia-3",
+    name: "Technology Infrastructure and Operations Impact",
+    description: "Assess impact of technology failures on startup operations and scalability",
+    category: "business",
+    sector: "startups",
+    targetAudience: ["internal"],
+    preview: "Platform availability, user experience, data security, operational efficiency",
+    fields: [
+      { id: generateFieldId(2260), type: "text", label: "Technology System/Platform", required: true },
+      { id: generateFieldId(2261), type: "checkbox", label: "System Components", required: true, options: ["User Platform", "Database Systems", "API Services", "Payment Processing", "Analytics Tools"] },
+      { id: generateFieldId(2262), type: "text", label: "Active Users Affected", required: true },
+      { id: generateFieldId(2263), type: "select", label: "Service Availability Impact", required: true, options: ["Full Availability", "Partial Functionality", "Degraded Performance", "Limited Access", "Complete Outage"] },
+      { id: generateFieldId(2264), type: "textarea", label: "User Experience Impact", required: true },
+      { id: generateFieldId(2265), type: "select", label: "Data Security Risk", required: true, options: ["No Risk", "Low Risk", "Medium Risk", "High Risk", "Critical Risk"] },
+      { id: generateFieldId(2266), type: "textarea", label: "Operational Efficiency Loss", required: true }
+    ]
+  },
+  {
+    id: "startup-bia-4",
+    name: "Financial and Funding Impact Analysis",
+    description: "Evaluate impact on startup financial position and funding prospects",
+    category: "business",
+    sector: "startups",
+    targetAudience: ["internal"],
+    preview: "Cash flow, burn rate, funding rounds, investor relations, financial reporting",
+    fields: [
+      { id: generateFieldId(2270), type: "text", label: "Financial Function/Process", required: true },
+      { id: generateFieldId(2271), type: "checkbox", label: "Financial Areas", required: true, options: ["Revenue Collection", "Expense Management", "Financial Reporting", "Investor Relations", "Funding Processes"] },
+      { id: generateFieldId(2272), type: "text", label: "Monthly Burn Rate", required: true },
+      { id: generateFieldId(2273), type: "text", label: "Current Runway (months)", required: true },
+      { id: generateFieldId(2274), type: "select", label: "Funding Round Impact", required: true, options: ["No Impact", "Minor Delay", "Moderate Delay", "Significant Delay", "Round at Risk"] },
+      { id: generateFieldId(2275), type: "textarea", label: "Cash Flow Disruption", required: true },
+      { id: generateFieldId(2276), type: "textarea", label: "Investor Communication Impact", required: true }
+    ]
+  },
+
+  // SME Sector - Business Impact Analysis Forms
+  {
+    id: "sme-bia-1",
+    name: "Operations and Production Disruption Analysis",
+    description: "Assess impact of operational disruptions on SME production and service delivery",
+    category: "business",
+    sector: "sme",
+    targetAudience: ["internal"],
+    preview: "Production capacity, customer orders, supply chain, employee impact",
+    fields: [
+      { id: generateFieldId(2280), type: "text", label: "Business Operation/Department", required: true },
+      { id: generateFieldId(2281), type: "select", label: "Business Type", required: true, options: ["Manufacturing", "Retail", "Services", "Distribution", "Professional Services"] },
+      { id: generateFieldId(2282), type: "text", label: "Daily Production/Service Capacity", required: true },
+      { id: generateFieldId(2283), type: "text", label: "Customer Orders at Risk", required: true },
+      { id: generateFieldId(2284), type: "textarea", label: "Supply Chain Dependencies", required: true },
+      { id: generateFieldId(2285), type: "text", label: "Employees Affected", required: true },
+      { id: generateFieldId(2286), type: "select", label: "Maximum Tolerable Downtime", required: true, options: ["< 4 hours", "4-8 hours", "1 day", "2-3 days", "> 3 days"] }
+    ]
+  },
+  {
+    id: "sme-bia-2",
+    name: "Customer Relationship and Sales Impact",
+    description: "Evaluate impact on customer relationships, sales, and market position",
+    category: "business",
+    sector: "sme",
+    targetAudience: ["internal"],
+    preview: "Customer service, sales pipeline, market share, competitive position",
+    fields: [
+      { id: generateFieldId(2290), type: "text", label: "Customer/Sales Function", required: true },
+      { id: generateFieldId(2291), type: "checkbox", label: "Affected Areas", required: true, options: ["Customer Service", "Sales Team", "Order Processing", "Customer Support", "Account Management"] },
+      { id: generateFieldId(2292), type: "text", label: "Daily Customer Interactions", required: true },
+      { id: generateFieldId(2293), type: "text", label: "Sales Pipeline Value at Risk", required: true },
+      { id: generateFieldId(2294), type: "textarea", label: "Customer Satisfaction Impact", required: true },
+      { id: generateFieldId(2295), type: "select", label: "Market Share Risk", required: true, options: ["No Risk", "Low Risk", "Medium Risk", "High Risk", "Significant Loss"] },
+      { id: generateFieldId(2296), type: "textarea", label: "Competitive Disadvantage", required: true }
+    ]
+  },
+  {
+    id: "sme-bia-3",
+    name: "Financial and Cash Flow Impact Assessment",
+    description: "Assess impact on SME financial stability and cash flow management",
+    category: "business",
+    sector: "sme",
+    targetAudience: ["internal"],
+    preview: "Revenue loss, cash flow, payment processing, financial obligations",
+    fields: [
+      { id: generateFieldId(2300), type: "text", label: "Financial Process/System", required: true },
+      { id: generateFieldId(2301), type: "checkbox", label: "Financial Functions", required: true, options: ["Revenue Collection", "Payment Processing", "Accounts Payable", "Payroll", "Financial Reporting"] },
+      { id: generateFieldId(2302), type: "text", label: "Daily Revenue at Risk", required: true },
+      { id: generateFieldId(2303), type: "text", label: "Cash Flow Impact", required: true },
+      { id: generateFieldId(2304), type: "textarea", label: "Payment Obligations at Risk", required: true },
+      { id: generateFieldId(2305), type: "select", label: "Financial Stability Impact", required: true, options: ["No Impact", "Minor Strain", "Moderate Impact", "Significant Stress", "Critical Situation"] },
+      { id: generateFieldId(2306), type: "textarea", label: "Loan/Credit Implications", required: false }
+    ]
+  },
+  {
+    id: "sme-bia-4",
+    name: "Regulatory and Compliance Impact Analysis",
+    description: "Evaluate impact on SME regulatory compliance and business licensing",
+    category: "business",
+    sector: "sme",
+    targetAudience: ["internal"],
+    preview: "Business licenses, regulatory requirements, compliance deadlines, industry standards",
+    fields: [
+      { id: generateFieldId(2310), type: "text", label: "Compliance Function/Requirement", required: true },
+      { id: generateFieldId(2311), type: "checkbox", label: "Regulatory Areas", required: true, options: ["Business Licensing", "Industry Regulations", "Environmental Compliance", "Health & Safety", "Tax Obligations"] },
+      { id: generateFieldId(2312), type: "textarea", label: "Critical Compliance Deadlines", required: true },
+      { id: generateFieldId(2313), type: "select", label: "License/Permit Risk", required: true, options: ["No Risk", "Low Risk", "Medium Risk", "High Risk", "License at Risk"] },
+      { id: generateFieldId(2314), type: "textarea", label: "Regulatory Penalty Exposure", required: true },
+      { id: generateFieldId(2315), type: "select", label: "Business Operations Impact", required: true, options: ["No Impact", "Minor Restrictions", "Moderate Limitations", "Significant Constraints", "Operations at Risk"] },
+      { id: generateFieldId(2316), type: "textarea", label: "Industry Standards Compliance", required: false }
+    ]
+  },
+
   // GOVERNMENT SECTOR FORMS (20 forms)
   {
     id: "gov-2",
