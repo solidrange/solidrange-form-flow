@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +16,7 @@ import {
 } from "lucide-react";
 import { Form } from "@/types/form";
 import { toast } from "@/hooks/use-toast";
+import jsPDF from "jspdf";
 
 interface FormSharingOptionsProps {
   form: Form;
@@ -49,11 +51,136 @@ export const FormSharingOptions = ({ form }: FormSharingOptionsProps) => {
   };
 
   const exportToPDF = () => {
-    // PDF export functionality will be implemented here
-    toast({
-      title: "PDF Export",
-      description: "PDF export functionality coming soon.",
-    });
+    try {
+      const doc = new jsPDF();
+      let yPosition = 20;
+
+      // Add form title
+      doc.setFontSize(18);
+      doc.text(form.title || 'Untitled Form', 20, yPosition);
+      yPosition += 15;
+
+      // Add form description
+      if (form.description) {
+        doc.setFontSize(12);
+        const descLines = doc.splitTextToSize(form.description, 170);
+        doc.text(descLines, 20, yPosition);
+        yPosition += descLines.length * 6 + 10;
+      }
+
+      // Add branding info if enabled
+      if (form.settings?.branding?.enabled) {
+        doc.setFontSize(10);
+        doc.text(`Brand: ${form.settings.branding.brandName || 'N/A'}`, 20, yPosition);
+        yPosition += 10;
+      }
+
+      // Add form fields
+      doc.setFontSize(14);
+      doc.text('Form Fields:', 20, yPosition);
+      yPosition += 10;
+
+      form.fields.forEach((field, index) => {
+        // Check if we need a new page
+        if (yPosition > 250) {
+          doc.addPage();
+          yPosition = 20;
+        }
+
+        doc.setFontSize(12);
+        const fieldTitle = `${index + 1}. ${field.label}${field.required ? ' *' : ''}`;
+        doc.text(fieldTitle, 20, yPosition);
+        yPosition += 8;
+
+        // Add field type
+        doc.setFontSize(10);
+        doc.text(`Type: ${field.type}`, 25, yPosition);
+        yPosition += 6;
+
+        // Add placeholder if exists
+        if (field.placeholder) {
+          const placeholderLines = doc.splitTextToSize(`Placeholder: ${field.placeholder}`, 165);
+          doc.text(placeholderLines, 25, yPosition);
+          yPosition += placeholderLines.length * 6;
+        }
+
+        // Add options for select/radio/checkbox fields
+        if (field.options && field.options.length > 0) {
+          doc.text('Options:', 25, yPosition);
+          yPosition += 6;
+          field.options.forEach((option) => {
+            doc.text(`• ${option}`, 30, yPosition);
+            yPosition += 6;
+          });
+        }
+
+        // Add scoring info if enabled
+        if (field.scoring?.enabled) {
+          doc.text(`Max Points: ${field.scoring.maxPoints || 10}`, 25, yPosition);
+          yPosition += 6;
+          if (field.scoring.weightMultiplier && field.scoring.weightMultiplier > 1) {
+            doc.text(`Weight: ${field.scoring.weightMultiplier}x`, 25, yPosition);
+            yPosition += 6;
+          }
+        }
+
+        yPosition += 5; // Space between fields
+      });
+
+      // Add form settings info
+      if (yPosition > 200) {
+        doc.addPage();
+        yPosition = 20;
+      }
+
+      doc.setFontSize(14);
+      doc.text('Form Settings:', 20, yPosition);
+      yPosition += 10;
+
+      doc.setFontSize(10);
+      if (form.settings?.expiration?.enabled) {
+        doc.text(`Expires: ${form.settings.expiration.expirationDate ? new Date(form.settings.expiration.expirationDate).toLocaleDateString() : 'Not set'}`, 20, yPosition);
+        yPosition += 6;
+      }
+      
+      if (form.settings?.scoring?.enabled) {
+        doc.text(`Scoring enabled - Passing score: ${form.settings.scoring.passingScore || 'Not set'}`, 20, yPosition);
+        yPosition += 6;
+      }
+
+      // Add instructions
+      yPosition += 10;
+      doc.setFontSize(12);
+      doc.text('Instructions:', 20, yPosition);
+      yPosition += 8;
+      doc.setFontSize(10);
+      const instructions = [
+        '1. This is a fillable PDF version of the form',
+        '2. Fill in all required fields marked with *',
+        '3. Save the completed form',
+        '4. Submit according to the provided instructions'
+      ];
+      
+      instructions.forEach(instruction => {
+        doc.text(instruction, 20, yPosition);
+        yPosition += 6;
+      });
+
+      // Save the PDF
+      doc.save(`${form.title || 'form'}-fillable.pdf`);
+      
+      toast({
+        title: "PDF Generated",
+        description: "Fillable PDF has been downloaded successfully.",
+      });
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      toast({
+        title: "PDF Generation Failed",
+        description: "Failed to generate PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (

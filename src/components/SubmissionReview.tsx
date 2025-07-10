@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { FormSubmission, Form } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { toast } from "@/hooks/use-toast";
 import { 
   Search, 
   Filter, 
@@ -29,11 +29,15 @@ import {
   MoreHorizontal,
   ChevronDown,
   Users,
-  Globe
+  Globe,
+  Printer
 } from "lucide-react";
 import { SubmissionsList } from "./submissions/SubmissionsList";
 import { SubmissionDetails } from "./submissions/SubmissionDetails";
 import { SubmissionActions } from "./submissions/SubmissionActions";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import * as XLSX from "xlsx";
 
 interface SubmissionReviewProps {
   submissions: FormSubmission[];
@@ -242,6 +246,214 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
 
   const handleResendForm = (submissionId: string, comments: string) => {
     console.log('Resending form to submission:', submissionId, 'with comments:', comments);
+  };
+
+  const exportToPDF = (submission: FormSubmission) => {
+    try {
+      const doc = new jsPDF();
+      let yPosition = 20;
+
+      // Add title
+      doc.setFontSize(18);
+      doc.text(`Submission Report - ${form.title}`, 20, yPosition);
+      yPosition += 20;
+
+      // Add submission details
+      doc.setFontSize(12);
+      doc.text(`Submitted by: ${submission.submitterName || 'N/A'}`, 20, yPosition);
+      yPosition += 8;
+      doc.text(`Email: ${submission.submitterEmail || 'N/A'}`, 20, yPosition);
+      yPosition += 8;
+      doc.text(`Company: ${submission.companyName || 'N/A'}`, 20, yPosition);
+      yPosition += 8;
+      doc.text(`Date: ${new Date(submission.submittedAt).toLocaleDateString()}`, 20, yPosition);
+      yPosition += 8;
+      doc.text(`Status: ${submission.status}`, 20, yPosition);
+      yPosition += 15;
+
+      // Add responses
+      doc.setFontSize(14);
+      doc.text('Responses:', 20, yPosition);
+      yPosition += 10;
+
+      doc.setFontSize(10);
+      const responseData = Object.entries(submission.responses).map(([fieldId, value]) => {
+        const field = form.fields.find(f => f.id === fieldId);
+        const fieldLabel = field?.label || fieldId;
+        const displayValue = Array.isArray(value) ? value.join(', ') : String(value || 'N/A');
+        return [fieldLabel, displayValue];
+      });
+
+      autoTable(doc, {
+        head: [['Field', 'Response']],
+        body: responseData,
+        startY: yPosition,
+        margin: { left: 20 },
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [66, 139, 202] }
+      });
+
+      // Save the PDF
+      doc.save(`submission-${submission.id}.pdf`);
+      
+      toast({
+        title: "Export Successful",
+        description: "Submission exported to PDF successfully.",
+      });
+    } catch (error) {
+      console.error('Error exporting to PDF:', error);
+      toast({
+        title: "Export Failed",
+        description: "Failed to export submission. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const exportToExcel = (submissionsToExport: FormSubmission[]) => {
+    try {
+      const workbook = XLSX.utils.book_new();
+      
+      // Prepare data for Excel
+      const excelData = submissionsToExport.map(submission => {
+        const row: any = {
+          'Submission ID': submission.id,
+          'Submitter Name': submission.submitterName || 'N/A',
+          'Submitter Email': submission.submitterEmail || 'N/A',
+          'Company': submission.companyName || 'N/A',
+          'Status': submission.status,
+          'Submitted Date': new Date(submission.submittedAt).toLocaleDateString(),
+          'Score': submission.score?.percentage || 'N/A',
+          'Risk Level': submission.score?.riskLevel || 'N/A',
+        };
+
+        // Add form responses
+        Object.entries(submission.responses).forEach(([fieldId, value]) => {
+          const field = form.fields.find(f => f.id === fieldId);
+          const fieldLabel = field?.label || fieldId;
+          row[fieldLabel] = Array.isArray(value) ? value.join(', ') : String(value || '');
+        });
+
+        return row;
+      });
+
+      const worksheet = XLSX.utils.json_to_sheet(excelData);
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Submissions');
+      
+      // Save the Excel file
+      XLSX.writeFile(workbook, `${form.title}-submissions.xlsx`);
+      
+      toast({
+        title: "Export Successful",
+        description: `${submissionsToExport.length} submissions exported to Excel successfully.`,
+      });
+    } catch (error) {
+      console.error('Error exporting to Excel:', error);
+      toast({
+        title: "Export Failed",
+        description: "Failed to export submissions. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const printSubmission = (submission: FormSubmission) => {
+    try {
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        toast({
+          title: "Print Failed",
+          description: "Please allow popups to print submissions.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>Submission - ${form.title}</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { border-bottom: 2px solid #333; padding-bottom: 10px; margin-bottom: 20px; }
+            .field { margin-bottom: 15px; }
+            .label { font-weight: bold; color: #333; }
+            .value { margin-top: 5px; padding: 8px; background-color: #f5f5f5; border-radius: 4px; }
+            .status { padding: 4px 8px; border-radius: 4px; color: white; font-size: 12px; }
+            .status.approved { background-color: #10b981; }
+            .status.rejected { background-color: #ef4444; }
+            .status.under_review { background-color: #f59e0b; }
+            .status.submitted { background-color: #6b7280; }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>Submission Report</h1>
+            <h2>${form.title}</h2>
+          </div>
+          
+          <div class="field">
+            <div class="label">Submitted by:</div>
+            <div class="value">${submission.submitterName || 'N/A'}</div>
+          </div>
+          
+          <div class="field">
+            <div class="label">Email:</div>
+            <div class="value">${submission.submitterEmail || 'N/A'}</div>
+          </div>
+          
+          <div class="field">
+            <div class="label">Company:</div>
+            <div class="value">${submission.companyName || 'N/A'}</div>
+          </div>
+          
+          <div class="field">
+            <div class="label">Submission Date:</div>
+            <div class="value">${new Date(submission.submittedAt).toLocaleDateString()}</div>
+          </div>
+          
+          <div class="field">
+            <div class="label">Status:</div>
+            <div class="value">
+              <span class="status ${submission.status}">${submission.status.replace('_', ' ').toUpperCase()}</span>
+            </div>
+          </div>
+          
+          ${submission.score ? `
+          <div class="field">
+            <div class="label">Score:</div>
+            <div class="value">${submission.score.percentage}% (${submission.score.riskLevel})</div>
+          </div>
+          ` : ''}
+          
+          <h3>Responses:</h3>
+          ${Object.entries(submission.responses).map(([fieldId, value]) => {
+            const field = form.fields.find(f => f.id === fieldId);
+            const fieldLabel = field?.label || fieldId;
+            const displayValue = Array.isArray(value) ? value.join(', ') : String(value || 'N/A');
+            return `
+              <div class="field">
+                <div class="label">${fieldLabel}:</div>
+                <div class="value">${displayValue}</div>
+              </div>
+            `;
+          }).join('')}
+        </body>
+        </html>
+      `;
+
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.print();
+    } catch (error) {
+      console.error('Error printing submission:', error);
+      toast({
+        title: "Print Failed",
+        description: "Failed to print submission. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -454,12 +666,31 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
                     Review Submission
                   </CardTitle>
                   <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto">
-                    <Button variant="outline" size="sm" className="text-xs px-2 py-1 whitespace-nowrap hover:scale-105 transition-transform duration-200">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => exportToPDF(selectedSub)}
+                      className="text-xs px-2 py-1 whitespace-nowrap hover:scale-105 transition-transform duration-200"
+                    >
                       <Download className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="hidden sm:inline ml-1">Export</span>
+                      <span className="hidden sm:inline ml-1">PDF</span>
                     </Button>
-                    <Button variant="outline" size="sm" className="text-xs px-2 py-1 whitespace-nowrap hover:scale-105 transition-transform duration-200">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => exportToExcel([selectedSub])}
+                      className="text-xs px-2 py-1 whitespace-nowrap hover:scale-105 transition-transform duration-200"
+                    >
                       <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden sm:inline ml-1">Excel</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => printSubmission(selectedSub)}
+                      className="text-xs px-2 py-1 whitespace-nowrap hover:scale-105 transition-transform duration-200"
+                    >
+                      <Printer className="h-3 w-3 sm:h-4 sm:w-4" />
                       <span className="hidden sm:inline ml-1">Print</span>
                     </Button>
                   </div>
@@ -485,6 +716,25 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
           )}
         </div>
       </div>
+
+      {/* Bulk Actions */}
+      {sortedSubmissions.length > 0 && (
+        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+          <span className="text-sm text-gray-600">
+            {sortedSubmissions.length} submission{sortedSubmissions.length !== 1 ? 's' : ''} found
+          </span>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => exportToExcel(sortedSubmissions)}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export All to Excel
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

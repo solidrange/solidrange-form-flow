@@ -1,3 +1,4 @@
+
 import { FormField, Form, DocumentAttachment } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, Clock, Target, Download, FileText } from "lucide-react";
+import { useBrand } from "@/contexts/BrandContext";
 
 interface FormPreviewProps {
   formTitle: string;
@@ -24,6 +26,8 @@ export const FormPreview = ({
   formSettings,
   attachments = []
 }: FormPreviewProps) => {
+  const { brand } = useBrand();
+  
   const isExpired = formSettings?.expiration?.enabled && 
     formSettings.expiration.expirationDate && 
     new Date() > new Date(formSettings.expiration.expirationDate);
@@ -52,6 +56,12 @@ export const FormPreview = ({
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
+  // Get branding settings - prioritize form-specific branding over global
+  const brandingEnabled = formSettings?.branding?.enabled ?? true;
+  const brandName = formSettings?.branding?.brandName || brand.name;
+  const brandLogo = formSettings?.branding?.logoUrl || brand.logo;
+  const brandColors = formSettings?.branding?.colors || brand.colors;
+
   if (isExpired) {
     return (
       <div className="max-w-2xl mx-auto">
@@ -70,11 +80,37 @@ export const FormPreview = ({
 
   return (
     <div className="max-w-2xl mx-auto">
-      <Card>
+      <Card style={brandingEnabled ? {
+        '--brand-primary': `hsl(${brandColors.primary.main})`,
+        '--brand-secondary': `hsl(${brandColors.secondary.main})`,
+      } as React.CSSProperties : {}}>
         <CardHeader>
+          {/* Branding Section */}
+          {brandingEnabled && (brandLogo || brandName) && (
+            <div className="flex items-center gap-3 mb-4 pb-4 border-b">
+              {brandLogo && (
+                <img 
+                  src={brandLogo} 
+                  alt={brandName || 'Brand Logo'} 
+                  className="h-12 w-auto object-contain"
+                />
+              )}
+              <div>
+                <h3 className="font-semibold text-lg" style={{ color: `hsl(${brandColors.primary.main})` }}>
+                  {brandName}
+                </h3>
+                {brand.tagline && (
+                  <p className="text-sm text-gray-600">{brand.tagline}</p>
+                )}
+              </div>
+            </div>
+          )}
+
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <CardTitle className="text-2xl">{formTitle || "Untitled Form"}</CardTitle>
+              <CardTitle className="text-2xl" style={brandingEnabled ? { color: `hsl(${brandColors.primary.main})` } : {}}>
+                {formTitle || "Untitled Form"}
+              </CardTitle>
               {formDescription && (
                 <p className="text-gray-600 mt-2">{formDescription}</p>
               )}
@@ -168,6 +204,11 @@ export const FormPreview = ({
                   type={field.type}
                   placeholder={field.placeholder}
                   required={field.required}
+                  style={brandingEnabled ? { 
+                    '--ring-offset-shadow': 'none',
+                    '--ring-shadow': `0 0 0 2px hsl(${brandColors.primary.main} / 0.2)`,
+                    borderColor: `hsl(${brandColors.primary.main})` 
+                  } as React.CSSProperties : {}}
                 />
               ) : field.type === 'textarea' ? (
                 <Textarea
@@ -175,12 +216,18 @@ export const FormPreview = ({
                   placeholder={field.placeholder}
                   required={field.required}
                   rows={3}
+                  style={brandingEnabled ? { 
+                    borderColor: `hsl(${brandColors.primary.main})` 
+                  } as React.CSSProperties : {}}
                 />
               ) : field.type === 'select' ? (
                 <select
                   id={field.id}
                   required={field.required}
                   className="w-full p-2 border border-gray-300 rounded-md"
+                  style={brandingEnabled ? { 
+                    borderColor: `hsl(${brandColors.primary.main})` 
+                  } as React.CSSProperties : {}}
                 >
                   <option value="">Select an option</option>
                   {field.options?.map((option, idx) => (
@@ -223,12 +270,18 @@ export const FormPreview = ({
                   id={field.id}
                   type="date"
                   required={field.required}
+                  style={brandingEnabled ? { 
+                    borderColor: `hsl(${brandColors.primary.main})` 
+                  } as React.CSSProperties : {}}
                 />
               ) : field.type === 'file' ? (
                 <Input
                   id={field.id}
                   type="file"
                   required={field.required}
+                  style={brandingEnabled ? { 
+                    borderColor: `hsl(${brandColors.primary.main})` 
+                  } as React.CSSProperties : {}}
                 />
               ) : field.type === 'rating' ? (
                 <div className="flex gap-1">
@@ -266,7 +319,14 @@ export const FormPreview = ({
                 </div>
               )}
               
-              <Button type="submit" className="w-full">
+              <Button 
+                type="submit" 
+                className="w-full"
+                style={brandingEnabled ? {
+                  backgroundColor: `hsl(${brandColors.primary.main})`,
+                  borderColor: `hsl(${brandColors.primary.main})`,
+                } as React.CSSProperties : {}}
+              >
                 Submit Form
               </Button>
             </div>
