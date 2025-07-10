@@ -23,7 +23,8 @@
  */
 
 import { useState } from "react";
-import { FormField, DocumentAttachment } from "@/types/form";    // Data type definitions
+import { FormField, DocumentAttachment, Form } from "@/types/form";    // Data type definitions
+import { SettingsPanel } from "./SettingsPanel";       // Settings configuration panel
 import { FieldPalette } from "./FieldPalette";     // Left panel: Available form fields
 import { FieldEditor } from "./FieldEditor";       // Right panel: Field configuration
 import { FormCanvas } from "./FormCanvas";         // Center panel: Form preview and editing
@@ -54,6 +55,7 @@ interface FormBuilderProps {
   formFields: FormField[];           // All fields currently in the form
   formTitle: string;                 // Title of the form being built
   formDescription: string;           // Description of what the form is for
+  formSettings?: any;                // Form settings
   
   // Functions to modify the form (callbacks to parent component)
   onAddField: (field: FormField) => void;                              // Add a new field
@@ -62,6 +64,7 @@ interface FormBuilderProps {
   onUpdateTitle: (title: string) => void;                              // Change form title
   onUpdateDescription: (description: string) => void;                  // Change form description
   onReorderFields: (dragIndex: number, hoverIndex: number) => void;    // Rearrange field order
+  onUpdateSettings?: (settings: any) => void;                         // Update form settings
   
   // File attachment settings (optional)
   attachments?: DocumentAttachment[];                    // Currently attached files
@@ -97,12 +100,14 @@ export const FormBuilder = ({
   formFields,              // Current list of fields in the form
   formTitle,               // Current form title
   formDescription,         // Current form description
+  formSettings = {},       // Current form settings
   onAddField,              // Function to call when adding a new field
   onUpdateField,           // Function to call when modifying a field
   onRemoveField,           // Function to call when removing a field
   onUpdateTitle,           // Function to call when changing the title
   onUpdateDescription,     // Function to call when changing the description
   onReorderFields,         // Function to call when rearranging fields
+  onUpdateSettings = () => {}, // Function to call when updating settings
   attachments = [],        // List of attached files (default: empty)
   onUpdateAttachments = () => {},  // Function to call when files change (default: do nothing)
   allowedFileTypes = ['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png'],  // Allowed file types
@@ -449,11 +454,59 @@ export const FormBuilder = ({
 
         {/* Field Editor - Right Sidebar */}
         <div className="col-span-3 animate-fade-in">
-          <FieldEditor
-            selectedField={selectedField ? formFields.find(f => f.id === selectedField) : null}
-            onUpdateField={safeOnUpdateField}
-            readOnly={isPublished}
-          />
+          <Tabs value={selectedField ? "field-editor" : "settings"} className="h-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="field-editor" disabled={!selectedField}>
+                Field Editor
+              </TabsTrigger>
+              <TabsTrigger value="settings">
+                Settings
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="field-editor" className="mt-4 h-full">
+              <FieldEditor
+                selectedField={selectedField ? formFields.find(f => f.id === selectedField) : null}
+                onUpdateField={safeOnUpdateField}
+                readOnly={isPublished}
+              />
+            </TabsContent>
+            <TabsContent value="settings" className="mt-4 h-full">
+              <SettingsPanel
+                form={{
+                  id: "current",
+                  title: formTitle,
+                  description: formDescription,
+                  fields: formFields,
+                  settings: formSettings,
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
+                  status: isPublished ? 'published' : 'draft',
+                  submissions: 0,
+                  analytics: {
+                    views: 0,
+                    submissions: 0,
+                    completionRate: 0,
+                    emailsSent: 0,
+                    emailsCompleted: 0,
+                    averageCompletionTime: 0,
+                    dropoffRate: 0
+                  }
+                }}
+                onUpdate={(form) => {
+                  onUpdateSettings?.(form.settings);
+                  // Update fields if they were modified in settings
+                  if (JSON.stringify(form.fields) !== JSON.stringify(formFields)) {
+                    form.fields.forEach((field) => {
+                      const existingField = formFields.find(f => f.id === field.id);
+                      if (!existingField || JSON.stringify(field) !== JSON.stringify(existingField)) {
+                        onUpdateField(field.id, field);
+                      }
+                    });
+                  }
+                }}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
 

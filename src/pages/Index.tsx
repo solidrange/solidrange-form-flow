@@ -950,12 +950,14 @@ const Index = () => {
                   formFields={formFields}
                   formTitle={formTitle}
                   formDescription={formDescription}
+                  formSettings={formSettings}
                   onAddField={addField}
                   onUpdateField={updateField}
                   onRemoveField={removeField}
                   onUpdateTitle={setFormTitle}
                   onUpdateDescription={setFormDescription}
                   onReorderFields={reorderFields}
+                  onUpdateSettings={updateFormSettings}
                   attachments={formAttachments}
                   onUpdateAttachments={setFormAttachments}
                   allowedFileTypes={formSettings.documents?.allowedTypes || ['pdf', 'doc', 'docx']}
