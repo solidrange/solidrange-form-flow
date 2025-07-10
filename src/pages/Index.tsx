@@ -44,6 +44,8 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { FormField, FormTemplate, Form, EmailRecipient, DocumentAttachment } from "@/types/form";
 import { toast } from "@/hooks/use-toast";
 import { sampleSubmissions } from "@/data/sampleSubmissions";
+import { BrandLogo } from "@/components/BrandLogo";
+import { BrandSettings } from "@/components/BrandSettings";
 
 const Index = () => {
   // Tab navigation state
@@ -519,16 +521,13 @@ const Index = () => {
       <div className="bg-white border-b shadow-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
           <div className="flex items-center justify-between h-14 sm:h-16">
-            {/* Logo - Responsive */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className="w-7 h-7 sm:w-8 sm:h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-xs sm:text-sm">SF</span>
-              </div>
-              <h1 className="text-sm sm:text-lg lg:text-xl font-semibold text-gray-900 truncate">
-                <span className="hidden sm:inline">Solidrange Form Builder</span>
-                <span className="sm:hidden">Form Builder</span>
-              </h1>
-            </div>
+            {/* Brand Logo - Responsive */}
+            <BrandLogo 
+              size="md" 
+              showText={true} 
+              className="cursor-pointer"
+              onClick={() => setActiveTab("dashboard")}
+            />
             
             
             {/* Quick Share Button for Published Forms */}

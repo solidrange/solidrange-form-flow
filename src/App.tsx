@@ -26,6 +26,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";    // Hover help text
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";  // Data fetching system
 import { BrowserRouter, Routes, Route } from "react-router-dom";  // Page navigation system
 import { ThemeProvider } from "@/contexts/ThemeContext";  // Light/dark theme system
+import { BrandProvider } from "@/contexts/BrandContext";  // Brand identity system
 import Index from "./pages/Index";      // Main Form Builder page
 import NotFound from "./pages/NotFound"; // 404 error page
 
@@ -46,8 +47,9 @@ const queryClient = new QueryClient();
  */
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <TooltipProvider>
+    <BrandProvider>
+      <ThemeProvider>
+        <TooltipProvider>
         <div className="relative min-h-screen">
           {/* Notification systems - these show popup messages to users */}
           <Toaster />
@@ -67,6 +69,7 @@ const App: React.FC = () => (
         </div>
       </TooltipProvider>
     </ThemeProvider>
+  </BrandProvider>
   </QueryClientProvider>
 );
 

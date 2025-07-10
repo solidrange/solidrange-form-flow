@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { WeightageAndScoringSettings } from "./WeightageAndScoringSettings";
+import { BrandSettings } from "./BrandSettings";
 import { useTheme } from "@/contexts/ThemeContext";
 
 interface SettingsPanelProps {
@@ -247,6 +248,16 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
               </p>
             </div>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Brand Identity Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Brand Identity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <BrandSettings />
         </CardContent>
       </Card>
 

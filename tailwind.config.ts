@@ -43,6 +43,14 @@ export default {
 				dm: ['DM Sans', 'system-ui', 'sans-serif'],
 			},
 			colors: {
+				// Brand identity colors
+				'brand-primary': 'hsl(var(--brand-primary))',
+				'brand-primary-light': 'hsl(var(--brand-primary-light))',
+				'brand-primary-dark': 'hsl(var(--brand-primary-dark))',
+				'brand-secondary': 'hsl(var(--brand-secondary))',
+				'brand-secondary-light': 'hsl(var(--brand-secondary-light))',
+				'brand-secondary-dark': 'hsl(var(--brand-secondary-dark))',
+				
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

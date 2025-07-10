@@ -6,6 +6,14 @@
 
 @layer base {
   :root {
+    /* Brand identity colors - will be updated by BrandProvider */
+    --brand-primary: 208 100% 47%;
+    --brand-primary-light: 210 100% 70%;
+    --brand-primary-dark: 208 100% 35%;
+    --brand-secondary: 262 83% 58%;
+    --brand-secondary-light: 262 83% 75%;
+    --brand-secondary-dark: 262 83% 45%;
+    
     /* Light theme - High contrast and accessibility focused */
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
