@@ -181,6 +181,36 @@ export interface FormSettings {
   customCss?: string;                    // Custom styling code for advanced users
   
   /**
+   * Branding Settings
+   * =================
+   * 
+   * Controls the visual branding of the form including logo and colors.
+   * 
+   * Business Context:
+   * Organizations want their forms to reflect their brand identity.
+   * This includes showing their logo and using their brand colors.
+   */
+  branding?: {
+    enabled: boolean;              // Whether to show branding on this form
+    showLogo: boolean;             // Whether to display the organization logo
+    showBrandColors: boolean;      // Whether to apply brand color scheme
+    brandName?: string;            // Organization name to display
+    logo?: string;                 // Logo image URL or base64 data
+    colors?: {                     // Brand color scheme
+      primary: {
+        main: string;
+        light: string;
+        dark: string;
+      };
+      secondary: {
+        main: string;
+        light: string;
+        dark: string;
+      };
+    };
+  };
+  
+  /**
    * Scoring Configuration
    * =====================
    * 

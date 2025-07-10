@@ -74,6 +74,25 @@ const Index = () => {
     requireLogin: false,
     showProgressBar: true,
     theme: 'light',
+    branding: {
+      enabled: true,
+      showLogo: true,
+      showBrandColors: true,
+      brandName: 'FormFlow',
+      logo: null,
+      colors: {
+        primary: {
+          main: '208 100% 47%',
+          light: '210 100% 70%',
+          dark: '208 100% 35%'
+        },
+        secondary: {
+          main: '262 83% 58%',
+          light: '262 83% 75%',
+          dark: '262 83% 45%'
+        }
+      }
+    },
     scoring: {
       enabled: false,
       maxTotalPoints: 100,
@@ -201,6 +220,25 @@ const Index = () => {
       requireLogin: false,
       showProgressBar: true,
       theme: 'light',
+      branding: {
+        enabled: true,
+        showLogo: true,
+        showBrandColors: true,
+        brandName: 'FormFlow',
+        logo: null,
+        colors: {
+          primary: {
+            main: '208 100% 47%',
+            light: '210 100% 70%',
+            dark: '208 100% 35%'
+          },
+          secondary: {
+            main: '262 83% 58%',
+            light: '262 83% 75%',
+            dark: '262 83% 45%'
+          }
+        }
+      },
       scoring: {
         enabled: false,
         maxTotalPoints: 100,
@@ -502,26 +540,70 @@ const Index = () => {
     }));
     setFormFields(fieldsWithIds);
     
-    // Enable scoring for vendor risk templates
-    if (template.category === 'vendor-risk') {
-      setFormSettings(prev => ({
-        ...prev,
-        scoring: {
-          ...prev.scoring!,
-          enabled: true,
-          riskThresholds: {
-            low: 80,
-            medium: 60,
-            high: 40
+    // Reset to default settings with branding enabled
+    setFormSettings({
+      allowMultipleSubmissions: false,
+      requireLogin: false,
+      showProgressBar: true,
+      theme: 'light',
+      branding: {
+        enabled: true,
+        showLogo: true,
+        showBrandColors: true,
+        brandName: 'FormFlow',
+        logo: null,
+        colors: {
+          primary: {
+            main: '208 100% 47%',
+            light: '210 100% 70%',
+            dark: '208 100% 35%'
+          },
+          secondary: {
+            main: '262 83% 58%',
+            light: '262 83% 75%',
+            dark: '262 83% 45%'
           }
         }
-      }));
-    }
+      },
+      scoring: {
+        enabled: template.category === 'vendor-risk', // Enable scoring for vendor risk templates
+        maxTotalPoints: 100,
+        showScoreToUser: false,
+        passingScore: 70,
+        riskThresholds: {
+          low: 80,
+          medium: 60,
+          high: 40
+        }
+      },
+      expiration: {
+        enabled: false
+      },
+      emailDistribution: {
+        enabled: false,
+        recipients: [],
+        reminderEnabled: true,
+        reminderIntervalDays: 7,
+        maxReminders: 3
+      },
+      approval: {
+        enabled: false,
+        requireApproval: false,
+        approvers: []
+      },
+      documents: {
+        enabled: false,
+        allowedTypes: ['pdf', 'doc', 'docx'],
+        maxSize: 10,
+        requiredDocuments: [],
+        allowUserUploads: true
+      }
+    });
     
     setActiveBuildTab("builder");
     toast({
       title: "Template Applied",
-      description: `${template.name} template has been applied to your form.`,
+      description: `${template.name} template has been applied to your form with default branding.`,
     });
   };
 

@@ -9,6 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { WeightageAndScoringSettings } from "./WeightageAndScoringSettings";
+import { Badge } from "@/components/ui/badge";
+import { Upload, Palette, X, Eye } from "lucide-react";
+import { useBrand } from "@/contexts/BrandContext";
+import { BrandLogo } from "./BrandLogo";
+import { toast } from "@/hooks/use-toast";
 
 import { useTheme } from "@/contexts/ThemeContext";
 
@@ -19,10 +24,12 @@ interface SettingsPanelProps {
 
 export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
   const { theme: globalTheme, setTheme } = useTheme();
+  const { brand } = useBrand();
   const [isExpirationEnabled, setIsExpirationEnabled] = useState(form.settings.expiration?.enabled || false);
   const [isEmailDistributionEnabled, setIsEmailDistributionEnabled] = useState(form.settings.emailDistribution?.enabled || false);
   const [isApprovalEnabled, setIsApprovalEnabled] = useState(form.settings.approval?.enabled || false);
   const [isDocumentsEnabled, setIsDocumentsEnabled] = useState(form.settings.documents?.enabled || false);
+  const [isBrandingEnabled, setIsBrandingEnabled] = useState(form.settings.branding?.enabled ?? true);
 
   const handleSettingChange = (field: string, value: any) => {
     onUpdate({
@@ -158,6 +165,63 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
     }
   };
 
+  // Branding handler functions
+  const handleBrandingChange = (field: string, value: any) => {
+    const currentBranding = form.settings.branding || {
+      enabled: true,
+      showLogo: true,
+      showBrandColors: true,
+      brandName: brand.name,
+      logo: brand.logo,
+      colors: brand.colors
+    };
+
+    onUpdate({
+      ...form,
+      settings: {
+        ...form.settings,
+        branding: {
+          ...currentBranding,
+          [field]: value
+        }
+      }
+    });
+  };
+
+  const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const logoUrl = e.target?.result as string;
+        handleBrandingChange('logo', logoUrl);
+        toast({
+          title: "Logo Updated",
+          description: "Form logo has been uploaded successfully.",
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveLogo = () => {
+    handleBrandingChange('logo', null);
+    toast({
+      title: "Logo Removed",
+      description: "Form logo has been removed.",
+    });
+  };
+
+  const handleUseBrandDefaults = () => {
+    handleBrandingChange('brandName', brand.name);
+    handleBrandingChange('logo', brand.logo);
+    handleBrandingChange('colors', brand.colors);
+    toast({
+      title: "Brand Applied",
+      description: "Global brand settings have been applied to this form.",
+    });
+  };
+
   return (
     <div className="space-y-6">
       {/* Basic Settings */}
@@ -243,6 +307,185 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
                 Add custom CSS to style your form
               </p>
             </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Branding Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Palette className="h-5 w-5" />
+            Form Branding
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {/* Enable branding toggle */}
+          <div className="flex items-center justify-between">
+            <div>
+              <Label>Enable Branding</Label>
+              <p className="text-sm text-gray-500">Show your organization's branding on this form</p>
+            </div>
+            <Switch
+              checked={form.settings.branding?.enabled ?? true}
+              onCheckedChange={(checked) => {
+                setIsBrandingEnabled(checked);
+                handleBrandingChange('enabled', checked);
+              }}
+            />
+          </div>
+
+          {/* Branding configuration options */}
+          {isBrandingEnabled && (
+            <>
+              {/* Brand Preview */}
+              <div>
+                <Label className="flex items-center gap-2">
+                  <Eye className="h-4 w-4" />
+                  Preview
+                </Label>
+                <div className="mt-2 p-4 bg-muted/30 rounded-lg border flex items-center justify-center">
+                  <div className="flex items-center gap-3">
+                    {form.settings.branding?.logo && (
+                      <img 
+                        src={form.settings.branding.logo} 
+                        alt="Form Logo"
+                        className="h-8 w-8 object-contain"
+                      />
+                    )}
+                    <span className="font-medium text-sm">
+                      {form.settings.branding?.brandName || 'FormFlow'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Use Global Brand Settings */}
+              <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-sm font-medium text-blue-900">Use Global Brand</Label>
+                    <p className="text-xs text-blue-700">Apply your global brand settings to this form</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleUseBrandDefaults}
+                    className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                  >
+                    Apply
+                  </Button>
+                </div>
+              </div>
+
+              {/* Show logo toggle */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Show Logo</Label>
+                  <p className="text-sm text-gray-500">Display logo on the form</p>
+                </div>
+                <Switch
+                  checked={form.settings.branding?.showLogo ?? true}
+                  onCheckedChange={(checked) => handleBrandingChange('showLogo', checked)}
+                />
+              </div>
+
+              {/* Brand name */}
+              <div>
+                <Label>Brand Name</Label>
+                <Input
+                  value={form.settings.branding?.brandName || ''}
+                  onChange={(e) => handleBrandingChange('brandName', e.target.value)}
+                  placeholder="Enter organization name"
+                  className="mt-1"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Organization name to display on the form
+                </p>
+              </div>
+
+              {/* Logo upload */}
+              {form.settings.branding?.showLogo && (
+                <div>
+                  <Label className="flex items-center gap-2">
+                    <Upload className="h-4 w-4" />
+                    Logo
+                  </Label>
+                  <div className="flex items-center gap-3 mt-2">
+                    <div className="flex-1">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoUpload}
+                        className="cursor-pointer"
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Upload PNG, JPG, or SVG files. Recommended size: 200x200px
+                      </p>
+                    </div>
+                    {form.settings.branding?.logo && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleRemoveLogo}
+                        className="flex items-center gap-2"
+                      >
+                        <X className="h-4 w-4" />
+                        Remove
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Show brand colors toggle */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label>Apply Brand Colors</Label>
+                  <p className="text-sm text-gray-500">Use your brand colors on the form</p>
+                </div>
+                <Switch
+                  checked={form.settings.branding?.showBrandColors ?? true}
+                  onCheckedChange={(checked) => handleBrandingChange('showBrandColors', checked)}
+                />
+              </div>
+
+              {/* Color preview */}
+              {form.settings.branding?.showBrandColors && form.settings.branding?.colors && (
+                <div>
+                  <Label>Brand Colors</Label>
+                  <div className="grid grid-cols-2 gap-3 mt-2">
+                    <div className="space-y-1">
+                      <span className="text-xs text-gray-600">Primary</span>
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-6 h-6 rounded border"
+                          style={{ backgroundColor: `hsl(${form.settings.branding.colors.primary.main})` }}
+                        />
+                        <Badge variant="outline" className="text-xs">
+                          {form.settings.branding.colors.primary.main}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="space-y-1">
+                      <span className="text-xs text-gray-600">Secondary</span>
+                      <div className="flex items-center gap-2">
+                        <div 
+                          className="w-6 h-6 rounded border"
+                          style={{ backgroundColor: `hsl(${form.settings.branding.colors.secondary.main})` }}
+                        />
+                        <Badge variant="outline" className="text-xs">
+                          {form.settings.branding.colors.secondary.main}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2">
+                    Colors are inherited from global brand settings. Change them in Global Settings → Brand.
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </CardContent>
       </Card>
