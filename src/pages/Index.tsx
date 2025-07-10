@@ -7,7 +7,6 @@ import Analytics from "@/components/Analytics";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { ReportGeneration } from "@/components/ReportGeneration";
-import { useFormStatus } from "@/hooks/useFormStatus";
 import { 
   Settings, 
   BarChart3, 
@@ -69,9 +68,6 @@ const Index = () => {
   const [publishedForms, setPublishedForms] = useState<Form[]>([]);
   const [currentFormId, setCurrentFormId] = useState<string | null>(null);
   
-  // Form status hook for managing published/draft state
-  const { status, isPublished, isDraft, publishForm, setToDraft } = useFormStatus();
-  
   // Form settings with comprehensive defaults
   const [formSettings, setFormSettings] = useState<Form['settings']>({
     allowMultipleSubmissions: false,
@@ -115,6 +111,37 @@ const Index = () => {
 
   // Sample submissions for testing
   const [submissions] = useState(sampleSubmissions);
+
+  /**
+   * Get the current form's status
+   */
+  const getCurrentFormStatus = (): 'draft' | 'published' | null => {
+    if (!currentFormId) return null;
+    
+    const draftForm = savedDrafts.find(form => form.id === currentFormId);
+    if (draftForm) return 'draft';
+    
+    const publishedForm = publishedForms.find(form => form.id === currentFormId);
+    if (publishedForm) return 'published';
+    
+    return null;
+  };
+
+  /**
+   * Check if current form exists in published forms
+   */
+  const currentFormIsPublished = (): boolean => {
+    if (!currentFormId) return false;
+    return publishedForms.some(form => form.id === currentFormId);
+  };
+
+  /**
+   * Check if current form is in draft state
+   */
+  const currentFormIsDraft = (): boolean => {
+    if (!currentFormId) return true; // New forms are considered drafts
+    return savedDrafts.some(form => form.id === currentFormId);
+  };
 
   /**
    * Add a new field to the current form
@@ -169,8 +196,46 @@ const Index = () => {
     setFormCategory("");
     setFormTargetAudience("");
     setFormAttachments([]);
+    setFormSettings({
+      allowMultipleSubmissions: false,
+      requireLogin: false,
+      showProgressBar: true,
+      theme: 'light',
+      scoring: {
+        enabled: false,
+        maxTotalPoints: 100,
+        showScoreToUser: false,
+        passingScore: 70,
+        riskThresholds: {
+          low: 80,
+          medium: 60,
+          high: 40
+        }
+      },
+      expiration: {
+        enabled: false
+      },
+      emailDistribution: {
+        enabled: false,
+        recipients: [],
+        reminderEnabled: true,
+        reminderIntervalDays: 7,
+        maxReminders: 3
+      },
+      approval: {
+        enabled: false,
+        requireApproval: false,
+        approvers: []
+      },
+      documents: {
+        enabled: false,
+        allowedTypes: ['pdf', 'doc', 'docx'],
+        maxSize: 10,
+        requiredDocuments: [],
+        allowUserUploads: true
+      }
+    });
     setCurrentFormId(null);
-    setToDraft();
     setActiveBuildTab("builder");
     toast({
       title: "New Form Created",
@@ -186,14 +251,10 @@ const Index = () => {
     setFormTitle(form.title);
     setFormDescription(form.description);
     setFormSettings(form.settings);
+    setFormCategory(form.category || "");
+    setFormTargetAudience(form.targetAudience?.[0] || "");
+    setFormAttachments(form.attachments || []);
     setCurrentFormId(form.id);
-    
-    // Set appropriate form status
-    if (form.status === 'published') {
-      publishForm();
-    } else {
-      setToDraft();
-    }
     
     setActiveBuildTab("builder");
     toast({
@@ -221,9 +282,12 @@ const Index = () => {
       description: formDescription,
       fields: formFields,
       settings: formSettings,
+      category: typeof formCategory === 'string' ? formCategory : formCategory[0] || '',
+      targetAudience: typeof formTargetAudience === 'string' ? [formTargetAudience] : formTargetAudience,
+      attachments: formAttachments,
       createdAt: new Date(),
       updatedAt: new Date(),
-      status: 'draft', // Always save as draft
+      status: 'draft',
       submissions: 0,
       analytics: {
         views: 0,
@@ -247,8 +311,6 @@ const Index = () => {
       setCurrentFormId(formData.id);
     }
     
-    setToDraft(); // Ensure we're in draft mode
-    
     toast({
       title: "Draft Saved",
       description: "Your form has been saved as a draft.",
@@ -256,7 +318,7 @@ const Index = () => {
   };
 
   /**
-   * Publish a form from drafts
+   * Publish a form from drafts or current form
    */
   const handlePublishForm = (formToPublish?: Form) => {
     const titleToCheck = formToPublish?.title || formTitle;
@@ -291,13 +353,15 @@ const Index = () => {
       setSavedDrafts(prev => prev.filter(draft => draft.id !== formToPublish.id));
     } else {
       // Publishing current form
-      publishForm();
       const formData: Form = {
         id: currentFormId || Date.now().toString(),
         title: formTitle,
         description: formDescription,
         fields: formFields,
         settings: formSettings,
+        category: typeof formCategory === 'string' ? formCategory : formCategory[0] || '',
+        targetAudience: typeof formTargetAudience === 'string' ? [formTargetAudience] : formTargetAudience,
+        attachments: formAttachments,
         createdAt: new Date(),
         updatedAt: new Date(),
         status: 'published',
@@ -345,7 +409,6 @@ const Index = () => {
       });
     } else {
       // Moving current form to draft
-      setToDraft();
       if (currentFormId) {
         const currentForm = publishedForms.find(f => f.id === currentFormId);
         if (currentForm) {
@@ -468,17 +531,6 @@ const Index = () => {
       title: "Copied!",
       description: `${type} copied to clipboard.`,
     });
-  };
-
-  /**
-   * Check if current form is published
-   */
-  const currentFormIsPublished = () => {
-    if (currentFormId) {
-      const publishedForm = publishedForms.find(form => form.id === currentFormId);
-      return !!publishedForm;
-    }
-    return isPublished;
   };
 
   /**
@@ -648,7 +700,7 @@ const Index = () => {
                     settings: formSettings,
                     createdAt: new Date(),
                     updatedAt: new Date(),
-                    status: status,
+                    status: getCurrentFormStatus() || 'draft',
                     submissions: submissions.length,
                     analytics: {
                       views: 0,
@@ -956,10 +1008,10 @@ const Index = () => {
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-gray-600">Status:</span>
                       <Badge 
-                        variant={isDraft ? "secondary" : "default"}
-                        className={`text-xs px-2 py-1 ${isDraft ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}`}
+                        variant={currentFormIsDraft() ? "secondary" : "default"}
+                        className={`text-xs px-2 py-1 ${currentFormIsDraft() ? "bg-yellow-100 text-yellow-800" : "bg-green-100 text-green-800"}`}
                       >
-                        {isDraft ? "Draft" : "Live"}
+                        {currentFormIsDraft() ? "Draft" : "Published"}
                       </Badge>
                     </div>
                   </div>
@@ -999,7 +1051,6 @@ const Index = () => {
                 <FormLibrary onUseTemplate={useTemplate} />
               </TabsContent>
 
-
               <TabsContent value="preview" className="mt-3 sm:mt-4">
                 <FormPreview
                   formTitle={formTitle}
@@ -1020,7 +1071,7 @@ const Index = () => {
                     settings: formSettings,
                     createdAt: new Date(),
                     updatedAt: new Date(),
-                    status: status,
+                    status: getCurrentFormStatus() || 'draft',
                     submissions: 0,
                     analytics: {
                       views: 0,
