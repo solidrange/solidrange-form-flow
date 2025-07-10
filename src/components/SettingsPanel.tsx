@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { WeightageAndScoringSettings } from "./WeightageAndScoringSettings";
-import { BrandSettings } from "./BrandSettings";
+
 import { useTheme } from "@/contexts/ThemeContext";
 
 interface SettingsPanelProps {
@@ -135,20 +135,15 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
     });
   };
 
-  const handleThemeChange = (theme: 'light' | 'dark' | 'custom') => {
+  const handleThemeChange = (theme: 'light' | 'dark' | 'custom' | 'inherit') => {
     // Update form settings
     onUpdate({
       ...form,
       settings: {
         ...form.settings,
-        theme
+        theme: theme === 'inherit' ? undefined : theme
       }
     });
-    
-    // Update global theme (if not custom)
-    if (theme !== 'custom') {
-      setTheme(theme);
-    }
   };
 
   const handleCustomCssChange = (customCss: string) => {
@@ -209,26 +204,27 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
         </CardContent>
       </Card>
 
-      {/* Theme Settings */}
+      {/* Form Theme Override */}
       <Card>
         <CardHeader>
-          <CardTitle>Theme & Appearance</CardTitle>
+          <CardTitle>Form Theme Override</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label>Theme</Label>
-            <Select value={form.settings.theme} onValueChange={handleThemeChange}>
+            <Label>Theme Override</Label>
+            <Select value={form.settings.theme || 'inherit'} onValueChange={handleThemeChange}>
               <SelectTrigger className="mt-1">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="inherit">Inherit Global Theme</SelectItem>
                 <SelectItem value="light">Light</SelectItem>
                 <SelectItem value="dark">Dark</SelectItem>
                 <SelectItem value="custom">Custom</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground mt-1">
-              Current global theme: {globalTheme}
+              Override global theme for this specific form
             </p>
           </div>
 
@@ -248,16 +244,6 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
               </p>
             </div>
           )}
-        </CardContent>
-      </Card>
-
-      {/* Brand Identity Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Brand Identity</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <BrandSettings />
         </CardContent>
       </Card>
 

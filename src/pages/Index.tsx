@@ -45,7 +45,7 @@ import { FormField, FormTemplate, Form, EmailRecipient, DocumentAttachment } fro
 import { toast } from "@/hooks/use-toast";
 import { sampleSubmissions } from "@/data/sampleSubmissions";
 import { BrandLogo } from "@/components/BrandLogo";
-import { BrandSettings } from "@/components/BrandSettings";
+import { GlobalSettings } from "@/components/GlobalSettings";
 
 const Index = () => {
   // Tab navigation state
@@ -591,7 +591,7 @@ const Index = () => {
       <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-3 sm:py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           {/* Main Tabs - Mobile Responsive */}
-          <TabsList className="grid w-full grid-cols-4 mb-3 sm:mb-4 h-10 sm:h-11">
+          <TabsList className="grid w-full grid-cols-5 mb-3 sm:mb-4 h-10 sm:h-11">
             <TabsTrigger value="dashboard" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
               <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden xs:inline">Dashboard</span>
@@ -610,6 +610,10 @@ const Index = () => {
             <TabsTrigger value="build-form" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
               <Wrench className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden xs:inline">Build</span>
+            </TabsTrigger>
+            <TabsTrigger value="global-settings" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              <Settings className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">Settings</span>
             </TabsTrigger>
           </TabsList>
 
@@ -1031,6 +1035,11 @@ const Index = () => {
                 />
               </TabsContent>
             </Tabs>
+          </TabsContent>
+
+          {/* Global Settings Section */}
+          <TabsContent value="global-settings" className="mt-3 sm:mt-6">
+            <GlobalSettings />
           </TabsContent>
 
         </Tabs>
