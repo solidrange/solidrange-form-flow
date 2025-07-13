@@ -1048,7 +1048,7 @@ const Index = () => {
 
                   <TabsContent value="builder" className="mt-6">
                     <FormBuilder
-                      fields={formFields}
+                      formFields={formFields}
                       onAddField={addField}
                       onUpdateField={updateField}
                       onRemoveField={removeField}
@@ -1072,16 +1072,15 @@ const Index = () => {
                   <TabsContent value="library" className="mt-6">
                     <FormLibrary
                       onUseTemplate={useTemplate}
-                      currentCategory={typeof formCategory === 'string' ? formCategory : ''}
                     />
                   </TabsContent>
 
                   <TabsContent value="preview" className="mt-6">
                     <FormPreview
-                      fields={formFields}
-                      title={formTitle}
-                      description={formDescription}
-                      settings={formSettings}
+                      formTitle={formTitle}
+                      formDescription={formDescription}
+                      formFields={formFields}
+                      formSettings={formSettings}
                       attachments={formAttachments}
                     />
                   </TabsContent>
