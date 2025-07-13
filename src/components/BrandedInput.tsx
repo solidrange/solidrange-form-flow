@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { Input, InputProps } from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import { useBranding } from './BrandingProvider';
 import { cn } from '@/lib/utils';
 
-interface BrandedInputProps extends InputProps {
+interface BrandedInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   useBranding?: boolean;
 }
 

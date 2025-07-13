@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { Card, CardProps } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { useBranding } from './BrandingProvider';
 import { cn } from '@/lib/utils';
 
-interface BrandedCardProps extends CardProps {
+interface BrandedCardProps extends React.HTMLAttributes<HTMLDivElement> {
   useBranding?: boolean;
   brandAccent?: boolean;
 }
@@ -24,7 +24,7 @@ export const BrandedCard: React.FC<BrandedCardProps> = ({
     return brandAccent ? {
       borderTopColor: getPrimaryColor(),
       borderTopWidth: '3px',
-      borderTopStyle: 'solid',
+      borderTopStyle: 'solid' as const,
     } : {};
   };
 
