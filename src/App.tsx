@@ -13,6 +13,7 @@
  *    - Tooltips (helpful hover messages)
  *    - Theme system (light/dark mode)
  *    - Language system (internationalization)
+ *    - Brand system (comprehensive color theming)
  *    - Data fetching capabilities
  * 
  * The app structure:
@@ -28,6 +29,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";  // Da
 import { BrowserRouter, Routes, Route } from "react-router-dom";  // Page navigation system
 import { ThemeProvider } from "@/contexts/ThemeContext";  // Light/dark theme system
 import { BrandProvider } from "@/contexts/BrandContext";  // Brand identity system
+import { BrandingProvider } from "@/components/BrandingProvider";  // Brand styling system
 import { LanguageProvider } from "@/contexts/LanguageContext";  // Language system
 import Index from "./pages/Index";      // Main Form Builder page
 import NotFound from "./pages/NotFound"; // 404 error page
@@ -44,6 +46,8 @@ const queryClient = new QueryClient();
  * 
  * QueryClientProvider: Enables smart data fetching and caching
  * LanguageProvider: Enables internationalization support
+ * BrandProvider: Enables brand identity management
+ * BrandingProvider: Enables comprehensive brand styling
  * ThemeProvider: Enables light/dark theme switching
  * TooltipProvider: Enables helpful hover messages
  * BrowserRouter: Enables page navigation
@@ -51,31 +55,33 @@ const queryClient = new QueryClient();
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
     <BrandProvider>
-      <LanguageProvider>
-        <ThemeProvider>
-          <TooltipProvider>
-          <div className="relative min-h-screen">
-            {/* Notification systems - these show popup messages to users */}
-            <Toaster />
-            <Sonner />
-            
-            {/* Page routing system - decides which page to show based on URL */}
-            <BrowserRouter>
-              <Routes>
-                {/* Main page: Form Builder dashboard */}
-                <Route path="/" element={<Index />} />
-                
-                {/* Catch-all route: Show "Not Found" page for any invalid URL */}
-                {/* IMPORTANT: This must be the last route */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </div>
-        </TooltipProvider>
-      </ThemeProvider>
-    </LanguageProvider>
+      <BrandingProvider>
+        <LanguageProvider>
+          <ThemeProvider>
+            <TooltipProvider>
+            <div className="relative min-h-screen">
+              {/* Notification systems - these show popup messages to users */}
+              <Toaster />
+              <Sonner />
+              
+              {/* Page routing system - decides which page to show based on URL */}
+              <BrowserRouter>
+                <Routes>
+                  {/* Main page: Form Builder dashboard */}
+                  <Route path="/" element={<Index />} />
+                  
+                  {/* Catch-all route: Show "Not Found" page for any invalid URL */}
+                  {/* IMPORTANT: This must be the last route */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </BrowserRouter>
+            </div>
+          </TooltipProvider>
+        </ThemeProvider>
+      </LanguageProvider>
+    </BrandingProvider>
   </BrandProvider>
-  </QueryClientProvider>
+</QueryClientProvider>
 );
 
 export default App;

@@ -1,6 +1,6 @@
+
 import { FormField, Form, DocumentAttachment } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -9,6 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { AlertCircle, Clock, Target, Download, FileText } from "lucide-react";
 import { useBrand } from "@/contexts/BrandContext";
+import { BrandedButton } from "./BrandedButton";
+import { BrandedInput } from "./BrandedInput";
+import { BrandedCard } from "./BrandedCard";
+import { useBranding } from "./BrandingProvider";
 
 interface FormPreviewProps {
   formTitle: string;
@@ -26,6 +30,7 @@ export const FormPreview = ({
   attachments = []
 }: FormPreviewProps) => {
   const { brand } = useBrand();
+  const { getPrimaryColor, getSecondaryColor } = useBranding();
   
   const isExpired = formSettings?.expiration?.enabled && 
     formSettings.expiration.expirationDate && 
@@ -77,13 +82,21 @@ export const FormPreview = ({
     );
   }
 
+  const brandedFormStyle = brandingEnabled ? {
+    '--brand-primary': `hsl(${brandColors.primary.main})`,
+    '--brand-secondary': `hsl(${brandColors.secondary.main})`,
+    '--primary': `hsl(${brandColors.primary.main})`,
+  } as React.CSSProperties : {};
+
   return (
     <div className="max-w-2xl mx-auto">
-      <Card style={brandingEnabled ? {
-        '--brand-primary': `hsl(${brandColors.primary.main})`,
-        '--brand-secondary': `hsl(${brandColors.secondary.main})`,
-      } as React.CSSProperties : {}}>
-        <CardHeader>
+      <BrandedCard 
+        className="overflow-hidden"
+        style={brandedFormStyle}
+        useBranding={brandingEnabled}
+        brandAccent={brandingEnabled}
+      >
+        <CardHeader className={brandingEnabled ? 'bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5' : ''}>
           {/* Branding Section */}
           {brandingEnabled && (brandLogo || brandName) && (
             <div className="flex items-center gap-3 mb-4 pb-4 border-b">
@@ -95,7 +108,10 @@ export const FormPreview = ({
                 />
               )}
               <div>
-                <h3 className="font-semibold text-lg" style={{ color: `hsl(${brandColors.primary.main})` }}>
+                <h3 
+                  className="font-semibold text-lg"
+                  style={{ color: getPrimaryColor() }}
+                >
                   {brandName}
                 </h3>
                 {brand.tagline && (
@@ -107,7 +123,10 @@ export const FormPreview = ({
 
           <div className="flex items-start justify-between">
             <div className="flex-1">
-              <CardTitle className="text-2xl" style={brandingEnabled ? { color: `hsl(${brandColors.primary.main})` } : {}}>
+              <CardTitle 
+                className="text-2xl"
+                style={brandingEnabled ? { color: getPrimaryColor() } : {}}
+              >
                 {formTitle || "Untitled Form"}
               </CardTitle>
               {formDescription && (
@@ -117,7 +136,11 @@ export const FormPreview = ({
             
             <div className="flex flex-col gap-2 ml-4">
               {formSettings?.scoring?.enabled && (
-                <Badge variant="secondary" className="flex items-center gap-1">
+                <Badge 
+                  variant="secondary" 
+                  className="flex items-center gap-1"
+                  style={brandingEnabled ? { backgroundColor: `hsl(${brandColors.primary.light})` } : {}}
+                >
                   <Target className="h-3 w-3" />
                   Max: {totalPossiblePoints} pts
                 </Badge>
@@ -137,7 +160,7 @@ export const FormPreview = ({
           {/* File Attachments Section */}
           {attachments.length > 0 && (
             <div className="border-b pb-6">
-              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+              <h3 className="text-lg font-semibold mb-3 flex items-center gap-2 brand-text">
                 <FileText className="h-5 w-5" />
                 Reference Documents
               </h3>
@@ -154,37 +177,45 @@ export const FormPreview = ({
                         <p className="text-sm text-gray-500">{formatFileSize(attachment.size)}</p>
                       </div>
                     </div>
-                    <Button
+                    <BrandedButton
                       size="sm"
-                      variant="outline"
+                      brandVariant="outline"
                       onClick={() => downloadFile(attachment)}
                       className="flex items-center gap-2"
                     >
                       <Download className="h-4 w-4" />
                       Download
-                    </Button>
+                    </BrandedButton>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Form Fields */}
+          {/* Form Fields with Brand Styling */}
           {formFields.map((field) => (
             <div key={field.id} className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor={field.id} className="flex items-center gap-1">
+                <Label htmlFor={field.id} className="flex items-center gap-1 brand-text">
                   {field.label}
                   {field.required && <span className="text-red-500">*</span>}
                 </Label>
                 
                 {field.scoring?.enabled && (
                   <div className="flex items-center gap-2 text-sm text-gray-500">
-                    <Badge variant="outline" className="text-xs">
+                    <Badge 
+                      variant="outline" 
+                      className="text-xs"
+                      style={brandingEnabled ? { borderColor: getPrimaryColor() } : {}}
+                    >
                       {(field.scoring.maxPoints || 10) * (field.scoring.weightMultiplier || 1)} pts
                     </Badge>
                     {field.scoring.weightMultiplier && field.scoring.weightMultiplier > 1 && (
-                      <Badge variant="secondary" className="text-xs">
+                      <Badge 
+                        variant="secondary" 
+                        className="text-xs"
+                        style={brandingEnabled ? { backgroundColor: `hsl(${brandColors.secondary.light})` } : {}}
+                      >
                         {field.scoring.weightMultiplier}x
                       </Badge>
                     )}
@@ -197,17 +228,14 @@ export const FormPreview = ({
                 )}
               </div>
 
+              {/* Render field inputs with branding */}
               {field.type === 'text' || field.type === 'email' || field.type === 'number' ? (
-                <Input
+                <BrandedInput
                   id={field.id}
                   type={field.type}
                   placeholder={field.placeholder}
                   required={field.required}
-                  style={brandingEnabled ? { 
-                    '--ring-offset-shadow': 'none',
-                    '--ring-shadow': `0 0 0 2px hsl(${brandColors.primary.main} / 0.2)`,
-                    borderColor: `hsl(${brandColors.primary.main})` 
-                  } as React.CSSProperties : {}}
+                  useBranding={brandingEnabled}
                 />
               ) : field.type === 'textarea' ? (
                 <Textarea
@@ -215,17 +243,20 @@ export const FormPreview = ({
                   placeholder={field.placeholder}
                   required={field.required}
                   rows={3}
+                  className="brand-focus brand-border"
                   style={brandingEnabled ? { 
-                    borderColor: `hsl(${brandColors.primary.main})` 
+                    borderColor: getPrimaryColor(),
+                    '--ring-color': getPrimaryColor(),
                   } as React.CSSProperties : {}}
                 />
               ) : field.type === 'select' ? (
                 <select
                   id={field.id}
                   required={field.required}
-                  className="w-full p-2 border border-gray-300 rounded-md"
+                  className="w-full p-2 border border-gray-300 rounded-md brand-focus"
                   style={brandingEnabled ? { 
-                    borderColor: `hsl(${brandColors.primary.main})` 
+                    borderColor: getPrimaryColor(),
+                    '--ring-color': getPrimaryColor(),
                   } as React.CSSProperties : {}}
                 >
                   <option value="">Select an option</option>
@@ -240,7 +271,14 @@ export const FormPreview = ({
                 <RadioGroup>
                   {field.options?.map((option, idx) => (
                     <div key={idx} className="flex items-center space-x-2">
-                      <RadioGroupItem value={option} id={`${field.id}-${idx}`} />
+                      <RadioGroupItem 
+                        value={option} 
+                        id={`${field.id}-${idx}`}
+                        style={brandingEnabled ? { 
+                          borderColor: getPrimaryColor(),
+                          color: getPrimaryColor(),
+                        } : {}}
+                      />
                       <Label htmlFor={`${field.id}-${idx}`} className="flex items-center gap-1">
                         {option}
                         {field.scoring?.correctAnswers?.includes(option) && (
@@ -254,7 +292,12 @@ export const FormPreview = ({
                 <div className="space-y-2">
                   {field.options?.map((option, idx) => (
                     <div key={idx} className="flex items-center space-x-2">
-                      <Checkbox id={`${field.id}-${idx}`} />
+                      <Checkbox 
+                        id={`${field.id}-${idx}`}
+                        style={brandingEnabled ? { 
+                          borderColor: getPrimaryColor(),
+                        } : {}}
+                      />
                       <Label htmlFor={`${field.id}-${idx}`} className="flex items-center gap-1">
                         {option}
                         {field.scoring?.correctAnswers?.includes(option) && (
@@ -265,22 +308,18 @@ export const FormPreview = ({
                   ))}
                 </div>
               ) : field.type === 'date' ? (
-                <Input
+                <BrandedInput
                   id={field.id}
                   type="date"
                   required={field.required}
-                  style={brandingEnabled ? { 
-                    borderColor: `hsl(${brandColors.primary.main})` 
-                  } as React.CSSProperties : {}}
+                  useBranding={brandingEnabled}
                 />
               ) : field.type === 'file' ? (
-                <Input
+                <BrandedInput
                   id={field.id}
                   type="file"
                   required={field.required}
-                  style={brandingEnabled ? { 
-                    borderColor: `hsl(${brandColors.primary.main})` 
-                  } as React.CSSProperties : {}}
+                  useBranding={brandingEnabled}
                 />
               ) : field.type === 'rating' ? (
                 <div className="flex gap-1">
@@ -289,14 +328,24 @@ export const FormPreview = ({
                       key={star}
                       type="button"
                       className="text-2xl text-gray-300 hover:text-yellow-400 transition-colors"
+                      style={brandingEnabled ? { 
+                        color: getPrimaryColor(),
+                        opacity: 0.3,
+                      } : {}}
                     >
                       ★
                     </button>
                   ))}
                 </div>
               ) : field.type === 'signature' ? (
-                <div className="w-full h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center">
-                  <span className="text-gray-500">Click to sign</span>
+                <div 
+                  className="w-full h-32 border-2 border-dashed rounded-lg flex items-center justify-center"
+                  style={brandingEnabled ? { 
+                    borderColor: getPrimaryColor(),
+                    color: getPrimaryColor(),
+                  } : { borderColor: '#d1d5db', color: '#6b7280' }}
+                >
+                  <span>Click to sign</span>
                 </div>
               ) : null}
             </div>
@@ -305,8 +354,14 @@ export const FormPreview = ({
           {formFields.length > 0 && (
             <div className="pt-4 border-t">
               {formSettings?.scoring?.enabled && (
-                <div className="mb-4 p-3 bg-blue-50 rounded-lg">
-                  <div className="flex items-center gap-2 text-sm text-blue-800">
+                <div 
+                  className="mb-4 p-3 rounded-lg"
+                  style={brandingEnabled ? { 
+                    backgroundColor: `hsl(${brandColors.primary.main} / 0.1)`,
+                    borderColor: getPrimaryColor(),
+                  } : { backgroundColor: '#eff6ff' }}
+                >
+                  <div className="flex items-center gap-2 text-sm" style={{ color: getPrimaryColor() }}>
                     <Target className="h-4 w-4" />
                     <span>
                       This form will be scored out of {totalPossiblePoints} points
@@ -318,20 +373,18 @@ export const FormPreview = ({
                 </div>
               )}
               
-              <Button 
+              <BrandedButton 
                 type="submit" 
-                className="w-full"
-                style={brandingEnabled ? {
-                  backgroundColor: `hsl(${brandColors.primary.main})`,
-                  borderColor: `hsl(${brandColors.primary.main})`,
-                } as React.CSSProperties : {}}
+                className="w-full text-lg py-3"
+                brandVariant="primary"
+                useBranding={brandingEnabled}
               >
                 Submit Form
-              </Button>
+              </BrandedButton>
             </div>
           )}
         </CardContent>
-      </Card>
+      </BrandedCard>
     </div>
   );
 };

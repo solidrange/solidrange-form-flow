@@ -14,6 +14,15 @@
     --brand-secondary-light: 262 83% 75%;
     --brand-secondary-dark: 262 83% 45%;
     
+    /* Form-specific brand variables */
+    --form-accent: var(--brand-primary);
+    --form-border: var(--brand-primary-light);
+    --form-focus: var(--brand-primary-dark);
+    --btn-primary: var(--brand-primary);
+    --btn-primary-hover: var(--brand-primary-dark);
+    --btn-secondary: var(--brand-secondary);
+    --btn-secondary-hover: var(--brand-secondary-dark);
+    
     /* Light theme - High contrast and accessibility focused */
     --background: 0 0% 100%;
     --foreground: 224 71.4% 4.1%;
@@ -24,7 +33,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 224 71.4% 4.1%;
 
-    --primary: 208 100% 47%;
+    --primary: var(--brand-primary);
     --primary-foreground: 0 0% 98%;
 
     --secondary: 220 14.3% 95.9%;
@@ -41,7 +50,7 @@
 
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 208 100% 47%;
+    --ring: var(--brand-primary);
 
     --radius: 0.75rem;
 
@@ -52,7 +61,7 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 208 100% 47%;
+    --sidebar-ring: var(--brand-primary);
   }
 
   .dark {
@@ -66,7 +75,7 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 208 100% 47%;
+    --primary: var(--brand-primary);
     --primary-foreground: 0 0% 98%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -83,7 +92,7 @@
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 208 100% 47%;
+    --ring: var(--brand-primary);
 
     --sidebar-background: 222.2 84% 4.9%;
     --sidebar-foreground: 210 40% 98%;
@@ -92,7 +101,7 @@
     --sidebar-accent: 217.2 32.6% 17.5%;
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 217.2 32.6% 17.5%;
-    --sidebar-ring: 208 100% 47%;
+    --sidebar-ring: var(--brand-primary);
   }
 }
 
@@ -111,6 +120,109 @@
     overflow-x: hidden;
   }
 
+  /* Brand-specific utility classes */
+  .brand-primary {
+    background-color: hsl(var(--brand-primary));
+    color: white;
+  }
+
+  .brand-primary-hover:hover {
+    background-color: hsl(var(--brand-primary-dark));
+  }
+
+  .brand-secondary {
+    background-color: hsl(var(--brand-secondary));
+    color: white;
+  }
+
+  .brand-secondary-hover:hover {
+    background-color: hsl(var(--brand-secondary-dark));
+  }
+
+  .brand-border {
+    border-color: hsl(var(--brand-primary));
+  }
+
+  .brand-text {
+    color: hsl(var(--brand-primary));
+  }
+
+  .brand-focus:focus {
+    outline: none;
+    border-color: hsl(var(--brand-primary));
+    box-shadow: 0 0 0 2px hsl(var(--brand-primary) / 0.2);
+    ring-color: hsl(var(--brand-primary));
+  }
+
+  .brand-focus:focus-visible {
+    outline: none;
+    border-color: hsl(var(--brand-primary));
+    box-shadow: 0 0 0 2px hsl(var(--brand-primary) / 0.2);
+    ring-color: hsl(var(--brand-primary));
+  }
+
+  /* Enhanced button branding */
+  .btn-brand-primary {
+    background-color: hsl(var(--btn-primary));
+    border-color: hsl(var(--btn-primary));
+    color: white;
+  }
+
+  .btn-brand-primary:hover {
+    background-color: hsl(var(--btn-primary-hover));
+    border-color: hsl(var(--btn-primary-hover));
+  }
+
+  .btn-brand-secondary {
+    background-color: hsl(var(--btn-secondary));
+    border-color: hsl(var(--btn-secondary));
+    color: white;
+  }
+
+  .btn-brand-secondary:hover {
+    background-color: hsl(var(--btn-secondary-hover));
+    border-color: hsl(var(--btn-secondary-hover));
+  }
+
+  /* Form element branding */
+  .form-brand-accent {
+    accent-color: hsl(var(--form-accent));
+  }
+
+  .form-brand-border {
+    border-color: hsl(var(--form-border));
+  }
+
+  .form-brand-focus:focus {
+    border-color: hsl(var(--form-focus));
+    box-shadow: 0 0 0 2px hsl(var(--form-focus) / 0.2);
+  }
+
+  /* Branded card accents */
+  .card-brand-accent {
+    border-top: 3px solid hsl(var(--brand-primary));
+  }
+
+  .card-brand-background {
+    background: linear-gradient(135deg, hsl(var(--brand-primary) / 0.05) 0%, hsl(var(--brand-secondary) / 0.05) 100%);
+  }
+
+  /* Enhanced tab styling */
+  .tabs-brand [data-state="active"] {
+    background-color: hsl(var(--brand-primary));
+    color: white;
+  }
+
+  .tabs-brand [data-state="active"]:hover {
+    background-color: hsl(var(--brand-primary-dark));
+  }
+
+  /* Checkbox and radio branding */
+  [data-state="checked"] {
+    background-color: hsl(var(--brand-primary));
+    border-color: hsl(var(--brand-primary));
+  }
+
   /* Modern glassmorphism effects */
   .glass {
     @apply backdrop-blur-xl bg-white/90 border border-gray-200/50;
@@ -122,13 +234,17 @@
            shadow-sm hover:shadow-md transition-all duration-300;
   }
 
-  /* Responsive gradient backgrounds */
+  /* Responsive gradient backgrounds with brand colors */
   .gradient-primary {
-    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0369a1 100%);
+    background: linear-gradient(135deg, hsl(var(--brand-primary)) 0%, hsl(var(--brand-primary-dark)) 100%);
   }
 
   .gradient-secondary {
-    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    background: linear-gradient(135deg, hsl(var(--brand-secondary)) 0%, hsl(var(--brand-secondary-dark)) 100%);
+  }
+
+  .gradient-brand-mixed {
+    background: linear-gradient(135deg, hsl(var(--brand-primary)) 0%, hsl(var(--brand-secondary)) 100%);
   }
 
   /* Responsive button styles with better accessibility */
