@@ -16,33 +16,33 @@ export const BrandedButton: React.FC<BrandedButtonProps> = ({
   useBranding = true,
   ...props 
 }) => {
-  const { getPrimaryColor, getSecondaryColor } = useBranding();
+  const brandingContext = useBranding();
 
   const getBrandedStyles = () => {
-    if (!useBranding) return {};
+    if (!useBranding || !brandingContext) return {};
     
     switch (brandVariant) {
       case 'primary':
         return {
-          backgroundColor: getPrimaryColor(),
-          borderColor: getPrimaryColor(),
+          backgroundColor: brandingContext.getPrimaryColor(),
+          borderColor: brandingContext.getPrimaryColor(),
           color: 'white',
         };
       case 'secondary':
         return {
-          backgroundColor: getSecondaryColor(),
-          borderColor: getSecondaryColor(),
+          backgroundColor: brandingContext.getSecondaryColor(),
+          borderColor: brandingContext.getSecondaryColor(),
           color: 'white',
         };
       case 'outline':
         return {
-          borderColor: getPrimaryColor(),
-          color: getPrimaryColor(),
+          borderColor: brandingContext.getPrimaryColor(),
+          color: brandingContext.getPrimaryColor(),
           backgroundColor: 'transparent',
         };
       case 'ghost':
         return {
-          color: getPrimaryColor(),
+          color: brandingContext.getPrimaryColor(),
           backgroundColor: 'transparent',
         };
       default:
@@ -51,7 +51,7 @@ export const BrandedButton: React.FC<BrandedButtonProps> = ({
   };
 
   const getBrandedHoverStyles = () => {
-    if (!useBranding) return {};
+    if (!useBranding || !brandingContext) return {};
     
     const baseStyle = getBrandedStyles();
     return {
@@ -69,12 +69,12 @@ export const BrandedButton: React.FC<BrandedButtonProps> = ({
       )}
       style={getBrandedStyles()}
       onMouseEnter={(e) => {
-        if (useBranding) {
+        if (useBranding && brandingContext) {
           Object.assign(e.currentTarget.style, getBrandedHoverStyles());
         }
       }}
       onMouseLeave={(e) => {
-        if (useBranding) {
+        if (useBranding && brandingContext) {
           Object.assign(e.currentTarget.style, getBrandedStyles());
         }
       }}

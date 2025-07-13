@@ -16,13 +16,13 @@ export const BrandedCard: React.FC<BrandedCardProps> = ({
   brandAccent = false,
   ...props
 }) => {
-  const { getPrimaryColor } = useBranding();
+  const brandingContext = useBranding();
 
   const getBrandedStyles = () => {
-    if (!useBranding) return {};
+    if (!useBranding || !brandingContext) return {};
     
     return brandAccent ? {
-      borderTopColor: getPrimaryColor(),
+      borderTopColor: brandingContext.getPrimaryColor(),
       borderTopWidth: '3px',
       borderTopStyle: 'solid' as const,
     } : {};
