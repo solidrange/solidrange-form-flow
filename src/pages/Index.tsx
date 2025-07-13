@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { FormField, DocumentAttachment } from '@/types/form';
@@ -9,6 +10,7 @@ import { FormBuilder } from '@/components/FormBuilder';
 import { ResponsiveLayout } from '@/components/ResponsiveLayout';
 import { DashboardOverview } from '@/components/dashboard/DashboardOverview';
 import { FormsListView } from '@/components/forms/FormsListView';
+import { GlobalSettings } from '@/components/GlobalSettings';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface IndexProps {
@@ -104,7 +106,7 @@ const Index = () => {
         return <div>Review Submissions Content</div>;
       
       case 'global-settings':
-        return <div>Global Settings Content</div>;
+        return <GlobalSettings />;
       
       default:
         return <DashboardOverview />;

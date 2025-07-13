@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { FormField, DocumentAttachment } from '@/types/form';
+import { FormField, DocumentAttachment, FormSettings } from '@/types/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,6 +18,7 @@ import { FieldPalette } from './FieldPalette';
 import { FieldEditor } from './FieldEditor';
 import { FormCanvas } from './FormCanvas';
 import { FileAttachmentManager } from './FileAttachmentManager';
+import { SettingsPanel } from './SettingsPanel';
 import { 
   Save, 
   Eye, 
@@ -29,7 +30,8 @@ import {
   Smartphone,
   Monitor,
   Tablet,
-  Zap
+  Zap,
+  Wrench
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -74,8 +76,79 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 }) => {
   const [activeBuilderTab, setActiveBuilderTab] = useState('builder');
   const [previewMode, setPreviewMode] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
+  const [formSettings, setFormSettings] = useState<FormSettings>({
+    allowMultipleSubmissions: false,
+    requireLogin: false,
+    showProgressBar: true,
+    theme: undefined,
+    customCss: undefined,
+    branding: {
+      enabled: true,
+      showLogo: true,
+      showBrandColors: true,
+      brandName: 'FormFlow',
+      logo: null,
+      colors: null
+    },
+    scoring: {
+      enabled: false,
+      maxTotalPoints: 100,
+      showScoreToUser: false,
+      passingScore: 70,
+      riskThresholds: {
+        low: 30,
+        medium: 60,
+        high: 90
+      }
+    },
+    approval: {
+      enabled: false,
+      requireApproval: false,
+      approvers: [],
+      autoApproveScore: 80
+    },
+    documents: {
+      enabled: false,
+      allowedTypes: [],
+      maxSize: 10,
+      requiredDocuments: [],
+      allowUserUploads: true
+    },
+    expiration: {
+      enabled: false,
+      expirationDate: new Date(),
+      message: 'This form has expired.'
+    },
+    emailDistribution: {
+      enabled: false,
+      recipients: [],
+      reminderEnabled: false,
+      reminderIntervalDays: 7,
+      maxReminders: 3
+    }
+  });
+
   const brandingContext = useBranding();
   const isMobile = useIsMobile();
+
+  // Create a form object for the SettingsPanel
+  const currentForm = {
+    id: 'current-form',
+    title,
+    description,
+    fields: formFields,
+    settings: formSettings,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    status: isPublished ? 'published' as const : 'draft' as const
+  };
+
+  const handleFormUpdate = (updatedForm: typeof currentForm) => {
+    setFormSettings(updatedForm.settings);
+    // Update other form properties if needed
+    if (updatedForm.title !== title) onUpdateTitle(updatedForm.title);
+    if (updatedForm.description !== description) onUpdateDescription(updatedForm.description);
+  };
 
   const actionButtons = [
     {
@@ -314,10 +387,10 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                 icon={Settings} 
                 iconColor="text-gray-500"
               >
-                <div className="text-center py-8 lg:py-12 text-muted-foreground">
-                  <Settings className="h-12 w-12 lg:h-16 lg:w-16 mx-auto mb-4 opacity-50" />
-                  <p className="text-sm lg:text-base">Form settings will be available here</p>
-                </div>
+                <SettingsPanel
+                  form={currentForm}
+                  onUpdate={handleFormUpdate}
+                />
               </AnimatedCard>
             </TabsContent>
           </Tabs>
