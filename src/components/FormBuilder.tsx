@@ -31,8 +31,7 @@ export interface FormBuilderProps {
   onSaveForm: () => void;
   onPreviewForm: () => void;
   attachments: DocumentAttachment[];
-  onAddAttachment: (attachment: DocumentAttachment) => void;
-  onRemoveAttachment: (attachmentId: string) => void;
+  onUpdateAttachments: (attachments: DocumentAttachment[]) => void;
   onSaveToLibrary: () => void;
   isPublished: boolean;
   onMoveToDraft: () => void;
@@ -52,8 +51,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
   onSaveForm,
   onPreviewForm,
   attachments,
-  onAddAttachment,
-  onRemoveAttachment,
+  onUpdateAttachments,
   onSaveToLibrary,
   isPublished,
   onMoveToDraft
@@ -223,6 +221,10 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                 <CardContent>
                   <FileAttachmentManager
                     attachments={attachments}
+                    onUpdateAttachments={onUpdateAttachments}
+                    allowedTypes={['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png']}
+                    maxSize={10}
+                    readOnly={isPublished}
                   />
                 </CardContent>
               </BrandedCard>
