@@ -789,11 +789,304 @@ const Index = () => {
             )}
 
             {activeTab === "forms" && (
-              <div>Forms content here</div>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Forms</h2>
+                    <p className="text-gray-600">Manage your draft and published forms</p>
+                  </div>
+                  <Button onClick={createNewForm} className="gap-2">
+                    <Plus className="h-4 w-4" />
+                    New Form
+                  </Button>
+                </div>
+
+                <Tabs defaultValue="drafts" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="drafts" className="flex items-center gap-2">
+                      <Edit className="h-4 w-4" />
+                      Drafts ({savedDrafts.length})
+                    </TabsTrigger>
+                    <TabsTrigger value="published" className="flex items-center gap-2">
+                      <Globe className="h-4 w-4" />
+                      Published ({publishedForms.length})
+                    </TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="drafts" className="space-y-4">
+                    {savedDrafts.length === 0 ? (
+                      <div className="text-center py-12">
+                        <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No draft forms</h3>
+                        <p className="text-gray-600 mb-4">Create a new form to get started</p>
+                        <Button onClick={createNewForm} className="gap-2">
+                          <Plus className="h-4 w-4" />
+                          Create Form
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {savedDrafts.map((draft) => (
+                          <Card key={draft.id} className="hover:shadow-md transition-shadow">
+                            <CardHeader className="pb-2">
+                              <div className="flex items-start justify-between">
+                                <div className="flex-1 min-w-0">
+                                  <CardTitle className="text-lg truncate">{draft.title}</CardTitle>
+                                  <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                                    {draft.description || "No description"}
+                                  </p>
+                                </div>
+                                <Badge variant="secondary">Draft</Badge>
+                              </div>
+                            </CardHeader>
+                            <CardContent className="pt-0">
+                              <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                                <span>{draft.fields.length} fields</span>
+                                <span>{new Date(draft.updatedAt).toLocaleDateString()}</span>
+                              </div>
+                              <div className="flex gap-2">
+                                <Button 
+                                  size="sm" 
+                                  onClick={() => loadForm(draft)}
+                                  className="flex-1 gap-1"
+                                >
+                                  <Edit className="h-3 w-3" />
+                                  Edit
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => handlePublishForm(draft)}
+                                  className="flex-1 gap-1"
+                                >
+                                  <Globe className="h-3 w-3" />
+                                  Publish
+                                </Button>
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button size="sm" variant="outline" className="px-2">
+                                      <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Delete Draft</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Are you sure you want to delete "{draft.title}"? This action cannot be undone.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction onClick={() => handleDeleteDraft(draft.id)}>
+                                        Delete
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    )}
+                  </TabsContent>
+
+                  <TabsContent value="published" className="space-y-4">
+                    {publishedForms.length === 0 ? (
+                      <div className="text-center py-12">
+                        <Globe className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No published forms</h3>
+                        <p className="text-gray-600">Publish a form to make it available to respondents</p>
+                      </div>
+                    ) : (
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {publishedForms.map((form) => (
+                          <Card key={form.id} className="hover:shadow-md transition-shadow">
+                            <CardHeader className="pb-2">
+                              <div className="flex items-start justify-between">
+                                <div className="flex-1 min-w-0">
+                                  <CardTitle className="text-lg truncate">{form.title}</CardTitle>
+                                  <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                                    {form.description || "No description"}
+                                  </p>
+                                </div>
+                                <Badge variant="default">Published</Badge>
+                              </div>
+                            </CardHeader>
+                            <CardContent className="pt-0">
+                              <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                                <span>{form.submissions} submissions</span>
+                                <span>{new Date(form.updatedAt).toLocaleDateString()}</span>
+                              </div>
+                              <div className="flex gap-2">
+                                <Dialog>
+                                  <DialogTrigger asChild>
+                                    <Button size="sm" variant="outline" className="flex-1 gap-1">
+                                      <ExternalLink className="h-3 w-3" />
+                                      Share
+                                    </Button>
+                                  </DialogTrigger>
+                                  <DialogContent>
+                                    <DialogHeader>
+                                      <DialogTitle>Share Form</DialogTitle>
+                                    </DialogHeader>
+                                    <div className="space-y-4">
+                                      <div>
+                                        <label className="text-sm font-medium">Form URL</label>
+                                        <div className="flex gap-2 mt-1">
+                                          <Input 
+                                            value={generateFormUrl(form.id)} 
+                                            readOnly 
+                                            className="flex-1"
+                                          />
+                                          <Button 
+                                            size="sm" 
+                                            onClick={() => handleCopyToClipboard(generateFormUrl(form.id), "URL")}
+                                          >
+                                            Copy
+                                          </Button>
+                                        </div>
+                                      </div>
+                                      <div>
+                                        <label className="text-sm font-medium">Embed Code</label>
+                                        <div className="flex gap-2 mt-1">
+                                          <Input 
+                                            value={generateEmbedCode(form.id)} 
+                                            readOnly 
+                                            className="flex-1"
+                                          />
+                                          <Button 
+                                            size="sm" 
+                                            onClick={() => handleCopyToClipboard(generateEmbedCode(form.id), "Embed code")}
+                                          >
+                                            Copy
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </DialogContent>
+                                </Dialog>
+
+                                <FormInvitations
+                                  form={form}
+                                  onUpdateForm={(updates) => updatePublishedForm(form.id, updates)}
+                                />
+
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => handleMoveToDraft(form)}
+                                  className="gap-1"
+                                >
+                                  <ArrowLeft className="h-3 w-3" />
+                                  Draft
+                                </Button>
+
+                                <AlertDialog>
+                                  <AlertDialogTrigger asChild>
+                                    <Button size="sm" variant="outline" className="px-2">
+                                      <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                  </AlertDialogTrigger>
+                                  <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                      <AlertDialogTitle>Delete Published Form</AlertDialogTitle>
+                                      <AlertDialogDescription>
+                                        Are you sure you want to delete "{form.title}"? This will permanently remove the form and all its submissions. This action cannot be undone.
+                                      </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                      <AlertDialogAction onClick={() => handleDeletePublished(form.id)}>
+                                        Delete
+                                      </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                  </AlertDialogContent>
+                                </AlertDialog>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
+              </div>
             )}
 
             {activeTab === "build-form" && (
-              <div>Build form content here</div>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Form Builder</h2>
+                    <p className="text-gray-600">Create and customize your forms</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {currentFormIsDraft() && (
+                      <Button onClick={saveForm} variant="outline" className="gap-2">
+                        <Save className="h-4 w-4" />
+                        Save Draft
+                      </Button>
+                    )}
+                    <Button onClick={() => handlePublishForm()} className="gap-2">
+                      <Globe className="h-4 w-4" />
+                      Publish
+                    </Button>
+                  </div>
+                </div>
+
+                <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
+                  <TabsList className="grid w-full grid-cols-3">
+                    {buildTabs.map((tab) => (
+                      <TabsTrigger key={tab.id} value={tab.id} className="flex items-center gap-2">
+                        {tab.icon}
+                        <span className="hidden sm:inline">{tab.label}</span>
+                        <span className="sm:hidden">{tab.mobileLabel}</span>
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+
+                  <TabsContent value="builder" className="mt-6">
+                    <FormBuilder
+                      fields={formFields}
+                      onAddField={addField}
+                      onUpdateField={updateField}
+                      onRemoveField={removeField}
+                      onReorderFields={reorderFields}
+                      formTitle={formTitle}
+                      onTitleChange={setFormTitle}
+                      formDescription={formDescription}
+                      onDescriptionChange={setFormDescription}
+                      formSettings={formSettings}
+                      onSettingsChange={updateFormSettings}
+                      formCategory={formCategory}
+                      onCategoryChange={setFormCategory}
+                      formTargetAudience={formTargetAudience}
+                      onTargetAudienceChange={setFormTargetAudience}
+                      attachments={formAttachments}
+                      onAttachmentsChange={setFormAttachments}
+                      onSaveToLibrary={handleSaveToLibrary}
+                    />
+                  </TabsContent>
+
+                  <TabsContent value="library" className="mt-6">
+                    <FormLibrary
+                      onUseTemplate={useTemplate}
+                      currentCategory={typeof formCategory === 'string' ? formCategory : ''}
+                    />
+                  </TabsContent>
+
+                  <TabsContent value="preview" className="mt-6">
+                    <FormPreview
+                      fields={formFields}
+                      title={formTitle}
+                      description={formDescription}
+                      settings={formSettings}
+                      attachments={formAttachments}
+                    />
+                  </TabsContent>
+                </Tabs>
+              </div>
             )}
 
             {activeTab === "global-settings" && (
