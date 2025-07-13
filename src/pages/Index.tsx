@@ -207,7 +207,7 @@ const Index = () => {
   };
 
   /**
-   * Create a new blank form and reset all state
+   * Create a new blank form and navigate to builder
    */
   const createNewForm = () => {
     setFormFields([]);
@@ -276,6 +276,10 @@ const Index = () => {
     });
     setCurrentFormId(null);
     setActiveBuildTab("builder");
+    
+    // Navigate to build-form tab
+    setActiveTab("build-form");
+    
     toast({
       title: "New Form Created",
       description: "Started with a blank form.",
@@ -296,6 +300,7 @@ const Index = () => {
     setCurrentFormId(form.id);
     
     setActiveBuildTab("builder");
+    setActiveTab("build-form");
     toast({
       title: "Form Loaded",
       description: `"${form.title}" has been loaded for editing.`,
@@ -602,6 +607,7 @@ const Index = () => {
     });
     
     setActiveBuildTab("builder");
+    setActiveTab("build-form");
     toast({
       title: "Template Applied",
       description: `${template.name} template has been applied to your form with default branding.`,
@@ -847,7 +853,10 @@ const Index = () => {
                               <div className="flex gap-2">
                                 <Button 
                                   size="sm" 
-                                  onClick={() => loadForm(draft)}
+                                  onClick={() => {
+                                    loadForm(draft);
+                                    setActiveTab("build-form");
+                                  }}
                                   className="flex-1 gap-1"
                                 >
                                   <Edit className="h-3 w-3" />
