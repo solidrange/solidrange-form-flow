@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
@@ -6,7 +5,7 @@ import { SubmissionReview } from "@/components/SubmissionReview";
 import { FormLibrary } from "@/components/FormLibrary";
 import { GlobalSettings } from "@/components/GlobalSettings";
 import { FeatureTestSuite } from "@/components/FeatureTestSuite";
-import { Form, FormField, FormTemplate, FormSubmission } from "@/types/form";
+import { Form, FormField } from "@/types/form";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useBrand } from "@/contexts/BrandContext";
@@ -20,34 +19,20 @@ const Index = () => {
     title: "Untitled Form",
     description: "",
     fields: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    status: 'draft',
-    submissions: 0,
     analytics: {
       views: 0,
       submissions: 0,
       completionRate: 0,
       emailsSent: 0,
-      emailsCompleted: 0,
-      averageCompletionTime: 0,
-      dropoffRate: 0,
     },
     settings: {
       allowMultipleSubmissions: true,
       requireLogin: false,
       showProgressBar: true,
-      theme: 'light',
       scoring: {
         enabled: false,
-        maxTotalPoints: 100,
         passingScore: 70,
         showScoreToUser: true,
-        riskThresholds: {
-          low: 80,
-          medium: 60,
-          high: 40,
-        },
       },
       expiration: {
         enabled: false,
@@ -97,12 +82,15 @@ const Index = () => {
   });
   const [currentTab, setCurrentTab] = useState("builder");
   const { brand } = useBrand();
-  const formStatusHook = useFormStatus();
+  const { setFormStatus } = useFormStatus();
 
   useEffect(() => {
-    // Update form status when form changes
-    console.log('Form updated:', currentForm.title, currentForm.description);
-  }, [currentForm.title, currentForm.description]);
+    setFormStatus({
+      title: currentForm.title,
+      description: currentForm.description,
+      status: "draft",
+    });
+  }, [currentForm.title, currentForm.description, setFormStatus]);
 
   const updateField = (fieldId: string, updates: Partial<FormField>) => {
     setCurrentForm((prevForm) => ({
@@ -119,34 +107,20 @@ const Index = () => {
       title: "New Form",
       description: "",
       fields: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      status: 'draft',
-      submissions: 0,
       analytics: {
         views: 0,
         submissions: 0,
         completionRate: 0,
         emailsSent: 0,
-        emailsCompleted: 0,
-        averageCompletionTime: 0,
-        dropoffRate: 0,
       },
       settings: {
         allowMultipleSubmissions: true,
         requireLogin: false,
         showProgressBar: true,
-        theme: 'light',
         scoring: {
           enabled: false,
-          maxTotalPoints: 100,
           passingScore: 70,
           showScoreToUser: true,
-          riskThresholds: {
-            low: 80,
-            medium: 60,
-            high: 40,
-          },
         },
         expiration: {
           enabled: false,
@@ -191,87 +165,6 @@ const Index = () => {
     setCurrentForm(updatedForm);
   };
 
-  const handleTemplateUse = (template: FormTemplate) => {
-    const newForm: Form = {
-      id: Date.now().toString(),
-      title: template.name,
-      description: template.description,
-      fields: template.fields,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      status: 'draft',
-      submissions: 0,
-      category: template.category,
-      targetAudience: template.targetAudience,
-      analytics: {
-        views: 0,
-        submissions: 0,
-        completionRate: 0,
-        emailsSent: 0,
-        emailsCompleted: 0,
-        averageCompletionTime: 0,
-        dropoffRate: 0,
-      },
-      settings: {
-        allowMultipleSubmissions: true,
-        requireLogin: false,
-        showProgressBar: true,
-        theme: 'light',
-        scoring: {
-          enabled: false,
-          maxTotalPoints: 100,
-          passingScore: 70,
-          showScoreToUser: true,
-          riskThresholds: {
-            low: 80,
-            medium: 60,
-            high: 40,
-          },
-        },
-        expiration: {
-          enabled: false,
-          expirationDate: new Date(),
-          message: "This form has expired.",
-        },
-        emailDistribution: {
-          enabled: false,
-          recipients: [],
-          reminderEnabled: false,
-          reminderIntervalDays: 7,
-          maxReminders: 3,
-        },
-        approval: {
-          enabled: false,
-          requireApproval: false,
-          approvers: [],
-          autoApproveScore: 80,
-        },
-        documents: {
-          enabled: false,
-          allowedTypes: [],
-          maxSize: 10,
-          requiredDocuments: [],
-          allowUserUploads: true,
-        },
-        branding: {
-          enabled: true,
-          showLogo: true,
-          showBrandColors: true,
-          brandName: brand.name,
-          logo: brand.logo,
-          colors: brand.colors,
-        },
-      },
-    };
-    setCurrentForm(newForm);
-    setCurrentTab("builder");
-  };
-
-  const handleUpdateSubmission = (submissionId: string, updates: Partial<FormSubmission>) => {
-    console.log('Updating submission:', submissionId, updates);
-    // In a real app, this would update the submission in the database
-  };
-
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-4">
@@ -296,12 +189,16 @@ const Index = () => {
 
           <TabsContent value="library" className="mt-6">
             <FormLibrary
-              onUseTemplate={handleTemplateUse}
+              onUseTemplate={(template) => {
+                setCurrentForm(template);
+                setCurrentTab("builder");
+              }}
             />
           </TabsContent>
 
           <TabsContent value="builder" className="mt-6">
             <FormBuilder
+              form={currentForm}
               onFormUpdate={setCurrentForm}
             />
           </TabsContent>
@@ -320,7 +217,6 @@ const Index = () => {
             <SubmissionReview
               form={currentForm}
               submissions={sampleSubmissions}
-              onUpdateSubmission={handleUpdateSubmission}
             />
           </TabsContent>
 
