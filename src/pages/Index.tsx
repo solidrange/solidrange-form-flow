@@ -113,6 +113,54 @@ const Index = () => {
     }));
   };
 
+  const addField = (field: FormField) => {
+    setCurrentForm((prevForm) => ({
+      ...prevForm,
+      fields: [...prevForm.fields, field],
+    }));
+  };
+
+  const removeField = (fieldId: string) => {
+    setCurrentForm((prevForm) => ({
+      ...prevForm,
+      fields: prevForm.fields.filter((field) => field.id !== fieldId),
+    }));
+  };
+
+  const updateTitle = (title: string) => {
+    setCurrentForm((prevForm) => ({
+      ...prevForm,
+      title,
+    }));
+  };
+
+  const updateDescription = (description: string) => {
+    setCurrentForm((prevForm) => ({
+      ...prevForm,
+      description,
+    }));
+  };
+
+  const reorderFields = (dragIndex: number, hoverIndex: number) => {
+    setCurrentForm((prevForm) => {
+      const newFields = [...prevForm.fields];
+      const draggedField = newFields[dragIndex];
+      newFields.splice(dragIndex, 1);
+      newFields.splice(hoverIndex, 0, draggedField);
+      return {
+        ...prevForm,
+        fields: newFields,
+      };
+    });
+  };
+
+  const updateSettings = (settings: any) => {
+    setCurrentForm((prevForm) => ({
+      ...prevForm,
+      settings,
+    }));
+  };
+
   const createNewForm = () => {
     const newForm: Form = {
       id: Date.now().toString(),
@@ -302,7 +350,17 @@ const Index = () => {
 
           <TabsContent value="builder" className="mt-6">
             <FormBuilder
-              onFormUpdate={setCurrentForm}
+              formFields={currentForm.fields}
+              formTitle={currentForm.title}
+              formDescription={currentForm.description}
+              formSettings={currentForm.settings}
+              onAddField={addField}
+              onUpdateField={updateField}
+              onRemoveField={removeField}
+              onUpdateTitle={updateTitle}
+              onUpdateDescription={updateDescription}
+              onReorderFields={reorderFields}
+              onUpdateSettings={updateSettings}
             />
           </TabsContent>
 
