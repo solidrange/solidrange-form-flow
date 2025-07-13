@@ -1061,19 +1061,17 @@ const Index = () => {
                       onAddField={addField}
                       onUpdateField={updateField}
                       onRemoveField={removeField}
-                      onReorderFields={reorderFields}
-                      formTitle={formTitle}
+                      selectedFieldId={null}
+                      onSelectField={() => {}}
+                      title={formTitle}
                       onUpdateTitle={setFormTitle}
-                      formDescription={formDescription}
+                      description={formDescription}
                       onUpdateDescription={setFormDescription}
-                      formSettings={formSettings}
-                      onUpdateSettings={updateFormSettings}
-                      formCategory={formCategory}
-                      onCategoryChange={setFormCategory}
-                      formTargetAudience={formTargetAudience}
-                      onTargetAudienceChange={setFormTargetAudience}
+                      onSaveForm={saveForm}
+                      onPreviewForm={() => {}}
                       attachments={formAttachments}
-                      onUpdateAttachments={setFormAttachments}
+                      onAddAttachment={() => {}}
+                      onRemoveAttachment={() => {}}
                       onSaveToLibrary={handleSaveToLibrary}
                       isPublished={currentFormIsPublished()}
                       onMoveToDraft={() => handleMoveToDraft()}
