@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { FormSubmission, Form } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -716,25 +717,6 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
           )}
         </div>
       </div>
-
-      {/* Bulk Actions */}
-      {sortedSubmissions.length > 0 && (
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-          <span className="text-sm text-gray-600">
-            {sortedSubmissions.length} submission{sortedSubmissions.length !== 1 ? 's' : ''} found
-          </span>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => exportToExcel(sortedSubmissions)}
-            >
-              <Download className="h-4 w-4 mr-2" />
-              Export All to Excel
-            </Button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
