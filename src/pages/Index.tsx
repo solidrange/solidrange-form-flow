@@ -1054,18 +1054,20 @@ const Index = () => {
                       onRemoveField={removeField}
                       onReorderFields={reorderFields}
                       formTitle={formTitle}
-                      onTitleChange={setFormTitle}
+                      onUpdateTitle={setFormTitle}
                       formDescription={formDescription}
-                      onDescriptionChange={setFormDescription}
+                      onUpdateDescription={setFormDescription}
                       formSettings={formSettings}
-                      onSettingsChange={updateFormSettings}
+                      onUpdateSettings={updateFormSettings}
                       formCategory={formCategory}
                       onCategoryChange={setFormCategory}
                       formTargetAudience={formTargetAudience}
                       onTargetAudienceChange={setFormTargetAudience}
                       attachments={formAttachments}
-                      onAttachmentsChange={setFormAttachments}
+                      onUpdateAttachments={setFormAttachments}
                       onSaveToLibrary={handleSaveToLibrary}
+                      isPublished={currentFormIsPublished()}
+                      onMoveToDraft={() => handleMoveToDraft()}
                     />
                   </TabsContent>
 
