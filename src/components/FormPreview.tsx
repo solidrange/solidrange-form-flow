@@ -1,4 +1,3 @@
-
 import { FormField, Form, DocumentAttachment } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -59,7 +58,7 @@ export const FormPreview = ({
   // Get branding settings - prioritize form-specific branding over global
   const brandingEnabled = formSettings?.branding?.enabled ?? true;
   const brandName = formSettings?.branding?.brandName || brand.name;
-  const brandLogo = formSettings?.branding?.logoUrl || brand.logo;
+  const brandLogo = formSettings?.branding?.logo || brand.logo;
   const brandColors = formSettings?.branding?.colors || brand.colors;
 
   if (isExpired) {
