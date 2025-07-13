@@ -59,7 +59,7 @@ export const FormPreview = ({
   // Get branding settings - prioritize form-specific branding over global
   const brandingEnabled = formSettings?.branding?.enabled ?? true;
   const brandName = formSettings?.branding?.brandName || brand.name;
-  const brandLogo = formSettings?.branding?.logo || brand.logo;
+  const brandLogo = formSettings?.branding?.logoUrl || brand.logo;
   const brandColors = formSettings?.branding?.colors || brand.colors;
 
   if (isExpired) {
@@ -70,7 +70,7 @@ export const FormPreview = ({
             <AlertCircle className="h-12 w-12 text-red-500 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-red-800 mb-2">Form Expired</h3>
             <p className="text-red-600">
-              {formSettings?.expiration?.message || "This form has expired and is no longer accepting submissions."}
+              {formSettings.expiration?.message || "This form has expired and is no longer accepting submissions."}
             </p>
           </CardContent>
         </Card>
