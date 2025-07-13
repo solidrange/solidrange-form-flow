@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Card, CardProps } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { useBranding } from './BrandingProvider';
 import { cn } from '@/lib/utils';
 

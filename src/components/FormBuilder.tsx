@@ -184,10 +184,12 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                     <CardContent className="flex-1">
                       <FormCanvas
                         fields={formFields}
-                        selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
+                        selectedField={selectedFieldId}
                         onSelectField={onSelectField}
                         onUpdateField={onUpdateField}
                         onRemoveField={onRemoveField}
+                        onAddField={onAddField}
+                        onReorderFields={() => {}}
                       />
                     </CardContent>
                   </BrandedCard>
