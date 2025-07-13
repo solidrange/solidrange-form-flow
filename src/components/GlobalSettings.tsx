@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BrandSettings } from "./BrandSettings";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Globe, Palette, Settings } from "lucide-react";
 
 export const GlobalSettings = () => {
   const { theme: globalTheme, setTheme } = useTheme();
@@ -20,14 +21,17 @@ export const GlobalSettings = () => {
 
   return (
     <div className="space-y-6">
-      {/* Language Settings */}
+      {/* Language & Localization Settings */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('languageSettings')}</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Globe className="h-5 w-5" />
+            Language & Localization
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label>{t('selectLanguage')}</Label>
+            <Label>Application Language</Label>
             <Select value={language} onValueChange={handleLanguageChange}>
               <SelectTrigger className="mt-1">
                 <SelectValue />
@@ -44,14 +48,17 @@ export const GlobalSettings = () => {
         </CardContent>
       </Card>
 
-      {/* Theme Settings */}
+      {/* Application Theme Settings */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('theme')}</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Palette className="h-5 w-5" />
+            Application Theme
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <Label>{t('globalTheme')}</Label>
+            <Label>Global Theme</Label>
             <Select value={globalTheme} onValueChange={handleThemeChange}>
               <SelectTrigger className="mt-1">
                 <SelectValue />
@@ -69,10 +76,13 @@ export const GlobalSettings = () => {
         </CardContent>
       </Card>
 
-      {/* Brand Identity Settings */}
+      {/* Brand Identity & Customization */}
       <Card>
         <CardHeader>
-          <CardTitle>{t('brandIdentity')}</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            Brand Identity & Customization
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <BrandSettings />

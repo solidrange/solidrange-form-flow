@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Form } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { WeightageAndScoringSettings } from "./WeightageAndScoringSettings";
 import { Badge } from "@/components/ui/badge";
-import { Upload, Palette, X, Eye } from "lucide-react";
+import { Upload, Palette, X, Eye, Settings, Shield, Clock, Mail, FileText, Sliders } from "lucide-react";
 import { useBrand } from "@/contexts/BrandContext";
 import { BrandLogo } from "./BrandLogo";
 import { toast } from "@/hooks/use-toast";
@@ -224,10 +225,13 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
 
   return (
     <div className="space-y-6">
-      {/* Basic Settings */}
+      {/* Basic Form Settings */}
       <Card>
         <CardHeader>
-          <CardTitle>Basic Settings</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Settings className="h-5 w-5" />
+            Basic Form Settings
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Multiple submissions toggle */}
@@ -245,7 +249,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
           {/* Login requirement toggle */}
           <div className="flex items-center justify-between">
             <div>
-              <Label>Require Login</Label>
+              <Label>Require User Authentication</Label>
               <p className="text-sm text-gray-500">Users must be logged in to access the form</p>
             </div>
             <Switch
@@ -257,7 +261,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
           {/* Progress bar toggle */}
           <div className="flex items-center justify-between">
             <div>
-              <Label>Show Progress Bar</Label>
+              <Label>Show Progress Indicator</Label>
               <p className="text-sm text-gray-500">Display progress indicator to users</p>
             </div>
             <Switch
@@ -268,10 +272,13 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
         </CardContent>
       </Card>
 
-      {/* Form Theme Override */}
+      {/* Form Theme & Appearance */}
       <Card>
         <CardHeader>
-          <CardTitle>Form Theme Override</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Palette className="h-5 w-5" />
+            Theme & Appearance
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
@@ -282,9 +289,9 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="inherit">Inherit Global Theme</SelectItem>
-                <SelectItem value="light">Light</SelectItem>
-                <SelectItem value="dark">Dark</SelectItem>
-                <SelectItem value="custom">Custom</SelectItem>
+                <SelectItem value="light">Light Theme</SelectItem>
+                <SelectItem value="dark">Dark Theme</SelectItem>
+                <SelectItem value="custom">Custom CSS</SelectItem>
               </SelectContent>
             </Select>
             <p className="text-xs text-muted-foreground mt-1">
@@ -295,7 +302,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
           {/* Custom CSS editor for custom theme */}
           {form.settings.theme === 'custom' && (
             <div>
-              <Label>Custom CSS</Label>
+              <Label>Custom CSS Styles</Label>
               <Textarea
                 value={form.settings.customCss || ''}
                 onChange={(e) => handleCustomCssChange(e.target.value)}
@@ -311,7 +318,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
         </CardContent>
       </Card>
 
-      {/* Branding Settings */}
+      {/* Form Branding Settings */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -323,7 +330,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
           {/* Enable branding toggle */}
           <div className="flex items-center justify-between">
             <div>
-              <Label>Enable Branding</Label>
+              <Label>Enable Custom Branding</Label>
               <p className="text-sm text-gray-500">Show your organization's branding on this form</p>
             </div>
             <Switch
@@ -342,7 +349,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
               <div>
                 <Label className="flex items-center gap-2">
                   <Eye className="h-4 w-4" />
-                  Preview
+                  Brand Preview
                 </Label>
                 <div className="mt-2 p-4 bg-muted/30 rounded-lg border flex items-center justify-center">
                   <div className="flex items-center gap-3">
@@ -364,7 +371,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
               <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-sm font-medium text-blue-900">Use Global Brand</Label>
+                    <Label className="text-sm font-medium text-blue-900">Apply Global Brand</Label>
                     <p className="text-xs text-blue-700">Apply your global brand settings to this form</p>
                   </div>
                   <Button
@@ -373,7 +380,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
                     onClick={handleUseBrandDefaults}
                     className="border-blue-300 text-blue-700 hover:bg-blue-100"
                   >
-                    Apply
+                    Apply Brand
                   </Button>
                 </div>
               </div>
@@ -381,7 +388,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
               {/* Show logo toggle */}
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Show Logo</Label>
+                  <Label>Display Logo</Label>
                   <p className="text-sm text-gray-500">Display logo on the form</p>
                 </div>
                 <Switch
@@ -392,7 +399,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
 
               {/* Brand name */}
               <div>
-                <Label>Brand Name</Label>
+                <Label>Organization Name</Label>
                 <Input
                   value={form.settings.branding?.brandName || ''}
                   onChange={(e) => handleBrandingChange('brandName', e.target.value)}
@@ -409,7 +416,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
                 <div>
                   <Label className="flex items-center gap-2">
                     <Upload className="h-4 w-4" />
-                    Logo
+                    Logo Upload
                   </Label>
                   <div className="flex items-center gap-3 mt-2">
                     <div className="flex-1">
@@ -453,10 +460,10 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
               {/* Color preview */}
               {form.settings.branding?.showBrandColors && form.settings.branding?.colors && (
                 <div>
-                  <Label>Brand Colors</Label>
+                  <Label>Brand Color Palette</Label>
                   <div className="grid grid-cols-2 gap-3 mt-2">
                     <div className="space-y-1">
-                      <span className="text-xs text-gray-600">Primary</span>
+                      <span className="text-xs text-gray-600">Primary Color</span>
                       <div className="flex items-center gap-2">
                         <div 
                           className="w-6 h-6 rounded border"
@@ -468,7 +475,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <span className="text-xs text-gray-600">Secondary</span>
+                      <span className="text-xs text-gray-600">Secondary Color</span>
                       <div className="flex items-center gap-2">
                         <div 
                           className="w-6 h-6 rounded border"
@@ -481,7 +488,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
                     </div>
                   </div>
                   <p className="text-xs text-gray-500 mt-2">
-                    Colors are inherited from global brand settings. Change them in Global Settings → Brand.
+                    Colors are inherited from global brand settings. Change them in Global Settings → Brand Identity.
                   </p>
                 </div>
               )}
@@ -491,23 +498,36 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
       </Card>
 
       {/* Scoring and Weightage Settings */}
-      <WeightageAndScoringSettings
-        fields={form.fields}
-        settings={form.settings}
-        onUpdateField={handleFieldUpdate}
-        onUpdateSettings={handleSettingsUpdate}
-      />
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sliders className="h-5 w-5" />
+            Scoring & Analysis
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <WeightageAndScoringSettings
+            fields={form.fields}
+            settings={form.settings}
+            onUpdateField={handleFieldUpdate}
+            onUpdateSettings={handleSettingsUpdate}
+          />
+        </CardContent>
+      </Card>
 
       {/* Approval Workflow */}
       <Card>
         <CardHeader>
-          <CardTitle>Approval Workflow</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            Approval Workflow
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Enable approval workflow */}
           <div className="flex items-center justify-between">
             <div>
-              <Label>Enable Approval Workflow</Label>
+              <Label>Enable Approval Process</Label>
               <p className="text-sm text-gray-500">Require manual approval for submissions</p>
             </div>
             <Switch
@@ -520,7 +540,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
           {form.settings.approval?.enabled && (
             <>
               <div>
-                <Label>Auto-Approve Score Threshold</Label>
+                <Label>Auto-Approval Score Threshold</Label>
                 <Input
                   type="number"
                   min="0"
@@ -530,13 +550,13 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
                   className="mt-1"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Submissions with scores above this threshold will be auto-approved
+                  Submissions with scores above this threshold will be automatically approved
                 </p>
               </div>
 
               {/* Approvers list */}
               <div>
-                <Label>Approvers</Label>
+                <Label>Authorized Approvers</Label>
                 <div className="space-y-2 mt-2">
                   {(form.settings.approval.approvers || []).map((approver, index) => (
                     <div key={index} className="flex items-center gap-2">
@@ -547,7 +567,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
                           newApprovers[index] = e.target.value;
                           handleApprovalChange('approvers', newApprovers);
                         }}
-                        placeholder="Enter approver email"
+                        placeholder="Enter approver email address"
                       />
                       <Button
                         variant="outline"
@@ -578,10 +598,13 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
         </CardContent>
       </Card>
 
-      {/* Document Settings */}
+      {/* Document Management */}
       <Card>
         <CardHeader>
-          <CardTitle>Document Attachments</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Document Management
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Enable document uploads */}
@@ -653,16 +676,19 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
         </CardContent>
       </Card>
 
-      {/* Expiration Settings */}
+      {/* Form Expiration */}
       <Card>
         <CardHeader>
-          <CardTitle>Expiration Settings</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Clock className="h-5 w-5" />
+            Form Expiration
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Enable expiration */}
           <div className="flex items-center justify-between">
             <div>
-              <Label>Enable Expiration</Label>
+              <Label>Enable Form Expiration</Label>
               <p className="text-sm text-gray-500">Set an expiration date for this form</p>
             </div>
             <Switch
@@ -704,10 +730,13 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
         </CardContent>
       </Card>
 
-      {/* Email Distribution Settings */}
+      {/* Email Distribution */}
       <Card>
         <CardHeader>
-          <CardTitle>Email Distribution</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="h-5 w-5" />
+            Email Distribution
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Enable email distribution */}
@@ -731,7 +760,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
               {/* Reminder settings */}
               <div className="flex items-center justify-between">
                 <div>
-                  <Label>Enable Reminders</Label>
+                  <Label>Enable Email Reminders</Label>
                   <p className="text-sm text-gray-500">Send reminder emails to recipients</p>
                 </div>
                 <Switch
@@ -757,7 +786,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
               {/* Max reminders */}
               {form.settings.emailDistribution?.reminderEnabled && (
                 <div>
-                  <Label>Max Reminders</Label>
+                  <Label>Maximum Reminders</Label>
                   <Input
                     type="number"
                     min="1"
@@ -770,7 +799,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
 
               {/* Recipients list */}
               <div>
-                <Label>Recipients</Label>
+                <Label>Email Recipients</Label>
                 <Textarea
                   value={(form.settings.emailDistribution?.recipients || []).map(r => r.email).join('\n')}
                   onChange={(e) => {

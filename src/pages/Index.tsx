@@ -48,7 +48,7 @@ import {
 const Index = () => {
   const { t, isRTL } = useLanguage();
   
-  // Tab navigation state
+  // ... keep existing code (state management) the same ...
   const [activeTab, setActiveTab] = useState("dashboard");
   const [activeBuildTab, setActiveBuildTab] = useState("builder");
   const [submissionFilters, setSubmissionFilters] = useState<{
@@ -131,6 +131,20 @@ const Index = () => {
 
   // Sample submissions for testing
   const [submissions] = useState(sampleSubmissions);
+
+  // ... keep existing code (helper functions) the same ...
+
+  // Helper function to get proper page titles
+  const getPageTitle = (tabKey: string) => {
+    const pageTitles = {
+      'dashboard': 'Analytics Dashboard',
+      'review-submissions': 'Review Submissions',
+      'forms': 'Form Management',
+      'build-form': 'Form Builder',
+      'global-settings': 'Global Settings'
+    };
+    return pageTitles[tabKey as keyof typeof pageTitles] || 'FormFlow';
+  };
 
   /**
    * Get the current form's status
@@ -660,8 +674,8 @@ const Index = () => {
   // Create mobile-friendly tabs array for build section
   const buildTabs = [
     { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" />, mobileLabel: "Build" },
-    { id: "library", label: "Library", icon: <Folder className="h-4 w-4" />, mobileLabel: "Lib" },
-    { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" />, mobileLabel: "View" }
+    { id: "library", label: "Template Library", icon: <Folder className="h-4 w-4" />, mobileLabel: "Templates" },
+    { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" />, mobileLabel: "Preview" }
   ];
 
   // Check if there are unpublished drafts for notification dot
@@ -685,7 +699,7 @@ const Index = () => {
               <div className="flex items-center gap-2">
                 <SidebarTrigger />
                 <div className="h-4 w-px bg-border" />
-                <h1 className="font-semibold text-lg">{t(activeTab.replace('-', ''))}</h1>
+                <h1 className="font-semibold text-lg">{getPageTitle(activeTab)}</h1>
               </div>
               
               {/* Quick Share Button for Published Forms */}
@@ -694,7 +708,7 @@ const Index = () => {
                   <DialogTrigger asChild>
                     <Button variant="outline" size="sm" className="gap-2">
                       <Globe className="h-4 w-4" />
-                      Share
+                      Share Form
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl">
@@ -798,12 +812,12 @@ const Index = () => {
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Forms</h2>
+                    <h2 className="text-2xl font-bold text-gray-900">Form Management</h2>
                     <p className="text-gray-600">Manage your draft and published forms</p>
                   </div>
                   <Button onClick={createNewForm} className="gap-2">
                     <Plus className="h-4 w-4" />
-                    New Form
+                    Create New Form
                   </Button>
                 </div>
 
@@ -811,11 +825,11 @@ const Index = () => {
                   <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="drafts" className="flex items-center gap-2">
                       <Edit className="h-4 w-4" />
-                      Drafts ({savedDrafts.length})
+                      Draft Forms ({savedDrafts.length})
                     </TabsTrigger>
                     <TabsTrigger value="published" className="flex items-center gap-2">
                       <Globe className="h-4 w-4" />
-                      Published ({publishedForms.length})
+                      Published Forms ({publishedForms.length})
                     </TabsTrigger>
                   </TabsList>
 
@@ -1039,7 +1053,7 @@ const Index = () => {
                     )}
                     <Button onClick={() => handlePublishForm()} className="gap-2">
                       <Globe className="h-4 w-4" />
-                      Publish
+                      Publish Form
                     </Button>
                   </div>
                 </div>
@@ -1097,7 +1111,15 @@ const Index = () => {
             )}
 
             {activeTab === "global-settings" && (
-              <GlobalSettings />
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900">Global Settings</h2>
+                    <p className="text-gray-600">Configure global application settings and branding</p>
+                  </div>
+                </div>
+                <GlobalSettings />
+              </div>
             )}
           </div>
         </SidebarInset>

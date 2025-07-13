@@ -42,26 +42,26 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
     },
     {
       id: "review-submissions",
-      label: "Review",
+      label: "Review Submissions",
       icon: ClipboardList,
       onClick: () => onTabChange("review-submissions")
     },
     {
       id: "forms",
-      label: "Forms",
+      label: "Form Management",
       icon: Folder,
       onClick: () => onTabChange("forms"),
       badge: hasUnpublishedDrafts
     },
     {
       id: "build-form",
-      label: "Build",
+      label: "Form Builder",
       icon: Wrench,
       onClick: () => onTabChange("build-form")
     },
     {
       id: "global-settings",
-      label: "Settings",
+      label: "Global Settings",
       icon: Settings,
       onClick: () => onTabChange("global-settings")
     }
