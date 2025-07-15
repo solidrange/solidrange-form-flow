@@ -1,123 +1,84 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
+
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
 import { 
   Bell, 
-  CheckCircle, 
-  AlertTriangle, 
-  Clock, 
   X, 
-  MoreHorizontal,
+  AlertTriangle, 
+  CheckCircle, 
+  Clock, 
+  User, 
+  FileText,
   Settings,
-  Filter
-} from "lucide-react";
+  Trash2,
+  ExternalLink
+} from 'lucide-react';
 
 interface Notification {
   id: string;
-  type: 'success' | 'warning' | 'info' | 'error';
+  type: 'warning' | 'success' | 'info' | 'error';
   title: string;
   message: string;
   timestamp: Date;
   read: boolean;
   actionRequired?: boolean;
+  link?: string;
 }
 
-const sampleNotifications: Notification[] = [
-  {
-    id: '1',
-    type: 'warning',
-    title: 'Pending Review Required',
-    message: 'You have 5 submissions pending review that require immediate attention.',
-    timestamp: new Date(Date.now() - 10 * 60 * 1000), // 10 minutes ago
-    read: false,
-    actionRequired: true
-  },
-  {
-    id: '2',
-    type: 'success',
-    title: 'Form Approved',
-    message: 'TechCorp Solutions submission has been approved successfully.',
-    timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
-    read: false
-  },
-  {
-    id: '3',
-    type: 'info',
-    title: 'System Update',
-    message: 'New filtering options are now available in the submissions panel.',
-    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-    read: true
-  },
-  {
-    id: '4',
-    type: 'error',
-    title: 'High Risk Alert',
-    message: 'New submission from DataFlow Inc. has been flagged as high risk.',
-    timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
-    read: false,
-    actionRequired: true
-  },
-  {
-    id: '5',
-    type: 'info',
-    title: 'Weekly Report Ready',
-    message: 'Your weekly submission report is ready for download.',
-    timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
-    read: true
-  }
-];
-
-interface NotificationPanelProps {
-  onNavigate?: (tab: string, filters?: any) => void;
-}
-
-export const NotificationPanel = ({ onNavigate }: NotificationPanelProps) => {
-  const [notifications, setNotifications] = useState<Notification[]>(sampleNotifications);
-  const [filter, setFilter] = useState<'all' | 'unread' | 'actionRequired'>('all');
-
-  const unreadCount = notifications.filter(n => !n.read).length;
-  const actionRequiredCount = notifications.filter(n => n.actionRequired).length;
-
-  const filteredNotifications = notifications.filter(notification => {
-    if (filter === 'unread') return !notification.read;
-    if (filter === 'actionRequired') return notification.actionRequired;
-    return true;
-  });
-
-  const markAsRead = (id: string) => {
-    setNotifications(prev => 
-      prev.map(notification => 
-        notification.id === id ? { ...notification, read: true } : notification
-      )
-    );
-  };
-
-  const markAllAsRead = () => {
-    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  };
-
-  const handleNotificationClick = (notification: Notification) => {
-    markAsRead(notification.id);
-    
-    // Navigate based on notification type
-    if (notification.actionRequired) {
-      onNavigate?.('submissions', { status: ['submitted'] });
-    } else if (notification.type === 'error') {
-      onNavigate?.('submissions', { riskLevel: ['high', 'critical'] });
+export const NotificationPanel: React.FC = () => {
+  const [notifications, setNotifications] = useState<Notification[]>([
+    {
+      id: '1',
+      type: 'warning',
+      title: 'High Risk Submission',
+      message: 'TechCorp Solutions submitted a form with critical risk indicators.',
+      timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
+      read: false,
+      actionRequired: true,
+      link: '/submissions'
+    },
+    {
+      id: '2',
+      type: 'info',
+      title: 'Form Expiring Soon',
+      message: 'Vendor Assessment Form will expire in 3 days.',
+      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
+      read: false,
+      actionRequired: false
+    },
+    {
+      id: '3',
+      type: 'success',
+      title: 'Submission Approved',
+      message: 'Global Finance Inc submission has been approved.',
+      timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000), // 5 hours ago
+      read: true,
+      actionRequired: false
+    },
+    {
+      id: '4',
+      type: 'info',
+      title: 'New Submission',
+      message: 'SecureCloud Systems submitted a new form.',
+      timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // 1 day ago
+      read: true,
+      actionRequired: false,
+      link: '/submissions'
     }
-  };
+  ]);
 
   const getIcon = (type: string) => {
     switch (type) {
-      case 'success':
-        return <CheckCircle className="h-4 w-4 text-green-500" />;
       case 'warning':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />;
+        return <AlertTriangle className="h-4 w-4 text-orange-500" />;
       case 'error':
         return <AlertTriangle className="h-4 w-4 text-red-500" />;
+      case 'success':
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
       default:
         return <Bell className="h-4 w-4 text-blue-500" />;
     }
@@ -135,124 +96,154 @@ export const NotificationPanel = ({ onNavigate }: NotificationPanelProps) => {
     return `${days}d ago`;
   };
 
+  const markAsRead = (id: string) => {
+    setNotifications(prev =>
+      prev.map(notif =>
+        notif.id === id ? { ...notif, read: true } : notif
+      )
+    );
+  };
+
+  const deleteNotification = (id: string) => {
+    setNotifications(prev => prev.filter(notif => notif.id !== id));
+  };
+
+  const markAllAsRead = () => {
+    setNotifications(prev =>
+      prev.map(notif => ({ ...notif, read: true }))
+    );
+  };
+
+  const clearAll = () => {
+    setNotifications([]);
+  };
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="relative">
-          <Bell className="h-4 w-4 mr-2" />
-          Notifications
-          {unreadCount > 0 && (
-            <Badge 
-              variant="destructive" 
-              className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 text-xs"
-            >
-              {unreadCount}
-            </Badge>
-          )}
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center justify-between">
-            <span className="flex items-center gap-2">
-              <Bell className="h-5 w-5" />
-              Notifications
-            </span>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={markAllAsRead}
-                disabled={unreadCount === 0}
-              >
-                Mark all read
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setFilter(filter === 'all' ? 'unread' : 'all')}
-              >
-                <Filter className="h-4 w-4" />
-              </Button>
-            </div>
-          </DialogTitle>
-        </DialogHeader>
-        
-        <div className="space-y-2">
-          <div className="flex gap-2">
+    <Card className="w-80 max-w-sm shadow-lg border">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Bell className="h-5 w-5" />
+            Notifications
+            {unreadCount > 0 && (
+              <Badge variant="destructive" className="text-xs">
+                {unreadCount}
+              </Badge>
+            )}
+          </CardTitle>
+        </div>
+        {notifications.length > 0 && (
+          <div className="flex gap-2 pt-2">
             <Button
-              variant={filter === 'all' ? 'default' : 'outline'}
+              variant="ghost"
               size="sm"
-              onClick={() => setFilter('all')}
+              onClick={markAllAsRead}
+              className="text-xs"
+              disabled={unreadCount === 0}
             >
-              All ({notifications.length})
+              Mark all read
             </Button>
             <Button
-              variant={filter === 'unread' ? 'default' : 'outline'}
+              variant="ghost"
               size="sm"
-              onClick={() => setFilter('unread')}
+              onClick={clearAll}
+              className="text-xs text-red-600 hover:text-red-700"
             >
-              Unread ({unreadCount})
-            </Button>
-            <Button
-              variant={filter === 'actionRequired' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setFilter('actionRequired')}
-            >
-              Action ({actionRequiredCount})
+              <Trash2 className="h-3 w-3 mr-1" />
+              Clear all
             </Button>
           </div>
-        </div>
+        )}
+      </CardHeader>
 
-        <ScrollArea className="h-96">
-          <div className="space-y-2">
-            {filteredNotifications.map((notification) => (
-              <Card
-                key={notification.id}
-                className={`cursor-pointer transition-colors hover:bg-gray-50 ${
-                  !notification.read ? 'border-blue-200 bg-blue-50' : ''
-                }`}
-                onClick={() => handleNotificationClick(notification)}
-              >
-                <CardContent className="p-3">
-                  <div className="flex items-start gap-3">
-                    {getIcon(notification.type)}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <p className="font-medium text-sm truncate">
-                          {notification.title}
-                        </p>
-                        <div className="flex items-center gap-2">
-                          {notification.actionRequired && (
-                            <Badge variant="destructive" className="text-xs">
-                              Action Required
-                            </Badge>
-                          )}
-                          {!notification.read && (
-                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          )}
+      <CardContent className="p-0">
+        {notifications.length === 0 ? (
+          <div className="p-6 text-center text-gray-500">
+            <Bell className="h-8 w-8 mx-auto mb-2 text-gray-300" />
+            <p className="text-sm">No notifications</p>
+          </div>
+        ) : (
+          <ScrollArea className="h-96">
+            <div className="space-y-1">
+              {notifications.map((notification, index) => (
+                <div key={notification.id}>
+                  <div
+                    className={`p-3 hover:bg-gray-50 cursor-pointer transition-colors ${
+                      !notification.read ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                    }`}
+                    onClick={() => markAsRead(notification.id)}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start gap-2 flex-1 min-w-0">
+                        {getIcon(notification.type)}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className="text-sm font-medium text-gray-900 truncate">
+                              {notification.title}
+                            </h4>
+                            {notification.actionRequired && (
+                              <Badge variant="destructive" className="text-xs">
+                                Action Required
+                              </Badge>
+                            )}
+                          </div>
+                          <p className="text-xs text-gray-600 mb-1 line-clamp-2">
+                            {notification.message}
+                          </p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs text-gray-400">
+                              {formatTimestamp(notification.timestamp)}
+                            </span>
+                            <div className="flex items-center gap-1">
+                              {notification.link && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 w-6 p-0"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    // Handle navigation
+                                    console.log('Navigate to:', notification.link);
+                                  }}
+                                >
+                                  <ExternalLink className="h-3 w-3" />
+                                </Button>
+                              )}
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 w-6 p-0 text-gray-400 hover:text-red-600"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteNotification(notification.id);
+                                }}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      <p className="text-xs text-gray-600 mt-1">
-                        {notification.message}
-                      </p>
-                      <p className="text-xs text-gray-400 mt-2">
-                        {formatTimestamp(notification.timestamp)}
-                      </p>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            ))}
-            {filteredNotifications.length === 0 && (
-              <div className="text-center py-8">
-                <Bell className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                <p className="text-gray-500">No notifications found</p>
-              </div>
-            )}
-          </div>
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
+                  {index < notifications.length - 1 && <Separator />}
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+        )}
+      </CardContent>
+
+      {notifications.length > 0 && (
+        <div className="p-3 border-t">
+          <Button variant="ghost" size="sm" className="w-full text-xs">
+            <Settings className="h-3 w-3 mr-1" />
+            Notification Settings
+          </Button>
+        </div>
+      )}
+    </Card>
   );
 };

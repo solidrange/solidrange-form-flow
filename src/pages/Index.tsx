@@ -3,7 +3,7 @@ import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { Reports } from "@/components/Reports";
-import { Analytics } from "@/components/Analytics";
+import Analytics from "@/components/Analytics";
 import { GlobalSettings } from "@/components/GlobalSettings";
 import { AppSidebar } from "@/components/AppSidebar";
 import { NotificationPanel } from "@/components/NotificationPanel";
@@ -31,7 +31,7 @@ import {
   Building
 } from "lucide-react";
 import { sampleForm, sampleSubmissions } from "@/data/sampleData";
-import { Form, FormSubmission } from "@/types/form";
+import { Form, FormSubmission, FormField, DocumentAttachment } from "@/types/form";
 
 export default function Index() {
   const { brand } = useBrand();
@@ -40,6 +40,14 @@ export default function Index() {
   const [forms] = useState<Form[]>([sampleForm]);
   const [submissions, setSubmissions] = useState<FormSubmission[]>(sampleSubmissions);
   const [selectedForm] = useState<Form>(sampleForm);
+  
+  // Form builder state
+  const [formFields, setFormFields] = useState<FormField[]>([]);
+  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+  const [formTitle, setFormTitle] = useState('New Form');
+  const [formDescription, setFormDescription] = useState('');
+  const [attachments, setAttachments] = useState<DocumentAttachment[]>([]);
+  const [isPublished, setIsPublished] = useState(false);
 
   useEffect(() => {
     const handleSetFilter = (event: CustomEvent) => {
@@ -78,6 +86,45 @@ export default function Index() {
       comments,
       lastResent: new Date()
     });
+  };
+
+  // Form builder handlers
+  const handleAddField = (field: FormField) => {
+    setFormFields(prev => [...prev, field]);
+  };
+
+  const handleUpdateField = (fieldId: string, updates: Partial<FormField>) => {
+    setFormFields(prev => 
+      prev.map(field => 
+        field.id === fieldId ? { ...field, ...updates } : field
+      )
+    );
+  };
+
+  const handleRemoveField = (fieldId: string) => {
+    setFormFields(prev => prev.filter(field => field.id !== fieldId));
+    if (selectedFieldId === fieldId) {
+      setSelectedFieldId(null);
+    }
+  };
+
+  const handleSaveForm = () => {
+    console.log('Saving form...');
+    // Implement save logic
+  };
+
+  const handlePreviewForm = () => {
+    console.log('Previewing form...');
+    // Implement preview logic
+  };
+
+  const handleSaveToLibrary = () => {
+    console.log('Saving to library...');
+    // Implement save to library logic
+  };
+
+  const handleMoveToDraft = () => {
+    setIsPublished(false);
   };
 
   const renderContent = () => {
@@ -288,7 +335,27 @@ export default function Index() {
           />
         );
       case "form-builder":
-        return <FormBuilder />;
+        return (
+          <FormBuilder
+            formFields={formFields}
+            onAddField={handleAddField}
+            onUpdateField={handleUpdateField}
+            onRemoveField={handleRemoveField}
+            selectedFieldId={selectedFieldId}
+            onSelectField={setSelectedFieldId}
+            title={formTitle}
+            description={formDescription}
+            onUpdateTitle={setFormTitle}
+            onUpdateDescription={setFormDescription}
+            onSaveForm={handleSaveForm}
+            onPreviewForm={handlePreviewForm}
+            attachments={attachments}
+            onUpdateAttachments={setAttachments}
+            onSaveToLibrary={handleSaveToLibrary}
+            isPublished={isPublished}
+            onMoveToDraft={handleMoveToDraft}
+          />
+        );
       case "reports":
         return <Reports submissions={submissions} forms={forms} />;
       case "analytics":
@@ -303,7 +370,11 @@ export default function Index() {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
-        <AppSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        <AppSidebar 
+          activeTab={activeTab} 
+          onTabChange={setActiveTab}
+          hasUnpublishedDrafts={false}
+        />
         <SidebarInset className="flex-1">
           {/* Header */}
           <header className="flex h-12 sm:h-14 lg:h-16 shrink-0 items-center gap-2 border-b px-3 sm:px-4 lg:px-6 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -333,7 +404,7 @@ export default function Index() {
                 
                 {showNotifications && (
                   <div className="absolute right-0 top-full mt-2 z-50">
-                    <NotificationPanel onClose={() => setShowNotifications(false)} />
+                    <NotificationPanel />
                   </div>
                 )}
               </div>

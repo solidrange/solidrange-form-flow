@@ -488,10 +488,8 @@ export const SubmissionReview = ({
               <div className="flex items-center gap-3">
                 <Checkbox
                   checked={isAllSelected}
-                  ref={(el) => {
-                    if (el) el.indeterminate = isPartiallySelected;
-                  }}
                   onCheckedChange={handleSelectAll}
+                  className={isPartiallySelected ? "data-[state=checked]:bg-primary/50" : ""}
                 />
                 <span className="text-sm">
                   {selectedSubmissions.length === 0 
