@@ -120,15 +120,7 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
                         <span className="font-medium text-xs lg:text-sm truncate">
                           {item.label}
                         </span>
-                        {item.badge && (
-                          <div className="animate-pulse">
-                            <div className="w-2 h-2 bg-red-500 rounded-full shadow-lg"></div>
-                          </div>
-                        )}
                       </div>
-                    )}
-                    {isCollapsed && item.badge && (
-                      <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full animate-bounce shadow-lg"></div>
                     )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
