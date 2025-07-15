@@ -105,6 +105,18 @@ export interface EmailRecipient {
   lastReminderAt?: Date;
 }
 
+export interface FormAnalytics {
+  enabled: boolean;
+  trackingPixel: boolean;
+  googleAnalytics?: string;
+  customEvents: boolean;
+  // Analytics data properties
+  views: number;
+  submissions: number;
+  emailsSent: number;
+  completionRate: number;
+}
+
 export interface Form {
   id: string;
   title: string;
@@ -114,12 +126,7 @@ export interface Form {
   createdAt: Date;
   updatedAt: Date;
   status: 'draft' | 'published';
-  analytics?: {
-    enabled: boolean;
-    trackingPixel: boolean;
-    googleAnalytics?: string;
-    customEvents: boolean;
-  };
+  analytics: FormAnalytics;
 }
 
 export interface FormTemplate {
