@@ -161,6 +161,10 @@ export interface FormSubmission {
     reviewedBy?: string;
     reviewedAt?: Date;
     reviewComments?: string;
+    details?: {
+      completedFields: number;
+      totalFields: number;
+    };
   };
   activityLog?: ReviewActivity[];
   documents?: DocumentAttachment[];

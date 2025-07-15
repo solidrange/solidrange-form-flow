@@ -26,6 +26,7 @@ import { AdvancedSubmissionFilters } from "./submissions/AdvancedSubmissionFilte
 import { BulkActions } from "./submissions/BulkActions";
 import { ThemeAwareSubmissionCard } from "./ThemeAwareSubmissionCard";
 import { ThemeAwareStatsCard } from "./ThemeAwareStatsCard";
+import { cn } from "@/lib/utils";
 
 interface SubmissionReviewProps {
   submissions: FormSubmission[];
