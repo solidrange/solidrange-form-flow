@@ -22,17 +22,29 @@ const Index: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Form builder state
+  const [formFields, setFormFields] = useState([]);
+  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+  const [formTitle, setFormTitle] = useState('');
+  const [formDescription, setFormDescription] = useState('');
+  const [attachments, setAttachments] = useState([]);
+
   // Form builder handlers
   const handleAddField = (field: any) => {
     console.log('Adding field:', field);
+    setFormFields(prev => [...prev, field]);
   };
 
-  const handleUpdateField = (id: string, updatedField: any) => {
-    console.log(`Updating field ${id} with`, updatedField);
+  const handleUpdateField = (fieldId: string, updatedField: any) => {
+    console.log(`Updating field ${fieldId} with`, updatedField);
+    setFormFields(prev => prev.map(field => 
+      field.id === fieldId ? { ...field, ...updatedField } : field
+    ));
   };
 
-  const handleRemoveField = (id: string) => {
-    console.log('Removing field:', id);
+  const handleRemoveField = (fieldId: string) => {
+    console.log('Removing field:', fieldId);
+    setFormFields(prev => prev.filter(field => field.id !== fieldId));
   };
 
   const handleSaveForm = () => {
@@ -40,9 +52,16 @@ const Index: React.FC = () => {
     setShowFormBuilder(false);
   };
 
-  const handleCancelForm = () => {
-    console.log('Canceling form...');
-    setShowFormBuilder(false);
+  const handlePreviewForm = () => {
+    console.log('Previewing form...');
+  };
+
+  const handleSaveToLibrary = () => {
+    console.log('Saving to library...');
+  };
+
+  const handleMoveToDraft = () => {
+    console.log('Moving to draft...');
   };
 
   return (
@@ -118,7 +137,7 @@ const Index: React.FC = () => {
             {activeTab === 'dashboard' && (
               <div className="space-y-6">
                 <DashboardOverview />
-                <Analytics />
+                <Analytics submissions={sampleSubmissions} />
               </div>
             )}
 
@@ -150,14 +169,14 @@ const Index: React.FC = () => {
 
             {activeTab === 'reports' && (
               <div className="space-y-6">
-                <Reports submissions={sampleSubmissions} />
+                <Reports submissions={sampleSubmissions} onGenerateReport={() => {}} />
               </div>
             )}
 
             {activeTab === 'analytics' && (
               <div className="space-y-6">
                 <h2 className="text-xl sm:text-2xl font-semibold">Analytics</h2>
-                <Analytics />
+                <Analytics submissions={sampleSubmissions} />
               </div>
             )}
           </div>
@@ -168,22 +187,23 @@ const Index: React.FC = () => {
           <Dialog open={showFormBuilder} onOpenChange={setShowFormBuilder}>
             <DialogContent className="max-w-6xl max-h-[90vh] overflow-auto p-0">
               <FormBuilder 
-                formFields={[]}
+                formFields={formFields}
                 onAddField={handleAddField}
                 onUpdateField={handleUpdateField}
                 onRemoveField={handleRemoveField}
-                onCancel={handleCancelForm}
-                formTitle=""
-                formDescription=""
-                onFormTitleChange={() => {}}
-                onFormDescriptionChange={() => {}}
-                onDuplicate={() => {}}
-                onFieldOrderChange={() => {}}
-                fieldValidationErrors={{}}
-                showValidationErrors={false}
-                onValidationErrorsChange={() => {}}
-                onShowValidationErrorsChange={() => {}}
-                onFieldSettingsChange={() => {}}
+                selectedFieldId={selectedFieldId}
+                onSelectField={setSelectedFieldId}
+                title={formTitle}
+                description={formDescription}
+                onUpdateTitle={setFormTitle}
+                onUpdateDescription={setFormDescription}
+                onSaveForm={handleSaveForm}
+                onPreviewForm={handlePreviewForm}
+                attachments={attachments}
+                onUpdateAttachments={setAttachments}
+                onSaveToLibrary={handleSaveToLibrary}
+                isPublished={false}
+                onMoveToDraft={handleMoveToDraft}
               />
             </DialogContent>
           </Dialog>
