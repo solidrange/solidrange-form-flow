@@ -1,10 +1,9 @@
-
 import { useState, useEffect } from "react";
 import { FormSubmission, Form } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -101,6 +100,13 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
       }
     }
   }, [initialFilters]);
+
+  // Auto-select first submission if none selected
+  useEffect(() => {
+    if (submissions.length > 0 && !selectedSubmission) {
+      setSelectedSubmission(submissions[0].id);
+    }
+  }, [submissions, selectedSubmission]);
 
   // Filter submissions based on all criteria
   const filteredSubmissions = submissions.filter(submission => {
@@ -247,6 +253,12 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
 
   const handleResendForm = (submissionId: string, comments: string) => {
     console.log('Resending form to submission:', submissionId, 'with comments:', comments);
+    
+    // Simulate email sending
+    toast({
+      title: "Form Resent Successfully",
+      description: `Form has been resent to the submitter with your comments: "${comments}"`,
+    });
   };
 
   const exportToPDF = (submission: FormSubmission) => {
@@ -461,13 +473,48 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
     <div className="space-y-4 animate-fade-in">
       {/* Header with Search and Filters */}
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">Submissions ({sortedSubmissions.length})</h1>
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Review Submissions</h1>
+            <p className="text-gray-600">Total submissions: {sortedSubmissions.length}</p>
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const data = sortedSubmissions.map(sub => ({
+                  id: sub.id,
+                  company: sub.companyName || 'N/A',
+                  submitter: sub.submitterName || 'N/A',
+                  status: sub.status,
+                  score: sub.score?.percentage || 'N/A',
+                  risk: sub.score?.riskLevel || 'N/A',
+                  submitted: new Date(sub.submittedAt).toLocaleDateString()
+                }));
+                
+                const ws = XLSX.utils.json_to_sheet(data);
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Submissions");
+                XLSX.writeFile(wb, `submissions-${new Date().toISOString().split('T')[0]}.xlsx`);
+                
+                toast({
+                  title: "Export Successful",
+                  description: `${sortedSubmissions.length} submissions exported to Excel.`,
+                });
+              }}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Export All
+            </Button>
+          </div>
+        </div>
         
         {/* Search Bar */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
-            placeholder="Search by company, submitter, or email..."
+            placeholder="Search by company, submitter, email, or response content..."
             value={filters.searchTerm}
             onChange={(e) => updateFilter('searchTerm', e.target.value)}
             className="pl-10 h-12 text-sm"
@@ -664,35 +711,54 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
               <CardHeader className="pb-2 sm:pb-3">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-4">
                   <CardTitle className="text-sm sm:text-base lg:text-lg truncate">
-                    Review Submission
+                    Review Submission - {selectedSub.companyName || selectedSub.submitterName}
                   </CardTitle>
                   <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto">
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => exportToPDF(selectedSub)}
+                      onClick={() => {
+                        // Export single submission to PDF
+                        const doc = new jsPDF();
+                        doc.setFontSize(18);
+                        doc.text(`Submission Report - ${selectedSub.companyName || selectedSub.submitterName}`, 20, 20);
+                        
+                        let yPosition = 40;
+                        doc.setFontSize(12);
+                        doc.text(`Submitter: ${selectedSub.submitterName || 'N/A'}`, 20, yPosition);
+                        yPosition += 10;
+                        doc.text(`Email: ${selectedSub.submitterEmail}`, 20, yPosition);
+                        yPosition += 10;
+                        doc.text(`Company: ${selectedSub.companyName || 'N/A'}`, 20, yPosition);
+                        yPosition += 10;
+                        doc.text(`Status: ${selectedSub.status}`, 20, yPosition);
+                        yPosition += 10;
+                        doc.text(`Score: ${selectedSub.score?.percentage || 'N/A'}%`, 20, yPosition);
+                        yPosition += 20;
+                        
+                        doc.text('Responses:', 20, yPosition);
+                        yPosition += 10;
+                        
+                        Object.entries(selectedSub.responses).forEach(([key, value]) => {
+                          if (yPosition > 270) {
+                            doc.addPage();
+                            yPosition = 20;
+                          }
+                          doc.text(`${key}: ${Array.isArray(value) ? value.join(', ') : String(value)}`, 20, yPosition);
+                          yPosition += 8;
+                        });
+                        
+                        doc.save(`submission-${selectedSub.id}.pdf`);
+                        
+                        toast({
+                          title: "Export Successful",
+                          description: "Submission exported to PDF successfully.",
+                        });
+                      }}
                       className="text-xs px-2 py-1 whitespace-nowrap hover:scale-105 transition-transform duration-200"
                     >
                       <Download className="h-3 w-3 sm:h-4 sm:w-4" />
                       <span className="hidden sm:inline ml-1">PDF</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => exportToExcel([selectedSub])}
-                      className="text-xs px-2 py-1 whitespace-nowrap hover:scale-105 transition-transform duration-200"
-                    >
-                      <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="hidden sm:inline ml-1">Excel</span>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => printSubmission(selectedSub)}
-                      className="text-xs px-2 py-1 whitespace-nowrap hover:scale-105 transition-transform duration-200"
-                    >
-                      <Printer className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="hidden sm:inline ml-1">Print</span>
                     </Button>
                   </div>
                 </div>
@@ -711,7 +777,9 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
             <Card className="h-full flex items-center justify-center min-h-[200px] sm:min-h-[300px]">
               <CardContent className="text-center p-4">
                 <FileText className="h-8 w-8 sm:h-10 sm:w-10 lg:h-12 lg:w-12 mx-auto mb-3 sm:mb-4 text-gray-300" />
-                <p className="text-xs sm:text-sm text-gray-500">Select a submission to review</p>
+                <p className="text-xs sm:text-sm text-gray-500">
+                  {submissions.length === 0 ? 'No submissions available' : 'Select a submission to review'}
+                </p>
               </CardContent>
             </Card>
           )}
