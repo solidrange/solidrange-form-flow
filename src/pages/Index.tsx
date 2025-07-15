@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,7 +20,8 @@ import {
   Settings,
   Bell,
   Search,
-  Filter
+  Filter,
+  Zap
 } from "lucide-react";
 import { FormBuilder } from "@/components/FormBuilder";
 import { SubmissionReview } from "@/components/SubmissionReview";
@@ -29,6 +29,8 @@ import Analytics from "@/components/Analytics";
 import { GlobalSettings } from "@/components/GlobalSettings";
 import { sampleSubmissions } from "@/data/sampleSubmissions";
 import { Form, FormField, DocumentAttachment } from "@/types/form";
+import { ReportGeneration } from "@/components/reports/ReportGeneration";
+import { expandedSampleSubmissions } from "@/data/expandedSampleSubmissions";
 
 // Sample form data for testing
 const sampleForm: Form = {
@@ -144,7 +146,7 @@ const sampleForm: Form = {
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [submissions, setSubmissions] = useState(sampleSubmissions);
+  const [submissions, setSubmissions] = useState(expandedSampleSubmissions);
   
   // Form Builder state
   const [formFields, setFormFields] = useState<FormField[]>(sampleForm.fields);
@@ -389,14 +391,20 @@ const Index = () => {
     </div>
   );
 
+  const handleGenerateReport = (config: any) => {
+    console.log('Generating report with config:', config);
+    // Here you would implement the actual report generation logic
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto p-4">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="submissions">Submissions</TabsTrigger>
             <TabsTrigger value="builder">Form Builder</TabsTrigger>
+            <TabsTrigger value="reports">Reports</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
           
@@ -409,6 +417,7 @@ const Index = () => {
               submissions={submissions}
               form={sampleForm}
               onUpdateSubmission={handleUpdateSubmission}
+              onResendForm={handleResendForm}
             />
           </TabsContent>
           
@@ -431,6 +440,13 @@ const Index = () => {
               onSaveToLibrary={handleSaveToLibrary}
               isPublished={sampleForm.status === 'published'}
               onMoveToDraft={handleMoveToDraft}
+            />
+          </TabsContent>
+          
+          <TabsContent value="reports" className="mt-6">
+            <ReportGeneration 
+              submissions={submissions}
+              onGenerateReport={handleGenerateReport}
             />
           </TabsContent>
           

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { 
   BarChart3, 
@@ -48,37 +47,36 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
       color: "text-blue-500"
     },
     {
-      id: "review-submissions",
+      id: "submissions",
       label: "Review Submissions",
       shortLabel: "Reviews",
       icon: ClipboardList,
-      onClick: () => onTabChange("review-submissions"),
+      onClick: () => onTabChange("submissions"),
       color: "text-green-500"
     },
     {
-      id: "forms",
-      label: "Form Management",
-      shortLabel: "Forms",
-      icon: Folder,
-      onClick: () => onTabChange("forms"),
-      badge: hasUnpublishedDrafts,
-      color: "text-purple-500"
-    },
-    {
-      id: "build-form",
+      id: "builder",
       label: "Form Builder",
       shortLabel: "Builder",
       icon: Wrench,
-      onClick: () => onTabChange("build-form"),
+      onClick: () => onTabChange("builder"),
       color: "text-orange-500"
     },
     {
-      id: "global-settings",
-      label: "Global Settings",
-      shortLabel: "Settings",
-      icon: Settings,
-      onClick: () => onTabChange("global-settings"),
-      color: "text-gray-500"
+      id: "reports",
+      label: "Reports",
+      shortLabel: "Reports",
+      icon: BarChart3,
+      onClick: () => onTabChange("reports"),
+      color: "text-purple-500"
+    },
+    {
+      id: "analytics",
+      label: "Analytics",
+      shortLabel: "Analytics",
+      icon: Zap,
+      onClick: () => onTabChange("analytics"),
+      color: "text-pink-500"
     }
   ];
 
