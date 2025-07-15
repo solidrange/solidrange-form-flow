@@ -169,7 +169,7 @@ const Index: React.FC = () => {
 
             {activeTab === 'reports' && (
               <div className="space-y-6">
-                <Reports submissions={sampleSubmissions} onGenerateReport={() => {}} />
+                <Reports submissions={sampleSubmissions} />
               </div>
             )}
 
