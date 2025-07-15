@@ -25,10 +25,10 @@ import {
 } from "lucide-react";
 import { FormBuilder } from "@/components/FormBuilder";
 import { SubmissionReview } from "@/components/SubmissionReview";
-import { Analytics } from "@/components/Analytics";
+import Analytics from "@/components/Analytics";
 import { GlobalSettings } from "@/components/GlobalSettings";
 import { sampleSubmissions } from "@/data/sampleSubmissions";
-import { Form } from "@/types/form";
+import { Form, FormField, DocumentAttachment } from "@/types/form";
 
 // Sample form data for testing
 const sampleForm: Form = {
@@ -145,6 +145,13 @@ const sampleForm: Form = {
 const Index = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [submissions, setSubmissions] = useState(sampleSubmissions);
+  
+  // Form Builder state
+  const [formFields, setFormFields] = useState<FormField[]>(sampleForm.fields);
+  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+  const [formTitle, setFormTitle] = useState(sampleForm.title);
+  const [formDescription, setFormDescription] = useState(sampleForm.description);
+  const [formAttachments, setFormAttachments] = useState<DocumentAttachment[]>([]);
 
   const handleUpdateSubmission = (submissionId: string, updates: any) => {
     setSubmissions(prev => prev.map(sub => 
@@ -154,6 +161,40 @@ const Index = () => {
 
   const handleResendForm = (submissionId: string, comments: string) => {
     console.log(`Resending form to submission ${submissionId} with comments: ${comments}`);
+  };
+
+  // Form Builder handlers
+  const handleAddField = (field: FormField) => {
+    setFormFields(prev => [...prev, field]);
+  };
+
+  const handleUpdateField = (fieldId: string, updates: Partial<FormField>) => {
+    setFormFields(prev => prev.map(field => 
+      field.id === fieldId ? { ...field, ...updates } : field
+    ));
+  };
+
+  const handleRemoveField = (fieldId: string) => {
+    setFormFields(prev => prev.filter(field => field.id !== fieldId));
+    if (selectedFieldId === fieldId) {
+      setSelectedFieldId(null);
+    }
+  };
+
+  const handleSaveForm = () => {
+    console.log('Saving form...', { formTitle, formDescription, formFields });
+  };
+
+  const handlePreviewForm = () => {
+    console.log('Previewing form...', { formTitle, formDescription, formFields });
+  };
+
+  const handleSaveToLibrary = () => {
+    console.log('Saving to library...', { formTitle, formDescription, formFields });
+  };
+
+  const handleMoveToDraft = () => {
+    console.log('Moving to draft...', { formTitle, formDescription, formFields });
   };
 
   // Dashboard stats
@@ -372,11 +413,34 @@ const Index = () => {
           </TabsContent>
           
           <TabsContent value="builder" className="mt-6">
-            <FormBuilder />
+            <FormBuilder 
+              formFields={formFields}
+              onAddField={handleAddField}
+              onUpdateField={handleUpdateField}
+              onRemoveField={handleRemoveField}
+              selectedFieldId={selectedFieldId}
+              onSelectField={setSelectedFieldId}
+              title={formTitle}
+              description={formDescription}
+              onUpdateTitle={setFormTitle}
+              onUpdateDescription={setFormDescription}
+              onSaveForm={handleSaveForm}
+              onPreviewForm={handlePreviewForm}
+              attachments={formAttachments}
+              onUpdateAttachments={setFormAttachments}
+              onSaveToLibrary={handleSaveToLibrary}
+              isPublished={sampleForm.status === 'published'}
+              onMoveToDraft={handleMoveToDraft}
+            />
           </TabsContent>
           
           <TabsContent value="analytics" className="mt-6">
-            <Analytics />
+            <Analytics 
+              submissions={submissions}
+              onFilterSubmissions={(filters) => {
+                console.log('Filtering submissions with:', filters);
+              }}
+            />
           </TabsContent>
         </Tabs>
       </div>
