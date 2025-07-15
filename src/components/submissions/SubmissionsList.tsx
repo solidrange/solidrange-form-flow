@@ -1,87 +1,197 @@
-import { useState, useEffect } from "react";
+
 import { FormSubmission, Form } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
-  Search, 
-  Filter, 
-  Calendar, 
-  User, 
-  Building, 
-  Shield, 
+  Clock, 
   CheckCircle, 
   XCircle, 
-  Clock, 
   AlertTriangle,
-  Award,
-  X,
-  SortAsc,
-  SortDesc,
-  MoreHorizontal,
-  ChevronDown,
+  Building,
+  User,
+  Calendar,
+  Star,
   FileText
 } from "lucide-react";
-import { SubmissionCard } from "./SubmissionCard";
+import { cn } from "@/lib/utils";
 
 interface SubmissionsListProps {
   submissions: FormSubmission[];
   form: Form;
   selectedSubmission: string | null;
+  selectedSubmissions?: string[];
   onSelectSubmission: (submissionId: string) => void;
-}
-
-interface FilterState {
-  status: string[];
-  approvalType: string[];
-  riskLevel: string[];
-  submissionType: string[];
-  dateRange: string;
-  scoreRange: { min: number; max: number };
-  searchTerm: string;
-  company: string;
-  submitter: string;
-  sortBy: 'date' | 'score' | 'company' | 'status';
-  sortOrder: 'asc' | 'desc';
+  onSelectForBulk?: (submissionId: string, checked: boolean) => void;
 }
 
 export const SubmissionsList = ({ 
   submissions, 
   form, 
   selectedSubmission,
-  onSelectSubmission
+  selectedSubmissions = [],
+  onSelectSubmission,
+  onSelectForBulk
 }: SubmissionsListProps) => {
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "submitted":
+        return <Clock className="h-4 w-4 text-orange-500" />;
+      case "under_review":
+        return <AlertTriangle className="h-4 w-4 text-blue-500" />;
+      case "approved":
+        return <CheckCircle className="h-4 w-4 text-green-500" />;
+      case "rejected":
+        return <XCircle className="h-4 w-4 text-red-500" />;
+      default:
+        return <FileText className="h-4 w-4 text-gray-500" />;
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "submitted":
+        return "bg-orange-100 text-orange-800";
+      case "under_review":
+        return "bg-blue-100 text-blue-800";
+      case "approved":
+        return "bg-green-100 text-green-800";
+      case "rejected":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const getRiskColor = (riskLevel: string) => {
+    switch (riskLevel) {
+      case "low":
+        return "bg-green-100 text-green-800";
+      case "medium":
+        return "bg-yellow-100 text-yellow-800";
+      case "high":
+        return "bg-orange-100 text-orange-800";
+      case "critical":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
 
   return (
-    <Card className="h-full">
-      <CardHeader className="pb-2 sm:pb-3 p-3 sm:p-4">
-        <CardTitle className="text-xs sm:text-sm lg:text-base leading-tight">
+    <Card className="h-fit">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <FileText className="h-5 w-5" />
           Submissions ({submissions.length})
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-2 overflow-auto max-h-[50vh] sm:max-h-[60vh] lg:max-h-[calc(100vh-200px)] p-2 sm:p-3 lg:p-4">
-        {submissions.length === 0 ? (
-          <div className="text-center py-6 sm:py-8 text-gray-500">
-            <Filter className="h-8 w-8 mx-auto mb-2 text-gray-300" />
-            <p className="text-xs sm:text-sm">No submissions found</p>
+      <CardContent className="p-0">
+        <ScrollArea className="h-[calc(100vh-16rem)]">
+          <div className="p-4 space-y-3">
+            {submissions.length === 0 ? (
+              <div className="text-center py-8">
+                <FileText className="h-12 w-12 text-gray-300 mx-auto mb-4" />
+                <p className="text-gray-500">No submissions found</p>
+              </div>
+            ) : (
+              submissions.map((submission) => (
+                <div
+                  key={submission.id}
+                  className={cn(
+                    "p-3 border rounded-lg cursor-pointer transition-all hover:shadow-md",
+                    selectedSubmission === submission.id 
+                      ? "border-primary bg-primary/5 shadow-md" 
+                      : "border-gray-200 hover:border-gray-300",
+                    selectedSubmissions.includes(submission.id) && "ring-2 ring-primary/20"
+                  )}
+                  onClick={() => onSelectSubmission(submission.id)}
+                >
+                  <div className="flex items-start gap-3">
+                    {/* Bulk Selection Checkbox */}
+                    {onSelectForBulk && (
+                      <Checkbox
+                        checked={selectedSubmissions.includes(submission.id)}
+                        onCheckedChange={(checked) => onSelectForBulk(submission.id, !!checked)}
+                        onClick={(e) => e.stopPropagation()}
+                        className="mt-1"
+                      />
+                    )}
+                    
+                    <div className="flex-1 min-w-0">
+                      {/* Header with Company/User and Status */}
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2 min-w-0">
+                          {submission.companyName ? (
+                            <>
+                              <Building className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                              <span className="font-medium text-sm truncate">
+                                {submission.companyName}
+                              </span>
+                            </>
+                          ) : (
+                            <>
+                              <User className="h-4 w-4 text-gray-500 flex-shrink-0" />
+                              <span className="font-medium text-sm truncate">
+                                {submission.submitterName || submission.submitterEmail}
+                              </span>
+                            </>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          {getStatusIcon(submission.status)}
+                        </div>
+                      </div>
+
+                      {/* Email */}
+                      <p className="text-xs text-gray-600 mb-2 truncate">
+                        {submission.submitterEmail}
+                      </p>
+
+                      {/* Status and Risk Badges */}
+                      <div className="flex items-center gap-2 mb-2">
+                        <Badge className={`text-xs ${getStatusColor(submission.status)}`}>
+                          {submission.status.replace('_', ' ')}
+                        </Badge>
+                        {submission.score?.riskLevel && (
+                          <Badge className={`text-xs ${getRiskColor(submission.score.riskLevel)}`}>
+                            {submission.score.riskLevel} risk
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Score and Date */}
+                      <div className="flex items-center justify-between text-xs text-gray-500">
+                        <div className="flex items-center gap-1">
+                          {submission.score && (
+                            <>
+                              <Star className="h-3 w-3" />
+                              <span>{submission.score.percentage}%</span>
+                            </>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          <span>{submission.submittedAt.toLocaleDateString()}</span>
+                        </div>
+                      </div>
+
+                      {/* Additional Info */}
+                      {submission.submissionType && (
+                        <div className="mt-2">
+                          <Badge variant="outline" className="text-xs">
+                            {submission.submissionType}
+                          </Badge>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
-        ) : (
-          submissions.map((submission) => (
-            <SubmissionCard
-              key={submission.id}
-              submission={submission}
-              form={form}
-              isSelected={selectedSubmission === submission.id}
-              onClick={() => onSelectSubmission(submission.id)}
-            />
-          ))
-        )}
+        </ScrollArea>
       </CardContent>
     </Card>
   );

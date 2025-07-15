@@ -20,13 +20,20 @@ import {
   BarChart3,
   Shield,
   TrendingUp,
-  Eye,
   PieChart,
-  Activity
+  Activity,
+  CheckCircle,
+  Clock,
+  Building,
+  Target,
+  Award,
+  Users,
+  Database
 } from "lucide-react";
 import { AnimatedCard } from "@/components/AnimatedCard";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { toast } from "@/hooks/use-toast";
 
 interface ReportGenerationProps {
   submissions: FormSubmission[];
@@ -91,53 +98,111 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
   const [activeTab, setActiveTab] = useState('quick');
 
   const quickReports = [
-    {
-      id: 'executive-summary',
-      title: 'Executive Summary',
-      description: 'High-level overview for executives',
-      color: 'bg-blue-500',
-      icon: FileText,
-      variants: ['Detailed', 'Concise']
-    },
-    {
-      id: 'monthly-summary',
-      title: 'Monthly Summary',
-      description: 'Monthly performance overview',
-      color: 'bg-blue-400',
-      icon: BarChart3,
-      variants: ['Comprehensive', 'Basic']
-    },
-    {
-      id: 'risk-analysis',
-      title: 'Risk Analysis',
-      description: 'Risk assessment and compliance',
-      color: 'bg-red-500',
-      icon: Shield,
-      variants: ['Comprehensive', 'Focused', 'High Risk']
-    },
-    {
-      id: 'compliance-report',
-      title: 'Compliance Report',
-      description: 'Compliance status and requirements',
-      color: 'bg-red-400',
-      icon: Shield,
-      variants: ['Comprehensive', 'Approved Only', 'Pie Charts']
-    },
+    // Performance & Analytics Reports
     {
       id: 'performance-analytics',
       title: 'Performance Analytics',
       description: 'Performance metrics and trends',
       color: 'bg-green-500',
       icon: TrendingUp,
+      category: 'Performance & Analytics Reports',
       variants: ['Detailed', 'Line Trends']
     },
+    {
+      id: 'score-analysis',
+      title: 'Score Analysis',
+      description: 'Comprehensive scoring analysis',
+      color: 'bg-green-400',
+      icon: Target,
+      category: 'Performance & Analytics Reports',
+      variants: ['Comprehensive', 'Detailed']
+    },
+    
+    // Submission & Trend Analysis
     {
       id: 'submission-trends',
       title: 'Submission Trends',
       description: 'Submission patterns and analytics',
       color: 'bg-purple-500',
       icon: Activity,
+      category: 'Submission & Trend Analysis',
       variants: ['Comprehensive', 'Trends Only', 'Bar Chart']
+    },
+    {
+      id: 'vendor-analysis',
+      title: 'Vendor Analysis',
+      description: 'Vendor performance analysis',
+      color: 'bg-purple-400',
+      icon: Building,
+      category: 'Submission & Trend Analysis',
+      variants: ['Detailed', 'Donut Charts']
+    },
+    
+    // Operational & Quality Reports
+    {
+      id: 'quality-assurance',
+      title: 'Quality Assurance',
+      description: 'Quality metrics and compliance',
+      color: 'bg-orange-500',
+      icon: CheckCircle,
+      category: 'Operational & Quality Reports',
+      variants: ['Detailed', 'Summary']
+    },
+    {
+      id: 'process-efficiency',
+      title: 'Process Efficiency',
+      description: 'Process optimization analysis',
+      color: 'bg-orange-400',
+      icon: Clock,
+      category: 'Operational & Quality Reports',
+      variants: ['Comprehensive', 'Bottlenecks']
+    },
+    
+    // Time-based & Regulatory Reports
+    {
+      id: 'quarterly-review',
+      title: 'Quarterly Review',
+      description: 'Quarterly performance overview',
+      color: 'bg-teal-500',
+      icon: Calendar,
+      category: 'Time-based & Regulatory Reports',
+      variants: ['Detailed', 'Executive']
+    },
+    {
+      id: 'regulatory-audit',
+      title: 'Regulatory Audit',
+      description: 'Regulatory compliance audit',
+      color: 'bg-teal-400',
+      icon: Shield,
+      category: 'Time-based & Regulatory Reports',
+      variants: ['Comprehensive', 'Findings']
+    }
+  ];
+
+  const reportCategories = [
+    {
+      title: 'Performance & Analytics Reports',
+      color: 'border-green-200 bg-green-50',
+      icon: BarChart3,
+      iconColor: 'text-green-600'
+    },
+    {
+      title: 'Submission & Trend Analysis',
+      color: 'border-purple-200 bg-purple-50',
+      icon: Activity,
+      iconColor: 'text-purple-600'
+    },
+    {
+      title: 'Operational & Quality Reports',
+      color: 'border-orange-200 bg-orange-50',
+      icon: Award,
+      iconColor: 'text-orange-600'
+    },
+    {
+      title: 'Time-based & Regulatory Reports',
+      color: 'border-teal-200 bg-teal-50',
+      icon: Database,
+      iconColor: 'text-teal-600'
     }
   ];
 
@@ -163,13 +228,24 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
   };
 
   const handleQuickReport = (reportId: string) => {
-    // Generate quick report with predefined settings
     const quickConfig = {
       ...config,
       title: quickReports.find(r => r.id === reportId)?.title || config.title,
       description: quickReports.find(r => r.id === reportId)?.description || config.description
     };
     onGenerateReport(quickConfig);
+    toast({
+      title: "Report Generated",
+      description: `${quickConfig.title} has been generated successfully.`,
+    });
+  };
+
+  const handleGenerateCustomReport = () => {
+    onGenerateReport(config);
+    toast({
+      title: "Custom Report Generated",
+      description: "Your custom report has been generated successfully.",
+    });
   };
 
   return (
@@ -180,9 +256,23 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
           <p className="text-sm sm:text-base text-gray-600 hidden sm:block">Generate comprehensive reports and analytics for your form submissions.</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Eye className="h-4 w-4 mr-2" />
-            <span className="hidden sm:inline">Preview</span>
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => {
+              const link = document.createElement('a');
+              link.href = 'data:text/csv;charset=utf-8,Sample,Data,Export';
+              link.download = 'sample-export.csv';
+              link.click();
+              toast({
+                title: "Export Started",
+                description: "Your data export has been initiated.",
+              });
+            }}
+          >
+            <Download className="h-4 w-4 mr-2" />
+            <span className="hidden sm:inline">Export All</span>
+            <span className="sm:hidden">Export</span>
           </Button>
         </div>
       </div>
@@ -195,102 +285,61 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
 
         <TabsContent value="quick" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Executive & Summary Reports */}
-            <AnimatedCard title="Executive & Summary Reports" icon={TrendingUp} iconColor="text-blue-600">
-              <div className="space-y-4">
-                {quickReports.filter(r => r.id.includes('executive') || r.id.includes('monthly')).map(report => (
-                  <div key={report.id} className="space-y-2">
-                    <Button
-                      onClick={() => handleQuickReport(report.id)}
-                      className={cn("w-full justify-start", report.color)}
-                    >
-                      <report.icon className="h-4 w-4 mr-2" />
-                      {report.title}
-                    </Button>
-                    <div className="flex gap-2 ml-6">
-                      {report.variants.map(variant => (
-                        <Badge key={variant} variant="outline" className="text-xs">
-                          {variant}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </AnimatedCard>
-
-            {/* Risk & Compliance Reports */}
-            <AnimatedCard title="Risk & Compliance Reports" icon={Shield} iconColor="text-red-600" delay={200}>
-              <div className="space-y-4">
-                {quickReports.filter(r => r.id.includes('risk') || r.id.includes('compliance')).map(report => (
-                  <div key={report.id} className="space-y-2">
-                    <Button
-                      onClick={() => handleQuickReport(report.id)}
-                      className={cn("w-full justify-start", report.color)}
-                    >
-                      <report.icon className="h-4 w-4 mr-2" />
-                      {report.title}
-                    </Button>
-                    <div className="flex gap-2 ml-6">
-                      {report.variants.map(variant => (
-                        <Badge key={variant} variant="outline" className="text-xs">
-                          {variant}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </AnimatedCard>
-
-            {/* Performance & Analytics Reports */}
-            <AnimatedCard title="Performance & Analytics Reports" icon={BarChart3} iconColor="text-green-600" delay={400}>
-              <div className="space-y-4">
-                {quickReports.filter(r => r.id.includes('performance')).map(report => (
-                  <div key={report.id} className="space-y-2">
-                    <Button
-                      onClick={() => handleQuickReport(report.id)}
-                      className={cn("w-full justify-start", report.color)}
-                    >
-                      <report.icon className="h-4 w-4 mr-2" />
-                      {report.title}
-                    </Button>
-                    <div className="flex gap-2 ml-6">
-                      {report.variants.map(variant => (
-                        <Badge key={variant} variant="outline" className="text-xs">
-                          {variant}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </AnimatedCard>
-
-            {/* Submission & Trend Analysis */}
-            <AnimatedCard title="Submission & Trend Analysis" icon={Activity} iconColor="text-purple-600" delay={600}>
-              <div className="space-y-4">
-                {quickReports.filter(r => r.id.includes('submission')).map(report => (
-                  <div key={report.id} className="space-y-2">
-                    <Button
-                      onClick={() => handleQuickReport(report.id)}
-                      className={cn("w-full justify-start", report.color)}
-                    >
-                      <report.icon className="h-4 w-4 mr-2" />
-                      {report.title}
-                    </Button>
-                    <div className="flex gap-2 ml-6">
-                      {report.variants.map(variant => (
-                        <Badge key={variant} variant="outline" className="text-xs">
-                          {variant}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </AnimatedCard>
+            {reportCategories.map((category, categoryIndex) => (
+              <AnimatedCard 
+                key={category.title}
+                title={category.title} 
+                icon={category.icon} 
+                iconColor={category.iconColor}
+                delay={categoryIndex * 200}
+              >
+                <div className="space-y-4">
+                  {quickReports
+                    .filter(report => report.category === category.title)
+                    .map(report => (
+                      <div key={report.id} className="space-y-2">
+                        <Button
+                          onClick={() => handleQuickReport(report.id)}
+                          className={cn("w-full justify-start", report.color)}
+                        >
+                          <report.icon className="h-4 w-4 mr-2" />
+                          {report.title}
+                        </Button>
+                        <div className="flex gap-2 ml-6">
+                          {report.variants.map(variant => (
+                            <Badge key={variant} variant="outline" className="text-xs">
+                              {variant}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </AnimatedCard>
+            ))}
           </div>
+
+          {/* Quick Statistics Overview */}
+          <AnimatedCard title="Quick Statistics Overview" icon={BarChart3} iconColor="text-blue-600" delay={800}>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <div className="text-2xl font-bold text-blue-600">130</div>
+                <div className="text-sm text-gray-600">Total Submissions</div>
+              </div>
+              <div className="text-center p-4 bg-green-50 rounded-lg">
+                <div className="text-2xl font-bold text-green-600">35</div>
+                <div className="text-sm text-gray-600">Approved</div>
+              </div>
+              <div className="text-center p-4 bg-red-50 rounded-lg">
+                <div className="text-2xl font-bold text-red-600">62</div>
+                <div className="text-sm text-gray-600">High Risk</div>
+              </div>
+              <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <div className="text-2xl font-bold text-purple-600">57%</div>
+                <div className="text-sm text-gray-600">Avg Score</div>
+              </div>
+            </div>
+          </AnimatedCard>
         </TabsContent>
 
         <TabsContent value="custom" className="space-y-6">
@@ -355,7 +404,7 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
               {/* Chart Configuration */}
               {config.sections.includeCharts && (
                 <div>
-                  <Label className="text-base font-medium">Include Charts</Label>
+                  <Label className="text-base font-medium">Chart Configuration</Label>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
                     <div>
                       <Label htmlFor="submission-trends">Submission Trends</Label>
@@ -499,12 +548,8 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
                 />
               </div>
 
-              <div className="flex justify-between">
-                <Button variant="outline">
-                  <Eye className="h-4 w-4 mr-2" />
-                  Preview
-                </Button>
-                <Button onClick={() => onGenerateReport(config)}>
+              <div className="flex justify-end">
+                <Button onClick={handleGenerateCustomReport}>
                   <Download className="h-4 w-4 mr-2" />
                   Generate Custom Report
                 </Button>

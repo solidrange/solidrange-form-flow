@@ -1,10 +1,9 @@
-
 import { useState, useEffect, useMemo } from "react";
 import { FormSubmission, Form } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Checkbox } from "@/components/ui/checkbox";
 import { 
   FileText, 
   Clock, 
@@ -17,11 +16,14 @@ import {
   Shield,
   Award,
   Eye,
-  Download
+  Download,
+  Users,
+  X
 } from "lucide-react";
 import { SubmissionsList } from "./submissions/SubmissionsList";
 import { SubmissionDetails } from "./submissions/SubmissionDetails";
 import { AdvancedSubmissionFilters } from "./submissions/AdvancedSubmissionFilters";
+import { BulkActions } from "./submissions/BulkActions";
 
 interface SubmissionReviewProps {
   submissions: FormSubmission[];
@@ -62,6 +64,8 @@ export const SubmissionReview = ({
   onResendForm
 }: SubmissionReviewProps) => {
   const [selectedSubmission, setSelectedSubmission] = useState<string | null>(null);
+  const [selectedSubmissions, setSelectedSubmissions] = useState<string[]>([]);
+  const [showBulkActions, setShowBulkActions] = useState(false);
   const [filters, setFilters] = useState<FilterState>({
     searchTerm: '',
     status: [],
@@ -303,6 +307,71 @@ export const SubmissionReview = ({
     ? filteredSubmissions.find(s => s.id === selectedSubmission)
     : null;
 
+  const handleBulkUpdate = (submissionIds: string[], updates: any) => {
+    submissionIds.forEach(id => {
+      onUpdateSubmission(id, updates);
+    });
+    setSelectedSubmissions([]);
+    setShowBulkActions(false);
+  };
+
+  const handleBulkDelete = (submissionIds: string[]) => {
+    // In a real app, this would delete from the database
+    console.log('Deleting submissions:', submissionIds);
+    setSelectedSubmissions([]);
+    setShowBulkActions(false);
+  };
+
+  const handleSelectSubmission = (submissionId: string, checked: boolean) => {
+    if (checked) {
+      setSelectedSubmissions(prev => [...prev, submissionId]);
+    } else {
+      setSelectedSubmissions(prev => prev.filter(id => id !== submissionId));
+    }
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedSubmissions(filteredSubmissions.map(sub => sub.id));
+    } else {
+      setSelectedSubmissions([]);
+    }
+  };
+
+  const isAllSelected = filteredSubmissions.length > 0 && 
+    selectedSubmissions.length === filteredSubmissions.length;
+  const isPartiallySelected = selectedSubmissions.length > 0 && 
+    selectedSubmissions.length < filteredSubmissions.length;
+
+  if (showBulkActions) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-2xl font-bold">Bulk Actions</h1>
+            <p className="text-gray-600">Manage multiple submissions at once</p>
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={() => setShowBulkActions(false)}
+            className="flex items-center gap-2"
+          >
+            <X className="h-4 w-4" />
+            Cancel
+          </Button>
+        </div>
+        
+        <BulkActions
+          selectedSubmissions={selectedSubmissions}
+          submissions={filteredSubmissions}
+          onBulkUpdate={handleBulkUpdate}
+          onBulkDelete={handleBulkDelete}
+          onClose={() => setShowBulkActions(false)}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
@@ -315,9 +384,14 @@ export const SubmissionReview = ({
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          <Button variant="outline" size="sm">
-            <Eye className="h-4 w-4 mr-2" />
-            Bulk Actions
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => setShowBulkActions(true)}
+            disabled={selectedSubmissions.length === 0}
+          >
+            <Users className="h-4 w-4 mr-2" />
+            Bulk Actions ({selectedSubmissions.length})
           </Button>
         </div>
       </div>
@@ -406,6 +480,48 @@ export const SubmissionReview = ({
         filteredCount={filteredSubmissions.length}
       />
 
+      {/* Bulk Selection Controls */}
+      {filteredSubmissions.length > 0 && (
+        <Card>
+          <CardContent className="p-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Checkbox
+                  checked={isAllSelected}
+                  ref={(el) => {
+                    if (el) el.indeterminate = isPartiallySelected;
+                  }}
+                  onCheckedChange={handleSelectAll}
+                />
+                <span className="text-sm">
+                  {selectedSubmissions.length === 0 
+                    ? "Select submissions" 
+                    : `${selectedSubmissions.length} of ${filteredSubmissions.length} selected`}
+                </span>
+              </div>
+              {selectedSubmissions.length > 0 && (
+                <div className="flex gap-2">
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => setSelectedSubmissions([])}
+                  >
+                    Clear Selection
+                  </Button>
+                  <Button 
+                    size="sm"
+                    onClick={() => setShowBulkActions(true)}
+                  >
+                    <Users className="h-4 w-4 mr-2" />
+                    Bulk Actions
+                  </Button>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
@@ -413,7 +529,9 @@ export const SubmissionReview = ({
             submissions={filteredSubmissions}
             form={form}
             selectedSubmission={selectedSubmission}
+            selectedSubmissions={selectedSubmissions}
             onSelectSubmission={setSelectedSubmission}
+            onSelectForBulk={handleSelectSubmission}
           />
         </div>
         

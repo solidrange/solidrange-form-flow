@@ -1,574 +1,361 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
-import { 
-  FileText, 
-  Plus, 
-  Users, 
-  TrendingUp, 
-  Clock, 
-  CheckCircle, 
-  XCircle, 
-  AlertTriangle,
-  Building,
-  Globe,
-  Shield,
-  Award,
-  BarChart3,
-  Settings,
-  Bell,
-  Search,
-  Filter,
-  Zap
-} from "lucide-react";
+import { useState, useEffect } from "react";
 import { FormBuilder } from "@/components/FormBuilder";
+import { FormPreview } from "@/components/FormPreview";
 import { SubmissionReview } from "@/components/SubmissionReview";
-import Analytics from "@/components/Analytics";
+import { Reports } from "@/components/Reports";
+import { Analytics } from "@/components/Analytics";
 import { GlobalSettings } from "@/components/GlobalSettings";
-import { sampleSubmissions } from "@/data/sampleSubmissions";
-import { Form, FormField, DocumentAttachment } from "@/types/form";
-import { ReportGeneration } from "@/components/reports/ReportGeneration";
-import { expandedSampleSubmissions } from "@/data/expandedSampleSubmissions";
 import { AppSidebar } from "@/components/AppSidebar";
 import { NotificationPanel } from "@/components/NotificationPanel";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { AnimatedCard } from "@/components/AnimatedCard";
+import { BrandLogo } from "@/components/BrandLogo";
+import { useBrand } from "@/contexts/BrandContext";
+import { 
+  Bell, 
+  Settings, 
+  TrendingUp, 
+  Users, 
+  FileText, 
+  AlertTriangle,
+  Clock,
+  CheckCircle,
+  BarChart3,
+  PieChart,
+  Target,
+  Activity,
+  Award,
+  Building
+} from "lucide-react";
+import { sampleForm, sampleSubmissions } from "@/data/sampleData";
+import { Form, FormSubmission } from "@/types/form";
 
-// Sample form data for testing
-const sampleForm: Form = {
-  id: "form-1",
-  title: "Vendor Risk Assessment Form",
-  description: "Comprehensive risk assessment form for vendor evaluation",
-  fields: [
-    {
-      id: "company_name",
-      type: "text",
-      label: "Company Name",
-      required: true,
-      placeholder: "Enter company name"
-    },
-    {
-      id: "business_type",
-      type: "select",
-      label: "Business Type",
-      required: true,
-      options: ["Technology", "Healthcare", "Finance", "Manufacturing", "Other"]
-    },
-    {
-      id: "annual_revenue",
-      type: "number",
-      label: "Annual Revenue",
-      required: true,
-      placeholder: "Enter annual revenue"
-    },
-    {
-      id: "risk_assessment",
-      type: "textarea",
-      label: "Risk Assessment Details",
-      required: true,
-      placeholder: "Provide detailed risk assessment"
-    },
-    {
-      id: "compliance_certifications",
-      type: "checkbox",
-      label: "Compliance Certifications",
-      required: false,
-      options: ["ISO 27001", "SOC 2", "GDPR", "HIPAA", "PCI DSS"]
-    }
-  ],
-  settings: {
-    allowMultipleSubmissions: false,
-    requireLogin: true,
-    showProgressBar: true,
-    theme: 'light',
-    scoring: {
-      enabled: true,
-      maxTotalPoints: 100,
-      showScoreToUser: true,
-      passingScore: 70,
-      riskThresholds: {
-        low: 80,
-        medium: 60,
-        high: 40
-      }
-    },
-    approval: {
-      enabled: true,
-      requireApproval: true,
-      approvers: ['admin@company.com'],
-      autoApproveScore: 85
-    },
-    documents: {
-      enabled: true,
-      allowedTypes: ['pdf', 'docx', 'xlsx'],
-      maxSize: 10485760, // 10MB
-      requiredDocuments: ['Business License', 'Insurance Certificate'],
-      allowUserUploads: true
-    },
-    emailDistribution: {
-      enabled: true,
-      recipients: [
-        {
-          id: "1",
-          email: "vendor1@example.com",
-          name: "Vendor One",
-          status: "completed",
-          remindersSent: 1,
-          sentAt: new Date('2024-01-15'),
-          completedAt: new Date('2024-01-20'),
-          lastReminderAt: new Date('2024-01-18')
-        },
-        {
-          id: "2", 
-          email: "vendor2@example.com",
-          name: "Vendor Two",
-          status: "pending",
-          remindersSent: 0
-        }
-      ],
-      reminderEnabled: true,
-      reminderIntervalDays: 7,
-      maxReminders: 3
-    }
-  },
-  createdAt: new Date('2024-01-10'),
-  updatedAt: new Date('2024-01-20'),
-  status: 'published',
-  analytics: {
-    enabled: true,
-    trackingPixel: true,
-    googleAnalytics: 'GA-123456789',
-    customEvents: true,
-    views: 245,
-    submissions: 42,
-    emailsSent: 156,
-    completionRate: 78.5
-  }
-};
-
-const Index = () => {
+export default function Index() {
+  const { brand } = useBrand();
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [submissions, setSubmissions] = useState(expandedSampleSubmissions);
-  
-  // Form Builder state
-  const [formFields, setFormFields] = useState<FormField[]>(sampleForm.fields);
-  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
-  const [formTitle, setFormTitle] = useState(sampleForm.title);
-  const [formDescription, setFormDescription] = useState(sampleForm.description);
-  const [formAttachments, setFormAttachments] = useState<DocumentAttachment[]>([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [forms] = useState<Form[]>([sampleForm]);
+  const [submissions, setSubmissions] = useState<FormSubmission[]>(sampleSubmissions);
+  const [selectedForm] = useState<Form>(sampleForm);
+
+  useEffect(() => {
+    const handleSetFilter = (event: CustomEvent) => {
+      const { detail } = event;
+      console.log("Received filter event:", detail);
+      // Handle filter logic here
+    };
+
+    const handleSelectSubmission = (event: CustomEvent) => {
+      const { detail } = event;
+      console.log("Received select submission event:", detail);
+      // Handle select submission logic here
+    };
+
+    window.addEventListener('setSubmissionFilter', handleSetFilter as EventListener);
+    window.addEventListener('selectSubmission', handleSelectSubmission as EventListener);
+
+    return () => {
+      window.removeEventListener('setSubmissionFilter', handleSetFilter as EventListener);
+      window.removeEventListener('selectSubmission', handleSelectSubmission as EventListener);
+    };
+  }, []);
 
   const handleUpdateSubmission = (submissionId: string, updates: any) => {
-    setSubmissions(prev => prev.map(sub => 
-      sub.id === submissionId ? { ...sub, ...updates } : sub
-    ));
+    setSubmissions(prev => 
+      prev.map(sub => 
+        sub.id === submissionId ? { ...sub, ...updates } : sub
+      )
+    );
   };
 
   const handleResendForm = (submissionId: string, comments: string) => {
-    console.log(`Resending form to submission ${submissionId} with comments: ${comments}`);
-  };
-
-  // Form Builder handlers
-  const handleAddField = (field: FormField) => {
-    setFormFields(prev => [...prev, field]);
-  };
-
-  const handleUpdateField = (fieldId: string, updates: Partial<FormField>) => {
-    setFormFields(prev => prev.map(field => 
-      field.id === fieldId ? { ...field, ...updates } : field
-    ));
-  };
-
-  const handleRemoveField = (fieldId: string) => {
-    setFormFields(prev => prev.filter(field => field.id !== fieldId));
-    if (selectedFieldId === fieldId) {
-      setSelectedFieldId(null);
-    }
-  };
-
-  const handleSaveForm = () => {
-    console.log('Saving form...', { formTitle, formDescription, formFields });
-  };
-
-  const handlePreviewForm = () => {
-    console.log('Previewing form...', { formTitle, formDescription, formFields });
-  };
-
-  const handleSaveToLibrary = () => {
-    console.log('Saving to library...', { formTitle, formDescription, formFields });
-  };
-
-  const handleMoveToDraft = () => {
-    console.log('Moving to draft...', { formTitle, formDescription, formFields });
-  };
-
-  // Dashboard stats
-  const totalSubmissions = submissions.length;
-  const pendingSubmissions = submissions.filter(s => s.status === 'submitted').length;
-  const approvedSubmissions = submissions.filter(s => s.status === 'approved').length;
-  const rejectedSubmissions = submissions.filter(s => s.status === 'rejected').length;
-  const underReviewSubmissions = submissions.filter(s => s.status === 'under_review').length;
-
-  const avgCompletionRate = submissions.length > 0 
-    ? Math.round((submissions.filter(s => s.status !== 'submitted').length / submissions.length) * 100)
-    : 0;
-
-  const renderDashboard = () => (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Form Management Dashboard</h1>
-          <p className="text-sm sm:text-base text-gray-600 mt-1 hidden sm:block">Monitor and manage your form submissions</p>
-        </div>
-        <div className="flex gap-2">
-          <NotificationPanel 
-            onNavigate={(tab, filters) => {
-              setActiveTab(tab);
-              if (filters) {
-                setTimeout(() => {
-                  const event = new CustomEvent('setSubmissionFilter', { 
-                    detail: filters 
-                  });
-                  window.dispatchEvent(event);
-                }, 100);
-              }
-            }}
-          />
-          <Button 
-            variant="outline" 
-            size="sm"
-            onClick={() => setActiveTab("settings")}
-          >
-            <Settings className="h-4 w-4 mr-2" />
-            <span className="hidden sm:inline">Settings</span>
-          </Button>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab("submissions")}>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Total Submissions</p>
-                <p className="text-2xl font-bold">{totalSubmissions}</p>
-                <p className="text-xs text-gray-500 mt-1">Click to view all</p>
-              </div>
-              <FileText className="h-8 w-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => {
-          setActiveTab("submissions");
-          // Set filter for pending submissions
-          setTimeout(() => {
-            const event = new CustomEvent('setSubmissionFilter', { 
-              detail: { status: ['submitted'] } 
-            });
-            window.dispatchEvent(event);
-          }, 100);
-        }}>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Pending Review</p>
-                <p className="text-2xl font-bold text-orange-600">{pendingSubmissions}</p>
-                <p className="text-xs text-gray-500 mt-1">Click to review</p>
-              </div>
-              <Clock className="h-8 w-8 text-orange-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => {
-          setActiveTab("submissions");
-          // Set filter for approved submissions
-          setTimeout(() => {
-            const event = new CustomEvent('setSubmissionFilter', { 
-              detail: { status: ['approved'] } 
-            });
-            window.dispatchEvent(event);
-          }, 100);
-        }}>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Approved</p>
-                <p className="text-2xl font-bold text-green-600">{approvedSubmissions}</p>
-                <p className="text-xs text-gray-500 mt-1">Click to view</p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab("analytics")}>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Completion Rate</p>
-                <p className="text-2xl font-bold">{avgCompletionRate}%</p>
-                <p className="text-xs text-gray-500 mt-1">View analytics</p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-purple-500" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="h-5 w-5 text-orange-500" />
-              Recent Activity
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {submissions.slice(0, 5).map((submission) => (
-              <div 
-                key={submission.id} 
-                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
-                onClick={() => {
-                  setActiveTab("submissions");
-                  // Select the submission after navigation
-                  setTimeout(() => {
-                    const event = new CustomEvent('selectSubmission', { 
-                      detail: { submissionId: submission.id } 
-                    });
-                    window.dispatchEvent(event);
-                  }, 100);
-                }}
-              >
-                <div className="flex items-center gap-3">
-                  {submission.submissionType === 'vendor' ? (
-                    <Building className="h-4 w-4 text-blue-500" />
-                  ) : submission.submissionType === 'external' ? (
-                    <Globe className="h-4 w-4 text-purple-500" />
-                  ) : (
-                    <Users className="h-4 w-4 text-gray-500" />
-                  )}
-                  <div>
-                    <p className="font-medium text-sm">{submission.companyName || submission.submitterName}</p>
-                    <p className="text-xs text-gray-600">{new Date(submission.submittedAt).toLocaleDateString()}</p>
-                  </div>
-                </div>
-                <Badge variant={
-                  submission.status === 'approved' ? 'default' :
-                  submission.status === 'rejected' ? 'destructive' :
-                  submission.status === 'under_review' ? 'secondary' :
-                  'outline'
-                }>
-                  {submission.status.replace('_', ' ')}
-                </Badge>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5 text-red-500" />
-              Risk Assessment Overview
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {[
-                { level: 'Critical', count: submissions.filter(s => s.score?.riskLevel === 'critical').length, color: 'bg-red-500' },
-                { level: 'High', count: submissions.filter(s => s.score?.riskLevel === 'high').length, color: 'bg-orange-500' },
-                { level: 'Medium', count: submissions.filter(s => s.score?.riskLevel === 'medium').length, color: 'bg-yellow-500' },
-                { level: 'Low', count: submissions.filter(s => s.score?.riskLevel === 'low').length, color: 'bg-green-500' }
-              ].map((risk) => (
-                <div 
-                  key={risk.level} 
-                  className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
-                  onClick={() => {
-                    setActiveTab("submissions");
-                    // Set filter for risk level
-                    setTimeout(() => {
-                      const event = new CustomEvent('setSubmissionFilter', { 
-                        detail: { riskLevel: [risk.level.toLowerCase()] } 
-                      });
-                      window.dispatchEvent(event);
-                    }, 100);
-                  }}
-                >
-                  <div className="flex items-center gap-2">
-                    <div className={`w-3 h-3 rounded-full ${risk.color}`}></div>
-                    <span className="text-sm">{risk.level} Risk</span>
-                  </div>
-                  <Badge variant="outline">{risk.count}</Badge>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <Button 
-              variant="outline" 
-              className="h-20 flex-col gap-2"
-              onClick={() => setActiveTab("submissions")}
-            >
-              <FileText className="h-6 w-6" />
-              Review Submissions
-            </Button>
-            <Button 
-              variant="outline" 
-              className="h-20 flex-col gap-2"
-              onClick={() => setActiveTab("builder")}
-            >
-              <Plus className="h-6 w-6" />
-              Create Form
-            </Button>
-            <Button 
-              variant="outline" 
-              className="h-20 flex-col gap-2"
-              onClick={() => setActiveTab("reports")}
-            >
-              <BarChart3 className="h-6 w-6" />
-              View Reports
-            </Button>
-            <Button 
-              variant="outline" 
-              className="h-20 flex-col gap-2"
-              onClick={() => setActiveTab("analytics")}
-            >
-              <Zap className="h-6 w-6" />
-              Analytics
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
-
-  const handleGenerateReport = (config: any) => {
-    console.log('Generating report with config:', config);
-    // Here you would implement the actual report generation logic
+    console.log(`Resending form for submission ${submissionId} with comments: ${comments}`);
+    handleUpdateSubmission(submissionId, { 
+      status: 'submitted', 
+      comments,
+      lastResent: new Date()
+    });
   };
 
   const renderContent = () => {
     switch (activeTab) {
       case "dashboard":
-        return renderDashboard();
+        return (
+          <div className="space-y-4 sm:space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div>
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Form Management Dashboard</h1>
+                <p className="text-sm sm:text-base text-gray-600 hidden sm:block">Monitor and manage your form submissions</p>
+              </div>
+            </div>
+
+            {/* Stats Overview */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+              <Card 
+                className="cursor-pointer hover:shadow-md transition-shadow" 
+                onClick={() => {
+                  setActiveTab("submissions");
+                  window.dispatchEvent(new CustomEvent('setSubmissionFilter', { 
+                    detail: { status: [] } 
+                  }));
+                }}
+              >
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs sm:text-sm text-gray-600">Total</p>
+                      <p className="text-lg sm:text-2xl font-bold">55</p>
+                    </div>
+                    <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card 
+                className="cursor-pointer hover:shadow-md transition-shadow" 
+                onClick={() => {
+                  setActiveTab("submissions");
+                  window.dispatchEvent(new CustomEvent('setSubmissionFilter', { 
+                    detail: { status: ['submitted'] } 
+                  }));
+                }}
+              >
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs sm:text-sm text-gray-600">Pending</p>
+                      <p className="text-lg sm:text-2xl font-bold text-orange-600">12</p>
+                    </div>
+                    <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-orange-500" />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card 
+                className="cursor-pointer hover:shadow-md transition-shadow" 
+                onClick={() => {
+                  setActiveTab("submissions");
+                  window.dispatchEvent(new CustomEvent('setSubmissionFilter', { 
+                    detail: { status: ['approved'] } 
+                  }));
+                }}
+              >
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs sm:text-sm text-gray-600">Approved</p>
+                      <p className="text-lg sm:text-2xl font-bold text-green-600">13</p>
+                    </div>
+                    <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-500" />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card 
+                className="cursor-pointer hover:shadow-md transition-shadow" 
+                onClick={() => setActiveTab("analytics")}
+              >
+                <CardContent className="p-3 sm:p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-xs sm:text-sm text-gray-600">Rate</p>
+                      <p className="text-lg sm:text-2xl font-bold">78%</p>
+                    </div>
+                    <TrendingUp className="h-6 w-6 sm:h-8 sm:w-8 text-purple-500" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Activity and Risk Assessment */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+              <AnimatedCard title="Recent Activity" icon={Activity} iconColor="text-orange-600">
+                <div className="space-y-3 sm:space-y-4">
+                  {[
+                    { company: "TechCorp Solutions", date: "3/19/2025", status: "submitted", statusColor: "blue" },
+                    { company: "Global Finance Inc", date: "3/21/2024", status: "rejected", statusColor: "red" },
+                    { company: "MedTech Industries", date: "1/14/2025", status: "rejected", statusColor: "red" },
+                    { company: "SecureCloud Systems", date: "6/4/2025", status: "under review", statusColor: "yellow" }
+                  ].map((item, index) => (
+                    <div 
+                      key={index} 
+                      className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
+                      onClick={() => {
+                        setActiveTab("submissions");
+                        setTimeout(() => {
+                          window.dispatchEvent(new CustomEvent('selectSubmission', { 
+                            detail: { submissionId: `submission-${index + 1}` } 
+                          }));
+                        }, 100);
+                      }}
+                    >
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <Building className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500" />
+                        <div>
+                          <p className="text-xs sm:text-sm font-medium">{item.company}</p>
+                          <p className="text-xs text-gray-500">{item.date}</p>
+                        </div>
+                      </div>
+                      <Badge 
+                        variant={item.statusColor === 'blue' ? 'default' : item.statusColor === 'red' ? 'destructive' : 'secondary'}
+                        className="text-xs"
+                      >
+                        {item.status}
+                      </Badge>
+                    </div>
+                  ))}
+                </div>
+              </AnimatedCard>
+
+              <AnimatedCard title="Risk Assessment Overview" icon={AlertTriangle} iconColor="text-red-600" delay={200}>
+                <div className="space-y-3 sm:space-y-4">
+                  {[
+                    { level: "Critical Risk", count: 16, color: "red" },
+                    { level: "High Risk", count: 11, color: "orange" },
+                    { level: "Medium Risk", count: 17, color: "yellow" },
+                    { level: "Low Risk", count: 11, color: "green" }
+                  ].map((risk, index) => (
+                    <div 
+                      key={index} 
+                      className="flex items-center justify-between p-2 sm:p-3 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors"
+                      onClick={() => {
+                        setActiveTab("submissions");
+                        window.dispatchEvent(new CustomEvent('setSubmissionFilter', { 
+                          detail: { riskLevel: [risk.level.toLowerCase().replace(' risk', '')] } 
+                        }));
+                      }}
+                    >
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className={`w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-${risk.color}-500`}></div>
+                        <span className="text-xs sm:text-sm font-medium">{risk.level}</span>
+                      </div>
+                      <span className="text-sm sm:text-lg font-bold">{risk.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </AnimatedCard>
+            </div>
+
+            {/* Quick Actions */}
+            <AnimatedCard title="Quick Actions" icon={Target} iconColor="text-blue-600" delay={400}>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+                <Button 
+                  variant="outline" 
+                  className="h-auto p-3 sm:p-4 flex-col gap-2"
+                  onClick={() => setActiveTab("form-builder")}
+                >
+                  <FileText className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <span className="text-xs sm:text-sm">New Form</span>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="h-auto p-3 sm:p-4 flex-col gap-2"
+                  onClick={() => setActiveTab("submissions")}
+                >
+                  <Users className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <span className="text-xs sm:text-sm">Review</span>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="h-auto p-3 sm:p-4 flex-col gap-2"
+                  onClick={() => setActiveTab("analytics")}
+                >
+                  <BarChart3 className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <span className="text-xs sm:text-sm">Analytics</span>
+                </Button>
+                <Button 
+                  variant="outline" 
+                  className="h-auto p-3 sm:p-4 flex-col gap-2"
+                  onClick={() => setActiveTab("reports")}
+                >
+                  <PieChart className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <span className="text-xs sm:text-sm">Reports</span>
+                </Button>
+              </div>
+            </AnimatedCard>
+          </div>
+        );
       case "submissions":
         return (
           <SubmissionReview 
             submissions={submissions}
-            form={sampleForm}
+            form={selectedForm}
             onUpdateSubmission={handleUpdateSubmission}
             onResendForm={handleResendForm}
           />
         );
-      case "builder":
-        return (
-          <FormBuilder 
-            formFields={formFields}
-            onAddField={handleAddField}
-            onUpdateField={handleUpdateField}
-            onRemoveField={handleRemoveField}
-            selectedFieldId={selectedFieldId}
-            onSelectField={setSelectedFieldId}
-            title={formTitle}
-            description={formDescription}
-            onUpdateTitle={setFormTitle}
-            onUpdateDescription={setFormDescription}
-            onSaveForm={handleSaveForm}
-            onPreviewForm={handlePreviewForm}
-            attachments={formAttachments}
-            onUpdateAttachments={setFormAttachments}
-            onSaveToLibrary={handleSaveToLibrary}
-            isPublished={sampleForm.status === 'published'}
-            onMoveToDraft={handleMoveToDraft}
-          />
-        );
+      case "form-builder":
+        return <FormBuilder />;
       case "reports":
-        return (
-          <ReportGeneration 
-            submissions={submissions}
-            onGenerateReport={handleGenerateReport}
-          />
-        );
+        return <Reports submissions={submissions} forms={forms} />;
       case "analytics":
-        return (
-          <Analytics 
-            submissions={submissions}
-            onFilterSubmissions={(filters) => {
-              setActiveTab("submissions");
-              // Apply filters to submissions
-              setTimeout(() => {
-                const event = new CustomEvent('setSubmissionFilter', { 
-                  detail: filters 
-                });
-                window.dispatchEvent(event);
-              }, 100);
-            }}
-          />
-        );
+        return <Analytics submissions={submissions} />;
+      case "settings":
+        return <GlobalSettings />;
       default:
-        return renderDashboard();
+        return <div>Page not found</div>;
     }
   };
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full">
-        <AppSidebar 
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          hasUnpublishedDrafts={false}
-        />
-        <SidebarInset>
-          <header className="h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-            <div className="flex items-center justify-between px-4 h-full">
-              <SidebarTrigger />
-              <div className="flex gap-2">
-                <NotificationPanel 
-                  onNavigate={(tab, filters) => {
-                    setActiveTab(tab);
-                    if (filters) {
-                      setTimeout(() => {
-                        const event = new CustomEvent('setSubmissionFilter', { 
-                          detail: filters 
-                        });
-                        window.dispatchEvent(event);
-                      }, 100);
-                    }
-                  }}
-                />
-                <Button 
-                  variant="outline" 
-                  size="sm"
-                  onClick={() => {
-                    console.log('Opening settings...');
-                    // TODO: Implement settings panel
-                  }}
-                >
-                  <Settings className="h-4 w-4 mr-2" />
-                  Settings
-                </Button>
+      <div className="min-h-screen flex w-full bg-background">
+        <AppSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+        <SidebarInset className="flex-1">
+          {/* Header */}
+          <header className="flex h-12 sm:h-14 lg:h-16 shrink-0 items-center gap-2 border-b px-3 sm:px-4 lg:px-6 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <SidebarTrigger className="-ml-1" />
+            <div className="flex items-center gap-2 sm:gap-3">
+              <BrandLogo size="sm" showText={false} />
+              <div className="hidden sm:block">
+                <h1 className="text-base sm:text-lg font-semibold">{brand.name}</h1>
+                <p className="text-xs sm:text-sm text-muted-foreground hidden lg:block">{brand.tagline}</p>
               </div>
             </div>
+            
+            <div className="ml-auto flex items-center gap-1 sm:gap-2">
+              <div className="relative">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="relative"
+                  onClick={() => setShowNotifications(!showNotifications)}
+                >
+                  <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <Badge className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 p-0 text-xs bg-red-500 text-white">
+                    3
+                  </Badge>
+                  <span className="sr-only sm:not-sr-only sm:ml-2 text-xs sm:text-sm">Notifications</span>
+                </Button>
+                
+                {showNotifications && (
+                  <div className="absolute right-0 top-full mt-2 z-50">
+                    <NotificationPanel onClose={() => setShowNotifications(false)} />
+                  </div>
+                )}
+              </div>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setActiveTab("settings")}
+                className="flex items-center gap-2"
+              >
+                <Settings className="h-4 w-4 sm:h-5 sm:w-5" />
+                <span className="sr-only sm:not-sr-only text-xs sm:text-sm">Settings</span>
+              </Button>
+            </div>
           </header>
-          <main className="flex-1 p-6 bg-gray-50">
+
+          {/* Main Content */}
+          <main className="flex-1 p-3 sm:p-4 lg:p-6">
             {renderContent()}
           </main>
         </SidebarInset>
       </div>
     </SidebarProvider>
   );
-};
-
-export default Index;
+}
