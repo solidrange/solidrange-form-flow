@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { FormField, DocumentAttachment, FormSettings } from '@/types/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -140,7 +139,17 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
     settings: formSettings,
     createdAt: new Date(),
     updatedAt: new Date(),
-    status: isPublished ? 'published' as const : 'draft' as const
+    status: isPublished ? 'published' as const : 'draft' as const,
+    analytics: {
+      enabled: true,
+      trackingPixel: false,
+      googleAnalytics: undefined,
+      customEvents: false,
+      views: 0,
+      submissions: 0,
+      emailsSent: 0,
+      completionRate: 0
+    }
   };
 
   const handleFormUpdate = (updatedForm: typeof currentForm) => {
