@@ -24,6 +24,8 @@ import { SubmissionsList } from "./submissions/SubmissionsList";
 import { SubmissionDetails } from "./submissions/SubmissionDetails";
 import { AdvancedSubmissionFilters } from "./submissions/AdvancedSubmissionFilters";
 import { BulkActions } from "./submissions/BulkActions";
+import { ThemeAwareSubmissionCard } from "./ThemeAwareSubmissionCard";
+import { ThemeAwareStatsCard } from "./ThemeAwareStatsCard";
 
 interface SubmissionReviewProps {
   submissions: FormSubmission[];
@@ -343,44 +345,17 @@ export const SubmissionReview = ({
   const isPartiallySelected = selectedSubmissions.length > 0 && 
     selectedSubmissions.length < filteredSubmissions.length;
 
-  if (showBulkActions) {
-    return (
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold">Bulk Actions</h1>
-            <p className="text-gray-600">Manage multiple submissions at once</p>
-          </div>
-          <Button 
-            variant="outline" 
-            onClick={() => setShowBulkActions(false)}
-            className="flex items-center gap-2"
-          >
-            <X className="h-4 w-4" />
-            Cancel
-          </Button>
-        </div>
-        
-        <BulkActions
-          selectedSubmissions={selectedSubmissions}
-          submissions={filteredSubmissions}
-          onBulkUpdate={handleBulkUpdate}
-          onBulkDelete={handleBulkDelete}
-          onClose={() => setShowBulkActions(false)}
-        />
-      </div>
-    );
-  }
+  
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 container-responsive">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold">Submission Review</h1>
-          <p className="text-gray-600">Review and manage form submissions</p>
+          <h1 className="heading-primary">Submission Review</h1>
+          <p className="text-muted">Review and manage form submissions</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="themed-button-outline">
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
@@ -389,6 +364,7 @@ export const SubmissionReview = ({
             size="sm"
             onClick={() => setShowBulkActions(true)}
             disabled={selectedSubmissions.length === 0}
+            className="themed-button-outline"
           >
             <Users className="h-4 w-4 mr-2" />
             Bulk Actions ({selectedSubmissions.length})
@@ -398,77 +374,47 @@ export const SubmissionReview = ({
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Total</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
-              </div>
-              <FileText className="h-8 w-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
+        <ThemeAwareStatsCard
+          title="Total"
+          value={stats.total}
+          icon={FileText}
+          color="default"
+        />
         
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Pending</p>
-                <p className="text-2xl font-bold text-orange-600">{stats.pending}</p>
-              </div>
-              <Clock className="h-8 w-8 text-orange-500" />
-            </div>
-          </CardContent>
-        </Card>
+        <ThemeAwareStatsCard
+          title="Pending"
+          value={stats.pending}
+          icon={Clock}
+          color="warning"
+        />
         
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Under Review</p>
-                <p className="text-2xl font-bold text-blue-600">{stats.underReview}</p>
-              </div>
-              <AlertTriangle className="h-8 w-8 text-blue-500" />
-            </div>
-          </CardContent>
-        </Card>
+        <ThemeAwareStatsCard
+          title="Under Review"
+          value={stats.underReview}
+          icon={AlertTriangle}
+          color="info"
+        />
         
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Approved</p>
-                <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
-              </div>
-              <CheckCircle className="h-8 w-8 text-green-500" />
-            </div>
-          </CardContent>
-        </Card>
+        <ThemeAwareStatsCard
+          title="Approved"
+          value={stats.approved}
+          icon={CheckCircle}
+          color="success"
+        />
         
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Rejected</p>
-                <p className="text-2xl font-bold text-red-600">{stats.rejected}</p>
-              </div>
-              <XCircle className="h-8 w-8 text-red-500" />
-            </div>
-          </CardContent>
-        </Card>
+        <ThemeAwareStatsCard
+          title="Rejected"
+          value={stats.rejected}
+          icon={XCircle}
+          color="error"
+        />
         
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-600">Avg Score</p>
-                <p className="text-2xl font-bold">{stats.avgScore}%</p>
-              </div>
-              <Award className="h-8 w-8 text-purple-500" />
-            </div>
-          </CardContent>
-        </Card>
+        <ThemeAwareStatsCard
+          title="Avg Score"
+          value={`${stats.avgScore}%`}
+          icon={Award}
+          color="info"
+        />
       </div>
 
       {/* Advanced Filters */}
@@ -482,16 +428,16 @@ export const SubmissionReview = ({
 
       {/* Bulk Selection Controls */}
       {filteredSubmissions.length > 0 && (
-        <Card>
+        <Card className="themed-card">
           <CardContent className="p-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Checkbox
                   checked={isAllSelected}
                   onCheckedChange={handleSelectAll}
-                  className={isPartiallySelected ? "data-[state=checked]:bg-primary/50" : ""}
+                  className={cn("focus-enhanced", isPartiallySelected ? "data-[state=checked]:bg-primary/50" : "")}
                 />
-                <span className="text-sm">
+                <span className="text-body">
                   {selectedSubmissions.length === 0 
                     ? "Select submissions" 
                     : `${selectedSubmissions.length} of ${filteredSubmissions.length} selected`}
@@ -503,12 +449,14 @@ export const SubmissionReview = ({
                     size="sm" 
                     variant="outline"
                     onClick={() => setSelectedSubmissions([])}
+                    className="themed-button-outline"
                   >
                     Clear Selection
                   </Button>
                   <Button 
                     size="sm"
                     onClick={() => setShowBulkActions(true)}
+                    className="themed-button-primary"
                   >
                     <Users className="h-4 w-4 mr-2" />
                     Bulk Actions
@@ -523,14 +471,28 @@ export const SubmissionReview = ({
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1">
-          <SubmissionsList
-            submissions={filteredSubmissions}
-            form={form}
-            selectedSubmission={selectedSubmission}
-            selectedSubmissions={selectedSubmissions}
-            onSelectSubmission={setSelectedSubmission}
-            onSelectForBulk={handleSelectSubmission}
-          />
+          <div className="space-y-4">
+            {filteredSubmissions.map((submission) => (
+              <ThemeAwareSubmissionCard
+                key={submission.id}
+                submission={submission}
+                isSelected={selectedSubmission === submission.id}
+                isSelectedForBulk={selectedSubmissions.includes(submission.id)}
+                onSelect={() => setSelectedSubmission(submission.id)}
+                onSelectForBulk={(checked) => handleSelectSubmission(submission.id, checked)}
+              />
+            ))}
+            {filteredSubmissions.length === 0 && (
+              <Card className="themed-card">
+                <CardContent className="flex items-center justify-center h-64">
+                  <div className="text-center">
+                    <FileText className="h-12 w-12 themed-icon mx-auto mb-4" />
+                    <p className="text-muted">No submissions found</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
         
         <div className="lg:col-span-2">
@@ -542,11 +504,11 @@ export const SubmissionReview = ({
               onResendForm={onResendForm}
             />
           ) : (
-            <Card className="h-full">
+            <Card className="themed-card h-full">
               <CardContent className="flex items-center justify-center h-64">
                 <div className="text-center">
-                  <FileText className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500">Select a submission to view details</p>
+                  <FileText className="h-12 w-12 themed-icon mx-auto mb-4" />
+                  <p className="text-muted">Select a submission to view details</p>
                 </div>
               </CardContent>
             </Card>

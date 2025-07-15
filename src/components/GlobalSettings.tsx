@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -80,7 +79,7 @@ export const GlobalSettings = () => {
     setTheme(theme);
     toast({
       title: "Theme Updated",
-      description: `Theme changed to ${theme}`,
+      description: `Theme changed to ${theme}. The entire application will now follow ${theme === 'system' ? 'your system preference' : theme + ' mode'} with proper color contrast.`,
     });
   };
 
@@ -118,20 +117,29 @@ export const GlobalSettings = () => {
 
   return (
     <ResponsiveLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 container-responsive">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Application Settings</h1>
-            <p className="text-sm sm:text-base text-gray-600 mt-1 hidden sm:block">
+            <h1 className="heading-primary">Application Settings</h1>
+            <p className="text-muted">
               Configure your application preferences and system settings
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={handleResetSettings}>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleResetSettings}
+              className="themed-button-outline"
+            >
               <span className="hidden sm:inline">Reset All</span>
               <span className="sm:hidden">Reset</span>
             </Button>
-            <Button size="sm" onClick={handleSaveSettings}>
+            <Button 
+              size="sm" 
+              onClick={handleSaveSettings}
+              className="themed-button-primary"
+            >
               <span className="hidden sm:inline">Save Changes</span>
               <span className="sm:hidden">Save</span>
             </Button>
@@ -139,7 +147,7 @@ export const GlobalSettings = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-6">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 bg-muted">
             <TabsTrigger value="general" className="text-xs sm:text-sm">
               <Settings className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
               <span className="hidden sm:inline">General</span>
@@ -270,21 +278,40 @@ export const GlobalSettings = () => {
               <AnimatedCard title="Theme Settings" icon={Palette}>
                 <div className="space-y-4">
                   <div>
-                    <Label>Application Theme</Label>
+                    <Label className="filter-label">Application Theme</Label>
                     <Select value={globalTheme} onValueChange={handleThemeChange}>
-                      <SelectTrigger className="mt-1">
+                      <SelectTrigger className="mt-1 themed-input">
                         <SelectValue />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="themed-card">
                         <SelectItem value="light">Light Theme</SelectItem>
                         <SelectItem value="dark">Dark Theme</SelectItem>
                         <SelectItem value="system">System Default</SelectItem>
                       </SelectContent>
                     </Select>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Choose your preferred color scheme
+                    <p className="text-muted mt-1">
+                      Choose your preferred color scheme. System default will follow your device settings.
                     </p>
                   </div>
+                  
+                  <div className="p-4 themed-card rounded-lg">
+                    <h4 className="text-body font-medium mb-2">Theme Preview</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-primary rounded"></div>
+                        <span className="text-body">Primary Color</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-secondary rounded"></div>
+                        <span className="text-body">Secondary Color</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 bg-muted rounded"></div>
+                        <span className="text-body">Muted Background</span>
+                      </div>
+                    </div>
+                  </div>
+                  
                   <div>
                     <Label>Density</Label>
                     <Select defaultValue="comfortable">
@@ -615,6 +642,14 @@ export const GlobalSettings = () => {
 
           <TabsContent value="branding" className="space-y-6">
             <AnimatedCard title="Brand Identity & Customization" icon={Eye}>
+              <div className="mb-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h4 className="text-body font-medium text-blue-900 dark:text-blue-100 mb-2">
+                  Dynamic Theme Integration
+                </h4>
+                <p className="text-muted">
+                  Your brand colors will automatically adapt to light and dark themes, ensuring optimal contrast and readability in all conditions.
+                </p>
+              </div>
               <BrandSettings />
             </AnimatedCard>
           </TabsContent>
