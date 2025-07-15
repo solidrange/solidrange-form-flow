@@ -18,12 +18,7 @@ export const sampleForm: Form = {
       type: 'select',
       label: 'Risk Level',
       required: true,
-      options: [
-        { value: 'low', label: 'Low Risk' },
-        { value: 'medium', label: 'Medium Risk' },
-        { value: 'high', label: 'High Risk' },
-        { value: 'critical', label: 'Critical Risk' }
-      ]
+      options: ['Low Risk', 'Medium Risk', 'High Risk', 'Critical Risk']
     }
   ],
   createdAt: new Date('2024-01-01'),
@@ -97,7 +92,10 @@ export const sampleSubmissions: FormSubmission[] = [
     submitterEmail: 'john@techcorp.com',
     submitterName: 'John Smith',
     companyName: 'TechCorp Solutions',
-    data: {},
+    responses: {
+      'company-name': 'TechCorp Solutions',
+      'risk-level': 'Low Risk'
+    },
     status: 'submitted',
     submittedAt: new Date('2025-03-19'),
     submissionType: 'vendor',
@@ -116,7 +114,10 @@ export const sampleSubmissions: FormSubmission[] = [
     submitterEmail: 'sarah@globalfinance.com',
     submitterName: 'Sarah Johnson',
     companyName: 'Global Finance Inc',
-    data: {},
+    responses: {
+      'company-name': 'Global Finance Inc',
+      'risk-level': 'High Risk'
+    },
     status: 'rejected',
     submittedAt: new Date('2024-03-21'),
     submissionType: 'external',

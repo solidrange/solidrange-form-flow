@@ -8,7 +8,12 @@ interface ReportsProps {
 }
 
 export const Reports: React.FC<ReportsProps> = ({ submissions }) => {
-  return <ReportGeneration submissions={submissions} />;
+  const handleGenerateReport = (config: any) => {
+    console.log('Generating report with config:', config);
+    // Report generation logic would go here
+  };
+
+  return <ReportGeneration submissions={submissions} onGenerateReport={handleGenerateReport} />;
 };
 
 export default Reports;

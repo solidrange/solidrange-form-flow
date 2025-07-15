@@ -1,38 +1,19 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Plus, Settings, Bell, Menu } from 'lucide-react';
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { FormBuilder } from '@/components/FormBuilder';
 import { AppSidebar } from '@/components/AppSidebar';
-import { DashboardOverview } from '@/components/DashboardOverview';
-import { Analytics } from '@/components/Analytics';
+import { DashboardOverview } from '@/components/dashboard/DashboardOverview';
+import Analytics from '@/components/Analytics';
 import { FormLibrary } from '@/components/FormLibrary';
 import { SubmissionReview } from '@/components/SubmissionReview';
 import { Reports } from '@/components/Reports';
 import { GlobalSettings } from '@/components/GlobalSettings';
 import { NotificationPanel } from '@/components/NotificationPanel';
 import { Badge } from '@/components/ui/badge';
-import { sampleSubmissions } from '@/data/sampleData';
-
-interface FormBuilderProps {
-  formFields: any[];
-  onAddField: (field: any) => void;
-  onUpdateField: (id: string, updatedField: any) => void;
-  onRemoveField: (id: string) => void;
-  onSave: () => void;
-  onCancel: () => void;
-  formTitle: string;
-  formDescription: string;
-  onFormTitleChange: (title: string) => void;
-  onFormDescriptionChange: (description: string) => void;
-  onDuplicate: () => void;
-  onFieldOrderChange: (newOrder: string[]) => void;
-  fieldValidationErrors: Record<string, string | undefined>;
-  showValidationErrors: boolean;
-  onValidationErrorsChange: (errors: Record<string, string | undefined>) => void;
-  onShowValidationErrorsChange: (show: boolean) => void;
-  onFieldSettingsChange: (id: string, settings: any) => void;
-}
+import { sampleSubmissions, sampleForm } from '@/data/sampleData';
 
 const Index: React.FC = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -41,7 +22,7 @@ const Index: React.FC = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Dummy functions for now
+  // Form builder handlers
   const handleAddField = (field: any) => {
     console.log('Adding field:', field);
   };
@@ -56,39 +37,12 @@ const Index: React.FC = () => {
 
   const handleSaveForm = () => {
     console.log('Saving form...');
+    setShowFormBuilder(false);
   };
 
   const handleCancelForm = () => {
     console.log('Canceling form...');
     setShowFormBuilder(false);
-  };
-
-  const handleFormTitleChange = (title: string) => {
-    console.log('Form title changed to:', title);
-  };
-
-  const handleFormDescriptionChange = (description: string) => {
-    console.log('Form description changed to:', description);
-  };
-
-  const handleDuplicateForm = () => {
-    console.log('Duplicating form...');
-  };
-
-  const handleFieldOrderChange = (newOrder: string[]) => {
-    console.log('Field order changed to:', newOrder);
-  };
-
-  const handleValidationErrorsChange = (errors: Record<string, string | undefined>) => {
-    console.log('Validation errors:', errors);
-  };
-
-  const handleShowValidationErrorsChange = (show: boolean) => {
-    console.log('Show validation errors:', show);
-  };
-
-  const handleFieldSettingsChange = (id: string, settings: any) => {
-    console.log(`Field ${id} settings changed to:`, settings);
   };
 
   return (
@@ -178,14 +132,19 @@ const Index: React.FC = () => {
                     <span className="sm:hidden">Create</span>
                   </Button>
                 </div>
-                <FormLibrary />
+                <FormLibrary onSelectTemplate={() => {}} />
               </div>
             )}
 
             {activeTab === 'submissions' && (
               <div className="space-y-6">
                 <h2 className="text-xl sm:text-2xl font-semibold">Submissions</h2>
-                <SubmissionReview />
+                <SubmissionReview 
+                  submissions={sampleSubmissions}
+                  form={sampleForm}
+                  onUpdateSubmission={() => {}}
+                  onResendForm={() => {}}
+                />
               </div>
             )}
 
@@ -210,11 +169,10 @@ const Index: React.FC = () => {
             <DialogContent className="max-w-6xl max-h-[90vh] overflow-auto p-0">
               <FormBuilder 
                 formFields={[]}
-                onAddField={() => {}}
-                onUpdateField={() => {}}
-                onRemoveField={() => {}}
-                onSave={() => {}}
-                onCancel={() => setShowFormBuilder(false)}
+                onAddField={handleAddField}
+                onUpdateField={handleUpdateField}
+                onRemoveField={handleRemoveField}
+                onCancel={handleCancelForm}
                 formTitle=""
                 formDescription=""
                 onFormTitleChange={() => {}}
@@ -234,7 +192,7 @@ const Index: React.FC = () => {
         {showSettings && (
           <Dialog open={showSettings} onOpenChange={setShowSettings}>
             <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto">
-              <GlobalSettings onClose={() => setShowSettings(false)} />
+              <GlobalSettings />
             </DialogContent>
           </Dialog>
         )}
