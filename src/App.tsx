@@ -47,41 +47,41 @@ const queryClient = new QueryClient();
  * QueryClientProvider: Enables smart data fetching and caching
  * LanguageProvider: Enables internationalization support
  * BrandProvider: Enables brand identity management
- * BrandingProvider: Enables comprehensive brand styling
  * ThemeProvider: Enables light/dark theme switching
+ * BrandingProvider: Enables comprehensive brand styling (must be inside ThemeProvider)
  * TooltipProvider: Enables helpful hover messages
  * BrowserRouter: Enables page navigation
  */
 const App: React.FC = () => (
   <QueryClientProvider client={queryClient}>
     <BrandProvider>
-      <BrandingProvider>
-        <LanguageProvider>
-          <ThemeProvider>
+      <LanguageProvider>
+        <ThemeProvider>
+          <BrandingProvider>
             <TooltipProvider>
-            <div className="relative min-h-screen">
-              {/* Notification systems - these show popup messages to users */}
-              <Toaster />
-              <Sonner />
-              
-              {/* Page routing system - decides which page to show based on URL */}
-              <BrowserRouter>
-                <Routes>
-                  {/* Main page: Form Builder dashboard */}
-                  <Route path="/" element={<Index />} />
-                  
-                  {/* Catch-all route: Show "Not Found" page for any invalid URL */}
-                  {/* IMPORTANT: This must be the last route */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </BrowserRouter>
-            </div>
-          </TooltipProvider>
+              <div className="relative min-h-screen">
+                {/* Notification systems - these show popup messages to users */}
+                <Toaster />
+                <Sonner />
+                
+                {/* Page routing system - decides which page to show based on URL */}
+                <BrowserRouter>
+                  <Routes>
+                    {/* Main page: Form Builder dashboard */}
+                    <Route path="/" element={<Index />} />
+                    
+                    {/* Catch-all route: Show "Not Found" page for any invalid URL */}
+                    {/* IMPORTANT: This must be the last route */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </BrowserRouter>
+              </div>
+            </TooltipProvider>
+          </BrandingProvider>
         </ThemeProvider>
       </LanguageProvider>
-    </BrandingProvider>
-  </BrandProvider>
-</QueryClientProvider>
+    </BrandProvider>
+  </QueryClientProvider>
 );
 
 export default App;
