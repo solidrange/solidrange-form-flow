@@ -1,4 +1,3 @@
-
 import { FormSubmission, Form } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -248,7 +247,6 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
                     {fieldKey.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                   </Label>
                   <div className="flex items-center gap-2">
-                    {/* Response status indicator */}
                     {hasResponse ? (
                       <CheckCircle className="h-4 w-4 text-green-500" />
                     ) : (

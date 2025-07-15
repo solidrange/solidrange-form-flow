@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { FormSubmission } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -48,11 +47,17 @@ interface AnalyticsProps {
   }) => void;
 }
 
+interface CompanyScoreData {
+  total: number;
+  count: number;
+  scores: number[];
+}
+
 const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
   const [selectedTimeRange, setSelectedTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
 
   // Calculate analytics metrics based on actual sample data
-  const totalSubmissions = submissions.length; // Now 130 total submissions
+  const totalSubmissions = submissions.length;
   const approvedSubmissions = submissions.filter(s => s.status === 'approved').length;
   const rejectedSubmissions = submissions.filter(s => s.status === 'rejected').length;
   const pendingSubmissions = submissions.filter(s => s.status === 'under_review').length;
@@ -73,21 +78,18 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
     acc[risk] = (acc[risk] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-  // Dynamic calculation based on actual data
 
   // Submission type analytics
   const submissionTypes = submissions.reduce((acc, sub) => {
     acc[sub.submissionType] = (acc[sub.submissionType] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-  // Dynamic calculation: vendor: ~50, internal: ~40, external: ~40
 
   // Average scores - calculate from actual data
   const submissionsWithScores = submissions.filter(s => s.score?.percentage);
   const avgScore = submissionsWithScores.length > 0 
     ? submissionsWithScores.reduce((acc, sub) => acc + (sub.score?.percentage || 0), 0) / submissionsWithScores.length
     : 0;
-  // Dynamic average based on actual submissions
 
   // Monthly submission trends - accurate month calculation
   const monthlyData = submissions.reduce((acc, sub) => {
@@ -132,12 +134,13 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
       if (!acc[sub.companyName]) {
         acc[sub.companyName] = { total: 0, count: 0, scores: [] };
       }
-      acc[sub.companyName].total += sub.score.percentage;
-      acc[sub.companyName].count += 1;
-      acc[sub.companyName].scores.push(sub.score.percentage);
+      const companyData = acc[sub.companyName] as CompanyScoreData;
+      companyData.total += sub.score.percentage;
+      companyData.count += 1;
+      companyData.scores.push(sub.score.percentage);
     }
     return acc;
-  }, {} as Record<string, { total: number; count: number; scores: number[] }>);
+  }, {} as Record<string, CompanyScoreData>);
 
   const topCompanies = Object.entries(companyScores)
     .map(([company, data]) => ({
@@ -172,6 +175,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
           </CardContent>
         </Card>
 
+        
         <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
               style={{ animationDelay: '0.1s' }}
               onClick={() => onFilterSubmissions?.({ status: 'approved' })}
@@ -348,10 +352,9 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
           </div>
         </TabsContent>
 
-        {/* Approvals Tab */}
+        
         <TabsContent value="approvals" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Approval Types Breakdown */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -361,7 +364,6 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  {/* Visual breakdown */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -388,7 +390,6 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                     <Progress value={100 - fullApprovalRate} className="h-3" />
                   </div>
 
-                  {/* Pie chart */}
                   <ResponsiveContainer width="100%" height={200}>
                     <PieChart>
                       <Pie
@@ -417,7 +418,6 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               </CardContent>
             </Card>
 
-            {/* Approval Quality Metrics */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -427,7 +427,6 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  {/* Quality Score */}
                   <div className="text-center p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg">
                     <div className="text-3xl font-bold text-emerald-600 mb-2">
                       {fullApprovalRate.toFixed(1)}%
@@ -438,7 +437,6 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                     </div>
                   </div>
 
-                  {/* Metrics breakdown */}
                   <div className="space-y-3">
                     <div className="flex justify-between items-center p-2 bg-gray-50 rounded">
                       <span className="text-sm font-medium">Total Approved</span>
@@ -454,7 +452,6 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                     </div>
                   </div>
 
-                  {/* Trend indicator */}
                   <div className="flex items-center justify-center gap-2 text-sm">
                     <TrendingUp className="h-4 w-4 text-green-500" />
                     <span className="text-green-600">Quality improving with {fullApprovalRate.toFixed(1)}% full approvals</span>
@@ -465,10 +462,8 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
           </div>
         </TabsContent>
 
-        {/* Submissions Tab */}
         <TabsContent value="submissions" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Submission Type Breakdown */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -510,7 +505,6 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               </CardContent>
             </Card>
 
-            {/* Recent Activity */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -526,19 +520,19 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                         <p className="font-medium text-sm">{submission.companyName || submission.submitterName}</p>
                         <p className="text-xs text-gray-500">{submission.submittedAt.toLocaleDateString()}</p>
                       </div>
-                        <Badge 
-                          variant={
-                            submission.status === 'approved' && submission.approvalType === 'fully' ? 'default' :
-                            submission.status === 'approved' && submission.approvalType === 'partially' ? 'secondary' :
-                            submission.status === 'rejected' ? 'destructive' :
-                            'outline'
-                          }
-                        >
-                          {submission.status === 'approved' 
-                            ? `${submission.approvalType === 'fully' ? 'Fully' : 'Partially'} Approved`
-                            : submission.status.replace('_', ' ')
-                          }
-                        </Badge>
+                      <Badge 
+                        variant={
+                          submission.status === 'approved' && submission.approvalType === 'fully' ? 'default' :
+                          submission.status === 'approved' && submission.approvalType === 'partially' ? 'secondary' :
+                          submission.status === 'rejected' ? 'destructive' :
+                          'outline'
+                        }
+                      >
+                        {submission.status === 'approved' 
+                          ? `${submission.approvalType === 'fully' ? 'Fully' : 'Partially'} Approved`
+                          : submission.status.replace('_', ' ')
+                        }
+                      </Badge>
                     </div>
                   ))}
                 </div>
@@ -547,7 +541,6 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
           </div>
         </TabsContent>
 
-        {/* Risk Analysis Tab */}
         <TabsContent value="risk" className="space-y-4">
           <Card>
             <CardHeader>
@@ -598,7 +591,6 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
           </Card>
         </TabsContent>
 
-        {/* Performance Tab */}
         <TabsContent value="performance" className="space-y-4">
           <Card>
             <CardHeader>
@@ -640,7 +632,6 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
           </Card>
         </TabsContent>
 
-        {/* Trends Tab */}
         <TabsContent value="trends" className="space-y-4">
           <Card>
             <CardHeader>
