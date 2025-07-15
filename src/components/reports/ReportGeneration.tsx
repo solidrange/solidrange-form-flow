@@ -24,6 +24,7 @@ import {
   PieChart,
   Activity
 } from "lucide-react";
+import { AnimatedCard } from "@/components/AnimatedCard";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 
@@ -175,13 +176,13 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold">Report Generation</h1>
-          <p className="text-gray-600">Generate comprehensive reports and analytics for your form submissions.</p>
+          <h1 className="text-xl sm:text-2xl font-bold">Report Generation</h1>
+          <p className="text-sm sm:text-base text-gray-600 hidden sm:block">Generate comprehensive reports and analytics for your form submissions.</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm">
             <Eye className="h-4 w-4 mr-2" />
-            Preview
+            <span className="hidden sm:inline">Preview</span>
           </Button>
         </div>
       </div>
@@ -195,14 +196,8 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
         <TabsContent value="quick" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Executive & Summary Reports */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-blue-600">
-                  <TrendingUp className="h-5 w-5" />
-                  Executive & Summary Reports
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            <AnimatedCard title="Executive & Summary Reports" icon={TrendingUp} iconColor="text-blue-600">
+              <div className="space-y-4">
                 {quickReports.filter(r => r.id.includes('executive') || r.id.includes('monthly')).map(report => (
                   <div key={report.id} className="space-y-2">
                     <Button
@@ -221,18 +216,12 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
                     </div>
                   </div>
                 ))}
-              </CardContent>
-            </Card>
+              </div>
+            </AnimatedCard>
 
             {/* Risk & Compliance Reports */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-red-600">
-                  <Shield className="h-5 w-5" />
-                  Risk & Compliance Reports
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            <AnimatedCard title="Risk & Compliance Reports" icon={Shield} iconColor="text-red-600" delay={200}>
+              <div className="space-y-4">
                 {quickReports.filter(r => r.id.includes('risk') || r.id.includes('compliance')).map(report => (
                   <div key={report.id} className="space-y-2">
                     <Button
@@ -251,18 +240,12 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
                     </div>
                   </div>
                 ))}
-              </CardContent>
-            </Card>
+              </div>
+            </AnimatedCard>
 
             {/* Performance & Analytics Reports */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-green-600">
-                  <BarChart3 className="h-5 w-5" />
-                  Performance & Analytics Reports
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            <AnimatedCard title="Performance & Analytics Reports" icon={BarChart3} iconColor="text-green-600" delay={400}>
+              <div className="space-y-4">
                 {quickReports.filter(r => r.id.includes('performance')).map(report => (
                   <div key={report.id} className="space-y-2">
                     <Button
@@ -281,18 +264,12 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
                     </div>
                   </div>
                 ))}
-              </CardContent>
-            </Card>
+              </div>
+            </AnimatedCard>
 
             {/* Submission & Trend Analysis */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-purple-600">
-                  <Activity className="h-5 w-5" />
-                  Submission & Trend Analysis
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
+            <AnimatedCard title="Submission & Trend Analysis" icon={Activity} iconColor="text-purple-600" delay={600}>
+              <div className="space-y-4">
                 {quickReports.filter(r => r.id.includes('submission')).map(report => (
                   <div key={report.id} className="space-y-2">
                     <Button
@@ -311,17 +288,14 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
                     </div>
                   </div>
                 ))}
-              </CardContent>
-            </Card>
+              </div>
+            </AnimatedCard>
           </div>
         </TabsContent>
 
         <TabsContent value="custom" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Custom Report Configuration</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          <AnimatedCard title="Custom Report Configuration" icon={Filter}>
+            <div className="space-y-6">
               {/* Basic Configuration */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -370,7 +344,7 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
                         checked={value}
                         onCheckedChange={(checked) => updateSection(key as keyof ReportConfig['sections'], !!checked)}
                       />
-                      <Label htmlFor={key} className="capitalize">
+                      <Label htmlFor={key} className="capitalize text-sm">
                         {key.replace(/([A-Z])/g, ' $1').trim()}
                       </Label>
                     </div>
@@ -535,8 +509,8 @@ export const ReportGeneration = ({ submissions, onGenerateReport }: ReportGenera
                   Generate Custom Report
                 </Button>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </AnimatedCard>
         </TabsContent>
       </Tabs>
     </div>

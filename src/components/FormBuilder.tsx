@@ -161,28 +161,28 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 
   const actionButtons = [
     {
-      label: "Save to Library",
+      label: isMobile ? "Library" : "Save to Library",
       icon: Library,
       onClick: onSaveToLibrary,
       variant: "outline" as const,
       brandVariant: "outline" as const
     },
     {
-      label: "Preview",
+      label: isMobile ? "Preview" : "Preview Form",
       icon: Eye,
       onClick: onPreviewForm,
       variant: "outline" as const,
       brandVariant: "outline" as const
     },
     ...(isPublished ? [{
-      label: "Move to Draft",
+      label: isMobile ? "Draft" : "Move to Draft",
       icon: FileText,
       onClick: onMoveToDraft,
       variant: "outline" as const,
       brandVariant: "secondary" as const
     }] : []),
     {
-      label: "Save Form",
+      label: isMobile ? "Save" : "Save Form",
       icon: Save,
       onClick: onSaveForm,
       variant: "default" as const,

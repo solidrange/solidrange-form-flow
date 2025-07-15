@@ -216,8 +216,8 @@ const Index = () => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Form Management Dashboard</h1>
-          <p className="text-gray-600 mt-1">Monitor and manage your form submissions</p>
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold">Form Management Dashboard</h1>
+          <p className="text-sm sm:text-base text-gray-600 mt-1 hidden sm:block">Monitor and manage your form submissions</p>
         </div>
         <div className="flex gap-2">
           <NotificationPanel 
@@ -236,13 +236,10 @@ const Index = () => {
           <Button 
             variant="outline" 
             size="sm"
-            onClick={() => {
-              console.log('Opening settings...');
-              // TODO: Implement settings panel
-            }}
+            onClick={() => setActiveTab("settings")}
           >
             <Settings className="h-4 w-4 mr-2" />
-            Settings
+            <span className="hidden sm:inline">Settings</span>
           </Button>
         </div>
       </div>
