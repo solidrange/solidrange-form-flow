@@ -87,6 +87,35 @@ export const SubmissionReview = ({
     hasDocuments: null
   });
 
+  
+  // Listen for custom events from dashboard
+  useEffect(() => {
+    const handleSetFilter = (event: CustomEvent) => {
+      const { detail } = event;
+      if (detail.status) {
+        setFilters(prev => ({ ...prev, status: detail.status }));
+      }
+      if (detail.riskLevel) {
+        setFilters(prev => ({ ...prev, riskLevel: detail.riskLevel }));
+      }
+    };
+
+    const handleSelectSubmission = (event: CustomEvent) => {
+      const { detail } = event;
+      if (detail.submissionId) {
+        setSelectedSubmission(detail.submissionId);
+      }
+    };
+
+    window.addEventListener('setSubmissionFilter', handleSetFilter as EventListener);
+    window.addEventListener('selectSubmission', handleSelectSubmission as EventListener);
+
+    return () => {
+      window.removeEventListener('setSubmissionFilter', handleSetFilter as EventListener);
+      window.removeEventListener('selectSubmission', handleSelectSubmission as EventListener);
+    };
+  }, []);
+
   // Filter and sort submissions
   const filteredSubmissions = useMemo(() => {
     let filtered = submissions.filter(submission => {

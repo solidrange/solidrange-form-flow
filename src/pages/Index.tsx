@@ -32,6 +32,7 @@ import { Form, FormField, DocumentAttachment } from "@/types/form";
 import { ReportGeneration } from "@/components/reports/ReportGeneration";
 import { expandedSampleSubmissions } from "@/data/expandedSampleSubmissions";
 import { AppSidebar } from "@/components/AppSidebar";
+import { NotificationPanel } from "@/components/NotificationPanel";
 
 // Sample form data for testing
 const sampleForm: Form = {
@@ -219,11 +220,27 @@ const Index = () => {
           <p className="text-gray-600 mt-1">Monitor and manage your form submissions</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm">
-            <Bell className="h-4 w-4 mr-2" />
-            Notifications
-          </Button>
-          <Button variant="outline" size="sm">
+          <NotificationPanel 
+            onNavigate={(tab, filters) => {
+              setActiveTab(tab);
+              if (filters) {
+                setTimeout(() => {
+                  const event = new CustomEvent('setSubmissionFilter', { 
+                    detail: filters 
+                  });
+                  window.dispatchEvent(event);
+                }, 100);
+              }
+            }}
+          />
+          <Button 
+            variant="outline" 
+            size="sm"
+            onClick={() => {
+              console.log('Opening settings...');
+              // TODO: Implement settings panel
+            }}
+          >
             <Settings className="h-4 w-4 mr-2" />
             Settings
           </Button>
@@ -232,48 +249,70 @@ const Index = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="hover:shadow-lg transition-shadow">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab("submissions")}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Total Submissions</p>
                 <p className="text-2xl font-bold">{totalSubmissions}</p>
+                <p className="text-xs text-gray-500 mt-1">Click to view all</p>
               </div>
               <FileText className="h-8 w-8 text-blue-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-lg transition-shadow">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => {
+          setActiveTab("submissions");
+          // Set filter for pending submissions
+          setTimeout(() => {
+            const event = new CustomEvent('setSubmissionFilter', { 
+              detail: { status: ['submitted'] } 
+            });
+            window.dispatchEvent(event);
+          }, 100);
+        }}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Pending Review</p>
                 <p className="text-2xl font-bold text-orange-600">{pendingSubmissions}</p>
+                <p className="text-xs text-gray-500 mt-1">Click to review</p>
               </div>
               <Clock className="h-8 w-8 text-orange-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-lg transition-shadow">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => {
+          setActiveTab("submissions");
+          // Set filter for approved submissions
+          setTimeout(() => {
+            const event = new CustomEvent('setSubmissionFilter', { 
+              detail: { status: ['approved'] } 
+            });
+            window.dispatchEvent(event);
+          }, 100);
+        }}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Approved</p>
                 <p className="text-2xl font-bold text-green-600">{approvedSubmissions}</p>
+                <p className="text-xs text-gray-500 mt-1">Click to view</p>
               </div>
               <CheckCircle className="h-8 w-8 text-green-500" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-lg transition-shadow">
+        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setActiveTab("analytics")}>
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600">Completion Rate</p>
                 <p className="text-2xl font-bold">{avgCompletionRate}%</p>
+                <p className="text-xs text-gray-500 mt-1">View analytics</p>
               </div>
               <TrendingUp className="h-8 w-8 text-purple-500" />
             </div>
@@ -292,7 +331,20 @@ const Index = () => {
           </CardHeader>
           <CardContent className="space-y-4">
             {submissions.slice(0, 5).map((submission) => (
-              <div key={submission.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+              <div 
+                key={submission.id} 
+                className="flex items-center justify-between p-3 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                onClick={() => {
+                  setActiveTab("submissions");
+                  // Select the submission after navigation
+                  setTimeout(() => {
+                    const event = new CustomEvent('selectSubmission', { 
+                      detail: { submissionId: submission.id } 
+                    });
+                    window.dispatchEvent(event);
+                  }, 100);
+                }}
+              >
                 <div className="flex items-center gap-3">
                   {submission.submissionType === 'vendor' ? (
                     <Building className="h-4 w-4 text-blue-500" />
@@ -334,7 +386,20 @@ const Index = () => {
                 { level: 'Medium', count: submissions.filter(s => s.score?.riskLevel === 'medium').length, color: 'bg-yellow-500' },
                 { level: 'Low', count: submissions.filter(s => s.score?.riskLevel === 'low').length, color: 'bg-green-500' }
               ].map((risk) => (
-                <div key={risk.level} className="flex items-center justify-between">
+                <div 
+                  key={risk.level} 
+                  className="flex items-center justify-between cursor-pointer hover:bg-gray-50 p-2 rounded transition-colors"
+                  onClick={() => {
+                    setActiveTab("submissions");
+                    // Set filter for risk level
+                    setTimeout(() => {
+                      const event = new CustomEvent('setSubmissionFilter', { 
+                        detail: { riskLevel: [risk.level.toLowerCase()] } 
+                      });
+                      window.dispatchEvent(event);
+                    }, 100);
+                  }}
+                >
                   <div className="flex items-center gap-2">
                     <div className={`w-3 h-3 rounded-full ${risk.color}`}></div>
                     <span className="text-sm">{risk.level} Risk</span>
@@ -444,7 +509,14 @@ const Index = () => {
           <Analytics 
             submissions={submissions}
             onFilterSubmissions={(filters) => {
-              console.log('Filtering submissions with:', filters);
+              setActiveTab("submissions");
+              // Apply filters to submissions
+              setTimeout(() => {
+                const event = new CustomEvent('setSubmissionFilter', { 
+                  detail: filters 
+                });
+                window.dispatchEvent(event);
+              }, 100);
             }}
           />
         );
@@ -466,11 +538,27 @@ const Index = () => {
             <div className="flex items-center justify-between px-4 h-full">
               <SidebarTrigger />
               <div className="flex gap-2">
-                <Button variant="outline" size="sm">
-                  <Bell className="h-4 w-4 mr-2" />
-                  Notifications
-                </Button>
-                <Button variant="outline" size="sm">
+                <NotificationPanel 
+                  onNavigate={(tab, filters) => {
+                    setActiveTab(tab);
+                    if (filters) {
+                      setTimeout(() => {
+                        const event = new CustomEvent('setSubmissionFilter', { 
+                          detail: filters 
+                        });
+                        window.dispatchEvent(event);
+                      }, 100);
+                    }
+                  }}
+                />
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    console.log('Opening settings...');
+                    // TODO: Implement settings panel
+                  }}
+                >
                   <Settings className="h-4 w-4 mr-2" />
                   Settings
                 </Button>
