@@ -100,9 +100,11 @@ export const sampleSubmissions: FormSubmission[] = [
     data: {},
     status: 'submitted',
     submittedAt: new Date('2025-03-19'),
-    submissionType: 'initial',
+    submissionType: 'vendor',
     timeSpent: 1200,
     score: {
+      total: 85,
+      maxTotal: 100,
       percentage: 85,
       riskLevel: 'low'
     },
@@ -117,9 +119,11 @@ export const sampleSubmissions: FormSubmission[] = [
     data: {},
     status: 'rejected',
     submittedAt: new Date('2024-03-21'),
-    submissionType: 'initial',
+    submissionType: 'external',
     timeSpent: 900,
     score: {
+      total: 45,
+      maxTotal: 100,
       percentage: 45,
       riskLevel: 'high'
     },
