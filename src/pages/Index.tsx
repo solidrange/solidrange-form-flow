@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { 
   FileText, 
   Plus, 
@@ -31,6 +31,7 @@ import { sampleSubmissions } from "@/data/sampleSubmissions";
 import { Form, FormField, DocumentAttachment } from "@/types/form";
 import { ReportGeneration } from "@/components/reports/ReportGeneration";
 import { expandedSampleSubmissions } from "@/data/expandedSampleSubmissions";
+import { AppSidebar } from "@/components/AppSidebar";
 
 // Sample form data for testing
 const sampleForm: Form = {
@@ -372,18 +373,18 @@ const Index = () => {
             <Button 
               variant="outline" 
               className="h-20 flex-col gap-2"
-              onClick={() => setActiveTab("analytics")}
+              onClick={() => setActiveTab("reports")}
             >
               <BarChart3 className="h-6 w-6" />
-              View Analytics
+              View Reports
             </Button>
             <Button 
               variant="outline" 
               className="h-20 flex-col gap-2"
-              onClick={() => setActiveTab("settings")}
+              onClick={() => setActiveTab("analytics")}
             >
-              <Settings className="h-6 w-6" />
-              Settings
+              <Zap className="h-6 w-6" />
+              Analytics
             </Button>
           </div>
         </CardContent>
@@ -396,71 +397,92 @@ const Index = () => {
     // Here you would implement the actual report generation logic
   };
 
+  const renderContent = () => {
+    switch (activeTab) {
+      case "dashboard":
+        return renderDashboard();
+      case "submissions":
+        return (
+          <SubmissionReview 
+            submissions={submissions}
+            form={sampleForm}
+            onUpdateSubmission={handleUpdateSubmission}
+            onResendForm={handleResendForm}
+          />
+        );
+      case "builder":
+        return (
+          <FormBuilder 
+            formFields={formFields}
+            onAddField={handleAddField}
+            onUpdateField={handleUpdateField}
+            onRemoveField={handleRemoveField}
+            selectedFieldId={selectedFieldId}
+            onSelectField={setSelectedFieldId}
+            title={formTitle}
+            description={formDescription}
+            onUpdateTitle={setFormTitle}
+            onUpdateDescription={setFormDescription}
+            onSaveForm={handleSaveForm}
+            onPreviewForm={handlePreviewForm}
+            attachments={formAttachments}
+            onUpdateAttachments={setFormAttachments}
+            onSaveToLibrary={handleSaveToLibrary}
+            isPublished={sampleForm.status === 'published'}
+            onMoveToDraft={handleMoveToDraft}
+          />
+        );
+      case "reports":
+        return (
+          <ReportGeneration 
+            submissions={submissions}
+            onGenerateReport={handleGenerateReport}
+          />
+        );
+      case "analytics":
+        return (
+          <Analytics 
+            submissions={submissions}
+            onFilterSubmissions={(filters) => {
+              console.log('Filtering submissions with:', filters);
+            }}
+          />
+        );
+      default:
+        return renderDashboard();
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto p-4">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="submissions">Submissions</TabsTrigger>
-            <TabsTrigger value="builder">Form Builder</TabsTrigger>
-            <TabsTrigger value="reports">Reports</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="dashboard" className="mt-6">
-            {renderDashboard()}
-          </TabsContent>
-          
-          <TabsContent value="submissions" className="mt-6">
-            <SubmissionReview 
-              submissions={submissions}
-              form={sampleForm}
-              onUpdateSubmission={handleUpdateSubmission}
-              onResendForm={handleResendForm}
-            />
-          </TabsContent>
-          
-          <TabsContent value="builder" className="mt-6">
-            <FormBuilder 
-              formFields={formFields}
-              onAddField={handleAddField}
-              onUpdateField={handleUpdateField}
-              onRemoveField={handleRemoveField}
-              selectedFieldId={selectedFieldId}
-              onSelectField={setSelectedFieldId}
-              title={formTitle}
-              description={formDescription}
-              onUpdateTitle={setFormTitle}
-              onUpdateDescription={setFormDescription}
-              onSaveForm={handleSaveForm}
-              onPreviewForm={handlePreviewForm}
-              attachments={formAttachments}
-              onUpdateAttachments={setFormAttachments}
-              onSaveToLibrary={handleSaveToLibrary}
-              isPublished={sampleForm.status === 'published'}
-              onMoveToDraft={handleMoveToDraft}
-            />
-          </TabsContent>
-          
-          <TabsContent value="reports" className="mt-6">
-            <ReportGeneration 
-              submissions={submissions}
-              onGenerateReport={handleGenerateReport}
-            />
-          </TabsContent>
-          
-          <TabsContent value="analytics" className="mt-6">
-            <Analytics 
-              submissions={submissions}
-              onFilterSubmissions={(filters) => {
-                console.log('Filtering submissions with:', filters);
-              }}
-            />
-          </TabsContent>
-        </Tabs>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full">
+        <AppSidebar 
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          hasUnpublishedDrafts={false}
+        />
+        <SidebarInset>
+          <header className="h-16 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+            <div className="flex items-center justify-between px-4 h-full">
+              <SidebarTrigger />
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm">
+                  <Bell className="h-4 w-4 mr-2" />
+                  Notifications
+                </Button>
+                <Button variant="outline" size="sm">
+                  <Settings className="h-4 w-4 mr-2" />
+                  Settings
+                </Button>
+              </div>
+            </div>
+          </header>
+          <main className="flex-1 p-6 bg-gray-50">
+            {renderContent()}
+          </main>
+        </SidebarInset>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 

@@ -3,13 +3,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { CheckCircle, XCircle, AlertTriangle, Building, User } from "lucide-react";
+import { SubmissionActions } from "./SubmissionActions";
 
 interface SubmissionDetailsProps {
   submission: FormSubmission;
   form: Form;
+  onUpdateSubmission?: (submissionId: string, updates: Partial<FormSubmission>) => void;
+  onResendForm?: (submissionId: string, comments: string) => void;
 }
 
-export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) => {
+export const SubmissionDetails = ({ submission, form, onUpdateSubmission, onResendForm }: SubmissionDetailsProps) => {
   /**
    * Calculate the completion percentage based on required fields
    */
@@ -272,6 +275,16 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
           })}
         </CardContent>
       </Card>
+
+      {/* Submission Actions */}
+      {onUpdateSubmission && onResendForm && (
+        <SubmissionActions
+          submission={submission}
+          form={form}
+          onUpdateSubmission={onUpdateSubmission}
+          onResendForm={onResendForm}
+        />
+      )}
     </div>
   );
 };

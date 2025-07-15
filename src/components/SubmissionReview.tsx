@@ -393,6 +393,8 @@ export const SubmissionReview = ({
             <SubmissionDetails
               submission={selectedSubmissionData}
               form={form}
+              onUpdateSubmission={onUpdateSubmission}
+              onResendForm={onResendForm}
             />
           ) : (
             <Card className="h-full">
