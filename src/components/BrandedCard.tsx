@@ -16,7 +16,14 @@ export const BrandedCard: React.FC<BrandedCardProps> = ({
   brandAccent = false,
   ...props
 }) => {
-  const brandingContext = useBranding();
+  let brandingContext = null;
+  
+  try {
+    brandingContext = useBranding();
+  } catch (error) {
+    // If branding context is not available, fall back to default styling
+    console.warn('BrandedCard: BrandingProvider not available, using default styling');
+  }
 
   const getBrandedStyles = () => {
     if (!enableBranding || !brandingContext) return {};
@@ -31,7 +38,7 @@ export const BrandedCard: React.FC<BrandedCardProps> = ({
   return (
     <Card
       className={cn(
-        enableBranding && brandAccent && 'border-t-3',
+        enableBranding && brandAccent && brandingContext && 'border-t-3',
         'transition-all duration-200',
         className
       )}

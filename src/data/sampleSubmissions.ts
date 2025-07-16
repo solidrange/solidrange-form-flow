@@ -519,10 +519,10 @@ for (let i = 6; i <= 100; i++) {
   });
 }
 
-// Add 30 additional external submissions for better data representation
+// Add 70 additional external submissions for better data representation (up to 200 total)
 const additionalExternalSubmissions: FormSubmission[] = [];
 
-for (let i = 101; i <= 130; i++) {
+for (let i = 101; i <= 200; i++) {
   const status = statuses[Math.floor(Math.random() * statuses.length)];
   const approvalType = status === "approved" ? approvalTypes[Math.floor(Math.random() * approvalTypes.length)] : undefined;
   const riskLevel = riskLevels[Math.floor(Math.random() * riskLevels.length)];
