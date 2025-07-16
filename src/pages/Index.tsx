@@ -1070,8 +1070,7 @@ const Index = () => {
                       onSaveForm={saveForm}
                       onPreviewForm={() => {}}
                       attachments={formAttachments}
-                      onAddAttachment={() => {}}
-                      onRemoveAttachment={() => {}}
+                      onUpdateAttachments={setFormAttachments}
                       onSaveToLibrary={handleSaveToLibrary}
                       isPublished={currentFormIsPublished()}
                       onMoveToDraft={() => handleMoveToDraft()}

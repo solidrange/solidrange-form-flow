@@ -6,20 +6,20 @@ import { cn } from '@/lib/utils';
 
 interface BrandedButtonProps extends ButtonProps {
   brandVariant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  useBranding?: boolean;
+  enableBranding?: boolean;
 }
 
 export const BrandedButton: React.FC<BrandedButtonProps> = ({ 
   children, 
   className, 
   brandVariant = 'primary',
-  useBranding = true,
+  enableBranding = true,
   ...props 
 }) => {
   const brandingContext = useBranding();
 
   const getBrandedStyles = () => {
-    if (!useBranding || !brandingContext) return {};
+    if (!enableBranding || !brandingContext) return {};
     
     switch (brandVariant) {
       case 'primary':
@@ -51,7 +51,7 @@ export const BrandedButton: React.FC<BrandedButtonProps> = ({
   };
 
   const getBrandedHoverStyles = () => {
-    if (!useBranding || !brandingContext) return {};
+    if (!enableBranding || !brandingContext) return {};
     
     const baseStyle = getBrandedStyles();
     return {
@@ -64,17 +64,17 @@ export const BrandedButton: React.FC<BrandedButtonProps> = ({
     <Button
       className={cn(
         'transition-all duration-200 hover:brightness-90',
-        useBranding && 'brand-focus',
+        enableBranding && 'brand-focus',
         className
       )}
       style={getBrandedStyles()}
       onMouseEnter={(e) => {
-        if (useBranding && brandingContext) {
+        if (enableBranding && brandingContext) {
           Object.assign(e.currentTarget.style, getBrandedHoverStyles());
         }
       }}
       onMouseLeave={(e) => {
-        if (useBranding && brandingContext) {
+        if (enableBranding && brandingContext) {
           Object.assign(e.currentTarget.style, getBrandedStyles());
         }
       }}
