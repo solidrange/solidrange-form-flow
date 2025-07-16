@@ -95,48 +95,53 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Top Navigation */}
+      {/* Header */}
       <div className="border-b bg-background">
         <div className="flex items-center justify-between p-4">
-          <div className="flex items-center gap-4">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-auto">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="builder" className="gap-2">
-                  <Plus className="h-4 w-4" />
-                  Builder
-                </TabsTrigger>
-                <TabsTrigger value="library" className="gap-2">
-                  <Library className="h-4 w-4" />
-                  Library
-                </TabsTrigger>
-                <TabsTrigger value="preview" className="gap-2">
-                  <Eye className="h-4 w-4" />
-                  Preview
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
+          <div>
+            <h1 className="text-2xl font-bold">Form Builder</h1>
+            <p className="text-sm text-muted-foreground">Create and customize your forms</p>
           </div>
           
           <div className="flex items-center gap-2">
             <BrandedButton
               onClick={handleSaveForm}
               className="gap-2"
-              brandVariant="primary"
+              brandVariant="outline"
             >
               <Save className="h-4 w-4" />
-              Save to Draft
+              Save Draft
             </BrandedButton>
             
             <BrandedButton
-              variant="outline"
-              onClick={() => setActiveTab('settings')}
               className="gap-2"
-              brandVariant="outline"
+              brandVariant="primary"
             >
-              <Settings className="h-4 w-4" />
-              Settings
+              Publish
             </BrandedButton>
           </div>
+        </div>
+      </div>
+
+      {/* Main Navigation Tabs */}
+      <div className="border-b bg-background">
+        <div className="px-4">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-3 bg-transparent h-12">
+              <TabsTrigger value="builder" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                <Plus className="h-4 w-4" />
+                Builder
+              </TabsTrigger>
+              <TabsTrigger value="library" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                <Library className="h-4 w-4" />
+                Library
+              </TabsTrigger>
+              <TabsTrigger value="preview" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                <Eye className="h-4 w-4" />
+                Preview
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
       </div>
 
@@ -149,15 +154,27 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
               Draft
             </Badge>
           </div>
-          <BrandedButton
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            brandVariant="outline"
-          >
-            <Plus className="h-4 w-4" />
-            New Form
-          </BrandedButton>
+          <div className="flex items-center gap-2">
+            <BrandedButton
+              variant="outline"
+              onClick={() => setActiveTab('settings')}
+              className="gap-2"
+              brandVariant="outline"
+              size="sm"
+            >
+              <Settings className="h-4 w-4" />
+              Settings
+            </BrandedButton>
+            <BrandedButton
+              variant="outline"
+              size="sm"
+              className="gap-2"
+              brandVariant="outline"
+            >
+              <Plus className="h-4 w-4" />
+              New Form
+            </BrandedButton>
+          </div>
         </div>
       </div>
 
