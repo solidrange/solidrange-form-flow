@@ -1,10 +1,10 @@
 
 import React from 'react';
-import { Input, InputProps } from '@/components/ui/input';
+import { Input } from '@/components/ui/input';
 import { useBranding } from './BrandingProvider';
 import { cn } from '@/lib/utils';
 
-interface BrandedInputProps extends InputProps {
+interface BrandedInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   useBranding?: boolean;
 }
 
@@ -13,14 +13,14 @@ export const BrandedInput: React.FC<BrandedInputProps> = ({
   useBranding = true,
   ...props
 }) => {
-  const { getPrimaryColor } = useBranding();
+  const brandingContext = useBranding();
 
   const getBrandedStyles = () => {
-    if (!useBranding) return {};
+    if (!useBranding || !brandingContext) return {};
     
     return {
-      '--ring-color': getPrimaryColor(),
-      '--border-color': getPrimaryColor(),
+      '--ring-color': brandingContext.getPrimaryColor(),
+      '--border-color': brandingContext.getPrimaryColor(),
     } as React.CSSProperties;
   };
 

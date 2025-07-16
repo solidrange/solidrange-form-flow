@@ -59,7 +59,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
   onMoveToDraft
 }) => {
   const [activeBuilderTab, setActiveBuilderTab] = useState('builder');
-  const { getPrimaryColor } = useBranding();
+  const brandingContext = useBranding();
 
   return (
     <div className="h-full flex flex-col">
@@ -125,7 +125,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
       {/* Main Content */}
       <div className="flex-1 flex">
         <Tabs value={activeBuilderTab} onValueChange={setActiveBuilderTab} className="flex-1 flex flex-col">
-          <TabsList className="m-4 mb-0 w-fit" style={{ borderColor: getPrimaryColor() }}>
+          <TabsList className="m-4 mb-0 w-fit" style={{ borderColor: brandingContext?.getPrimaryColor() }}>
             <TabsTrigger value="builder" className="brand-focus">
               <Palette className="h-4 w-4 mr-2" />
               Builder
@@ -178,7 +178,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                             onChange={(e) => onUpdateDescription(e.target.value)}
                             placeholder="Enter form description"
                             className="brand-focus brand-border"
-                            style={{ borderColor: getPrimaryColor() }}
+                            style={{ borderColor: brandingContext?.getPrimaryColor() }}
                           />
                         </div>
                       </div>
@@ -186,7 +186,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                     <CardContent className="flex-1">
                       <FormCanvas
                         fields={formFields}
-                        selectedFieldId={selectedFieldId}
+                        selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
                         onSelectField={onSelectField}
                         onUpdateField={onUpdateField}
                         onRemoveField={onRemoveField}
@@ -203,7 +203,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                     </CardHeader>
                     <CardContent>
                       <FieldEditor
-                        selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) : null}
+                        selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
                         onUpdateField={onUpdateField}
                       />
                     </CardContent>
@@ -223,8 +223,6 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                 <CardContent>
                   <FileAttachmentManager
                     attachments={attachments}
-                    onAddAttachment={onAddAttachment}
-                    onRemoveAttachment={onRemoveAttachment}
                   />
                 </CardContent>
               </BrandedCard>
