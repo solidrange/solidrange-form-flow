@@ -1,7 +1,6 @@
 
 import React, { createContext, useContext, useEffect } from 'react';
 import { useBrand } from '@/contexts/BrandContext';
-import { useTheme } from '@/contexts/ThemeContext';
 
 interface BrandingContextType {
   applyBrandingStyles: (element: HTMLElement) => void;
@@ -27,16 +26,17 @@ interface BrandingProviderProps {
 
 export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) => {
   const { brand } = useBrand();
-  const { theme } = useTheme();
 
   useEffect(() => {
+    // Apply dynamic CSS variables for comprehensive theming
     const root = document.documentElement;
     
-    // Apply dynamic CSS variables for comprehensive theming
+    // Primary color variations
     root.style.setProperty('--brand-primary', brand.colors.primary.main);
     root.style.setProperty('--brand-primary-light', brand.colors.primary.light);
     root.style.setProperty('--brand-primary-dark', brand.colors.primary.dark);
     
+    // Secondary color variations
     root.style.setProperty('--brand-secondary', brand.colors.secondary.main);
     root.style.setProperty('--brand-secondary-light', brand.colors.secondary.light);
     root.style.setProperty('--brand-secondary-dark', brand.colors.secondary.dark);
@@ -55,49 +55,15 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
     root.style.setProperty('--btn-secondary', brand.colors.secondary.main);
     root.style.setProperty('--btn-secondary-hover', brand.colors.secondary.dark);
 
-    // Create dynamic CSS for branded components that works in both themes
+    // Create dynamic CSS for branded components
     const brandingCSS = `
-      .brand-primary { 
-        background-color: hsl(${brand.colors.primary.main}); 
-        color: hsl(var(--primary-foreground));
-      }
-      .brand-primary-hover:hover { 
-        background-color: hsl(${brand.colors.primary.dark}); 
-      }
-      .brand-secondary { 
-        background-color: hsl(${brand.colors.secondary.main}); 
-        color: hsl(var(--primary-foreground));
-      }
-      .brand-secondary-hover:hover { 
-        background-color: hsl(${brand.colors.secondary.dark}); 
-      }
-      .brand-border { 
-        border-color: hsl(${brand.colors.primary.main}); 
-      }
-      .brand-text { 
-        color: hsl(${brand.colors.primary.main}); 
-      }
-      .brand-focus:focus { 
-        border-color: hsl(${brand.colors.primary.main}); 
-        box-shadow: 0 0 0 2px hsl(${brand.colors.primary.main} / 0.2); 
-      }
-      
-      /* Theme-aware brand colors */
-      .brand-bg-subtle {
-        background-color: hsl(${brand.colors.primary.main} / 0.1);
-      }
-      
-      .dark .brand-bg-subtle {
-        background-color: hsl(${brand.colors.primary.main} / 0.2);
-      }
-      
-      .brand-border-subtle {
-        border-color: hsl(${brand.colors.primary.main} / 0.3);
-      }
-      
-      .dark .brand-border-subtle {
-        border-color: hsl(${brand.colors.primary.main} / 0.5);
-      }
+      .brand-primary { background-color: hsl(${brand.colors.primary.main}); }
+      .brand-primary-hover:hover { background-color: hsl(${brand.colors.primary.dark}); }
+      .brand-secondary { background-color: hsl(${brand.colors.secondary.main}); }
+      .brand-secondary-hover:hover { background-color: hsl(${brand.colors.secondary.dark}); }
+      .brand-border { border-color: hsl(${brand.colors.primary.main}); }
+      .brand-text { color: hsl(${brand.colors.primary.main}); }
+      .brand-focus:focus { border-color: hsl(${brand.colors.primary.main}); box-shadow: 0 0 0 2px hsl(${brand.colors.primary.main} / 0.2); }
     `;
 
     // Inject or update style element
@@ -109,7 +75,7 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
     }
     styleElement.textContent = brandingCSS;
 
-  }, [brand, theme]);
+  }, [brand]);
 
   const applyBrandingStyles = (element: HTMLElement) => {
     element.style.setProperty('--primary', brand.colors.primary.main);

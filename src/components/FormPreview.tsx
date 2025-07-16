@@ -93,7 +93,7 @@ export const FormPreview = ({
       <BrandedCard 
         className="overflow-hidden"
         style={brandedFormStyle}
-        enableBranding={brandingEnabled}
+        useBranding={brandingEnabled}
         brandAccent={brandingEnabled}
       >
         <CardHeader className={brandingEnabled ? 'bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5' : ''}>
@@ -235,7 +235,7 @@ export const FormPreview = ({
                   type={field.type}
                   placeholder={field.placeholder}
                   required={field.required}
-                  enableBranding={brandingEnabled}
+                  useBranding={brandingEnabled}
                 />
               ) : field.type === 'textarea' ? (
                 <Textarea
@@ -312,14 +312,14 @@ export const FormPreview = ({
                   id={field.id}
                   type="date"
                   required={field.required}
-                  enableBranding={brandingEnabled}
+                  useBranding={brandingEnabled}
                 />
               ) : field.type === 'file' ? (
                 <BrandedInput
                   id={field.id}
                   type="file"
                   required={field.required}
-                  enableBranding={brandingEnabled}
+                  useBranding={brandingEnabled}
                 />
               ) : field.type === 'rating' ? (
                 <div className="flex gap-1">
@@ -377,7 +377,7 @@ export const FormPreview = ({
                 type="submit" 
                 className="w-full text-lg py-3"
                 brandVariant="primary"
-                enableBranding={brandingEnabled}
+                useBranding={brandingEnabled}
               >
                 Submit Form
               </BrandedButton>

@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
@@ -26,31 +25,31 @@
     
     /* Light theme - High contrast and accessibility focused */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 224 71.4% 4.1%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 224 71.4% 4.1%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 224 71.4% 4.1%;
 
     --primary: var(--brand-primary);
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
 
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
     --ring: var(--brand-primary);
 
     --radius: 0.75rem;
@@ -66,7 +65,7 @@
   }
 
   .dark {
-    /* Dark theme with proper contrast ratios */
+    /* Dark theme */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
@@ -77,7 +76,7 @@
     --popover-foreground: 210 40% 98%;
 
     --primary: var(--brand-primary);
-    --primary-foreground: 222.2 84% 4.9%;
+    --primary-foreground: 0 0% 98%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -114,15 +113,17 @@
   body {
     @apply bg-background text-foreground font-sans transition-colors duration-300;
     font-family: 'Inter', 'DM Sans', system-ui, -apple-system, sans-serif;
+    /* Improve mobile performance */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Prevent horizontal scroll on mobile */
     overflow-x: hidden;
   }
 
-  /* Enhanced brand utility classes */
+  /* Brand-specific utility classes */
   .brand-primary {
     background-color: hsl(var(--brand-primary));
-    color: hsl(var(--primary-foreground));
+    color: white;
   }
 
   .brand-primary-hover:hover {
@@ -131,7 +132,7 @@
 
   .brand-secondary {
     background-color: hsl(var(--brand-secondary));
-    color: hsl(var(--primary-foreground));
+    color: white;
   }
 
   .brand-secondary-hover:hover {
@@ -153,172 +154,154 @@
     ring-color: hsl(var(--brand-primary));
   }
 
-  /* Card styling that works in both themes */
-  .themed-card {
-    @apply bg-card text-card-foreground border border-border rounded-lg shadow-sm;
+  .brand-focus:focus-visible {
+    outline: none;
+    border-color: hsl(var(--brand-primary));
+    box-shadow: 0 0 0 2px hsl(var(--brand-primary) / 0.2);
+    ring-color: hsl(var(--brand-primary));
   }
 
-  .themed-card-header {
-    @apply p-4 sm:p-6 border-b border-border;
+  /* Enhanced button branding */
+  .btn-brand-primary {
+    background-color: hsl(var(--btn-primary));
+    border-color: hsl(var(--btn-primary));
+    color: white;
   }
 
-  .themed-card-content {
-    @apply p-4 sm:p-6;
+  .btn-brand-primary:hover {
+    background-color: hsl(var(--btn-primary-hover));
+    border-color: hsl(var(--btn-primary-hover));
   }
 
-  /* Button theming */
-  .themed-button-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 border-primary;
+  .btn-brand-secondary {
+    background-color: hsl(var(--btn-secondary));
+    border-color: hsl(var(--btn-secondary));
+    color: white;
   }
 
-  .themed-button-secondary {
-    @apply bg-secondary text-secondary-foreground hover:bg-secondary/80 border-secondary;
+  .btn-brand-secondary:hover {
+    background-color: hsl(var(--btn-secondary-hover));
+    border-color: hsl(var(--btn-secondary-hover));
   }
 
-  .themed-button-outline {
-    @apply border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+  /* Form element branding */
+  .form-brand-accent {
+    accent-color: hsl(var(--form-accent));
   }
 
-  /* Input theming */
-  .themed-input {
-    @apply bg-background border-input text-foreground placeholder:text-muted-foreground focus:border-ring focus:ring-ring/20;
+  .form-brand-border {
+    border-color: hsl(var(--form-border));
   }
 
-  /* Sidebar specific theming */
-  .sidebar-themed {
-    @apply bg-sidebar text-sidebar-foreground border-sidebar-border;
+  .form-brand-focus:focus {
+    border-color: hsl(var(--form-focus));
+    box-shadow: 0 0 0 2px hsl(var(--form-focus) / 0.2);
   }
 
-  .sidebar-nav-item {
-    @apply text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md transition-colors;
+  /* Branded card accents */
+  .card-brand-accent {
+    border-top: 3px solid hsl(var(--brand-primary));
   }
 
-  .sidebar-nav-item-active {
-    @apply bg-sidebar-primary text-sidebar-primary-foreground;
+  .card-brand-background {
+    background: linear-gradient(135deg, hsl(var(--brand-primary) / 0.05) 0%, hsl(var(--brand-secondary) / 0.05) 100%);
   }
 
-  /* Stats card styling */
-  .stats-card {
-    @apply themed-card p-4 transition-all duration-200 hover:shadow-md;
+  /* Enhanced tab styling */
+  .tabs-brand [data-state="active"] {
+    background-color: hsl(var(--brand-primary));
+    color: white;
   }
 
-  .stats-card-value {
-    @apply text-2xl font-bold text-foreground;
+  .tabs-brand [data-state="active"]:hover {
+    background-color: hsl(var(--brand-primary-dark));
   }
 
-  .stats-card-label {
-    @apply text-sm text-muted-foreground;
+  /* Checkbox and radio branding */
+  [data-state="checked"] {
+    background-color: hsl(var(--brand-primary));
+    border-color: hsl(var(--brand-primary));
   }
 
-  /* Filter panel styling */
-  .filter-panel {
-    @apply themed-card p-4 space-y-4;
+  /* Modern glassmorphism effects */
+  .glass {
+    @apply backdrop-blur-xl bg-white/90 border border-gray-200/50;
   }
 
-  .filter-section {
-    @apply space-y-2;
+  /* Modern responsive card styling with better contrast */
+  .modern-card {
+    @apply bg-white rounded-md sm:rounded-lg lg:rounded-2xl border border-gray-200 
+           shadow-sm hover:shadow-md transition-all duration-300;
   }
 
-  .filter-label {
-    @apply text-sm font-medium text-foreground;
+  /* Responsive gradient backgrounds with brand colors */
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(var(--brand-primary)) 0%, hsl(var(--brand-primary-dark)) 100%);
   }
 
-  .filter-input {
-    @apply themed-input;
+  .gradient-secondary {
+    background: linear-gradient(135deg, hsl(var(--brand-secondary)) 0%, hsl(var(--brand-secondary-dark)) 100%);
   }
 
-  /* Submission list styling */
-  .submission-item {
-    @apply themed-card p-4 cursor-pointer transition-all duration-200 hover:shadow-md hover:border-primary/50;
+  .gradient-brand-mixed {
+    background: linear-gradient(135deg, hsl(var(--brand-primary)) 0%, hsl(var(--brand-secondary)) 100%);
   }
 
-  .submission-item-selected {
-    @apply border-primary bg-primary/5;
+  /* Responsive button styles with better accessibility */
+  .btn-modern {
+    @apply px-2 py-1 sm:px-3 sm:py-2 lg:px-4 lg:py-2 rounded-md sm:rounded-lg 
+           font-medium transition-all duration-200 text-xs sm:text-sm lg:text-base
+           transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 
+           focus:ring-primary focus:ring-offset-2;
   }
 
-  .submission-badge {
-    @apply inline-flex items-center rounded-full px-2 py-1 text-xs font-medium;
+  /* Responsive KPI card styling */
+  .kpi-card {
+    @apply modern-card p-2 sm:p-3 lg:p-4 relative overflow-hidden;
   }
 
-  .submission-badge-pending {
-    @apply bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300;
+  .kpi-card::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent pointer-events-none;
   }
 
-  .submission-badge-approved {
-    @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300;
-  }
-
-  .submission-badge-rejected {
-    @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300;
-  }
-
-  .submission-badge-under-review {
-    @apply bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300;
-  }
-
-  /* Icon styling for better visibility */
-  .themed-icon {
-    @apply text-muted-foreground;
-  }
-
-  .themed-icon-primary {
-    @apply text-primary;
-  }
-
-  .themed-icon-success {
-    @apply text-green-600 dark:text-green-400;
-  }
-
-  .themed-icon-warning {
-    @apply text-orange-600 dark:text-orange-400;
-  }
-
-  .themed-icon-error {
-    @apply text-red-600 dark:text-red-400;
-  }
-
-  /* Enhanced scrollbar for dark mode */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-muted;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-muted-foreground/30 rounded-md hover:bg-muted-foreground/50;
-  }
-
-  /* Typography improvements */
-  .heading-primary {
-    @apply text-xl sm:text-2xl lg:text-3xl font-bold text-foreground;
-  }
-
-  .heading-secondary {
-    @apply text-lg sm:text-xl lg:text-2xl font-semibold text-foreground;
-  }
-
-  .text-body {
-    @apply text-sm sm:text-base text-foreground;
-  }
-
-  .text-muted {
-    @apply text-xs sm:text-sm text-muted-foreground;
-  }
-
-  /* Focus states for accessibility */
-  .focus-enhanced {
-    @apply focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:ring-offset-background;
-  }
-
-  /* Animation improvements */
+  /* Enhanced animations for modern feel - Reduced motion on mobile */
   .animate-fade-in {
     animation: fadeIn 0.3s ease-out forwards;
   }
 
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out forwards;
+  }
+
+  .animate-bounce-in {
+    animation: bounceIn 0.4s ease-out forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.3s ease-out forwards;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 0.3s ease-out forwards;
+  }
+
   @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(5px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
     from {
       opacity: 0;
       transform: translateY(10px);
@@ -329,18 +312,311 @@
     }
   }
 
-  /* Responsive spacing */
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.98);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes bounceIn {
+    0% {
+      opacity: 0;
+      transform: scale3d(0.9, 0.9, 0.9);
+    }
+    50% {
+      opacity: 1;
+      transform: scale3d(1.02, 1.02, 1.02);
+    }
+    100% {
+      opacity: 1;
+      transform: scale3d(1, 1, 1);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* Responsive hover effects - Reduced on mobile */
+  .hover-lift {
+    @apply transition-all duration-300 sm:hover:-translate-y-1 sm:hover:shadow-lg 
+           sm:hover:shadow-gray-500/25;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-300 sm:hover:shadow-lg sm:hover:shadow-blue-500/25;
+  }
+
+  .hover-scale {
+    @apply transition-transform duration-200 sm:hover:scale-105;
+  }
+
+  /* Enhanced mobile-first responsive design */
+  .responsive-text {
+    @apply text-xs sm:text-sm lg:text-base text-gray-700 leading-relaxed;
+  }
+
+  .responsive-heading {
+    @apply text-sm sm:text-base lg:text-lg xl:text-xl text-gray-900 font-semibold leading-tight;
+  }
+
+  .responsive-subheading {
+    @apply text-xs sm:text-sm lg:text-base text-gray-600 font-medium leading-snug;
+  }
+
+  /* Improved scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full hover:bg-gray-400;
+  }
+
+  /* Mobile-optimized grid layouts */
+  .grid-responsive {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3 lg:gap-4;
+  }
+
+  .grid-responsive-2 {
+    @apply grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-3 lg:gap-4;
+  }
+
+  /* Chart container responsive styling */
+  .chart-container {
+    @apply w-full h-32 sm:h-40 lg:h-48 xl:h-64;
+  }
+
+  /* Enhanced form elements */
+  .form-input {
+    @apply bg-white border-gray-300 text-gray-900 placeholder-gray-500
+           focus:border-primary focus:ring-primary/20 text-xs sm:text-sm lg:text-base
+           h-8 sm:h-9 lg:h-10 px-2 sm:px-3 rounded-md;
+  }
+
+  /* Better contrast for interactive elements */
+  .interactive-element {
+    @apply text-gray-700 hover:text-gray-900 border-gray-300 hover:border-gray-400
+           transition-colors duration-200 min-h-[36px] sm:min-h-[40px] lg:min-h-[44px] 
+           flex items-center;
+  }
+
+  /* Mobile-specific utilities */
+  .mobile-hidden {
+    @apply hidden sm:block;
+  }
+
+  .mobile-only {
+    @apply block sm:hidden;
+  }
+
+  /* Responsive padding and margins */
   .responsive-padding {
-    @apply p-2 sm:p-4 lg:p-6;
+    @apply p-2 sm:p-3 lg:p-4;
   }
 
   .responsive-margin {
-    @apply m-2 sm:m-4 lg:m-6;
+    @apply m-1 sm:m-2 lg:m-3;
   }
 
-  /* Container max-width and centering */
-  .container-responsive {
-    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+  /* Text truncation for mobile */
+  .text-truncate-mobile {
+    @apply truncate sm:whitespace-normal;
+  }
+
+  /* Mobile-friendly button sizing */
+  .btn-mobile {
+    @apply h-8 px-2 text-xs sm:h-9 sm:px-3 sm:text-sm lg:h-10 lg:px-4 lg:text-base;
+  }
+
+  /* Enhanced focus states for accessibility */
+  .focus-enhanced {
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
+           focus:border-blue-500;
+  }
+
+  /* Text size utilities for mobile */
+  .text-mobile-xs {
+    @apply text-xs sm:text-sm;
+  }
+
+  .text-mobile-sm {
+    @apply text-sm sm:text-base;
+  }
+
+  .text-mobile-base {
+    @apply text-sm sm:text-base lg:text-lg;
+  }
+
+  .text-mobile-lg {
+    @apply text-base sm:text-lg lg:text-xl;
+  }
+
+  /* Line clamp utilities */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* Card content spacing fix for mobile */
+  .card-mobile-content {
+    @apply p-2 sm:p-3 lg:p-4 space-y-1 sm:space-y-2 lg:space-y-3;
+  }
+
+  /* Badge responsive sizing */
+  .badge-mobile {
+    @apply text-xs px-1 py-0 sm:px-2 sm:py-1 leading-tight;
+  }
+
+  /* Progress bar mobile sizing */
+  .progress-mobile {
+    @apply h-1 sm:h-2 lg:h-3;
+  }
+}
+
+/* Media queries for enhanced mobile responsiveness */
+@media (max-width: 640px) {
+  .modern-card {
+    @apply rounded-md shadow-sm;
+  }
+  
+  .btn-modern {
+    @apply text-xs px-2 py-1;
+  }
+
+  .responsive-text {
+    @apply text-xs leading-tight;
+  }
+
+  .responsive-heading {
+    @apply text-sm leading-tight;
+  }
+
+  /* Ensure minimum touch targets */
+  button, .btn-mobile, .interactive-element {
+    @apply min-h-[36px] min-w-[36px];
+  }
+
+  /* Compact spacing for very small screens */
+  .space-y-4 > * + * {
+    @apply mt-2;
+  }
+
+  .space-y-3 > * + * {
+    @apply mt-1;
+  }
+
+  .gap-4 {
+    @apply gap-2;
+  }
+
+  .gap-3 {
+    @apply gap-1;
+  }
+}
+
+@media (max-width: 480px) {
+  .kpi-card {
+    @apply p-2;
+  }
+  
+  .chart-container {
+    @apply h-28;
+  }
+
+  .responsive-text {
+    @apply text-xs leading-tight;
+  }
+
+  .responsive-heading {
+    @apply text-sm leading-tight;
+  }
+
+  /* Reduce padding on very small screens */
+  .responsive-padding {
+    @apply p-1;
+  }
+
+  /* Make badges even smaller */
+  .badge-mobile {
+    @apply text-xs px-1 py-0;
+  }
+}
+
+@media (max-width: 375px) {
+  /* Extra small screens */
+  .responsive-text {
+    @apply text-xs;
+  }
+
+  .responsive-heading {
+    @apply text-xs;
+  }
+
+  /* Ultra compact spacing */
+  .space-y-3 > * + * {
+    @apply mt-1;
+  }
+
+  .gap-3 {
+    @apply gap-1;
+  }
+
+  .gap-2 {
+    @apply gap-1;
+  }
+
+  /* Ensure readability on very small screens */
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-sm;
+  }
+
+  p, span, div {
+    @apply text-xs;
   }
 }
 
@@ -350,11 +626,6 @@
     --border: 0 0% 60%;
     --input: 0 0% 60%;
   }
-
-  .dark {
-    --border: 0 0% 40%;
-    --input: 0 0% 40%;
-  }
 }
 
 /* Reduced motion support */
@@ -363,5 +634,30 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Touch-friendly sizing */
+@media (pointer: coarse) {
+  .btn-modern, .interactive-element {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  /* Larger touch targets for mobile */
+  button, input, select, textarea {
+    @apply min-h-[44px];
+  }
+}
+
+/* Improve mobile scroll behavior */
+@media (max-width: 768px) {
+  body {
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
+  }
+  
+  /* Smooth scrolling for mobile */
+  * {
+    -webkit-overflow-scrolling: touch;
   }
 }

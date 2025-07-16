@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { 
   BarChart3, 
@@ -6,11 +7,7 @@ import {
   Wrench, 
   Settings,
   ChevronLeft,
-  ChevronRight,
-  Home,
-  FileText,
-  Users,
-  Zap
+  ChevronRight
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +22,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { BrandLogo } from "@/components/BrandLogo";
-import { cn } from "@/lib/utils";
 
 interface AppSidebarProps {
   activeTab: string;
@@ -41,86 +37,70 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
     {
       id: "dashboard",
       label: "Dashboard",
-      shortLabel: "Home",
-      icon: Home,
-      onClick: () => onTabChange("dashboard"),
-      color: "text-blue-500"
-    },
-    {
-      id: "submissions",
-      label: "Review Submissions",
-      shortLabel: "Reviews",
-      icon: ClipboardList,
-      onClick: () => onTabChange("submissions"),
-      color: "text-green-500"
-    },
-    {
-      id: "builder",
-      label: "Form Builder",
-      shortLabel: "Builder",
-      icon: Wrench,
-      onClick: () => onTabChange("builder"),
-      color: "text-orange-500"
-    },
-    {
-      id: "reports",
-      label: "Reports",
-      shortLabel: "Reports",
       icon: BarChart3,
-      onClick: () => onTabChange("reports"),
-      color: "text-purple-500"
+      onClick: () => onTabChange("dashboard")
     },
     {
-      id: "analytics",
-      label: "Analytics",
-      shortLabel: "Analytics",
-      icon: Zap,
-      onClick: () => onTabChange("analytics"),
-      color: "text-pink-500"
+      id: "review-submissions",
+      label: "Review",
+      icon: ClipboardList,
+      onClick: () => onTabChange("review-submissions")
+    },
+    {
+      id: "forms",
+      label: "Forms",
+      icon: Folder,
+      onClick: () => onTabChange("forms"),
+      badge: hasUnpublishedDrafts
+    },
+    {
+      id: "build-form",
+      label: "Build",
+      icon: Wrench,
+      onClick: () => onTabChange("build-form")
+    },
+    {
+      id: "global-settings",
+      label: "Settings",
+      icon: Settings,
+      onClick: () => onTabChange("global-settings")
     }
   ];
 
   return (
-    <Sidebar collapsible="icon" className="border-r animate-slide-in-left">
-      <SidebarContent className="bg-gradient-to-b from-background to-muted/20">
+    <Sidebar collapsible="icon" className="border-r">
+      <SidebarContent>
         {/* Brand Logo */}
-        <div className="p-3 lg:p-4 border-b bg-background/80 backdrop-blur-sm">
+        <div className="p-4 border-b">
           <BrandLogo 
-            size={isCollapsed ? "sm" : "md"} 
+            size="sm" 
             showText={!isCollapsed} 
-            className="cursor-pointer hover-scale transition-all duration-300"
+            className="cursor-pointer"
             onClick={() => onTabChange("dashboard")}
           />
         </div>
 
         {/* Navigation Menu */}
-        <SidebarGroup className="px-2 lg:px-3">
+        <SidebarGroup>
           <SidebarGroupContent>
-            <SidebarMenu className="space-y-1">
-              {navItems.map((item, index) => (
-                <SidebarMenuItem key={item.id} className="animate-fade-in" style={{ animationDelay: `${index * 100}ms` }}>
+            <SidebarMenu>
+              {navItems.map((item) => (
+                <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton
                     onClick={item.onClick}
                     isActive={activeTab === item.id}
-                    className={cn(
-                      "w-full justify-start group transition-all duration-300 hover:scale-105",
-                      "rounded-lg h-10 lg:h-12",
-                      activeTab === item.id && "bg-primary/10 border border-primary/20 shadow-sm"
-                    )}
+                    className="w-full justify-start"
                   >
-                    <item.icon 
-                      className={cn(
-                        "h-4 w-4 lg:h-5 lg:w-5 transition-all duration-300",
-                        activeTab === item.id ? "text-primary" : item.color,
-                        "group-hover:scale-110"
-                      )} 
-                    />
+                    <item.icon className="h-4 w-4" />
                     {!isCollapsed && (
-                      <div className="flex items-center justify-between w-full">
-                        <span className="font-medium text-xs lg:text-sm truncate">
-                          {item.label}
-                        </span>
-                      </div>
+                      <>
+                        <span>{item.label}</span>
+                        {item.badge && (
+                          <div className="ml-auto">
+                            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                          </div>
+                        )}
+                      </>
                     )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -128,35 +108,6 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-
-        {/* Bottom Stats - Collapsed State */}
-        {isCollapsed && (
-          <div className="mt-auto p-3 border-t animate-fade-in">
-            <div className="flex flex-col items-center space-y-2">
-              <div className="w-8 h-1 bg-primary/30 rounded-full"></div>
-              <div className="w-6 h-1 bg-primary/20 rounded-full"></div>
-            </div>
-          </div>
-        )}
-
-        {/* Bottom Stats - Expanded State */}
-        {!isCollapsed && (
-          <div className="mt-auto p-3 lg:p-4 border-t bg-muted/30 animate-slide-up">
-            <div className="text-center space-y-2">
-              <div className="text-xs text-muted-foreground font-medium">Quick Stats</div>
-              <div className="flex justify-around text-xs">
-                <div className="text-center">
-                  <div className="font-bold text-primary">12</div>
-                  <div className="text-muted-foreground">Forms</div>
-                </div>
-                <div className="text-center">
-                  <div className="font-bold text-green-500">345</div>
-                  <div className="text-muted-foreground">Responses</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
       </SidebarContent>
     </Sidebar>
   );

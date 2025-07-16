@@ -6,43 +6,43 @@ import { cn } from '@/lib/utils';
 
 interface BrandedButtonProps extends ButtonProps {
   brandVariant?: 'primary' | 'secondary' | 'outline' | 'ghost';
-  enableBranding?: boolean;
+  useBranding?: boolean;
 }
 
 export const BrandedButton: React.FC<BrandedButtonProps> = ({ 
   children, 
   className, 
   brandVariant = 'primary',
-  enableBranding = true,
+  useBranding = true,
   ...props 
 }) => {
-  const brandingContext = useBranding();
+  const { getPrimaryColor, getSecondaryColor } = useBranding();
 
   const getBrandedStyles = () => {
-    if (!enableBranding || !brandingContext) return {};
+    if (!useBranding) return {};
     
     switch (brandVariant) {
       case 'primary':
         return {
-          backgroundColor: brandingContext.getPrimaryColor(),
-          borderColor: brandingContext.getPrimaryColor(),
+          backgroundColor: getPrimaryColor(),
+          borderColor: getPrimaryColor(),
           color: 'white',
         };
       case 'secondary':
         return {
-          backgroundColor: brandingContext.getSecondaryColor(),
-          borderColor: brandingContext.getSecondaryColor(),
+          backgroundColor: getSecondaryColor(),
+          borderColor: getSecondaryColor(),
           color: 'white',
         };
       case 'outline':
         return {
-          borderColor: brandingContext.getPrimaryColor(),
-          color: brandingContext.getPrimaryColor(),
+          borderColor: getPrimaryColor(),
+          color: getPrimaryColor(),
           backgroundColor: 'transparent',
         };
       case 'ghost':
         return {
-          color: brandingContext.getPrimaryColor(),
+          color: getPrimaryColor(),
           backgroundColor: 'transparent',
         };
       default:
@@ -51,7 +51,7 @@ export const BrandedButton: React.FC<BrandedButtonProps> = ({
   };
 
   const getBrandedHoverStyles = () => {
-    if (!enableBranding || !brandingContext) return {};
+    if (!useBranding) return {};
     
     const baseStyle = getBrandedStyles();
     return {
@@ -64,17 +64,17 @@ export const BrandedButton: React.FC<BrandedButtonProps> = ({
     <Button
       className={cn(
         'transition-all duration-200 hover:brightness-90',
-        enableBranding && 'brand-focus',
+        useBranding && 'brand-focus',
         className
       )}
       style={getBrandedStyles()}
       onMouseEnter={(e) => {
-        if (enableBranding && brandingContext) {
+        if (useBranding) {
           Object.assign(e.currentTarget.style, getBrandedHoverStyles());
         }
       }}
       onMouseLeave={(e) => {
-        if (enableBranding && brandingContext) {
+        if (useBranding) {
           Object.assign(e.currentTarget.style, getBrandedStyles());
         }
       }}

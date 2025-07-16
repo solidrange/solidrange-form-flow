@@ -1,33 +1,33 @@
 
 import React from 'react';
-import { Input } from '@/components/ui/input';
+import { Input, InputProps } from '@/components/ui/input';
 import { useBranding } from './BrandingProvider';
 import { cn } from '@/lib/utils';
 
-interface BrandedInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  enableBranding?: boolean;
+interface BrandedInputProps extends InputProps {
+  useBranding?: boolean;
 }
 
 export const BrandedInput: React.FC<BrandedInputProps> = ({
   className,
-  enableBranding = true,
+  useBranding = true,
   ...props
 }) => {
-  const brandingContext = useBranding();
+  const { getPrimaryColor } = useBranding();
 
   const getBrandedStyles = () => {
-    if (!enableBranding || !brandingContext) return {};
+    if (!useBranding) return {};
     
     return {
-      '--ring-color': brandingContext.getPrimaryColor(),
-      '--border-color': brandingContext.getPrimaryColor(),
+      '--ring-color': getPrimaryColor(),
+      '--border-color': getPrimaryColor(),
     } as React.CSSProperties;
   };
 
   return (
     <Input
       className={cn(
-        enableBranding && 'brand-focus brand-border',
+        useBranding && 'brand-focus brand-border',
         'transition-all duration-200',
         className
       )}

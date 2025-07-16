@@ -1,13 +1,13 @@
+
 import { useState } from "react";
-import { FormSubmission } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { AnimatedCard } from "@/components/AnimatedCard";
-import { Download, Filter, Search } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { FormSubmission } from "@/types/form";
 
 interface ReportCustomizationProps {
   submissions: FormSubmission[];
@@ -15,263 +15,242 @@ interface ReportCustomizationProps {
 }
 
 export interface ReportConfig {
-  reportType: 'single' | 'multi';
-  formSearch: string;
-  selectedForms: string[];
-  categories: string[];
-  dateRange: string;
-  includeStatus: string[];
-  includeScores: boolean;
-  format: 'pdf' | 'csv' | 'excel';
-  customizations: {
-    includeCharts: boolean;
-    includeRiskAnalysis: boolean;
-    includeComplianceDetails: boolean;
-    includeRecommendations: boolean;
+  title: string;
+  description: string;
+  includeSections: {
+    overview: boolean;
+    submissionStats: boolean;
+    riskAnalysis: boolean;
+    complianceStatus: boolean;
+    detailedResponses: boolean;
+    recommendations: boolean;
   };
+  chartTypes: {
+    submissionTrends: 'bar' | 'line' | 'pie';
+    riskDistribution: 'bar' | 'pie' | 'donut';
+    complianceStatus: 'bar' | 'pie';
+  };
+  filterBy: {
+    dateRange: { start: string; end: string };
+    submissionType: 'all' | 'vendor' | 'internal';
+    status: 'all' | 'submitted' | 'approved' | 'rejected' | 'under_review';
+    riskLevel: 'all' | 'low' | 'medium' | 'high' | 'critical';
+  };
+  customRecommendations: string;
+  format: 'pdf' | 'excel';
+  includeCharts?: boolean;
 }
 
 export const ReportCustomization = ({ submissions, onGenerateReport }: ReportCustomizationProps) => {
   const [config, setConfig] = useState<ReportConfig>({
-    reportType: 'single',
-    formSearch: '',
-    selectedForms: [],
-    categories: [],
-    dateRange: '30d',
-    includeStatus: ['approved', 'rejected', 'under_review'],
-    includeScores: true,
+    title: "Vendor Risk Assessment Report",
+    description: "Comprehensive analysis of form submissions and risk assessment",
+    includeSections: {
+      overview: true,
+      submissionStats: true,
+      riskAnalysis: true,
+      complianceStatus: true,
+      detailedResponses: false,
+      recommendations: true,
+    },
+    chartTypes: {
+      submissionTrends: 'bar',
+      riskDistribution: 'pie',
+      complianceStatus: 'bar',
+    },
+    filterBy: {
+      dateRange: { start: '', end: '' },
+      submissionType: 'all',
+      status: 'all',
+      riskLevel: 'all',
+    },
+    customRecommendations: "",
     format: 'pdf',
-    customizations: {
-      includeCharts: true,
-      includeRiskAnalysis: true,
-      includeComplianceDetails: true,
-      includeRecommendations: true
-    }
+    includeCharts: true,
   });
 
-  const handleStatusChange = (status: string, checked: boolean) => {
+  const updateSection = (section: keyof ReportConfig['includeSections'], value: boolean) => {
     setConfig(prev => ({
       ...prev,
-      includeStatus: checked 
-        ? [...prev.includeStatus, status]
-        : prev.includeStatus.filter(s => s !== status)
+      includeSections: { ...prev.includeSections, [section]: value }
     }));
   };
 
-  const handleCategoryChange = (category: string, checked: boolean) => {
+  const updateChartType = (chart: keyof ReportConfig['chartTypes'], type: string) => {
     setConfig(prev => ({
       ...prev,
-      categories: checked 
-        ? [...prev.categories, category]
-        : prev.categories.filter(c => c !== category)
+      chartTypes: { ...prev.chartTypes, [chart]: type }
     }));
   };
 
-  const handleCustomizationChange = (key: keyof ReportConfig['customizations'], checked: boolean) => {
+  const updateFilter = (filter: keyof ReportConfig['filterBy'], value: any) => {
     setConfig(prev => ({
       ...prev,
-      customizations: {
-        ...prev.customizations,
-        [key]: checked
-      }
+      filterBy: { ...prev.filterBy, [filter]: value }
     }));
   };
 
-  // Mock form names for search - in real app, this would come from a forms API
-  const availableForms = [
-    'Vendor Risk Assessment Form',
-    'Internal Compliance Review',
-    'External Partner Evaluation',
-    'Security Assessment Survey',
-    'Financial Risk Analysis'
+  const sectionOptions = [
+    { key: 'overview', label: 'Overview' },
+    { key: 'submissionStats', label: 'Submission Stats' },
+    { key: 'riskAnalysis', label: 'Risk Analysis' },
+    { key: 'complianceStatus', label: 'Compliance Status' },
+    { key: 'detailedResponses', label: 'Detailed Responses' },
+    { key: 'recommendations', label: 'Recommendations' },
   ];
 
-  const filteredForms = availableForms.filter(form => 
-    form.toLowerCase().includes(config.formSearch.toLowerCase())
-  );
+  const chartOptions = [
+    { key: 'submissionTrends', label: 'Submission Trends', options: ['bar', 'line', 'pie'] },
+    { key: 'riskDistribution', label: 'Risk Distribution', options: ['bar', 'pie', 'donut'] },
+    { key: 'complianceStatus', label: 'Compliance Status', options: ['bar', 'pie'] },
+  ];
 
-  const formCategories = [
-    'Risk Assessment',
-    'Compliance',
-    'Security',
-    'Financial',
-    'Vendor Management'
+  const filterOptions = [
+    { key: 'submissionType', label: 'Submission Type', options: ['all', 'vendor', 'internal'] },
+    { key: 'status', label: 'Status', options: ['all', 'submitted', 'approved', 'rejected', 'under_review'] },
+    { key: 'riskLevel', label: 'Risk Level', options: ['all', 'low', 'medium', 'high', 'critical'] },
   ];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <AnimatedCard title="Report Configuration" icon={Filter} className="h-fit">
+    <Card>
+      <CardHeader>
+        <CardTitle>Report Customization</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        {/* Basic Information */}
         <div className="space-y-4">
-          {/* Report Type Selection */}
           <div>
-            <Label htmlFor="report-type">Report Type</Label>
-            <Select value={config.reportType} onValueChange={(value: 'single' | 'multi') => setConfig(prev => ({ ...prev, reportType: value }))}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="single">Single Form Report</SelectItem>
-                <SelectItem value="multi">Multi-Form Report</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label htmlFor="report-title">Report Title</Label>
+            <Input
+              id="report-title"
+              value={config.title}
+              onChange={(e) => setConfig(prev => ({ ...prev, title: e.target.value }))}
+            />
           </div>
-
-          {/* Single Form Search */}
-          {config.reportType === 'single' && (
-            <div>
-              <Label htmlFor="form-search">Search Form</Label>
-              <div className="relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
-                  id="form-search"
-                  placeholder="Search form by name..."
-                  value={config.formSearch}
-                  onChange={(e) => setConfig(prev => ({ ...prev, formSearch: e.target.value }))}
-                  className="pl-10"
-                />
-              </div>
-              {config.formSearch && (
-                <div className="mt-2 max-h-40 overflow-y-auto border rounded-md">
-                  {filteredForms.map(form => (
-                    <div 
-                      key={form}
-                      className="p-2 hover:bg-gray-50 cursor-pointer border-b last:border-b-0"
-                      onClick={() => setConfig(prev => ({ ...prev, formSearch: form }))}
-                    >
-                      {form}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Multi-Form Categories */}
-          {config.reportType === 'multi' && (
-            <div>
-              <Label>Form Categories</Label>
-              <div className="space-y-2 mt-2">
-                {formCategories.map(category => (
-                  <div key={category} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={category}
-                      checked={config.categories.includes(category)}
-                      onCheckedChange={(checked) => handleCategoryChange(category, !!checked)}
-                    />
-                    <Label htmlFor={category} className="text-sm">{category}</Label>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Date Range */}
           <div>
-            <Label htmlFor="date-range">Date Range</Label>
-            <Select value={config.dateRange} onValueChange={(value) => setConfig(prev => ({ ...prev, dateRange: value }))}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="7d">Last 7 days</SelectItem>
-                <SelectItem value="30d">Last 30 days</SelectItem>
-                <SelectItem value="90d">Last 90 days</SelectItem>
-                <SelectItem value="1y">Last year</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Export Format */}
-          <div>
-            <Label htmlFor="format">Export Format</Label>
-            <Select value={config.format} onValueChange={(value: 'pdf' | 'csv' | 'excel') => setConfig(prev => ({ ...prev, format: value }))}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="pdf">PDF Report</SelectItem>
-                <SelectItem value="csv">CSV Data</SelectItem>
-                <SelectItem value="excel">Excel Spreadsheet</SelectItem>
-              </SelectContent>
-            </Select>
+            <Label htmlFor="report-description">Description</Label>
+            <Textarea
+              id="report-description"
+              value={config.description}
+              onChange={(e) => setConfig(prev => ({ ...prev, description: e.target.value }))}
+            />
           </div>
         </div>
-      </AnimatedCard>
 
-      <AnimatedCard title="Customization Options" icon={Filter} delay={200} className="h-fit">
-        <div className="space-y-4">
-          {/* Include Status Types */}
+        {/* Chart Options */}
+        <div>
+          <Label className="text-base font-semibold">Chart Options</Label>
+          <div className="flex items-center space-x-2 mt-2">
+            <Checkbox
+              id="include-charts"
+              checked={config.includeCharts || false}
+              onCheckedChange={(checked) => setConfig(prev => ({ ...prev, includeCharts: !!checked }))}
+            />
+            <Label htmlFor="include-charts">Include Charts in Report</Label>
+          </div>
+        </div>
+
+        {/* Report Sections */}
+        <div>
+          <Label className="text-base font-semibold">Include Sections</Label>
+          <div className="grid grid-cols-2 gap-4 mt-2">
+            {sectionOptions.map(({ key, label }) => (
+              <div key={key} className="flex items-center space-x-2">
+                <Checkbox
+                  id={key}
+                  checked={config.includeSections[key as keyof ReportConfig['includeSections']]}
+                  onCheckedChange={(checked) => updateSection(key as keyof ReportConfig['includeSections'], !!checked)}
+                />
+                <Label htmlFor={key}>{label}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Chart Types - Only show if charts are enabled */}
+        {config.includeCharts && (
           <div>
-            <Label>Include Status Types</Label>
-            <div className="space-y-2 mt-2">
-              {['approved', 'rejected', 'under_review', 'submitted'].map(status => (
-                <div key={status} className="flex items-center space-x-2">
-                  <Checkbox
-                    id={status}
-                    checked={config.includeStatus.includes(status)}
-                    onCheckedChange={(checked) => handleStatusChange(status, !!checked)}
-                  />
-                  <Label htmlFor={status} className="capitalize text-sm">{status.replace('_', ' ')}</Label>
+            <Label className="text-base font-semibold">Chart Types</Label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+              {chartOptions.map(({ key, label, options }) => (
+                <div key={key}>
+                  <Label>{label}</Label>
+                  <Select 
+                    value={config.chartTypes[key as keyof ReportConfig['chartTypes']]} 
+                    onValueChange={(value) => updateChartType(key as keyof ReportConfig['chartTypes'], value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {options.map(option => (
+                        <SelectItem key={option} value={option}>
+                          {option.charAt(0).toUpperCase() + option.slice(1)} Chart
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               ))}
             </div>
           </div>
+        )}
 
-          {/* Report Customizations */}
-          <div>
-            <Label>Report Sections</Label>
-            <div className="space-y-2 mt-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="include-charts"
-                  checked={config.customizations.includeCharts}
-                  onCheckedChange={(checked) => handleCustomizationChange('includeCharts', !!checked)}
-                />
-                <Label htmlFor="include-charts" className="text-sm">Include Charts & Graphs</Label>
+        {/* Filters */}
+        <div>
+          <Label className="text-base font-semibold">Filters</Label>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-2">
+            {filterOptions.map(({ key, label, options }) => (
+              <div key={key}>
+                <Label>{label}</Label>
+                <Select 
+                  value={config.filterBy[key as keyof ReportConfig['filterBy']] as string} 
+                  onValueChange={(value) => updateFilter(key as keyof ReportConfig['filterBy'], value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {options.map(option => (
+                      <SelectItem key={option} value={option}>
+                        {option.charAt(0).toUpperCase() + option.slice(1).replace('_', ' ')}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="include-risk"
-                  checked={config.customizations.includeRiskAnalysis}
-                  onCheckedChange={(checked) => handleCustomizationChange('includeRiskAnalysis', !!checked)}
-                />
-                <Label htmlFor="include-risk" className="text-sm">Risk Analysis</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="include-compliance"
-                  checked={config.customizations.includeComplianceDetails}
-                  onCheckedChange={(checked) => handleCustomizationChange('includeComplianceDetails', !!checked)}
-                />
-                <Label htmlFor="include-compliance" className="text-sm">Compliance Details</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="include-recommendations"
-                  checked={config.customizations.includeRecommendations}
-                  onCheckedChange={(checked) => handleCustomizationChange('includeRecommendations', !!checked)}
-                />
-                <Label htmlFor="include-recommendations" className="text-sm">Recommendations</Label>
-              </div>
+            ))}
+            
+            <div>
+              <Label>Export Format</Label>
+              <Select value={config.format} onValueChange={(value) => setConfig(prev => ({ ...prev, format: value as 'pdf' | 'excel' }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="pdf">PDF</SelectItem>
+                  <SelectItem value="excel">Excel</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
-
-          {/* Include Scores */}
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="include-scores"
-              checked={config.includeScores}
-              onCheckedChange={(checked) => setConfig(prev => ({ ...prev, includeScores: !!checked }))}
-            />
-            <Label htmlFor="include-scores" className="text-sm">Include Score Details</Label>
-          </div>
-
-          <Button onClick={() => onGenerateReport(config)} className="w-full">
-            <Download className="h-4 w-4 mr-2" />
-            Generate Report
-          </Button>
         </div>
-      </AnimatedCard>
-    </div>
+
+        {/* Custom Recommendations */}
+        <div>
+          <Label htmlFor="custom-recommendations">Custom Recommendations</Label>
+          <Textarea
+            id="custom-recommendations"
+            placeholder="Add custom recommendations for this report..."
+            value={config.customRecommendations}
+            onChange={(e) => setConfig(prev => ({ ...prev, customRecommendations: e.target.value }))}
+          />
+        </div>
+
+        <Button onClick={() => onGenerateReport(config)} className="w-full">
+          Generate {config.format.toUpperCase()} Report {config.includeCharts && '(with Charts)'}
+        </Button>
+      </CardContent>
+    </Card>
   );
 };

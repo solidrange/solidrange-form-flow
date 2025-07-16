@@ -1,5 +1,6 @@
+
 import React, { useState } from 'react';
-import { FormField, DocumentAttachment, FormSettings } from '@/types/form';
+import { FormField, DocumentAttachment } from '@/types/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -9,30 +10,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BrandedButton } from './BrandedButton';
 import { BrandedInput } from './BrandedInput';
 import { BrandedCard } from './BrandedCard';
-import { AnimatedCard } from './AnimatedCard';
-import { ResponsiveLayout } from './ResponsiveLayout';
 import { useBranding } from './BrandingProvider';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { FieldPalette } from './FieldPalette';
 import { FieldEditor } from './FieldEditor';
 import { FormCanvas } from './FormCanvas';
 import { FileAttachmentManager } from './FileAttachmentManager';
-import { SettingsPanel } from './SettingsPanel';
-import { 
-  Save, 
-  Eye, 
-  Library, 
-  FileText, 
-  Palette, 
-  Settings, 
-  Upload,
-  Smartphone,
-  Monitor,
-  Tablet,
-  Zap,
-  Wrench
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { Save, Eye, Library, FileText, Palette, Settings, Upload } from 'lucide-react';
 
 export interface FormBuilderProps {
   formFields: FormField[];
@@ -48,7 +31,8 @@ export interface FormBuilderProps {
   onSaveForm: () => void;
   onPreviewForm: () => void;
   attachments: DocumentAttachment[];
-  onUpdateAttachments: (attachments: DocumentAttachment[]) => void;
+  onAddAttachment: (attachment: DocumentAttachment) => void;
+  onRemoveAttachment: (attachmentId: string) => void;
   onSaveToLibrary: () => void;
   isPublished: boolean;
   onMoveToDraft: () => void;
@@ -68,343 +52,202 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
   onSaveForm,
   onPreviewForm,
   attachments,
-  onUpdateAttachments,
+  onAddAttachment,
+  onRemoveAttachment,
   onSaveToLibrary,
   isPublished,
   onMoveToDraft
 }) => {
   const [activeBuilderTab, setActiveBuilderTab] = useState('builder');
-  const [previewMode, setPreviewMode] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
-  const [formSettings, setFormSettings] = useState<FormSettings>({
-    allowMultipleSubmissions: false,
-    requireLogin: false,
-    showProgressBar: true,
-    theme: undefined,
-    customCss: undefined,
-    branding: {
-      enabled: true,
-      showLogo: true,
-      showBrandColors: true,
-      brandName: 'FormFlow',
-      logo: null,
-      colors: null
-    },
-    scoring: {
-      enabled: false,
-      maxTotalPoints: 100,
-      showScoreToUser: false,
-      passingScore: 70,
-      riskThresholds: {
-        low: 30,
-        medium: 60,
-        high: 90
-      }
-    },
-    approval: {
-      enabled: false,
-      requireApproval: false,
-      approvers: [],
-      autoApproveScore: 80
-    },
-    documents: {
-      enabled: false,
-      allowedTypes: [],
-      maxSize: 10,
-      requiredDocuments: [],
-      allowUserUploads: true
-    },
-    expiration: {
-      enabled: false,
-      expirationDate: new Date(),
-      message: 'This form has expired.'
-    },
-    emailDistribution: {
-      enabled: false,
-      recipients: [],
-      reminderEnabled: false,
-      reminderIntervalDays: 7,
-      maxReminders: 3
-    }
-  });
-
-  const brandingContext = useBranding();
-  const isMobile = useIsMobile();
-
-  // Create a form object for the SettingsPanel
-  const currentForm = {
-    id: 'current-form',
-    title,
-    description,
-    fields: formFields,
-    settings: formSettings,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    status: isPublished ? 'published' as const : 'draft' as const,
-    analytics: {
-      enabled: true,
-      trackingPixel: false,
-      googleAnalytics: undefined,
-      customEvents: false,
-      views: 0,
-      submissions: 0,
-      emailsSent: 0,
-      completionRate: 0
-    }
-  };
-
-  const handleFormUpdate = (updatedForm: typeof currentForm) => {
-    setFormSettings(updatedForm.settings);
-    // Update other form properties if needed
-    if (updatedForm.title !== title) onUpdateTitle(updatedForm.title);
-    if (updatedForm.description !== description) onUpdateDescription(updatedForm.description);
-  };
-
-  const actionButtons = [
-    {
-      label: isMobile ? "Library" : "Save to Library",
-      icon: Library,
-      onClick: onSaveToLibrary,
-      variant: "outline" as const,
-      brandVariant: "outline" as const
-    },
-    {
-      label: isMobile ? "Preview" : "Preview Form",
-      icon: Eye,
-      onClick: onPreviewForm,
-      variant: "outline" as const,
-      brandVariant: "outline" as const
-    },
-    ...(isPublished ? [{
-      label: isMobile ? "Draft" : "Move to Draft",
-      icon: FileText,
-      onClick: onMoveToDraft,
-      variant: "outline" as const,
-      brandVariant: "secondary" as const
-    }] : []),
-    {
-      label: isMobile ? "Save" : "Save Form",
-      icon: Save,
-      onClick: onSaveForm,
-      variant: "default" as const,
-      brandVariant: "primary" as const
-    }
-  ];
+  const { getPrimaryColor } = useBranding();
 
   return (
-    <ResponsiveLayout>
-      <div className="h-full flex flex-col space-y-4 lg:space-y-6">
-        {/* Header */}
-        <AnimatedCard className="border-none shadow-sm bg-gradient-to-r from-background to-muted/20">
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-            <div className="flex items-center gap-3 lg:gap-4">
-              <div className="p-2 lg:p-3 bg-primary/10 rounded-xl">
-                <Wrench className="h-5 w-5 lg:h-6 lg:w-6 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-xl lg:text-2xl xl:text-3xl font-bold brand-text flex items-center gap-2">
-                  Form Builder
-                  <Zap className="h-5 w-5 lg:h-6 lg:w-6 text-yellow-500 animate-pulse" />
-                </h1>
-                <p className="text-xs lg:text-sm text-muted-foreground">
-                  Design and customize your forms with ease
-                </p>
-              </div>
-              {isPublished && (
-                <Badge variant="secondary" className="bg-green-100 text-green-800 animate-bounce">
-                  Published
-                </Badge>
-              )}
+    <div className="h-full flex flex-col">
+      {/* Header with branded styling */}
+      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="flex items-center justify-between p-4">
+          <div className="flex items-center gap-4">
+            <div>
+              <h1 className="text-2xl font-bold brand-text">Form Builder</h1>
+              <p className="text-sm text-muted-foreground">Design and customize your forms</p>
             </div>
-            
-            {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-2">
-              {actionButtons.map((button, index) => (
-                <BrandedButton
-                  key={button.label}
-                  variant={button.variant}
-                  onClick={button.onClick}
-                  className={cn(
-                    "gap-2 animate-fade-in btn-mobile hover-scale",
-                    isMobile && "text-xs px-2 py-1"
-                  )}
-                  brandVariant={button.brandVariant}
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <button.icon className="h-3 w-3 lg:h-4 lg:w-4" />
-                  {!isMobile && button.label}
-                </BrandedButton>
-              ))}
-            </div>
+            {isPublished && (
+              <Badge variant="secondary" className="bg-green-100 text-green-800">
+                Published
+              </Badge>
+            )}
           </div>
-        </AnimatedCard>
-
-        {/* Preview Mode Toggle */}
-        <div className="flex justify-center animate-slide-up">
-          <div className="flex items-center bg-muted rounded-lg p-1">
-            {[
-              { mode: 'mobile' as const, icon: Smartphone, label: 'Mobile' },
-              { mode: 'tablet' as const, icon: Tablet, label: 'Tablet' },
-              { mode: 'desktop' as const, icon: Monitor, label: 'Desktop' }
-            ].map((item) => (
-              <button
-                key={item.mode}
-                onClick={() => setPreviewMode(item.mode)}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-2 rounded-md transition-all duration-200",
-                  previewMode === item.mode
-                    ? "bg-background shadow-sm text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
+          
+          <div className="flex items-center gap-2">
+            <BrandedButton
+              variant="outline"
+              onClick={() => onSaveToLibrary()}
+              className="gap-2"
+              brandVariant="outline"
+            >
+              <Library className="h-4 w-4" />
+              Save to Library
+            </BrandedButton>
+            
+            <BrandedButton
+              variant="outline"
+              onClick={onPreviewForm}
+              className="gap-2"
+              brandVariant="outline"
+            >
+              <Eye className="h-4 w-4" />
+              Preview
+            </BrandedButton>
+            
+            {isPublished && (
+              <BrandedButton
+                variant="outline"
+                onClick={onMoveToDraft}
+                className="gap-2"
+                brandVariant="secondary"
               >
-                <item.icon className="h-4 w-4" />
-                {!isMobile && <span className="text-sm">{item.label}</span>}
-              </button>
-            ))}
+                Move to Draft
+              </BrandedButton>
+            )}
+            
+            <BrandedButton
+              onClick={onSaveForm}
+              className="gap-2"
+              brandVariant="primary"
+            >
+              <Save className="h-4 w-4" />
+              Save Form
+            </BrandedButton>
           </div>
         </div>
+      </div>
 
-        {/* Main Content */}
-        <div className="flex-1">
-          <Tabs value={activeBuilderTab} onValueChange={setActiveBuilderTab} className="h-full">
-            <TabsList className={cn(
-              "grid w-full grid-cols-3 mb-4 lg:mb-6",
-              "bg-muted/50 backdrop-blur-sm"
-            )}>
-              <TabsTrigger value="builder" className="brand-focus gap-2">
-                <Palette className="h-4 w-4" />
-                {!isMobile && "Builder"}
-              </TabsTrigger>
-              <TabsTrigger value="attachments" className="brand-focus gap-2">
-                <FileText className="h-4 w-4" />
-                {!isMobile && "Attachments"}
-              </TabsTrigger>
-              <TabsTrigger value="settings" className="brand-focus gap-2">
-                <Settings className="h-4 w-4" />
-                {!isMobile && "Settings"}
-              </TabsTrigger>
-            </TabsList>
+      {/* Main Content */}
+      <div className="flex-1 flex">
+        <Tabs value={activeBuilderTab} onValueChange={setActiveBuilderTab} className="flex-1 flex flex-col">
+          <TabsList className="m-4 mb-0 w-fit" style={{ borderColor: getPrimaryColor() }}>
+            <TabsTrigger value="builder" className="brand-focus">
+              <Palette className="h-4 w-4 mr-2" />
+              Builder
+            </TabsTrigger>
+            <TabsTrigger value="attachments" className="brand-focus">
+              <FileText className="h-4 w-4 mr-2" />
+              Attachments
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="brand-focus">
+              <Settings className="h-4 w-4 mr-2" />
+              Settings
+            </TabsTrigger>
+          </TabsList>
 
-            <TabsContent value="builder" className="h-full mt-0">
-              <div className={cn(
-                "grid gap-4 lg:gap-6 h-full",
-                isMobile ? "grid-cols-1" : "grid-cols-12"
-              )}>
+          <div className="flex-1 p-4 pt-0">
+            <TabsContent value="builder" className="h-full mt-4">
+              <div className="grid grid-cols-12 gap-6 h-full">
                 {/* Left Sidebar - Field Palette */}
-                <div className={cn(
-                  isMobile ? "order-2" : "col-span-3",
-                  "animate-slide-in-left"
-                )}>
-                  <AnimatedCard 
-                    title="Field Types" 
-                    icon={Palette} 
-                    iconColor="text-purple-500"
-                    delay={100}
-                  >
-                    <FieldPalette onAddField={onAddField} />
-                  </AnimatedCard>
+                <div className="col-span-3">
+                  <BrandedCard brandAccent>
+                    <CardHeader>
+                      <CardTitle className="brand-text">Field Types</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <FieldPalette onAddField={onAddField} />
+                    </CardContent>
+                  </BrandedCard>
                 </div>
 
                 {/* Center - Form Canvas */}
-                <div className={cn(
-                  isMobile ? "order-1" : "col-span-6",
-                  "animate-fade-in"
-                )}>
-                  <AnimatedCard className="h-full" delay={200}>
-                    <div className="space-y-4">
-                      <div className="grid gap-4">
+                <div className="col-span-6">
+                  <BrandedCard className="h-full">
+                    <CardHeader>
+                      <div className="space-y-4">
                         <div>
-                          <Label htmlFor="form-title" className="brand-text font-medium">
-                            Form Title
-                          </Label>
+                          <Label htmlFor="form-title" className="brand-text">Form Title</Label>
                           <BrandedInput
                             id="form-title"
                             value={title}
                             onChange={(e) => onUpdateTitle(e.target.value)}
                             placeholder="Enter form title"
-                            className="text-lg lg:text-xl font-semibold mt-1"
+                            className="text-xl font-semibold"
                           />
                         </div>
                         <div>
-                          <Label htmlFor="form-description" className="brand-text font-medium">
-                            Form Description
-                          </Label>
+                          <Label htmlFor="form-description" className="brand-text">Form Description</Label>
                           <Textarea
                             id="form-description"
                             value={description}
                             onChange={(e) => onUpdateDescription(e.target.value)}
                             placeholder="Enter form description"
-                            className="brand-focus brand-border mt-1 resize-none"
-                            rows={3}
-                            style={{ borderColor: brandingContext?.getPrimaryColor() }}
+                            className="brand-focus brand-border"
+                            style={{ borderColor: getPrimaryColor() }}
                           />
                         </div>
                       </div>
-                      <div className="flex-1">
-                        <FormCanvas
-                          fields={formFields}
-                          selectedField={selectedFieldId}
-                          onSelectField={onSelectField}
-                          onUpdateField={onUpdateField}
-                          onRemoveField={onRemoveField}
-                          onAddField={onAddField}
-                          onReorderFields={() => {}}
-                        />
-                      </div>
-                    </div>
-                  </AnimatedCard>
+                    </CardHeader>
+                    <CardContent className="flex-1">
+                      <FormCanvas
+                        fields={formFields}
+                        selectedFieldId={selectedFieldId}
+                        onSelectField={onSelectField}
+                        onUpdateField={onUpdateField}
+                        onRemoveField={onRemoveField}
+                      />
+                    </CardContent>
+                  </BrandedCard>
                 </div>
 
                 {/* Right Sidebar - Field Editor */}
-                <div className={cn(
-                  isMobile ? "order-3" : "col-span-3",
-                  "animate-slide-in-right"
-                )}>
-                  <AnimatedCard 
-                    title="Field Properties" 
-                    icon={Settings} 
-                    iconColor="text-blue-500"
-                    delay={300}
-                  >
-                    <FieldEditor
-                      selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
-                      onUpdateField={onUpdateField}
-                    />
-                  </AnimatedCard>
+                <div className="col-span-3">
+                  <BrandedCard brandAccent>
+                    <CardHeader>
+                      <CardTitle className="brand-text">Field Properties</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <FieldEditor
+                        selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) : null}
+                        onUpdateField={onUpdateField}
+                      />
+                    </CardContent>
+                  </BrandedCard>
                 </div>
               </div>
             </TabsContent>
 
-            <TabsContent value="attachments" className="mt-0">
-              <AnimatedCard 
-                title="Form Attachments" 
-                icon={Upload} 
-                iconColor="text-green-500"
-              >
-                <FileAttachmentManager
-                  attachments={attachments}
-                  onUpdateAttachments={onUpdateAttachments}
-                  allowedTypes={['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png']}
-                  maxSize={10}
-                  readOnly={isPublished}
-                />
-              </AnimatedCard>
+            <TabsContent value="attachments" className="mt-4">
+              <BrandedCard>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 brand-text">
+                    <Upload className="h-5 w-5" />
+                    Form Attachments
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <FileAttachmentManager
+                    attachments={attachments}
+                    onAddAttachment={onAddAttachment}
+                    onRemoveAttachment={onRemoveAttachment}
+                  />
+                </CardContent>
+              </BrandedCard>
             </TabsContent>
 
-            <TabsContent value="settings" className="mt-0">
-              <AnimatedCard 
-                title="Form Settings" 
-                icon={Settings} 
-                iconColor="text-gray-500"
-              >
-                <SettingsPanel
-                  form={currentForm}
-                  onUpdate={handleFormUpdate}
-                />
-              </AnimatedCard>
+            <TabsContent value="settings" className="mt-4">
+              <BrandedCard>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 brand-text">
+                    <Settings className="h-5 w-5" />
+                    Form Settings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8 text-muted-foreground">
+                    Form settings will be available here
+                  </div>
+                </CardContent>
+              </BrandedCard>
             </TabsContent>
-          </Tabs>
-        </div>
+          </div>
+        </Tabs>
       </div>
-    </ResponsiveLayout>
+    </div>
   );
 };

@@ -1,37 +1,37 @@
 
 import React from 'react';
-import { Card } from '@/components/ui/card';
+import { Card, CardProps } from '@/components/ui/card';
 import { useBranding } from './BrandingProvider';
 import { cn } from '@/lib/utils';
 
-interface BrandedCardProps extends React.HTMLAttributes<HTMLDivElement> {
-  enableBranding?: boolean;
+interface BrandedCardProps extends CardProps {
+  useBranding?: boolean;
   brandAccent?: boolean;
 }
 
 export const BrandedCard: React.FC<BrandedCardProps> = ({
   children,
   className,
-  enableBranding = true,
+  useBranding = true,
   brandAccent = false,
   ...props
 }) => {
-  const brandingContext = useBranding();
+  const { getPrimaryColor } = useBranding();
 
   const getBrandedStyles = () => {
-    if (!enableBranding || !brandingContext) return {};
+    if (!useBranding) return {};
     
     return brandAccent ? {
-      borderTopColor: brandingContext.getPrimaryColor(),
+      borderTopColor: getPrimaryColor(),
       borderTopWidth: '3px',
-      borderTopStyle: 'solid' as const,
+      borderTopStyle: 'solid',
     } : {};
   };
 
   return (
     <Card
       className={cn(
-        enableBranding && brandAccent && 'border-t-3',
+        useBranding && brandAccent && 'border-t-3',
         'transition-all duration-200',
         className
       )}
