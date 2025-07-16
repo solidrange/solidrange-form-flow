@@ -95,7 +95,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header with Navigation */}
+      {/* Single Header Section */}
       <div className="border-b bg-background">
         <div className="flex items-center justify-between p-4">
           <div>
@@ -124,33 +124,33 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
             </BrandedButton>
           </div>
         </div>
-        
-        {/* Navigation Tabs */}
-        <div className="px-4">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-transparent h-12">
-              <TabsTrigger value="builder" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                <Plus className="h-4 w-4" />
-                Builder
-              </TabsTrigger>
-              <TabsTrigger value="library" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                <Library className="h-4 w-4" />
-                Library
-              </TabsTrigger>
-              <TabsTrigger value="preview" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                <Eye className="h-4 w-4" />
-                Preview
-              </TabsTrigger>
-              <TabsTrigger value="settings" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-                <Settings className="h-4 w-4" />
-                Settings
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
       </div>
 
-      {/* Main Content */}
+      {/* Single Navigation Tabs */}
+      <div className="border-b bg-background px-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-4 bg-transparent h-12">
+            <TabsTrigger value="builder" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <Plus className="h-4 w-4" />
+              Builder
+            </TabsTrigger>
+            <TabsTrigger value="library" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <Library className="h-4 w-4" />
+              Library
+            </TabsTrigger>
+            <TabsTrigger value="preview" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <Eye className="h-4 w-4" />
+              Preview
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+              <Settings className="h-4 w-4" />
+              Settings
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
+      {/* Main Content Area */}
       <div className="flex-1 flex">
         {activeTab === 'builder' && (
           <div className="flex-1 grid grid-cols-12 gap-6 p-6">
