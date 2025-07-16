@@ -95,38 +95,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Single Header Section */}
-      <div className="border-b bg-background">
-        <div className="flex items-center justify-between p-4">
-          <div>
-            <h1 className="text-2xl font-bold">Form Builder</h1>
-            <p className="text-sm text-muted-foreground">Create and customize your forms</p>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-              Draft
-            </Badge>
-            <BrandedButton
-              onClick={handleSaveForm}
-              className="gap-2"
-              brandVariant="outline"
-            >
-              <Save className="h-4 w-4" />
-              Save Draft
-            </BrandedButton>
-            
-            <BrandedButton
-              className="gap-2"
-              brandVariant="primary"
-            >
-              Publish
-            </BrandedButton>
-          </div>
-        </div>
-      </div>
-
-      {/* Single Navigation Tabs */}
+      {/* Navigation Tabs */}
       <div className="border-b bg-background px-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 bg-transparent h-12">
