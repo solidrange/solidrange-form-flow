@@ -31,12 +31,20 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "@/hooks/use-toast";
+import { BrandedButton } from "./BrandedButton";
+import { BrandedCard } from "./BrandedCard";
+import { BrandLogo } from "./BrandLogo";
+import { useBrand } from "@/contexts/BrandContext";
+import { useBranding } from "./BrandingProvider";
 
 interface ReportGenerationProps {
   submissions: any[];
 }
 
 export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
+  const { brand } = useBrand();
+  const brandingContext = useBranding();
+  
   const [reportConfig, setReportConfig] = useState({
     title: "Form Submission Report",
     description: "Comprehensive analysis of form submissions",

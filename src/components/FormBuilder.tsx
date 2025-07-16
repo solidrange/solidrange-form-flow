@@ -97,16 +97,6 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
               Preview
             </BrandedButton>
             
-            {isPublished && (
-              <BrandedButton
-                variant="outline"
-                onClick={onMoveToDraft}
-                className="gap-2"
-                brandVariant="secondary"
-              >
-                Move to Draft
-              </BrandedButton>
-            )}
             
             <BrandedButton
               onClick={onSaveForm}
@@ -114,7 +104,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
               brandVariant="primary"
             >
               <Save className="h-4 w-4" />
-              Save Form
+              Save Draft
             </BrandedButton>
           </div>
         </div>
