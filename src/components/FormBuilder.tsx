@@ -127,7 +127,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
       <div className="border-b bg-background">
         <div className="px-4">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-transparent h-12">
+            <TabsList className="grid w-full grid-cols-4 bg-transparent h-12">
               <TabsTrigger value="builder" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
                 <Plus className="h-4 w-4" />
                 Builder
@@ -139,6 +139,10 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
               <TabsTrigger value="preview" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
                 <Eye className="h-4 w-4" />
                 Preview
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
+                <Settings className="h-4 w-4" />
+                Settings
               </TabsTrigger>
             </TabsList>
           </Tabs>
@@ -155,16 +159,6 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
             </Badge>
           </div>
           <div className="flex items-center gap-2">
-            <BrandedButton
-              variant="outline"
-              onClick={() => setActiveTab('settings')}
-              className="gap-2"
-              brandVariant="outline"
-              size="sm"
-            >
-              <Settings className="h-4 w-4" />
-              Settings
-            </BrandedButton>
             <BrandedButton
               variant="outline"
               size="sm"
