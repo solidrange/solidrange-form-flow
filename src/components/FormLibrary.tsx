@@ -894,13 +894,13 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
 
   // Group templates by sector for display
   const templatesBySector = useMemo(() => {
-    const grouped = filteredTemplates.reduce((acc, template) => {
-      if (!acc[template.sector]) {
-        acc[template.sector] = [];
+    const grouped: Record<string, FormTemplate[]> = {};
+    filteredTemplates.forEach(template => {
+      if (!grouped[template.sector]) {
+        grouped[template.sector] = [];
       }
-      acc[template.sector].push(template);
-      return acc;
-    }, {} as Record<string, FormTemplate[]>);
+      grouped[template.sector].push(template);
+    });
     return grouped;
   }, [filteredTemplates]);
 
