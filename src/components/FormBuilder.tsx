@@ -95,24 +95,47 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Single Navigation Tabs Row */}
-      <div className="border-b bg-background px-4">
+      {/* Header Section */}
+      <div className="border-b bg-background px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-foreground">Form Builder</h1>
+            <p className="text-sm text-muted-foreground">Create and customize your forms</p>
+          </div>
+          <div className="flex gap-3">
+            <BrandedButton 
+              variant="outline" 
+              onClick={handleSaveForm}
+              className="gap-2"
+            >
+              <Save className="h-4 w-4" />
+              Save Draft
+            </BrandedButton>
+            <BrandedButton 
+              onClick={onSaveForm}
+              className="gap-2"
+            >
+              <Eye className="h-4 w-4" />
+              Publish
+            </BrandedButton>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation Tabs */}
+      <div className="border-b bg-background px-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 bg-transparent h-12">
-            <TabsTrigger value="builder" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              <Plus className="h-4 w-4" />
+            <TabsTrigger value="builder" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
               Builder
             </TabsTrigger>
-            <TabsTrigger value="library" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              <Library className="h-4 w-4" />
+            <TabsTrigger value="library" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
               Library
             </TabsTrigger>
-            <TabsTrigger value="preview" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              <Eye className="h-4 w-4" />
+            <TabsTrigger value="preview" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
               Preview
             </TabsTrigger>
-            <TabsTrigger value="settings" className="gap-2 data-[state=active]:bg-background data-[state=active]:shadow-sm">
-              <Settings className="h-4 w-4" />
+            <TabsTrigger value="settings" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
               Settings
             </TabsTrigger>
           </TabsList>
@@ -124,133 +147,132 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
         {activeTab === 'builder' && (
           <div className="flex-1 grid grid-cols-12 gap-6 p-6">
             {/* Left Sidebar - Form Fields */}
-            <div className="col-span-3">
-              <FieldPalette onAddField={onAddField} />
+            <div className="col-span-3 space-y-4">
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Form Fields</h3>
+                <p className="text-sm text-muted-foreground mb-4">Drag fields to the canvas to add them</p>
+                <FieldPalette onAddField={onAddField} />
+              </div>
             </div>
 
             {/* Center - Form Canvas */}
-            <div className="col-span-6">
-              <Card className="h-full">
-                <CardHeader>
-                  <div className="space-y-4">
-                    <div>
-                      <Label htmlFor="form-title">Form Title</Label>
-                      <Input
-                        id="form-title"
-                        value={title || 'Untitled Form'}
-                        onChange={(e) => onUpdateTitle(e.target.value)}
-                        placeholder="Untitled Form"
-                        className="font-semibold"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="form-description">Form Description</Label>
-                      <Textarea
-                        id="form-description"
-                        value={description}
-                        onChange={(e) => onUpdateDescription(e.target.value)}
-                        placeholder="Enter form description"
-                        className="resize-none"
-                        rows={3}
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <Label htmlFor="categories">Categories</Label>
-                        <Select>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select categories..." />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="general">General</SelectItem>
-                            <SelectItem value="feedback">Feedback</SelectItem>
-                            <SelectItem value="survey">Survey</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <Label htmlFor="target-audience">Target Audience</Label>
-                        <Select>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select audiences..." />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="all">All Users</SelectItem>
-                            <SelectItem value="internal">Internal</SelectItem>
-                            <SelectItem value="external">External</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div>
+            <div className="col-span-6 space-y-6">
+              {/* Form Title and Description */}
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="form-title" className="text-lg font-semibold">Form Title</Label>
+                  <Input
+                    id="form-title"
+                    value={title || 'Untitled Form'}
+                    onChange={(e) => onUpdateTitle(e.target.value)}
+                    placeholder="Untitled Form"
+                    className="mt-2"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="form-description" className="text-lg font-semibold">Form Description</Label>
+                  <Textarea
+                    id="form-description"
+                    value={description}
+                    onChange={(e) => onUpdateDescription(e.target.value)}
+                    placeholder="Enter form description"
+                    className="resize-none mt-2"
+                    rows={3}
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="categories">Categories</Label>
+                    <Select>
+                      <SelectTrigger className="mt-2">
+                        <SelectValue placeholder="Select categories..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="general">General</SelectItem>
+                        <SelectItem value="feedback">Feedback</SelectItem>
+                        <SelectItem value="survey">Survey</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                </CardHeader>
-                <CardContent className="flex-1">
-                  <Tabs value={activeCanvasTab} onValueChange={setActiveCanvasTab} className="w-full">
-                    <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="fields" className="gap-2">
-                        <FileText className="h-4 w-4" />
-                        Fields
-                      </TabsTrigger>
-                      <TabsTrigger value="files" className="gap-2">
-                        <Upload className="h-4 w-4" />
-                        Files
-                      </TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="fields" className="mt-4">
-                      <div className="min-h-[400px] border-2 border-dashed border-muted-foreground/25 rounded-lg p-8">
-                        {formFields.length === 0 ? (
-                          <div className="text-center text-muted-foreground">
-                            <div className="mb-4">
-                              <h3 className="text-lg font-medium">No fields added yet</h3>
-                              <p className="text-sm">Drag fields from the palette to start building your form</p>
-                            </div>
+                  <div>
+                    <Label htmlFor="target-audience">Target Audience</Label>
+                    <Select>
+                      <SelectTrigger className="mt-2">
+                        <SelectValue placeholder="Select audiences..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All Users</SelectItem>
+                        <SelectItem value="internal">Internal</SelectItem>
+                        <SelectItem value="external">External</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Fields/Files Tabs */}
+              <div>
+                <Tabs value={activeCanvasTab} onValueChange={setActiveCanvasTab} className="w-full">
+                  <TabsList className="grid w-full grid-cols-2 bg-muted">
+                    <TabsTrigger value="fields" className="gap-2">
+                      <FileText className="h-4 w-4" />
+                      Fields
+                    </TabsTrigger>
+                    <TabsTrigger value="files" className="gap-2">
+                      <Upload className="h-4 w-4" />
+                      Files
+                    </TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="fields" className="mt-4">
+                    <div className="min-h-[400px] border-2 border-dashed border-muted-foreground/25 rounded-lg p-8">
+                      {formFields.length === 0 ? (
+                        <div className="text-center text-muted-foreground">
+                          <div className="mb-4">
+                            <h3 className="text-lg font-medium">No fields added yet</h3>
+                            <p className="text-sm">Drag fields from the palette to start building your form</p>
                           </div>
-                        ) : (
-                          <FormCanvas
-                            fields={formFields}
-                            selectedField={selectedFieldId}
-                            onSelectField={onSelectField}
-                            onUpdateField={onUpdateField}
-                            onRemoveField={onRemoveField}
-                            onAddField={onAddField}
-                            onReorderFields={() => {}}
-                          />
-                        )}
-                      </div>
-                    </TabsContent>
-                    <TabsContent value="files" className="mt-4">
-                      <FileAttachmentManager
-                        attachments={attachments}
-                        onUpdateAttachments={onUpdateAttachments}
-                        allowedTypes={['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png']}
-                        maxSize={10}
-                        readOnly={isPublished}
-                      />
-                    </TabsContent>
-                  </Tabs>
-                </CardContent>
-              </Card>
+                        </div>
+                      ) : (
+                        <FormCanvas
+                          fields={formFields}
+                          selectedField={selectedFieldId}
+                          onSelectField={onSelectField}
+                          onUpdateField={onUpdateField}
+                          onRemoveField={onRemoveField}
+                          onAddField={onAddField}
+                          onReorderFields={() => {}}
+                        />
+                      )}
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="files" className="mt-4">
+                    <FileAttachmentManager
+                      attachments={attachments}
+                      onUpdateAttachments={onUpdateAttachments}
+                      allowedTypes={['pdf', 'doc', 'docx', 'txt', 'jpg', 'jpeg', 'png']}
+                      maxSize={10}
+                      readOnly={isPublished}
+                    />
+                  </TabsContent>
+                </Tabs>
+              </div>
             </div>
 
             {/* Right Sidebar - Field Properties */}
             <div className="col-span-3">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Field Properties</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  {selectedFieldId ? (
-                    <FieldEditor
-                      selectedField={formFields.find(f => f.id === selectedFieldId) || null}
-                      onUpdateField={onUpdateField}
-                    />
-                  ) : (
-                    <div className="text-center text-muted-foreground py-8">
-                      <p>Select a field to edit its properties</p>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Field Properties</h3>
+                {selectedFieldId ? (
+                  <FieldEditor
+                    selectedField={formFields.find(f => f.id === selectedFieldId) || null}
+                    onUpdateField={onUpdateField}
+                  />
+                ) : (
+                  <div className="text-center text-muted-foreground py-8">
+                    <p>Select a field to edit its properties</p>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         )}
