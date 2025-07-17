@@ -70,12 +70,23 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
     allowMultipleSubmissions: false,
     requireLogin: false,
     showProgressBar: true,
-    theme: 'light',
+    theme: 'inherit' as 'light' | 'dark' | 'inherit' | 'custom',
+    customCss: '',
     enableScoring: false,
     enableApprovalWorkflow: false,
     enableDocumentUploads: false,
     enableExpiration: false,
-    enableEmailDistribution: false
+    enableEmailDistribution: false,
+    expirationDate: '',
+    expirationMessage: 'This form has expired.',
+    autoApproveScore: 80,
+    approvers: [] as string[],
+    allowedFileTypes: ['pdf', 'doc', 'docx', 'jpg', 'png'] as string[],
+    maxFileSize: 10,
+    emailRecipients: [] as string[],
+    reminderEnabled: false,
+    reminderInterval: 7,
+    maxReminders: 3
   });
   const brandingContext = useBranding();
 
@@ -326,79 +337,107 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
         )}
 
         {activeTab === 'settings' && (
-          <div className="flex-1 p-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Form Settings</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-8">
-                {/* Basic Settings */}
-                <div>
-                  <h3 className="text-lg font-medium mb-4">Basic Settings</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="allow-multiple">Allow Multiple Submissions</Label>
-                        <p className="text-sm text-muted-foreground">Allow users to submit the form multiple times</p>
-                      </div>
-                      <Switch
-                        id="allow-multiple"
-                        checked={formSettings.allowMultipleSubmissions}
-                        onCheckedChange={(checked) => setFormSettings({...formSettings, allowMultipleSubmissions: checked})}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="require-login">Require Login</Label>
-                        <p className="text-sm text-muted-foreground">Users must be logged in to access the form</p>
-                      </div>
-                      <Switch
-                        id="require-login"
-                        checked={formSettings.requireLogin}
-                        onCheckedChange={(checked) => setFormSettings({...formSettings, requireLogin: checked})}
-                      />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Label htmlFor="show-progress">Show Progress Bar</Label>
-                        <p className="text-sm text-muted-foreground">Display progress indicator to users</p>
-                      </div>
-                      <Switch
-                        id="show-progress"
-                        checked={formSettings.showProgressBar}
-                        onCheckedChange={(checked) => setFormSettings({...formSettings, showProgressBar: checked})}
-                      />
-                    </div>
-                  </div>
-                </div>
+          <div className="flex-1 p-6 max-w-4xl mx-auto">
+            <div className="space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold mb-2">Form Settings</h2>
+                <p className="text-muted-foreground">Configure settings for this specific form</p>
+              </div>
 
-                {/* Theme & Appearance */}
-                <div>
-                  <h3 className="text-lg font-medium mb-4">Theme & Appearance</h3>
+              {/* Basic Form Settings */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Basic Settings</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="allow-multiple">Allow Multiple Submissions</Label>
+                      <p className="text-sm text-muted-foreground">Allow users to submit this form multiple times</p>
+                    </div>
+                    <Switch
+                      id="allow-multiple"
+                      checked={formSettings.allowMultipleSubmissions}
+                      onCheckedChange={(checked) => setFormSettings({...formSettings, allowMultipleSubmissions: checked})}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="require-login">Require Login</Label>
+                      <p className="text-sm text-muted-foreground">Users must be logged in to access this form</p>
+                    </div>
+                    <Switch
+                      id="require-login"
+                      checked={formSettings.requireLogin}
+                      onCheckedChange={(checked) => setFormSettings({...formSettings, requireLogin: checked})}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <Label htmlFor="show-progress">Show Progress Bar</Label>
+                      <p className="text-sm text-muted-foreground">Display progress indicator to users</p>
+                    </div>
+                    <Switch
+                      id="show-progress"
+                      checked={formSettings.showProgressBar}
+                      onCheckedChange={(checked) => setFormSettings({...formSettings, showProgressBar: checked})}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Theme Settings */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Palette className="h-5 w-5" />
+                    Theme & Appearance
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="theme">Theme</Label>
-                    <Select value={formSettings.theme} onValueChange={(value) => setFormSettings({...formSettings, theme: value})}>
-                      <SelectTrigger className="w-full">
+                    <Label htmlFor="theme">Form Theme</Label>
+                    <Select value={formSettings.theme} onValueChange={(value) => setFormSettings({...formSettings, theme: value as any})}>
+                      <SelectTrigger className="w-full mt-1">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="light">Light</SelectItem>
-                        <SelectItem value="dark">Dark</SelectItem>
-                        <SelectItem value="system">System</SelectItem>
+                        <SelectItem value="inherit">Inherit Global Theme</SelectItem>
+                        <SelectItem value="light">Light Theme</SelectItem>
+                        <SelectItem value="dark">Dark Theme</SelectItem>
+                        <SelectItem value="custom">Custom Theme</SelectItem>
                       </SelectContent>
                     </Select>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Choose whether this form uses the global theme or has its own theme
+                    </p>
                   </div>
-                </div>
 
-                {/* Global Settings Integration */}
-                <div>
-                  <h3 className="text-lg font-medium mb-4">Global Settings</h3>
-                  <GlobalSettings />
-                </div>
+                  {formSettings.theme === 'custom' && (
+                    <div>
+                      <Label htmlFor="custom-css">Custom CSS</Label>
+                      <Textarea
+                        id="custom-css"
+                        value={formSettings.customCss}
+                        onChange={(e) => setFormSettings({...formSettings, customCss: e.target.value})}
+                        placeholder="Enter custom CSS rules for this form..."
+                        className="mt-1 font-mono text-sm"
+                        rows={8}
+                      />
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Add custom CSS to style this form specifically
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
 
-                {/* Scoring Configuration */}
-                <div>
-                  <h3 className="text-lg font-medium mb-4">Scoring Configuration</h3>
+              {/* Scoring Settings */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Scoring Configuration</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="enable-scoring">Enable Scoring</Label>
@@ -410,11 +449,15 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                       onCheckedChange={(checked) => setFormSettings({...formSettings, enableScoring: checked})}
                     />
                   </div>
-                </div>
+                </CardContent>
+              </Card>
 
-                {/* Approval Workflow */}
-                <div>
-                  <h3 className="text-lg font-medium mb-4">Approval Workflow</h3>
+              {/* Approval Workflow */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Approval Workflow</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="enable-approval">Enable Approval Workflow</Label>
@@ -426,15 +469,51 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                       onCheckedChange={(checked) => setFormSettings({...formSettings, enableApprovalWorkflow: checked})}
                     />
                   </div>
-                </div>
 
-                {/* Document Attachments */}
-                <div>
-                  <h3 className="text-lg font-medium mb-4">Document Attachments</h3>
+                  {formSettings.enableApprovalWorkflow && (
+                    <>
+                      <div>
+                        <Label htmlFor="auto-approve-score">Auto-Approve Score Threshold</Label>
+                        <Input
+                          id="auto-approve-score"
+                          type="number"
+                          min="0"
+                          max="100"
+                          value={formSettings.autoApproveScore}
+                          onChange={(e) => setFormSettings({...formSettings, autoApproveScore: parseInt(e.target.value)})}
+                          className="mt-1"
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Submissions with scores above this threshold will be auto-approved
+                        </p>
+                      </div>
+
+                      <div>
+                        <Label htmlFor="approvers">Approvers (one email per line)</Label>
+                        <Textarea
+                          id="approvers"
+                          value={formSettings.approvers.join('\n')}
+                          onChange={(e) => setFormSettings({...formSettings, approvers: e.target.value.split('\n').filter(email => email.trim())})}
+                          placeholder="Enter approver emails..."
+                          className="mt-1"
+                          rows={3}
+                        />
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Document Uploads */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Document Uploads</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="enable-documents">Enable Document Uploads</Label>
-                      <p className="text-sm text-muted-foreground">Allow users to upload documents</p>
+                      <p className="text-sm text-muted-foreground">Allow users to upload documents with this form</p>
                     </div>
                     <Switch
                       id="enable-documents"
@@ -442,14 +521,61 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                       onCheckedChange={(checked) => setFormSettings({...formSettings, enableDocumentUploads: checked})}
                     />
                   </div>
-                </div>
 
-                {/* Expiration Settings */}
-                <div>
-                  <h3 className="text-lg font-medium mb-4">Expiration Settings</h3>
+                  {formSettings.enableDocumentUploads && (
+                    <>
+                      <div>
+                        <Label htmlFor="max-file-size">Maximum File Size (MB)</Label>
+                        <Input
+                          id="max-file-size"
+                          type="number"
+                          min="1"
+                          max="100"
+                          value={formSettings.maxFileSize}
+                          onChange={(e) => setFormSettings({...formSettings, maxFileSize: parseInt(e.target.value)})}
+                          className="mt-1"
+                        />
+                      </div>
+
+                      <div>
+                        <Label>Allowed File Types</Label>
+                        <div className="grid grid-cols-3 gap-2 mt-2">
+                          {['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png', 'txt', 'xlsx'].map((type) => (
+                            <div key={type} className="flex items-center space-x-2">
+                              <input
+                                type="checkbox"
+                                id={type}
+                                checked={formSettings.allowedFileTypes.includes(type)}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setFormSettings({...formSettings, allowedFileTypes: [...formSettings.allowedFileTypes, type]});
+                                  } else {
+                                    setFormSettings({...formSettings, allowedFileTypes: formSettings.allowedFileTypes.filter(t => t !== type)});
+                                  }
+                                }}
+                                className="rounded"
+                              />
+                              <Label htmlFor={type} className="text-sm uppercase">
+                                {type}
+                              </Label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Form Expiration */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Form Expiration</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <Label htmlFor="enable-expiration">Enable Expiration</Label>
+                      <Label htmlFor="enable-expiration">Enable Form Expiration</Label>
                       <p className="text-sm text-muted-foreground">Set an expiration date for this form</p>
                     </div>
                     <Switch
@@ -458,15 +584,46 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                       onCheckedChange={(checked) => setFormSettings({...formSettings, enableExpiration: checked})}
                     />
                   </div>
-                </div>
 
-                {/* Email Distribution */}
-                <div>
-                  <h3 className="text-lg font-medium mb-4">Email Distribution</h3>
+                  {formSettings.enableExpiration && (
+                    <>
+                      <div>
+                        <Label htmlFor="expiration-date">Expiration Date</Label>
+                        <Input
+                          id="expiration-date"
+                          type="date"
+                          value={formSettings.expirationDate}
+                          onChange={(e) => setFormSettings({...formSettings, expirationDate: e.target.value})}
+                          className="mt-1"
+                        />
+                      </div>
+
+                      <div>
+                        <Label htmlFor="expiration-message">Expiration Message</Label>
+                        <Textarea
+                          id="expiration-message"
+                          value={formSettings.expirationMessage}
+                          onChange={(e) => setFormSettings({...formSettings, expirationMessage: e.target.value})}
+                          placeholder="Enter message to show when form is expired..."
+                          className="mt-1"
+                          rows={3}
+                        />
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Email Distribution */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Email Distribution</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <Label htmlFor="enable-email">Enable Email Distribution</Label>
-                      <p className="text-sm text-muted-foreground">Distribute this form via email</p>
+                      <p className="text-sm text-muted-foreground">Send this form via email to recipients</p>
                     </div>
                     <Switch
                       id="enable-email"
@@ -474,9 +631,66 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                       onCheckedChange={(checked) => setFormSettings({...formSettings, enableEmailDistribution: checked})}
                     />
                   </div>
-                </div>
-              </CardContent>
-            </Card>
+
+                  {formSettings.enableEmailDistribution && (
+                    <>
+                      <div>
+                        <Label htmlFor="email-recipients">Email Recipients (one per line)</Label>
+                        <Textarea
+                          id="email-recipients"
+                          value={formSettings.emailRecipients.join('\n')}
+                          onChange={(e) => setFormSettings({...formSettings, emailRecipients: e.target.value.split('\n').filter(email => email.trim())})}
+                          placeholder="Enter recipient emails..."
+                          className="mt-1"
+                          rows={3}
+                        />
+                      </div>
+
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <Label htmlFor="reminder-enabled">Enable Reminders</Label>
+                          <p className="text-sm text-muted-foreground">Send reminder emails to recipients</p>
+                        </div>
+                        <Switch
+                          id="reminder-enabled"
+                          checked={formSettings.reminderEnabled}
+                          onCheckedChange={(checked) => setFormSettings({...formSettings, reminderEnabled: checked})}
+                        />
+                      </div>
+
+                      {formSettings.reminderEnabled && (
+                        <>
+                          <div>
+                            <Label htmlFor="reminder-interval">Reminder Interval (days)</Label>
+                            <Input
+                              id="reminder-interval"
+                              type="number"
+                              min="1"
+                              value={formSettings.reminderInterval}
+                              onChange={(e) => setFormSettings({...formSettings, reminderInterval: parseInt(e.target.value)})}
+                              className="mt-1"
+                            />
+                          </div>
+
+                          <div>
+                            <Label htmlFor="max-reminders">Maximum Reminders</Label>
+                            <Input
+                              id="max-reminders"
+                              type="number"
+                              min="1"
+                              max="10"
+                              value={formSettings.maxReminders}
+                              onChange={(e) => setFormSettings({...formSettings, maxReminders: parseInt(e.target.value)})}
+                              className="mt-1"
+                            />
+                          </div>
+                        </>
+                      )}
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
         )}
       </div>
