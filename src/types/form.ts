@@ -41,6 +41,7 @@ export interface FormField {
   validationRegex?: string;      // Pattern that the input must match (like email format)
   errorMessage?: string;         // Custom message shown when validation fails
   weightage?: number;            // How important this field is for scoring (0-100)
+  acceptedFileTypes?: string[];  // For file fields: allowed file extensions
   
   /**
    * Scoring Configuration
@@ -91,6 +92,7 @@ export interface FormTemplate {
   name: string;                  // Template name (e.g., "Vendor Risk Assessment")
   description: string;           // What this template is used for
   category: string;              // Template category (e.g., "vendor-risk", "hr", "customer")
+  tags: string[];                // Keywords for filtering and searching templates
   sector?: string | string[];        // Industry sector (government, insurance, fintech, health, etc.)
   targetAudience?: string[];     // Target audience for this template (vendor, external, internal)
   fields: FormField[];           // All the fields included in this template

@@ -76,11 +76,11 @@ const templates: FormTemplate[] = [
       { id: '8', type: 'text', label: 'Manager Name', required: true, placeholder: 'Direct manager name' },
       { id: '9', type: 'textarea', label: 'Emergency Contact', required: true, placeholder: 'Name, relationship, phone number' },
       { id: '10', type: 'select', label: 'T-Shirt Size', required: true, options: ['XS', 'S', 'M', 'L', 'XL', 'XXL'] },
-      { id: '11', type: 'checkbox', label: 'Equipment Needed', options: ['Laptop', 'Monitor', 'Keyboard', 'Mouse', 'Headset', 'Phone'] },
+      { id: '11', type: 'checkbox', label: 'Equipment Needed', required: false, options: ['Laptop', 'Monitor', 'Keyboard', 'Mouse', 'Headset', 'Phone'] },
       { id: '12', type: 'radio', label: 'Work Preference', options: ['Remote', 'Hybrid', 'Office'], required: true },
       { id: '13', type: 'file', label: 'Profile Photo', required: false, acceptedFileTypes: ['jpg', 'jpeg', 'png'] },
       { id: '14', type: 'textarea', label: 'Dietary Restrictions/Allergies', required: false, placeholder: 'Any dietary restrictions or allergies' },
-      { id: '15', type: 'checkbox', label: 'I agree to company policies and handbook', required: true }
+      { id: '15', type: 'checkbox', label: 'I agree to company policies and handbook', required: true, options: ['I agree'] }
     ]
   },
   {
@@ -104,7 +104,7 @@ const templates: FormTemplate[] = [
       { id: '12', type: 'radio', label: 'Communication Skills', options: ['Excellent', 'Good', 'Satisfactory', 'Needs Improvement'], required: true },
       { id: '13', type: 'radio', label: 'Technical Skills', options: ['Excellent', 'Good', 'Satisfactory', 'Needs Improvement'], required: true },
       { id: '14', type: 'radio', label: 'Teamwork', options: ['Excellent', 'Good', 'Satisfactory', 'Needs Improvement'], required: true },
-      { id: '15', type: 'checkbox', label: 'Recommended for Promotion', required: false }
+      { id: '15', type: 'checkbox', label: 'Recommended for Promotion', required: false, options: ['Yes'] }
     ]
   },
   {
@@ -125,13 +125,13 @@ const templates: FormTemplate[] = [
       { id: '9', type: 'number', label: 'Years in Business', required: true },
       { id: '10', type: 'number', label: 'Annual Revenue (USD)', required: true },
       { id: '11', type: 'number', label: 'Number of Employees', required: true },
-      { id: '12', type: 'checkbox', label: 'Services/Products Offered', options: ['IT Services', 'Consulting', 'Manufacturing', 'Distribution', 'Professional Services', 'Construction'] },
+      { id: '12', type: 'checkbox', label: 'Services/Products Offered', required: false, options: ['IT Services', 'Consulting', 'Manufacturing', 'Distribution', 'Professional Services', 'Construction'] },
       { id: '13', type: 'file', label: 'Business License', required: true, acceptedFileTypes: ['pdf', 'jpg', 'png'] },
       { id: '14', type: 'file', label: 'Insurance Certificate', required: true, acceptedFileTypes: ['pdf'] },
       { id: '15', type: 'file', label: 'W-9 Form', required: true, acceptedFileTypes: ['pdf'] },
       { id: '16', type: 'textarea', label: 'References (3 minimum)', required: true, placeholder: 'Company name, contact person, phone, email' },
-      { id: '17', type: 'checkbox', label: 'Certifications', options: ['ISO 9001', 'ISO 27001', 'SOC 2', 'GDPR Compliant', 'Other'] },
-      { id: '18', type: 'checkbox', label: 'I agree to terms and conditions', required: true }
+      { id: '17', type: 'checkbox', label: 'Certifications', required: false, options: ['ISO 9001', 'ISO 27001', 'SOC 2', 'GDPR Compliant', 'Other'] },
+      { id: '18', type: 'checkbox', label: 'I agree to terms and conditions', required: true, options: ['I agree'] }
     ]
   },
 
@@ -150,7 +150,7 @@ const templates: FormTemplate[] = [
       { id: '5', type: 'select', label: 'Incident Type', required: true, options: ['Data Breach', 'Malware', 'Phishing', 'Unauthorized Access', 'System Outage', 'Other'] },
       { id: '6', type: 'radio', label: 'Severity Level', options: ['Critical', 'High', 'Medium', 'Low'], required: true },
       { id: '7', type: 'textarea', label: 'Incident Description', required: true, placeholder: 'Detailed description of what happened' },
-      { id: '8', type: 'checkbox', label: 'Affected Systems', options: ['Email Server', 'Database', 'Web Server', 'Network Infrastructure', 'User Workstations', 'Mobile Devices'] },
+      { id: '8', type: 'checkbox', label: 'Affected Systems', required: false, options: ['Email Server', 'Database', 'Web Server', 'Network Infrastructure', 'User Workstations', 'Mobile Devices'] },
       { id: '9', type: 'number', label: 'Number of Users Affected', required: false },
       { id: '10', type: 'textarea', label: 'Data Compromised', required: false, placeholder: 'Type and amount of data affected' },
       { id: '11', type: 'textarea', label: 'Immediate Actions Taken', required: true, placeholder: 'Steps taken to contain the incident' },
@@ -210,7 +210,7 @@ const templates: FormTemplate[] = [
       { id: '15', type: 'textarea', label: 'Family Medical History', required: false, placeholder: 'Relevant family medical history' },
       { id: '16', type: 'textarea', label: 'Reason for Visit', required: true, placeholder: 'What brings you in today?' },
       { id: '17', type: 'radio', label: 'Pain Level (1-10)', options: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10'], required: false },
-      { id: '18', type: 'checkbox', label: 'I consent to treatment', required: true }
+      { id: '18', type: 'checkbox', label: 'I consent to treatment', required: true, options: ['I consent'] }
     ]
   },
 
@@ -240,7 +240,7 @@ const templates: FormTemplate[] = [
       { id: '16', type: 'select', label: 'Loan Purpose', required: true, options: ['Debt Consolidation', 'Home Improvement', 'Auto Purchase', 'Medical Expenses', 'Education', 'Other'] },
       { id: '17', type: 'number', label: 'Monthly Debt Payments', required: true },
       { id: '18', type: 'file', label: 'Pay Stub', required: true, acceptedFileTypes: ['pdf', 'jpg', 'png'] },
-      { id: '19', type: 'checkbox', label: 'I authorize credit check', required: true }
+      { id: '19', type: 'checkbox', label: 'I authorize credit check', required: true, options: ['I authorize'] }
     ]
   },
 
@@ -264,9 +264,9 @@ const templates: FormTemplate[] = [
       { id: '10', type: 'textarea', label: 'Business Description', required: true, placeholder: 'Describe the nature of your business' },
       { id: '11', type: 'number', label: 'Number of Employees', required: true },
       { id: '12', type: 'date', label: 'Planned Start Date', required: true },
-      { id: '13', type: 'checkbox', label: 'License Type Requested', options: ['General Business', 'Home Occupation', 'Retail', 'Food Service', 'Professional Services'] },
+      { id: '13', type: 'checkbox', label: 'License Type Requested', required: false, options: ['General Business', 'Home Occupation', 'Retail', 'Food Service', 'Professional Services'] },
       { id: '14', type: 'file', label: 'Articles of Incorporation', required: false, acceptedFileTypes: ['pdf'] },
-      { id: '15', type: 'checkbox', label: 'I certify all information is accurate', required: true }
+      { id: '15', type: 'checkbox', label: 'I certify all information is accurate', required: true, options: ['I certify'] }
     ]
   },
 
@@ -293,8 +293,8 @@ const templates: FormTemplate[] = [
       { id: '13', type: 'text', label: 'Emergency Contact Name', required: true },
       { id: '14', type: 'tel', label: 'Emergency Contact Phone', required: true },
       { id: '15', type: 'textarea', label: 'Medical Conditions/Allergies', required: false },
-      { id: '16', type: 'checkbox', label: 'Transportation Needed', options: ['School Bus', 'Parent Drop-off', 'Walking', 'Other'] },
-      { id: '17', type: 'checkbox', label: 'Meal Program', options: ['Free Lunch', 'Reduced Lunch', 'Regular Price'] },
+      { id: '16', type: 'checkbox', label: 'Transportation Needed', required: false, options: ['School Bus', 'Parent Drop-off', 'Walking', 'Other'] },
+      { id: '17', type: 'checkbox', label: 'Meal Program', required: false, options: ['Free Lunch', 'Reduced Lunch', 'Regular Price'] },
       { id: '18', type: 'file', label: 'Birth Certificate', required: true, acceptedFileTypes: ['pdf', 'jpg', 'png'] },
       { id: '19', type: 'file', label: 'Immunization Records', required: true, acceptedFileTypes: ['pdf', 'jpg', 'png'] }
     ]
@@ -322,7 +322,7 @@ const templates: FormTemplate[] = [
       { id: '12', type: 'textarea', label: 'Previous Legal Representation', required: false, placeholder: 'If yes, please provide details' },
       { id: '13', type: 'select', label: 'How did you hear about us?', required: false, options: ['Referral', 'Internet Search', 'Advertisement', 'Social Media', 'Other'] },
       { id: '14', type: 'file', label: 'Supporting Documents', required: false, acceptedFileTypes: ['pdf', 'doc', 'docx', 'jpg', 'png'] },
-      { id: '15', type: 'checkbox', label: 'I agree to attorney-client privilege terms', required: true }
+      { id: '15', type: 'checkbox', label: 'I agree to attorney-client privilege terms', required: true, options: ['I agree'] }
     ]
   },
 
@@ -345,20 +345,16 @@ const templates: FormTemplate[] = [
       { id: '9', type: 'number', label: 'Bathrooms', required: true },
       { id: '10', type: 'number', label: 'Year Built', required: true },
       { id: '11', type: 'number', label: 'Lot Size (acres)', required: false },
-      { id: '12', type: 'checkbox', label: 'Features', options: ['Pool', 'Garage', 'Fireplace', 'Basement', 'Deck/Patio', 'Central Air', 'Hardwood Floors'] },
+      { id: '12', type: 'checkbox', label: 'Features', required: false, options: ['Pool', 'Garage', 'Fireplace', 'Basement', 'Deck/Patio', 'Central Air', 'Hardwood Floors'] },
       { id: '13', type: 'textarea', label: 'Property Description', required: true, placeholder: 'Detailed description of the property' },
       { id: '14', type: 'text', label: 'Owner Name', required: true },
       { id: '15', type: 'tel', label: 'Owner Phone', required: true },
       { id: '16', type: 'email', label: 'Owner Email', required: true },
       { id: '17', type: 'select', label: 'Listing Duration', required: true, options: ['3 months', '6 months', '12 months'] },
       { id: '18', type: 'file', label: 'Property Photos', required: true, acceptedFileTypes: ['jpg', 'jpeg', 'png'] },
-      { id: '19', type: 'checkbox', label: 'I authorize listing of this property', required: true }
+      { id: '19', type: 'checkbox', label: 'I authorize listing of this property', required: true, options: ['I authorize'] }
     ]
   },
-
-  // Additional comprehensive templates for all other sectors...
-  // Manufacturing, Retail, Hospitality, Transportation, Energy, etc.
-  // Each with 25-40 detailed templates
 
   // Manufacturing Templates
   {
@@ -383,10 +379,7 @@ const templates: FormTemplate[] = [
       { id: '13', type: 'text', label: 'Next Inspection Due', required: false },
       { id: '14', type: 'file', label: 'Photos/Documentation', required: false, acceptedFileTypes: ['jpg', 'png', 'pdf'] }
     ]
-  },
-
-  // Add 100+ more comprehensive templates covering all sectors and use cases...
-  // This is a representative sample showing the structure and detail level needed
+  }
 ];
 
 export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
