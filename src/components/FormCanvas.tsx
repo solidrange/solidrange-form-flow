@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { FormField } from "@/types/form";
 import { Card } from "@/components/ui/card";
@@ -27,6 +28,8 @@ export const FormCanvas = ({
 }: FormCanvasProps) => {
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
+
+  console.log('FormCanvas rendering with fields:', fields);
 
   const createFieldFromType = (type: FormField['type']): FormField => {
     const baseField = {
@@ -101,7 +104,7 @@ export const FormCanvas = ({
     setDragOverIndex(index);
   };
 
-  if (fields.length === 0) {
+  if (!fields || fields.length === 0) {
     return (
       <div 
         className={cn(
@@ -225,7 +228,14 @@ export const FormCanvas = ({
             ) : field.type === 'date' ? (
               <input type="date" className="w-full p-2 border rounded disabled:bg-gray-50" disabled />
             ) : field.type === 'file' ? (
-              <input type="file" className="w-full p-2 border rounded disabled:bg-gray-50" disabled />
+              <div className="w-full p-2 border rounded disabled:bg-gray-50">
+                <span className="text-gray-500">File upload</span>
+                {field.acceptedFileTypes && (
+                  <span className="text-xs text-gray-400 ml-2">
+                    ({field.acceptedFileTypes.join(', ')})
+                  </span>
+                )}
+              </div>
             ) : field.type === 'rating' ? (
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((star) => (
