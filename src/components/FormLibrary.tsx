@@ -329,7 +329,10 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
                           template.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
       
       const matchesCategory = selectedCategory === 'all' || template.category === selectedCategory;
-      const matchesSector = selectedSector === 'all' || template.sector === selectedSector;
+      
+      // Handle sector filtering - sector can be string or string[]
+      const templateSectors = Array.isArray(template.sector) ? template.sector : [template.sector];
+      const matchesSector = selectedSector === 'all' || templateSectors.includes(selectedSector);
       
       return matchesSearch && matchesCategory && matchesSector;
     });
@@ -338,12 +341,22 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
   // Group templates by sector for display
   const templatesBySector = useMemo(() => {
     const grouped: Record<string, FormTemplate[]> = {};
+    
     filteredTemplates.forEach(template => {
-      if (!grouped[template.sector]) {
-        grouped[template.sector] = [];
-      }
-      grouped[template.sector].push(template);
+      // Handle both string and string[] for sector field
+      const templateSectors = Array.isArray(template.sector) ? template.sector : [template.sector];
+      
+      templateSectors.forEach(sector => {
+        if (!grouped[sector]) {
+          grouped[sector] = [];
+        }
+        // Only add if not already present to avoid duplicates
+        if (!grouped[sector].find(t => t.id === template.id)) {
+          grouped[sector].push(template);
+        }
+      });
     });
+    
     return grouped;
   }, [filteredTemplates]);
 
@@ -442,9 +455,17 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
                           <Badge variant="secondary" className="text-xs">
                             {template.category}
                           </Badge>
-                          <Badge variant="outline" className="text-xs">
-                            {template.sector}
-                          </Badge>
+                          {/* Handle sector display for both string and string[] */}
+                          {Array.isArray(template.sector) 
+                            ? template.sector.map(s => (
+                                <Badge key={s} variant="outline" className="text-xs">
+                                  {s}
+                                </Badge>
+                              ))
+                            : <Badge variant="outline" className="text-xs">
+                                {template.sector}
+                              </Badge>
+                          }
                           {template.tags.slice(0, 2).map((tag) => (
                             <Badge key={tag} variant="outline" className="text-xs">
                               {tag}
