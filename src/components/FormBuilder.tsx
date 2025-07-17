@@ -125,17 +125,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
           <div className="flex-1 grid grid-cols-12 gap-6 p-6">
             {/* Left Sidebar - Form Fields */}
             <div className="col-span-3">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg">Form Fields</CardTitle>
-                  <p className="text-sm text-muted-foreground">
-                    Drag fields to the canvas to add them
-                  </p>
-                </CardHeader>
-                <CardContent>
-                  <FieldPalette onAddField={onAddField} />
-                </CardContent>
-              </Card>
+              <FieldPalette onAddField={onAddField} />
             </div>
 
             {/* Center - Form Canvas */}
