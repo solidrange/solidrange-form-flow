@@ -95,7 +95,7 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Navigation Tabs */}
+      {/* Single Navigation Tabs Row */}
       <div className="border-b bg-background px-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 bg-transparent h-12">
