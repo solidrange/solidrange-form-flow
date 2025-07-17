@@ -1025,74 +1025,25 @@ const Index = () => {
 
             {activeTab === "build-form" && (
               <div className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Form Builder</h2>
-                    <p className="text-gray-600">Create and customize your forms</p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {currentFormIsDraft() && (
-                      <Button onClick={saveForm} variant="outline" className="gap-2">
-                        <Save className="h-4 w-4" />
-                        Save Draft
-                      </Button>
-                    )}
-                    <Button onClick={() => handlePublishForm()} className="gap-2">
-                      <Globe className="h-4 w-4" />
-                      Publish
-                    </Button>
-                  </div>
-                </div>
-
-                <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
-                  <TabsList className="grid w-full grid-cols-3">
-                    {buildTabs.map((tab) => (
-                      <TabsTrigger key={tab.id} value={tab.id} className="flex items-center gap-2">
-                        {tab.icon}
-                        <span className="hidden sm:inline">{tab.label}</span>
-                        <span className="sm:hidden">{tab.mobileLabel}</span>
-                      </TabsTrigger>
-                    ))}
-                  </TabsList>
-
-                  <TabsContent value="builder" className="mt-6">
-                    <FormBuilder
-                      formFields={formFields}
-                      onAddField={addField}
-                      onUpdateField={updateField}
-                      onRemoveField={removeField}
-                      selectedFieldId={null}
-                      onSelectField={() => {}}
-                      title={formTitle}
-                      onUpdateTitle={setFormTitle}
-                      description={formDescription}
-                      onUpdateDescription={setFormDescription}
-                      onSaveForm={saveForm}
-                      onPreviewForm={() => {}}
-                      attachments={formAttachments}
-                      onUpdateAttachments={setFormAttachments}
-                      onSaveToLibrary={handleSaveToLibrary}
-                      isPublished={currentFormIsPublished()}
-                      onMoveToDraft={() => handleMoveToDraft()}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="library" className="mt-6">
-                    <FormLibrary
-                      onUseTemplate={useTemplate}
-                    />
-                  </TabsContent>
-
-                  <TabsContent value="preview" className="mt-6">
-                    <FormPreview
-                      formTitle={formTitle}
-                      formDescription={formDescription}
-                      formFields={formFields}
-                      formSettings={formSettings}
-                      attachments={formAttachments}
-                    />
-                  </TabsContent>
-                </Tabs>
+                <FormBuilder
+                  formFields={formFields}
+                  onAddField={addField}
+                  onUpdateField={updateField}
+                  onRemoveField={removeField}
+                  selectedFieldId={null}
+                  onSelectField={() => {}}
+                  title={formTitle}
+                  onUpdateTitle={setFormTitle}
+                  description={formDescription}
+                  onUpdateDescription={setFormDescription}
+                  onSaveForm={saveForm}
+                  onPreviewForm={() => {}}
+                  attachments={formAttachments}
+                  onUpdateAttachments={setFormAttachments}
+                  onSaveToLibrary={handleSaveToLibrary}
+                  isPublished={currentFormIsPublished()}
+                  onMoveToDraft={() => handleMoveToDraft()}
+                />
               </div>
             )}
 
