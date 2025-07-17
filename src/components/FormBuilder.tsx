@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { FormField, DocumentAttachment } from '@/types/form';
+import { FormField, DocumentAttachment, FormTemplate } from '@/types/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -18,6 +17,9 @@ import { FieldPalette } from './FieldPalette';
 import { FieldEditor } from './FieldEditor';
 import { FormCanvas } from './FormCanvas';
 import { FileAttachmentManager } from './FileAttachmentManager';
+import { FormLibrary } from './FormLibrary';
+import { FormPreview } from './FormPreview';
+import { GlobalSettings } from './GlobalSettings';
 import { Save, Eye, Library, FileText, Palette, Settings, Upload, Plus, Wrench, BookOpen } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
@@ -91,6 +93,31 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 
   const handleSaveForm = () => {
     setLibraryDialogOpen(true);
+  };
+
+  const handleUseTemplate = (template: FormTemplate) => {
+    // Clear existing fields
+    formFields.forEach(field => onRemoveField(field.id));
+    
+    // Add template fields
+    template.fields.forEach(field => {
+      onAddField({
+        ...field,
+        id: `field_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+      });
+    });
+
+    // Update form title and description
+    onUpdateTitle(template.name);
+    onUpdateDescription(template.description);
+
+    // Switch to builder tab
+    setActiveTab('builder');
+
+    toast({
+      title: "Template loaded",
+      description: `"${template.name}" template has been loaded successfully.`,
+    });
   };
 
   return (
@@ -283,33 +310,18 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 
         {activeTab === 'library' && (
           <div className="flex-1 p-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Form Library</CardTitle>
-                <p className="text-sm text-muted-foreground">Browse and manage your saved forms</p>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  <p>Form library will be available here</p>
-                </div>
-              </CardContent>
-            </Card>
+            <FormLibrary onUseTemplate={handleUseTemplate} />
           </div>
         )}
 
         {activeTab === 'preview' && (
           <div className="flex-1 p-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Form Preview</CardTitle>
-                <p className="text-sm text-muted-foreground">Preview how your form will look to users</p>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  <p>Form preview will be available here</p>
-                </div>
-              </CardContent>
-            </Card>
+            <FormPreview
+              formTitle={title || 'Untitled Form'}
+              formDescription={description}
+              formFields={formFields}
+              attachments={attachments}
+            />
           </div>
         )}
 
@@ -376,6 +388,12 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+
+                {/* Global Settings Integration */}
+                <div>
+                  <h3 className="text-lg font-medium mb-4">Global Settings</h3>
+                  <GlobalSettings />
                 </div>
 
                 {/* Scoring Configuration */}
