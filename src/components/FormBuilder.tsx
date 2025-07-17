@@ -107,27 +107,36 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
   };
 
   const handleUseTemplate = (template: FormTemplate) => {
-    // Clear existing fields
-    formFields.forEach(field => onRemoveField(field.id));
+    console.log('Applying template:', template.name);
+    console.log('Template fields:', template.fields);
     
-    // Add template fields
-    template.fields.forEach(field => {
-      onAddField({
-        ...field,
-        id: `field_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-      });
+    // Clear existing fields first
+    const existingFieldIds = [...formFields.map(f => f.id)];
+    existingFieldIds.forEach(fieldId => {
+      console.log('Removing field:', fieldId);
+      onRemoveField(fieldId);
+    });
+    
+    // Add template fields with proper unique IDs
+    template.fields.forEach((templateField, index) => {
+      const newField: FormField = {
+        ...templateField,
+        id: `field_${Date.now()}_${index}_${Math.random().toString(36).substr(2, 9)}`
+      };
+      console.log('Adding field:', newField);
+      onAddField(newField);
     });
 
     // Update form title and description
     onUpdateTitle(template.name);
     onUpdateDescription(template.description);
 
-    // Switch to builder tab
+    // Switch to builder tab to show the applied template
     setActiveTab('builder');
 
     toast({
-      title: "Template loaded",
-      description: `"${template.name}" template has been loaded successfully.`,
+      title: "Template Applied Successfully",
+      description: `"${template.name}" template has been loaded with ${template.fields.length} fields.`,
     });
   };
 
