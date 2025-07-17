@@ -142,12 +142,18 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header Section */}
+      {/* Header Section with pill style matching other modules */}
       <div className="border-b bg-background px-6 py-4">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-semibold text-foreground">Form Builder</h1>
-            <p className="text-sm text-muted-foreground">Create and customize your forms</p>
+          <div className="flex items-center gap-4">
+            <div className="inline-flex items-center rounded-full border px-4 py-2 text-sm font-medium bg-primary/10 text-primary border-primary/20">
+              <Wrench className="h-4 w-4 mr-2" />
+              Build
+            </div>
+            <div>
+              <h1 className="text-2xl font-semibold text-foreground">Form Builder</h1>
+              <p className="text-sm text-muted-foreground">Create and customize your forms</p>
+            </div>
           </div>
           <div className="flex gap-3">
             <BrandedButton 
@@ -157,13 +163,6 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
             >
               <Save className="h-4 w-4" />
               Save Draft
-            </BrandedButton>
-            <BrandedButton 
-              onClick={onSaveForm}
-              className="gap-2"
-            >
-              <Eye className="h-4 w-4" />
-              Publish
             </BrandedButton>
           </div>
         </div>
