@@ -52,8 +52,8 @@ const formTemplates: FormTemplate[] = [
       { id: '2', type: 'email', label: 'Primary Contact Email', required: true },
       { id: '3', type: 'select', label: 'Industry Sector', required: true, options: ['Technology', 'Healthcare', 'Finance', 'Manufacturing', 'Other'] },
       { id: '4', type: 'radio', label: 'Data Processing Level', required: true, options: ['No Data', 'Non-Sensitive', 'Sensitive', 'Highly Sensitive'] },
-      { id: '5', type: 'checkbox', label: 'Compliance Certifications', options: ['ISO 27001', 'SOC 2', 'HIPAA', 'GDPR', 'PCI DSS'] },
-      { id: '6', type: 'textarea', label: 'Security Controls Description', placeholder: 'Describe your security measures...' }
+      { id: '5', type: 'checkbox', label: 'Compliance Certifications', required: false, options: ['ISO 27001', 'SOC 2', 'HIPAA', 'GDPR', 'PCI DSS'] },
+      { id: '6', type: 'textarea', label: 'Security Controls Description', required: false, placeholder: 'Describe your security measures...' }
     ]
   },
   {
@@ -68,11 +68,11 @@ const formTemplates: FormTemplate[] = [
       { id: '3', type: 'select', label: 'Risk Tier', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
       { id: '4', type: 'number', label: 'Annual Revenue (USD)', required: true },
       { id: '5', type: 'radio', label: 'Geographic Location', required: true, options: ['Domestic', 'EU/EEA', 'Other International'] },
-      { id: '6', type: 'checkbox', label: 'Services Provided', options: ['Data Processing', 'Cloud Services', 'Payment Processing', 'Customer Support', 'Software Development'] },
-      { id: '7', type: 'textarea', label: 'Business Continuity Plan', placeholder: 'Describe your BCP and disaster recovery...' },
-      { id: '8', type: 'file', label: 'Insurance Certificates' },
-      { id: '9', type: 'date', label: 'Contract Start Date' },
-      { id: '10', type: 'date', label: 'Next Review Date' }
+      { id: '6', type: 'checkbox', label: 'Services Provided', required: false, options: ['Data Processing', 'Cloud Services', 'Payment Processing', 'Customer Support', 'Software Development'] },
+      { id: '7', type: 'textarea', label: 'Business Continuity Plan', required: false, placeholder: 'Describe your BCP and disaster recovery...' },
+      { id: '8', type: 'file', label: 'Insurance Certificates', required: false },
+      { id: '9', type: 'date', label: 'Contract Start Date', required: false },
+      { id: '10', type: 'date', label: 'Next Review Date', required: false }
     ]
   },
   {
@@ -84,11 +84,11 @@ const formTemplates: FormTemplate[] = [
     fields: [
       { id: '1', type: 'text', label: 'Vendor Name', required: true },
       { id: '2', type: 'radio', label: 'Access to Our Systems', required: true, options: ['No Access', 'Limited Access', 'Full Access', 'Administrative Access'] },
-      { id: '3', type: 'checkbox', label: 'Security Frameworks', options: ['NIST', 'ISO 27001', 'CIS Controls', 'OWASP', 'SANS'] },
+      { id: '3', type: 'checkbox', label: 'Security Frameworks', required: false, options: ['NIST', 'ISO 27001', 'CIS Controls', 'OWASP', 'SANS'] },
       { id: '4', type: 'select', label: 'Incident Response Time', required: true, options: ['< 1 hour', '1-4 hours', '4-24 hours', '> 24 hours'] },
-      { id: '5', type: 'textarea', label: 'Data Encryption Methods', placeholder: 'Describe encryption at rest and in transit...' },
-      { id: '6', type: 'radio', label: 'Penetration Testing Frequency', options: ['Quarterly', 'Semi-Annual', 'Annual', 'As Needed'] },
-      { id: '7', type: 'checkbox', label: 'Security Monitoring', options: ['24/7 SOC', 'SIEM', 'Threat Intelligence', 'Vulnerability Scanning'] }
+      { id: '5', type: 'textarea', label: 'Data Encryption Methods', required: false, placeholder: 'Describe encryption at rest and in transit...' },
+      { id: '6', type: 'radio', label: 'Penetration Testing Frequency', required: false, options: ['Quarterly', 'Semi-Annual', 'Annual', 'As Needed'] },
+      { id: '7', type: 'checkbox', label: 'Security Monitoring', required: false, options: ['24/7 SOC', 'SIEM', 'Threat Intelligence', 'Vulnerability Scanning'] }
     ]
   },
 
@@ -100,13 +100,13 @@ const formTemplates: FormTemplate[] = [
     category: 'customer-feedback',
     targetAudience: ['customers', 'general'],
     fields: [
-      { id: '1', type: 'text', label: 'Customer ID (Optional)', placeholder: 'Enter your customer ID' },
+      { id: '1', type: 'text', label: 'Customer ID (Optional)', required: false, placeholder: 'Enter your customer ID' },
       { id: '2', type: 'radio', label: 'Overall Satisfaction', required: true, options: ['Very Satisfied', 'Satisfied', 'Neutral', 'Dissatisfied', 'Very Dissatisfied'] },
       { id: '3', type: 'select', label: 'Product/Service Used', required: true, options: ['Product A', 'Product B', 'Service Package', 'Support Services'] },
       { id: '4', type: 'radio', label: 'Likelihood to Recommend', required: true, options: ['0-6 (Detractor)', '7-8 (Passive)', '9-10 (Promoter)'] },
-      { id: '5', type: 'checkbox', label: 'Areas for Improvement', options: ['Response Time', 'Product Quality', 'Pricing', 'Customer Support', 'User Interface'] },
-      { id: '6', type: 'textarea', label: 'Additional Comments', placeholder: 'Please share any additional feedback...' },
-      { id: '7', type: 'email', label: 'Contact Email (Optional)', placeholder: 'For follow-up questions' }
+      { id: '5', type: 'checkbox', label: 'Areas for Improvement', required: false, options: ['Response Time', 'Product Quality', 'Pricing', 'Customer Support', 'User Interface'] },
+      { id: '6', type: 'textarea', label: 'Additional Comments', required: false, placeholder: 'Please share any additional feedback...' },
+      { id: '7', type: 'email', label: 'Contact Email (Optional)', required: false, placeholder: 'For follow-up questions' }
     ]
   },
   {
@@ -118,11 +118,11 @@ const formTemplates: FormTemplate[] = [
     fields: [
       { id: '1', type: 'select', label: 'Product Version', required: true, options: ['v1.0', 'v1.1', 'v2.0', 'Beta Version'] },
       { id: '2', type: 'radio', label: 'Ease of Use', required: true, options: ['Very Easy', 'Easy', 'Moderate', 'Difficult', 'Very Difficult'] },
-      { id: '3', type: 'checkbox', label: 'Features Used', options: ['Dashboard', 'Reports', 'Integrations', 'Mobile App', 'API'] },
+      { id: '3', type: 'checkbox', label: 'Features Used', required: false, options: ['Dashboard', 'Reports', 'Integrations', 'Mobile App', 'API'] },
       { id: '4', type: 'radio', label: 'Performance Rating', required: true, options: ['Excellent', 'Good', 'Average', 'Poor', 'Very Poor'] },
-      { id: '5', type: 'textarea', label: 'Bug Reports', placeholder: 'Describe any bugs or issues encountered...' },
-      { id: '6', type: 'textarea', label: 'Feature Requests', placeholder: 'What features would you like to see added?' },
-      { id: '7', type: 'file', label: 'Screenshots (Optional)' }
+      { id: '5', type: 'textarea', label: 'Bug Reports', required: false, placeholder: 'Describe any bugs or issues encountered...' },
+      { id: '6', type: 'textarea', label: 'Feature Requests', required: false, placeholder: 'What features would you like to see added?' },
+      { id: '7', type: 'file', label: 'Screenshots (Optional)', required: false }
     ]
   },
 
@@ -143,8 +143,8 @@ const formTemplates: FormTemplate[] = [
       { id: '7', type: 'select', label: 'Department', required: true, options: ['Engineering', 'Sales', 'Marketing', 'HR', 'Finance', 'Operations'] },
       { id: '8', type: 'text', label: 'Job Title', required: true },
       { id: '9', type: 'select', label: 'Employment Type', required: true, options: ['Full-time', 'Part-time', 'Contract', 'Intern'] },
-      { id: '10', type: 'textarea', label: 'Dietary Restrictions/Allergies' },
-      { id: '11', type: 'checkbox', label: 'Required Documents Submitted', options: ['ID Copy', 'Tax Forms', 'Bank Details', 'Signed Contract'] }
+      { id: '10', type: 'textarea', label: 'Dietary Restrictions/Allergies', required: false },
+      { id: '11', type: 'checkbox', label: 'Required Documents Submitted', required: false, options: ['ID Copy', 'Tax Forms', 'Bank Details', 'Signed Contract'] }
     ]
   },
   {
@@ -157,13 +157,13 @@ const formTemplates: FormTemplate[] = [
       { id: '1', type: 'text', label: 'Employee Name', required: true },
       { id: '2', type: 'text', label: 'Employee ID', required: true },
       { id: '3', type: 'text', label: 'Reviewer Name', required: true },
-      { id: '4', type: 'date', label: 'Review Period Start' },
-      { id: '5', type: 'date', label: 'Review Period End' },
+      { id: '4', type: 'date', label: 'Review Period Start', required: false },
+      { id: '5', type: 'date', label: 'Review Period End', required: false },
       { id: '6', type: 'radio', label: 'Overall Performance', required: true, options: ['Exceeds Expectations', 'Meets Expectations', 'Below Expectations', 'Needs Improvement'] },
-      { id: '7', type: 'textarea', label: 'Key Achievements', placeholder: 'List major accomplishments during this period...' },
-      { id: '8', type: 'textarea', label: 'Areas for Development', placeholder: 'Identify areas for improvement...' },
-      { id: '9', type: 'textarea', label: 'Goals for Next Period', placeholder: 'Set objectives for the upcoming period...' },
-      { id: '10', type: 'radio', label: 'Promotion Recommendation', options: ['Strongly Recommend', 'Recommend', 'Not Ready', 'Not Applicable'] }
+      { id: '7', type: 'textarea', label: 'Key Achievements', required: false, placeholder: 'List major accomplishments during this period...' },
+      { id: '8', type: 'textarea', label: 'Areas for Development', required: false, placeholder: 'Identify areas for improvement...' },
+      { id: '9', type: 'textarea', label: 'Goals for Next Period', required: false, placeholder: 'Set objectives for the upcoming period...' },
+      { id: '10', type: 'radio', label: 'Promotion Recommendation', required: false, options: ['Strongly Recommend', 'Recommend', 'Not Ready', 'Not Applicable'] }
     ]
   },
 
@@ -178,11 +178,11 @@ const formTemplates: FormTemplate[] = [
       { id: '1', type: 'text', label: 'Patient Full Name', required: true },
       { id: '2', type: 'date', label: 'Date of Birth', required: true },
       { id: '3', type: 'radio', label: 'Gender', required: true, options: ['Male', 'Female', 'Other', 'Prefer not to say'] },
-      { id: '4', type: 'text', label: 'Insurance Provider' },
-      { id: '5', type: 'text', label: 'Policy Number' },
-      { id: '6', type: 'textarea', label: 'Current Medications', placeholder: 'List all current medications...' },
-      { id: '7', type: 'textarea', label: 'Known Allergies', placeholder: 'List any known allergies...' },
-      { id: '8', type: 'checkbox', label: 'Medical History', options: ['Diabetes', 'Hypertension', 'Heart Disease', 'Cancer', 'Mental Health'] },
+      { id: '4', type: 'text', label: 'Insurance Provider', required: false },
+      { id: '5', type: 'text', label: 'Policy Number', required: false },
+      { id: '6', type: 'textarea', label: 'Current Medications', required: false, placeholder: 'List all current medications...' },
+      { id: '7', type: 'textarea', label: 'Known Allergies', required: false, placeholder: 'List any known allergies...' },
+      { id: '8', type: 'checkbox', label: 'Medical History', required: false, options: ['Diabetes', 'Hypertension', 'Heart Disease', 'Cancer', 'Mental Health'] },
       { id: '9', type: 'text', label: 'Emergency Contact Name', required: true },
       { id: '10', type: 'text', label: 'Emergency Contact Phone', required: true }
     ]
@@ -195,12 +195,12 @@ const formTemplates: FormTemplate[] = [
     targetAudience: ['patients', 'medical-staff'],
     fields: [
       { id: '1', type: 'text', label: 'Patient Name', required: true },
-      { id: '2', type: 'date', label: 'Date of Symptoms' },
-      { id: '3', type: 'checkbox', label: 'Current Symptoms', options: ['Fever', 'Cough', 'Shortness of Breath', 'Headache', 'Nausea', 'Fatigue'] },
-      { id: '4', type: 'radio', label: 'Pain Level (1-10)', options: ['1-2 (Mild)', '3-4 (Moderate)', '5-6 (Moderate-Severe)', '7-8 (Severe)', '9-10 (Extreme)'] },
-      { id: '5', type: 'textarea', label: 'Symptom Description', placeholder: 'Describe your symptoms in detail...' },
+      { id: '2', type: 'date', label: 'Date of Symptoms', required: false },
+      { id: '3', type: 'checkbox', label: 'Current Symptoms', required: false, options: ['Fever', 'Cough', 'Shortness of Breath', 'Headache', 'Nausea', 'Fatigue'] },
+      { id: '4', type: 'radio', label: 'Pain Level (1-10)', required: false, options: ['1-2 (Mild)', '3-4 (Moderate)', '5-6 (Moderate-Severe)', '7-8 (Severe)', '9-10 (Extreme)'] },
+      { id: '5', type: 'textarea', label: 'Symptom Description', required: false, placeholder: 'Describe your symptoms in detail...' },
       { id: '6', type: 'radio', label: 'Urgency Level', required: true, options: ['Emergency', 'Urgent', 'Semi-Urgent', 'Non-Urgent'] },
-      { id: '7', type: 'checkbox', label: 'Recent Travel', options: ['Domestic', 'International', 'No Recent Travel'] }
+      { id: '7', type: 'checkbox', label: 'Recent Travel', required: false, options: ['Domestic', 'International', 'No Recent Travel'] }
     ]
   },
 
@@ -217,9 +217,9 @@ const formTemplates: FormTemplate[] = [
       { id: '3', type: 'email', label: 'Student Email', required: true },
       { id: '4', type: 'select', label: 'Academic Year', required: true, options: ['Freshman', 'Sophomore', 'Junior', 'Senior', 'Graduate'] },
       { id: '5', type: 'select', label: 'Program of Study', required: true, options: ['Computer Science', 'Business', 'Engineering', 'Arts', 'Sciences'] },
-      { id: '6', type: 'checkbox', label: 'Course Selection', options: ['Mathematics', 'Science', 'Literature', 'History', 'Foreign Language'] },
+      { id: '6', type: 'checkbox', label: 'Course Selection', required: false, options: ['Mathematics', 'Science', 'Literature', 'History', 'Foreign Language'] },
       { id: '7', type: 'radio', label: 'Enrollment Status', required: true, options: ['Full-time', 'Part-time', 'Audit'] },
-      { id: '8', type: 'textarea', label: 'Special Accommodations', placeholder: 'Describe any needed accommodations...' }
+      { id: '8', type: 'textarea', label: 'Special Accommodations', required: false, placeholder: 'Describe any needed accommodations...' }
     ]
   },
   {
@@ -234,9 +234,9 @@ const formTemplates: FormTemplate[] = [
       { id: '3', type: 'text', label: 'Instructor Name', required: true },
       { id: '4', type: 'radio', label: 'Overall Course Rating', required: true, options: ['Excellent', 'Very Good', 'Good', 'Fair', 'Poor'] },
       { id: '5', type: 'radio', label: 'Instructor Effectiveness', required: true, options: ['Excellent', 'Very Good', 'Good', 'Fair', 'Poor'] },
-      { id: '6', type: 'radio', label: 'Course Difficulty', options: ['Too Easy', 'Just Right', 'Too Difficult'] },
-      { id: '7', type: 'textarea', label: 'What did you like most?', placeholder: 'Describe the best aspects of the course...' },
-      { id: '8', type: 'textarea', label: 'Suggestions for improvement', placeholder: 'How could this course be improved?' }
+      { id: '6', type: 'radio', label: 'Course Difficulty', required: false, options: ['Too Easy', 'Just Right', 'Too Difficult'] },
+      { id: '7', type: 'textarea', label: 'What did you like most?', required: false, placeholder: 'Describe the best aspects of the course...' },
+      { id: '8', type: 'textarea', label: 'Suggestions for improvement', required: false, placeholder: 'How could this course be improved?' }
     ]
   },
 
@@ -255,9 +255,9 @@ const formTemplates: FormTemplate[] = [
       { id: '5', type: 'select', label: 'Loan Purpose', required: true, options: ['Home Improvement', 'Debt Consolidation', 'Education', 'Medical', 'Other'] },
       { id: '6', type: 'number', label: 'Annual Income', required: true },
       { id: '7', type: 'text', label: 'Employer Name', required: true },
-      { id: '8', type: 'number', label: 'Years at Current Job' },
-      { id: '9', type: 'checkbox', label: 'Assets', options: ['Checking Account', 'Savings Account', 'Investment Account', 'Real Estate', 'Vehicle'] },
-      { id: '10', type: 'textarea', label: 'Additional Information', placeholder: 'Any additional financial information...' }
+      { id: '8', type: 'number', label: 'Years at Current Job', required: false },
+      { id: '9', type: 'checkbox', label: 'Assets', required: false, options: ['Checking Account', 'Savings Account', 'Investment Account', 'Real Estate', 'Vehicle'] },
+      { id: '10', type: 'textarea', label: 'Additional Information', required: false, placeholder: 'Any additional financial information...' }
     ]
   },
   {
@@ -274,8 +274,8 @@ const formTemplates: FormTemplate[] = [
       { id: '5', type: 'text', label: 'Phone Number', required: true },
       { id: '6', type: 'email', label: 'Email Address', required: true },
       { id: '7', type: 'select', label: 'Account Type', required: true, options: ['Checking', 'Savings', 'Money Market', 'CD'] },
-      { id: '8', type: 'number', label: 'Initial Deposit Amount' },
-      { id: '9', type: 'checkbox', label: 'Additional Services', options: ['Online Banking', 'Mobile Banking', 'Debit Card', 'Checks', 'Overdraft Protection'] }
+      { id: '8', type: 'number', label: 'Initial Deposit Amount', required: false },
+      { id: '9', type: 'checkbox', label: 'Additional Services', required: false, options: ['Online Banking', 'Mobile Banking', 'Debit Card', 'Checks', 'Overdraft Protection'] }
     ]
   },
 
@@ -291,12 +291,12 @@ const formTemplates: FormTemplate[] = [
       { id: '2', type: 'select', label: 'Property Type', required: true, options: ['Single Family', 'Condo', 'Townhouse', 'Commercial', 'Land'] },
       { id: '3', type: 'select', label: 'Listing Type', required: true, options: ['For Sale', 'For Rent', 'For Lease'] },
       { id: '4', type: 'number', label: 'Price/Rent Amount', required: true },
-      { id: '5', type: 'number', label: 'Square Footage' },
-      { id: '6', type: 'number', label: 'Bedrooms' },
-      { id: '7', type: 'number', label: 'Bathrooms' },
-      { id: '8', type: 'checkbox', label: 'Features', options: ['Pool', 'Garage', 'Fireplace', 'Hardwood Floors', 'Central AC'] },
-      { id: '9', type: 'textarea', label: 'Property Description', placeholder: 'Describe the property features and amenities...' },
-      { id: '10', type: 'file', label: 'Property Photos' }
+      { id: '5', type: 'number', label: 'Square Footage', required: false },
+      { id: '6', type: 'number', label: 'Bedrooms', required: false },
+      { id: '7', type: 'number', label: 'Bathrooms', required: false },
+      { id: '8', type: 'checkbox', label: 'Features', required: false, options: ['Pool', 'Garage', 'Fireplace', 'Hardwood Floors', 'Central AC'] },
+      { id: '9', type: 'textarea', label: 'Property Description', required: false, placeholder: 'Describe the property features and amenities...' },
+      { id: '10', type: 'file', label: 'Property Photos', required: false }
     ]
   },
   {
@@ -311,11 +311,11 @@ const formTemplates: FormTemplate[] = [
       { id: '3', type: 'text', label: 'Current Address', required: true },
       { id: '4', type: 'number', label: 'Monthly Income', required: true },
       { id: '5', type: 'text', label: 'Employer Name', required: true },
-      { id: '6', type: 'text', label: 'Previous Landlord Contact' },
-      { id: '7', type: 'number', label: 'Number of Occupants' },
-      { id: '8', type: 'checkbox', label: 'Pets', options: ['No Pets', 'Cat', 'Dog', 'Other Pet'] },
-      { id: '9', type: 'textarea', label: 'References', placeholder: 'Provide 2-3 references with contact information...' },
-      { id: '10', type: 'date', label: 'Desired Move-in Date' }
+      { id: '6', type: 'text', label: 'Previous Landlord Contact', required: false },
+      { id: '7', type: 'number', label: 'Number of Occupants', required: false },
+      { id: '8', type: 'checkbox', label: 'Pets', required: false, options: ['No Pets', 'Cat', 'Dog', 'Other Pet'] },
+      { id: '9', type: 'textarea', label: 'References', required: false, placeholder: 'Provide 2-3 references with contact information...' },
+      { id: '10', type: 'date', label: 'Desired Move-in Date', required: false }
     ]
   },
 
@@ -329,12 +329,12 @@ const formTemplates: FormTemplate[] = [
     fields: [
       { id: '1', type: 'text', label: 'Full Name', required: true },
       { id: '2', type: 'email', label: 'Email Address', required: true },
-      { id: '3', type: 'text', label: 'Company/Organization' },
-      { id: '4', type: 'text', label: 'Job Title' },
+      { id: '3', type: 'text', label: 'Company/Organization', required: false },
+      { id: '4', type: 'text', label: 'Job Title', required: false },
       { id: '5', type: 'select', label: 'Registration Type', required: true, options: ['Early Bird', 'Regular', 'Student', 'VIP'] },
-      { id: '6', type: 'checkbox', label: 'Sessions of Interest', options: ['Keynote', 'Technical Sessions', 'Workshops', 'Networking', 'Panel Discussions'] },
-      { id: '7', type: 'radio', label: 'Dietary Preferences', options: ['No Restrictions', 'Vegetarian', 'Vegan', 'Gluten-Free', 'Other'] },
-      { id: '8', type: 'textarea', label: 'Special Requirements', placeholder: 'Any special accommodations needed...' }
+      { id: '6', type: 'checkbox', label: 'Sessions of Interest', required: false, options: ['Keynote', 'Technical Sessions', 'Workshops', 'Networking', 'Panel Discussions'] },
+      { id: '7', type: 'radio', label: 'Dietary Preferences', required: false, options: ['No Restrictions', 'Vegetarian', 'Vegan', 'Gluten-Free', 'Other'] },
+      { id: '8', type: 'textarea', label: 'Special Requirements', required: false, placeholder: 'Any special accommodations needed...' }
     ]
   },
   {
@@ -349,9 +349,9 @@ const formTemplates: FormTemplate[] = [
       { id: '3', type: 'email', label: 'Contact Email', required: true },
       { id: '4', type: 'select', label: 'Booth Size', required: true, options: ['10x10', '10x20', '20x20', '20x30', 'Custom'] },
       { id: '5', type: 'select', label: 'Industry Category', required: true, options: ['Technology', 'Healthcare', 'Manufacturing', 'Services', 'Retail'] },
-      { id: '6', type: 'checkbox', label: 'Required Services', options: ['Electricity', 'Internet', 'Carpet', 'Furniture', 'A/V Equipment'] },
-      { id: '7', type: 'textarea', label: 'Product/Service Description', placeholder: 'Describe what you will be showcasing...' },
-      { id: '8', type: 'number', label: 'Expected Attendees' }
+      { id: '6', type: 'checkbox', label: 'Required Services', required: false, options: ['Electricity', 'Internet', 'Carpet', 'Furniture', 'A/V Equipment'] },
+      { id: '7', type: 'textarea', label: 'Product/Service Description', required: false, placeholder: 'Describe what you will be showcasing...' },
+      { id: '8', type: 'number', label: 'Expected Attendees', required: false }
     ]
   }
 ];

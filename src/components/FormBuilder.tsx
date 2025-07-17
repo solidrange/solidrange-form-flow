@@ -18,7 +18,7 @@ import { FieldPalette } from './FieldPalette';
 import { FieldEditor } from './FieldEditor';
 import { FormCanvas } from './FormCanvas';
 import { FileAttachmentManager } from './FileAttachmentManager';
-import { Save, Eye, Library, FileText, Palette, Settings, Upload, Plus } from 'lucide-react';
+import { Save, Eye, Library, FileText, Palette, Settings, Upload, Plus, Wrench, BookOpen } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
 export interface FormBuilderProps {
@@ -126,16 +126,20 @@ export const FormBuilder: React.FC<FormBuilderProps> = ({
       <div className="border-b bg-background px-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4 bg-transparent h-12">
-            <TabsTrigger value="builder" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            <TabsTrigger value="builder" className="data-[state=active]:bg-background data-[state=active]:shadow-sm gap-2">
+              <Wrench className="h-4 w-4" />
               Builder
             </TabsTrigger>
-            <TabsTrigger value="library" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            <TabsTrigger value="library" className="data-[state=active]:bg-background data-[state=active]:shadow-sm gap-2">
+              <BookOpen className="h-4 w-4" />
               Library
             </TabsTrigger>
-            <TabsTrigger value="preview" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            <TabsTrigger value="preview" className="data-[state=active]:bg-background data-[state=active]:shadow-sm gap-2">
+              <Eye className="h-4 w-4" />
               Preview
             </TabsTrigger>
-            <TabsTrigger value="settings" className="data-[state=active]:bg-background data-[state=active]:shadow-sm">
+            <TabsTrigger value="settings" className="data-[state=active]:bg-background data-[state=active]:shadow-sm gap-2">
+              <Settings className="h-4 w-4" />
               Settings
             </TabsTrigger>
           </TabsList>
