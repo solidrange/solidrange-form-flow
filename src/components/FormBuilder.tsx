@@ -189,25 +189,27 @@ export const FormBuilder = ({
     });
     
     console.log('FormBuilder: Total template fields to add:', templateFields.length);
-    console.log('FormBuilder: Template fields mapped:', templateFields.map(f => ({ id: f.id, type: f.type, label: f.label })));
     
-    // Clear all existing fields first
+    // COMPLETE FIELD REPLACEMENT STRATEGY
+    // Clear ALL existing fields first and wait for state to update
     const currentFieldIds = [...formFields.map(field => field.id)];
     console.log('FormBuilder: Clearing existing fields:', currentFieldIds);
+    
+    // Clear all fields synchronously
     currentFieldIds.forEach(fieldId => {
       console.log('FormBuilder: Removing field:', fieldId);
       onRemoveField(fieldId);
     });
     
-    // Add all template fields with proper timing
-    console.log('FormBuilder: Starting to add template fields after timeout...');
+    // Wait longer for clearing to complete, then add all template fields
     setTimeout(() => {
-      console.log('FormBuilder: Timeout executed, adding fields...');
+      console.log('FormBuilder: Starting template field addition...');
+      console.log('FormBuilder: Form should be cleared now, adding', templateFields.length, 'template fields');
       
-      // Instead of calling onAddField multiple times rapidly, let's add them one by one with delays
+      // Add template fields with staggered timing to ensure proper state updates
       templateFields.forEach((field, index) => {
         setTimeout(() => {
-          console.log(`FormBuilder: Adding field ${index + 1}/${templateFields.length}:`, {
+          console.log(`FormBuilder: Adding template field ${index + 1}/${templateFields.length}:`, {
             id: field.id,
             type: field.type,
             label: field.label,
@@ -217,12 +219,12 @@ export const FormBuilder = ({
           onAddField(field);
           
           if (index === templateFields.length - 1) {
-            console.log('FormBuilder: All template fields added');
+            console.log('FormBuilder: All template fields added successfully');
             console.log('=== TEMPLATE APPLICATION END ===');
           }
-        }, index * 50); // 50ms delay between each field addition
+        }, index * 100); // Increased delay to 100ms between fields
       });
-    }, 100);
+    }, 200); // Increased initial delay to 200ms
     
     // Switch to builder tab after applying template
     setActiveTab('builder');
