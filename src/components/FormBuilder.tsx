@@ -53,7 +53,6 @@ export const FormBuilder = ({
   onMoveToDraft
 }: FormBuilderProps) => {
   const [activeTab, setActiveTab] = useState('builder');
-  const [builderSubTab, setBuilderSubTab] = useState('fields');
 
   console.log('FormBuilder: Current form fields:', formFields);
 
@@ -158,7 +157,6 @@ export const FormBuilder = ({
     
     // Switch to builder tab after applying template
     setActiveTab('builder');
-    setBuilderSubTab('fields');
   };
 
   const handleReorderFields = (dragIndex: number, hoverIndex: number) => {
@@ -184,10 +182,11 @@ export const FormBuilder = ({
         <div className="flex items-center justify-between">
           <div>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-3">
+              <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="builder">Builder</TabsTrigger>
                 <TabsTrigger value="templates">Templates</TabsTrigger>
                 <TabsTrigger value="preview">Preview</TabsTrigger>
+                <TabsTrigger value="settings">Settings</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -237,30 +236,26 @@ export const FormBuilder = ({
           </div>
         )}
 
-        {/* Builder Tab - Three Column Layout with Sub-tabs */}
+        {/* Settings Tab - Full Width */}
+        {activeTab === 'settings' && (
+          <div className="flex-1 overflow-y-auto">
+            <div className="p-6">
+              <FormSettingsPanel 
+                form={form} 
+                onUpdateForm={handleUpdateForm} 
+                isPublished={isPublished}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Builder Tab - Three Column Layout */}
         {activeTab === 'builder' && (
           <>
-            {/* Left Sidebar - Fields/Settings Toggle */}
+            {/* Left Sidebar - Field Palette */}
             <div className="w-80 border-r bg-white overflow-y-auto">
               <div className="p-4">
-                <Tabs value={builderSubTab} onValueChange={setBuilderSubTab}>
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="fields">Fields</TabsTrigger>
-                    <TabsTrigger value="settings">Settings</TabsTrigger>
-                  </TabsList>
-                  
-                  <TabsContent value="fields" className="mt-4">
-                    <FieldPalette onAddField={onAddField} />
-                  </TabsContent>
-                  
-                  <TabsContent value="settings" className="mt-4">
-                    <FormSettingsPanel 
-                      form={form} 
-                      onUpdateForm={handleUpdateForm} 
-                      isPublished={isPublished}
-                    />
-                  </TabsContent>
-                </Tabs>
+                <FieldPalette onAddField={onAddField} />
               </div>
             </div>
 
