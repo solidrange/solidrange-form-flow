@@ -14,13 +14,16 @@ import { FormPreview } from './FormPreview';
 import { FormSettingsPanel } from './FormSettingsPanel';
 
 interface FormBuilderProps {
-  form: Form;
+  formFields: FormField[];
   onAddField: (field: FormField) => void;
   onUpdateField: (fieldId: string, updates: Partial<FormField>) => void;
   onRemoveField: (fieldId: string) => void;
   selectedFieldId: string | null;
   onSelectField: (fieldId: string | null) => void;
-  onUpdateForm: (updates: Partial<Form>) => void;
+  title: string;
+  onUpdateTitle: (title: string) => void;
+  description: string;
+  onUpdateDescription: (description: string) => void;
   onSaveForm: () => void;
   onPreviewForm: () => void;
   attachments: DocumentAttachment[];
@@ -31,13 +34,16 @@ interface FormBuilderProps {
 }
 
 export const FormBuilder = ({
-  form,
+  formFields,
   onAddField,
   onUpdateField,
   onRemoveField,
   selectedFieldId,
   onSelectField,
-  onUpdateForm,
+  title,
+  onUpdateTitle,
+  description,
+  onUpdateDescription,
   onSaveForm,
   onPreviewForm,
   attachments,
@@ -49,19 +55,96 @@ export const FormBuilder = ({
   const [activeTab, setActiveTab] = useState('builder');
   const [builderSubTab, setBuilderSubTab] = useState('fields');
 
-  console.log('FormBuilder: Current form fields:', form.fields);
+  console.log('FormBuilder: Current form fields:', formFields);
+
+  // Create a form object for components that need it
+  const form: Form = {
+    id: 'current-form',
+    title,
+    description,
+    fields: formFields,
+    settings: {
+      allowMultipleSubmissions: false,
+      requireLogin: false,
+      showProgressBar: true,
+      theme: 'light',
+      branding: {
+        enabled: true,
+        showLogo: true,
+        showBrandColors: true,
+        brandName: 'FormFlow',
+        logo: null,
+        colors: {
+          primary: {
+            main: '208 100% 47%',
+            light: '210 100% 70%',
+            dark: '208 100% 35%'
+          },
+          secondary: {
+            main: '262 83% 58%',
+            light: '262 83% 75%',
+            dark: '262 83% 45%'
+          }
+        }
+      },
+      scoring: {
+        enabled: false,
+        maxTotalPoints: 100,
+        showScoreToUser: false,
+        passingScore: 70,
+        riskThresholds: {
+          low: 80,
+          medium: 60,
+          high: 40
+        }
+      },
+      expiration: {
+        enabled: false
+      },
+      emailDistribution: {
+        enabled: false,
+        recipients: [],
+        reminderEnabled: true,
+        reminderIntervalDays: 7,
+        maxReminders: 3
+      },
+      approval: {
+        enabled: false,
+        requireApproval: false,
+        approvers: []
+      },
+      documents: {
+        enabled: false,
+        allowedTypes: ['pdf', 'doc', 'docx'],
+        maxSize: 10,
+        requiredDocuments: [],
+        allowUserUploads: true
+      }
+    },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    status: isPublished ? 'published' : 'draft',
+    submissions: 0,
+    analytics: {
+      views: 0,
+      submissions: 0,
+      completionRate: 0,
+      emailsSent: 0,
+      emailsCompleted: 0,
+      averageCompletionTime: 0,
+      dropoffRate: 0
+    }
+  };
 
   const handleUseTemplate = (template: FormTemplate) => {
     console.log('FormBuilder: Received template:', template.name);
     console.log('FormBuilder: Template fields:', template.fields);
     
-    onUpdateForm({
-      title: template.name,
-      description: template.description
-    });
+    onUpdateTitle(template.name);
+    onUpdateDescription(template.description);
     
     // Clear existing fields first
-    form.fields.forEach(field => onRemoveField(field.id));
+    formFields.forEach(field => onRemoveField(field.id));
     
     // Add template fields with unique IDs
     const processedFields = template.fields.map((field, index) => ({
@@ -82,6 +165,16 @@ export const FormBuilder = ({
     console.log('FormBuilder: Reordering fields:', dragIndex, hoverIndex);
     // This would need to be implemented in the parent component
     // For now, we'll just log it
+  };
+
+  const handleUpdateForm = (updates: Partial<Form>) => {
+    if (updates.title !== undefined) {
+      onUpdateTitle(updates.title);
+    }
+    if (updates.description !== undefined) {
+      onUpdateDescription(updates.description);
+    }
+    // Handle other form updates as needed
   };
 
   return (
@@ -135,9 +228,9 @@ export const FormBuilder = ({
           <div className="flex-1 overflow-y-auto bg-gray-50">
             <div className="p-6">
               <FormPreview
-                formTitle={form.title}
-                formDescription={form.description}
-                formFields={form.fields}
+                formTitle={title}
+                formDescription={description}
+                formFields={formFields}
                 attachments={attachments}
               />
             </div>
@@ -163,7 +256,7 @@ export const FormBuilder = ({
                   <TabsContent value="settings" className="mt-4">
                     <FormSettingsPanel 
                       form={form} 
-                      onUpdateForm={onUpdateForm} 
+                      onUpdateForm={handleUpdateForm} 
                       isPublished={isPublished}
                     />
                   </TabsContent>
@@ -177,14 +270,14 @@ export const FormBuilder = ({
               <div className="p-6 border-b bg-gray-50">
                 <Input
                   placeholder="Form Title"
-                  value={form.title}
-                  onChange={(e) => onUpdateForm({ title: e.target.value })}
+                  value={title}
+                  onChange={(e) => onUpdateTitle(e.target.value)}
                   className="text-2xl font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-gray-400"
                 />
                 <Textarea
                   placeholder="Form Description (optional)"
-                  value={form.description}
-                  onChange={(e) => onUpdateForm({ description: e.target.value })}
+                  value={description}
+                  onChange={(e) => onUpdateDescription(e.target.value)}
                   className="mt-2 border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-gray-400"
                   rows={2}
                 />
@@ -193,7 +286,7 @@ export const FormBuilder = ({
               {/* Form Fields */}
               <div className="flex-1 p-6 overflow-y-auto">
                 <FormCanvas
-                  fields={form.fields}
+                  fields={formFields}
                   selectedField={selectedFieldId}
                   onSelectField={onSelectField}
                   onUpdateField={onUpdateField}
@@ -208,7 +301,7 @@ export const FormBuilder = ({
             {/* Right Sidebar - Field Editor */}
             <div className="w-80 border-l bg-white">
               <FieldEditor
-                selectedField={selectedFieldId ? form.fields.find(f => f.id === selectedFieldId) || null : null}
+                selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
                 onUpdateField={onUpdateField}
                 onClose={() => onSelectField(null)}
                 readOnly={isPublished}
