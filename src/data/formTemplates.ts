@@ -1373,6 +1373,52 @@ export const fintechTemplates: FormTemplate[] = [
   }
 ];
 
+// Health Sector Templates
+export const healthTemplates: FormTemplate[] = [
+  {
+    id: 'health-1',
+    name: 'Patient Registration',
+    description: 'New patient registration form for healthcare providers',
+    category: 'Registration',
+    sector: 'Health',
+    tags: ['Health', 'Registration', 'Patient', 'Medical'],
+    fields: [
+      { id: '1', type: 'text', label: 'First Name', required: true, placeholder: 'Patient first name' },
+      { id: '2', type: 'text', label: 'Last Name', required: true, placeholder: 'Patient last name' },
+      { id: '3', type: 'date', label: 'Date of Birth', required: true },
+      { id: '4', type: 'radio', label: 'Gender', required: true, options: ['Male', 'Female', 'Other', 'Prefer not to say'] },
+      { id: '5', type: 'text', label: 'Phone Number', required: true, placeholder: '(555) 123-4567' },
+      { id: '6', type: 'email', label: 'Email Address', required: true, placeholder: 'patient@email.com' },
+      { id: '7', type: 'textarea', label: 'Address', required: true, placeholder: 'Full residential address' },
+      { id: '8', type: 'text', label: 'Emergency Contact Name', required: true, placeholder: 'Emergency contact' },
+      { id: '9', type: 'text', label: 'Emergency Contact Phone', required: true, placeholder: '(555) 987-6543' },
+      { id: '10', type: 'text', label: 'Insurance Provider', required: false, placeholder: 'Insurance company name' },
+      { id: '11', type: 'text', label: 'Policy Number', required: false, placeholder: 'Insurance policy number' },
+      { id: '12', type: 'textarea', label: 'Medical History', required: false, placeholder: 'Brief medical history' },
+      { id: '13', type: 'checkbox', label: 'Allergies', required: false, options: ['Food allergies', 'Drug allergies', 'Environmental allergies', 'No known allergies'] }
+    ]
+  },
+  {
+    id: 'health-2',
+    name: 'Medical Appointment Booking',
+    description: 'Book medical appointments with healthcare providers',
+    category: 'Appointment',
+    sector: 'Health',
+    tags: ['Health', 'Appointment', 'Booking', 'Schedule'],
+    fields: [
+      { id: '1', type: 'text', label: 'Patient Name', required: true, placeholder: 'Full name' },
+      { id: '2', type: 'text', label: 'Patient ID', required: true, placeholder: 'Patient ID number' },
+      { id: '3', type: 'select', label: 'Department', required: true, options: ['General Medicine', 'Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 'Dermatology'] },
+      { id: '4', type: 'select', label: 'Doctor Preference', required: false, options: ['Dr. Smith', 'Dr. Johnson', 'Dr. Williams', 'No preference'] },
+      { id: '5', type: 'date', label: 'Preferred Date', required: true },
+      { id: '6', type: 'select', label: 'Preferred Time', required: true, options: ['9:00 AM', '10:00 AM', '11:00 AM', '2:00 PM', '3:00 PM', '4:00 PM'] },
+      { id: '7', type: 'radio', label: 'Visit Type', required: true, options: ['First visit', 'Follow-up', 'Routine checkup', 'Emergency'] },
+      { id: '8', type: 'textarea', label: 'Reason for Visit', required: true, placeholder: 'Describe your symptoms or reason for visit' },
+      { id: '9', type: 'radio', label: 'Insurance Coverage', required: true, options: ['Yes', 'No', 'Self-pay'] }
+    ]
+  }
+];
+
 // Consolidate all templates
 export const allTemplates: FormTemplate[] = [
   ...governmentTemplates,
