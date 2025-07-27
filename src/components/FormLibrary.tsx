@@ -4,10 +4,11 @@ import { FormTemplate } from '@/types/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, Building2, Shield, Zap, Heart, Activity, Smartphone, Lightbulb, Briefcase, Globe } from 'lucide-react';
+import { Search, Building2, Shield, Zap, Heart, Activity, Smartphone, Lightbulb, Briefcase, Globe, Eye } from 'lucide-react';
 import { BrandedButton } from './BrandedButton';
 import { allTemplates } from '@/data/formTemplates';
 import { MultiSelectFilter } from './MultiSelectFilter';
+import { FormTemplatePreview } from './FormTemplatePreview';
 
 interface FormLibraryProps {
   onUseTemplate: (template: FormTemplate) => void;
@@ -52,6 +53,8 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
+  const [previewTemplate, setPreviewTemplate] = useState<FormTemplate | null>(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   console.log('FormLibrary: Available templates:', allTemplates.length);
 
@@ -124,6 +127,16 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
     console.log('Template copy fields:', templateCopy.fields);
     
     onUseTemplate(templateCopy);
+  };
+
+  const handlePreviewTemplate = (template: FormTemplate) => {
+    setPreviewTemplate(template);
+    setIsPreviewOpen(true);
+  };
+
+  const handleClosePreview = () => {
+    setIsPreviewOpen(false);
+    setPreviewTemplate(null);
   };
 
   return (
@@ -201,6 +214,14 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
                         <CardTitle className="text-base font-medium leading-tight">
                           {template.name}
                         </CardTitle>
+                        <BrandedButton
+                          onClick={() => handlePreviewTemplate(template)}
+                          size="sm"
+                          brandVariant="outline"
+                          className="ml-2 p-2"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </BrandedButton>
                       </div>
                       <p className="text-sm text-muted-foreground line-clamp-2">
                         {template.description}
@@ -257,6 +278,13 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
           <p className="text-sm text-muted-foreground mt-1">Try adjusting your search or filters.</p>
         </div>
       )}
+
+      {/* Preview Modal */}
+      <FormTemplatePreview
+        template={previewTemplate}
+        isOpen={isPreviewOpen}
+        onClose={handleClosePreview}
+      />
     </div>
   );
 };
