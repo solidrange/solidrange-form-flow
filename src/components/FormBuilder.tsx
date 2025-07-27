@@ -163,21 +163,30 @@ export const FormBuilder = ({
       setSelectedSectors(sectors);
     }
     
-    // Create template fields with unique IDs
+    // Create template fields with unique IDs - ensure deep copy
     const templateFields = template.fields.map((field, index) => ({
       ...field,
-      id: `template-${template.id}-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      id: `template-${template.id}-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      // Ensure options are properly copied if they exist
+      ...(field.options && { options: [...field.options] }),
+      // Ensure acceptedFileTypes are properly copied if they exist
+      ...(field.acceptedFileTypes && { acceptedFileTypes: [...field.acceptedFileTypes] })
     }));
     
     console.log('FormBuilder: Applying template with fields:', templateFields.length);
+    console.log('FormBuilder: Template fields to add:', templateFields);
     
-    // Clear existing fields first, then add template fields
-    formFields.forEach(field => onRemoveField(field.id));
+    // Clear all existing fields first
+    const currentFieldIds = [...formFields.map(field => field.id)];
+    currentFieldIds.forEach(fieldId => onRemoveField(fieldId));
     
-    // Add template fields with a small delay to ensure state updates
+    // Add all template fields at once after clearing
     setTimeout(() => {
-      templateFields.forEach(field => onAddField(field));
-    }, 10);
+      templateFields.forEach((field, index) => {
+        console.log(`FormBuilder: Adding field ${index + 1}:`, field.label, field.type);
+        onAddField(field);
+      });
+    }, 50);
     
     // Switch to builder tab after applying template
     setActiveTab('builder');
