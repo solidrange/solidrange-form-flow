@@ -13,10 +13,11 @@ import { Plus, X, Lock } from "lucide-react";
 interface FieldEditorProps {
   selectedField: FormField | null;
   onUpdateField: (fieldId: string, updates: Partial<FormField>) => void;
+  onClose: () => void;
   readOnly?: boolean;
 }
 
-export const FieldEditor = ({ selectedField, onUpdateField, readOnly = false }: FieldEditorProps) => {
+export const FieldEditor = ({ selectedField, onUpdateField, onClose, readOnly = false }: FieldEditorProps) => {
   if (!selectedField) {
     return (
       <Card className="h-full">

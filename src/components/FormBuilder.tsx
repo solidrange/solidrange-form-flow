@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { FormTemplate, FormField } from '@/types/form';
 import { Input } from '@/components/ui/input';
@@ -120,7 +121,7 @@ export const FormBuilder = () => {
             </TabsList>
             
             <TabsContent value="build" className="p-4 space-y-4">
-              <FieldPalette />
+              <FieldPalette onAddField={handleAddField} />
             </TabsContent>
             
             <TabsContent value="library" className="p-0">
@@ -167,8 +168,8 @@ export const FormBuilder = () => {
         {/* Right Sidebar - Field Editor */}
         <div className="w-80 border-l bg-white">
           <FieldEditor
-            field={selectedField ? formFields.find(f => f.id === selectedField) : null}
-            onUpdate={(updates) => selectedField && handleUpdateField(selectedField, updates)}
+            selectedField={selectedField ? formFields.find(f => f.id === selectedField) : null}
+            onUpdateField={handleUpdateField}
             onClose={() => setSelectedField(null)}
           />
         </div>
