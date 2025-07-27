@@ -1050,6 +1050,8 @@ const Index = () => {
                   onSaveToLibrary={handleSaveToLibrary}
                   isPublished={currentFormIsPublished()}
                   onMoveToDraft={() => handleMoveToDraft()}
+                  formSettings={formSettings}
+                  onUpdateFormSettings={updateFormSettings}
                 />
               </div>
             )}

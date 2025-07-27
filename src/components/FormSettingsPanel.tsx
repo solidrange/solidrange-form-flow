@@ -226,6 +226,49 @@ export const FormSettingsPanel = ({ form, onUpdateForm, isPublished }: FormSetti
                   
                   {form.settings.branding.enabled && (
                     <>
+                      <div className="space-y-2">
+                        <Label htmlFor="brand-name">Organization Name</Label>
+                        <Input
+                          id="brand-name"
+                          value={form.settings.branding.brandName || ''}
+                          onChange={(e) => updateFormSettings({ 
+                            branding: { 
+                              ...form.settings.branding, 
+                              brandName: e.target.value 
+                            } 
+                          })}
+                          placeholder="Enter your organization name"
+                        />
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="brand-logo">Organization Logo URL</Label>
+                        <Input
+                          id="brand-logo"
+                          value={form.settings.branding.logo || ''}
+                          onChange={(e) => updateFormSettings({ 
+                            branding: { 
+                              ...form.settings.branding, 
+                              logo: e.target.value 
+                            } 
+                          })}
+                          placeholder="https://example.com/logo.png"
+                        />
+                        {form.settings.branding.logo && (
+                          <div className="mt-2">
+                            <img 
+                              src={form.settings.branding.logo} 
+                              alt="Logo preview" 
+                              className="h-12 w-auto object-contain border rounded-md p-2"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement;
+                                target.style.display = 'none';
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                      
                       <div className="flex items-center space-x-2">
                         <Switch
                           id="show-logo"

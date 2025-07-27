@@ -62,6 +62,8 @@ export const FormPreview = ({
 
   // Get branding settings - prioritize form-specific branding over global
   const brandingEnabled = formSettings?.branding?.enabled ?? true;
+  const showLogo = formSettings?.branding?.showLogo ?? true;
+  const showBrandColors = formSettings?.branding?.showBrandColors ?? true;
   const brandName = formSettings?.branding?.brandName || brand.name;
   const brandLogo = formSettings?.branding?.logo || brand.logo;
   const brandColors = formSettings?.branding?.colors || brand.colors;
@@ -82,7 +84,7 @@ export const FormPreview = ({
     );
   }
 
-  const brandedFormStyle = brandingEnabled ? {
+  const brandedFormStyle = (brandingEnabled && showBrandColors) ? {
     '--brand-primary': `hsl(${brandColors.primary.main})`,
     '--brand-secondary': `hsl(${brandColors.secondary.main})`,
     '--primary': `hsl(${brandColors.primary.main})`,
@@ -93,14 +95,14 @@ export const FormPreview = ({
       <BrandedCard 
         className="overflow-hidden"
         style={brandedFormStyle}
-        enableBranding={brandingEnabled}
-        brandAccent={brandingEnabled}
+        enableBranding={brandingEnabled && showBrandColors}
+        brandAccent={brandingEnabled && showBrandColors}
       >
-        <CardHeader className={brandingEnabled ? 'bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5' : ''}>
+        <CardHeader className={(brandingEnabled && showBrandColors) ? 'bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5' : ''}>
           {/* Branding Section */}
-          {brandingEnabled && (brandLogo || brandName) && (
+          {brandingEnabled && (showLogo || brandName) && (
             <div className="flex items-center gap-3 mb-4 pb-4 border-b">
-              {brandLogo && (
+              {showLogo && brandLogo && (
                 <img 
                   src={brandLogo} 
                   alt={brandName || 'Brand Logo'} 
@@ -110,7 +112,7 @@ export const FormPreview = ({
               <div>
                 <h3 
                   className="font-semibold text-lg"
-                  style={{ color: getPrimaryColor() }}
+                  style={showBrandColors ? { color: getPrimaryColor() } : {}}
                 >
                   {brandName}
                 </h3>

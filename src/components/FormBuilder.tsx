@@ -36,6 +36,8 @@ interface FormBuilderProps {
   onSaveToLibrary: () => void;
   isPublished: boolean;
   onMoveToDraft: () => void;
+  formSettings: Form['settings'];
+  onUpdateFormSettings: (settings: Form['settings']) => void;
 }
 
 const sectorOptions = [
@@ -60,7 +62,9 @@ export const FormBuilder = ({
   onUpdateAttachments,
   onSaveToLibrary,
   isPublished,
-  onMoveToDraft
+  onMoveToDraft,
+  formSettings,
+  onUpdateFormSettings
 }: FormBuilderProps) => {
   const [activeTab, setActiveTab] = useState('builder');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -74,58 +78,7 @@ export const FormBuilder = ({
     title,
     description,
     fields: formFields,
-    settings: {
-      allowMultipleSubmissions: false,
-      requireLogin: false,
-      showProgressBar: true,
-      theme: 'light',
-      branding: {
-        enabled: true,
-        showLogo: true,
-        showBrandColors: true,
-        brandName: 'FormFlow',
-        logo: null,
-        colors: {
-          primary: {
-            main: '208 100% 47%',
-            light: '210 100% 70%',
-            dark: '208 100% 35%'
-          },
-          secondary: {
-            main: '262 83% 58%',
-            light: '262 83% 75%',
-            dark: '262 83% 45%'
-          }
-        }
-      },
-      scoring: {
-        enabled: false,
-        maxTotalPoints: 100,
-        showScoreToUser: false,
-        passingScore: 70,
-        riskThresholds: {
-          low: 80,
-          medium: 60,
-          high: 40
-        }
-      },
-      expiration: {
-        enabled: false
-      },
-      emailDistribution: {
-        enabled: false,
-        recipients: [],
-        reminderEnabled: true,
-        reminderIntervalDays: 7,
-        maxReminders: 3
-      },
-      approval: {
-        enabled: false,
-        requireApproval: false,
-        approvers: [],
-        autoApproveScore: 80
-      }
-    },
+    settings: formSettings,
     status: isPublished ? 'published' : 'draft',
     createdAt: new Date(),
     updatedAt: new Date(),
@@ -156,6 +109,9 @@ export const FormBuilder = ({
     }
     if (updates.description !== undefined) {
       onUpdateDescription(updates.description);
+    }
+    if (updates.settings !== undefined) {
+      onUpdateFormSettings(updates.settings);
     }
     // Handle other form updates as needed
   };
@@ -285,6 +241,7 @@ export const FormBuilder = ({
                 formTitle={title}
                 formDescription={description}
                 formFields={formFields}
+                formSettings={form.settings}
                 attachments={attachments}
               />
             </div>
