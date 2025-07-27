@@ -14,6 +14,7 @@ import { FormPreview } from './FormPreview';
 import { FormSettingsPanel } from './FormSettingsPanel';
 import { MultiSelectCategory } from './MultiSelectCategory';
 import { MultiSelectFilter } from './MultiSelectFilter';
+import { Label } from '@/components/ui/label';
 
 interface FormBuilderProps {
   formFields: FormField[];
@@ -144,17 +145,11 @@ export const FormBuilder = ({
     }
   };
 
-  const handleUseTemplate = (template: FormTemplate) => {
+  const handleUseTemplate = async (template: FormTemplate) => {
     console.log('FormBuilder: Received template:', template.name);
     console.log('FormBuilder: Template fields:', template.fields);
     
-    // Clear existing fields first
-    formFields.forEach(field => {
-      console.log('FormBuilder: Removing existing field:', field.id);
-      onRemoveField(field.id);
-    });
-    
-    // Clear field selection
+    // Clear field selection first
     onSelectField(null);
     
     // Update form details
@@ -171,21 +166,26 @@ export const FormBuilder = ({
       setSelectedSectors(sectors);
     }
     
-    // Add template fields with unique IDs after a brief delay to ensure removal is complete
-    setTimeout(() => {
-      const processedFields = template.fields.map((field, index) => ({
-        ...field,
-        id: `template-field-${Date.now()}-${index}`
-      }));
-      
-      console.log('FormBuilder: Adding processed fields:', processedFields);
-      processedFields.forEach((field, index) => {
-        setTimeout(() => {
-          console.log('FormBuilder: Adding field:', field.id, field.label);
-          onAddField(field);
-        }, index * 10); // Small delay between each field to ensure proper ordering
-      });
-    }, 100);
+    // Clear existing fields synchronously - wait for all removals to complete
+    console.log('FormBuilder: Clearing existing fields...');
+    const existingFieldIds = [...formFields.map(f => f.id)];
+    existingFieldIds.forEach(fieldId => {
+      console.log('FormBuilder: Removing existing field:', fieldId);
+      onRemoveField(fieldId);
+    });
+    
+    // Add template fields with unique IDs - no delays needed
+    console.log('FormBuilder: Adding template fields...');
+    const processedFields = template.fields.map((field, index) => ({
+      ...field,
+      id: `template-field-${Date.now()}-${index}`
+    }));
+    
+    console.log('FormBuilder: Processed fields to add:', processedFields.length);
+    processedFields.forEach((field, index) => {
+      console.log('FormBuilder: Adding field:', field.id, field.label);
+      onAddField(field);
+    });
     
     // Switch to builder tab after applying template
     setActiveTab('builder');
@@ -325,13 +325,16 @@ export const FormBuilder = ({
                     disabled={isPublished}
                   />
                   
-                  <MultiSelectFilter
-                    options={sectorOptions}
-                    selectedValues={selectedSectors}
-                    onSelectionChange={setSelectedSectors}
-                    placeholder="Select sectors..."
-                    formatLabel={formatSectorLabel}
-                  />
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-700">Sectors</Label>
+                    <MultiSelectFilter
+                      options={sectorOptions}
+                      selectedValues={selectedSectors}
+                      onSelectionChange={setSelectedSectors}
+                      placeholder="Select sectors..."
+                      formatLabel={formatSectorLabel}
+                    />
+                  </div>
                 </div>
               </div>
 
