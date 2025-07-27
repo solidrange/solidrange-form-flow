@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { FormTemplate, FormField, DocumentAttachment, Form } from '@/types/form';
 import { Input } from '@/components/ui/input';
@@ -149,6 +148,7 @@ export const FormBuilder = ({
   const handleUseTemplate = (template: FormTemplate) => {
     console.log('FormBuilder: Received template:', template.name);
     console.log('FormBuilder: Template fields:', template.fields);
+    console.log('FormBuilder: Current form fields before clear:', formFields.length);
     
     // Clear field selection first
     onSelectField(null);
@@ -166,32 +166,24 @@ export const FormBuilder = ({
       setSelectedSectors(sectors);
     }
     
-    // Use requestAnimationFrame to ensure DOM updates are processed
-    requestAnimationFrame(() => {
-      // Clear existing fields
-      const existingFieldIds = [...formFields.map(f => f.id)];
-      console.log('FormBuilder: Clearing existing fields:', existingFieldIds);
-      
-      // Remove all existing fields
-      existingFieldIds.forEach(fieldId => {
-        console.log('FormBuilder: Removing existing field:', fieldId);
-        onRemoveField(fieldId);
-      });
-      
-      // Add new fields after a brief delay to ensure removals are processed
-      setTimeout(() => {
-        console.log('FormBuilder: Adding template fields...');
-        const processedFields = template.fields.map((field, index) => ({
-          ...field,
-          id: `template-field-${Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`
-        }));
-        
-        console.log('FormBuilder: Processed fields to add:', processedFields.length);
-        processedFields.forEach((field, index) => {
-          console.log('FormBuilder: Adding field:', field.id, field.label);
-          onAddField(field);
-        });
-      }, 100);
+    // Clear all existing fields first
+    const existingFieldIds = [...formFields.map(f => f.id)];
+    console.log('FormBuilder: Clearing existing fields:', existingFieldIds);
+    
+    // Remove all existing fields synchronously
+    existingFieldIds.forEach(fieldId => {
+      onRemoveField(fieldId);
+    });
+    
+    // Add all template fields with unique IDs
+    console.log('FormBuilder: Adding template fields:', template.fields.length);
+    template.fields.forEach((field, index) => {
+      const newField = {
+        ...field,
+        id: `template-${template.id}-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+      };
+      console.log('FormBuilder: Adding field:', newField.id, newField.type, newField.label);
+      onAddField(newField);
     });
     
     // Switch to builder tab after applying template
