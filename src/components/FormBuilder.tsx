@@ -203,18 +203,25 @@ export const FormBuilder = ({
     console.log('FormBuilder: Starting to add template fields after timeout...');
     setTimeout(() => {
       console.log('FormBuilder: Timeout executed, adding fields...');
+      
+      // Instead of calling onAddField multiple times rapidly, let's add them one by one with delays
       templateFields.forEach((field, index) => {
-        console.log(`FormBuilder: Adding field ${index + 1}/${templateFields.length}:`, {
-          id: field.id,
-          type: field.type,
-          label: field.label,
-          required: field.required,
-          options: field.options
-        });
-        onAddField(field);
+        setTimeout(() => {
+          console.log(`FormBuilder: Adding field ${index + 1}/${templateFields.length}:`, {
+            id: field.id,
+            type: field.type,
+            label: field.label,
+            required: field.required,
+            options: field.options
+          });
+          onAddField(field);
+          
+          if (index === templateFields.length - 1) {
+            console.log('FormBuilder: All template fields added');
+            console.log('=== TEMPLATE APPLICATION END ===');
+          }
+        }, index * 50); // 50ms delay between each field addition
       });
-      console.log('FormBuilder: All template fields added');
-      console.log('=== TEMPLATE APPLICATION END ===');
     }, 100);
     
     // Switch to builder tab after applying template
