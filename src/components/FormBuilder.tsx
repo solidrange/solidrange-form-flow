@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { FormTemplate, FormField, DocumentAttachment } from '@/types/form';
+import { FormTemplate, FormField, DocumentAttachment, Form } from '@/types/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -11,18 +11,16 @@ import { FieldPalette } from './FieldPalette';
 import { FormCanvas } from './FormCanvas';
 import { FieldEditor } from './FieldEditor';
 import { FormPreview } from './FormPreview';
+import { FormSettingsPanel } from './FormSettingsPanel';
 
 interface FormBuilderProps {
-  formFields: FormField[];
+  form: Form;
   onAddField: (field: FormField) => void;
   onUpdateField: (fieldId: string, updates: Partial<FormField>) => void;
   onRemoveField: (fieldId: string) => void;
   selectedFieldId: string | null;
   onSelectField: (fieldId: string | null) => void;
-  title: string;
-  onUpdateTitle: (title: string) => void;
-  description: string;
-  onUpdateDescription: (description: string) => void;
+  onUpdateForm: (updates: Partial<Form>) => void;
   onSaveForm: () => void;
   onPreviewForm: () => void;
   attachments: DocumentAttachment[];
@@ -33,16 +31,13 @@ interface FormBuilderProps {
 }
 
 export const FormBuilder = ({
-  formFields,
+  form,
   onAddField,
   onUpdateField,
   onRemoveField,
   selectedFieldId,
   onSelectField,
-  title,
-  onUpdateTitle,
-  description,
-  onUpdateDescription,
+  onUpdateForm,
   onSaveForm,
   onPreviewForm,
   attachments,
@@ -52,18 +47,21 @@ export const FormBuilder = ({
   onMoveToDraft
 }: FormBuilderProps) => {
   const [activeTab, setActiveTab] = useState('builder');
+  const [builderSubTab, setBuilderSubTab] = useState('fields');
 
-  console.log('FormBuilder: Current form fields:', formFields);
+  console.log('FormBuilder: Current form fields:', form.fields);
 
   const handleUseTemplate = (template: FormTemplate) => {
     console.log('FormBuilder: Received template:', template.name);
     console.log('FormBuilder: Template fields:', template.fields);
     
-    onUpdateTitle(template.name);
-    onUpdateDescription(template.description);
+    onUpdateForm({
+      title: template.name,
+      description: template.description
+    });
     
     // Clear existing fields first
-    formFields.forEach(field => onRemoveField(field.id));
+    form.fields.forEach(field => onRemoveField(field.id));
     
     // Add template fields with unique IDs
     const processedFields = template.fields.map((field, index) => ({
@@ -77,6 +75,7 @@ export const FormBuilder = ({
     
     // Switch to builder tab after applying template
     setActiveTab('builder');
+    setBuilderSubTab('fields');
   };
 
   const handleReorderFields = (dragIndex: number, hoverIndex: number) => {
@@ -136,22 +135,39 @@ export const FormBuilder = ({
           <div className="flex-1 overflow-y-auto bg-gray-50">
             <div className="p-6">
               <FormPreview
-                formTitle={title}
-                formDescription={description}
-                formFields={formFields}
+                formTitle={form.title}
+                formDescription={form.description}
+                formFields={form.fields}
                 attachments={attachments}
               />
             </div>
           </div>
         )}
 
-        {/* Builder Tab - Three Column Layout */}
+        {/* Builder Tab - Three Column Layout with Sub-tabs */}
         {activeTab === 'builder' && (
           <>
-            {/* Left Sidebar - Field Palette */}
+            {/* Left Sidebar - Fields/Settings Toggle */}
             <div className="w-80 border-r bg-white overflow-y-auto">
               <div className="p-4">
-                <FieldPalette onAddField={onAddField} />
+                <Tabs value={builderSubTab} onValueChange={setBuilderSubTab}>
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="fields">Fields</TabsTrigger>
+                    <TabsTrigger value="settings">Settings</TabsTrigger>
+                  </TabsList>
+                  
+                  <TabsContent value="fields" className="mt-4">
+                    <FieldPalette onAddField={onAddField} />
+                  </TabsContent>
+                  
+                  <TabsContent value="settings" className="mt-4">
+                    <FormSettingsPanel 
+                      form={form} 
+                      onUpdateForm={onUpdateForm} 
+                      isPublished={isPublished}
+                    />
+                  </TabsContent>
+                </Tabs>
               </div>
             </div>
 
@@ -161,14 +177,14 @@ export const FormBuilder = ({
               <div className="p-6 border-b bg-gray-50">
                 <Input
                   placeholder="Form Title"
-                  value={title}
-                  onChange={(e) => onUpdateTitle(e.target.value)}
+                  value={form.title}
+                  onChange={(e) => onUpdateForm({ title: e.target.value })}
                   className="text-2xl font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-gray-400"
                 />
                 <Textarea
                   placeholder="Form Description (optional)"
-                  value={description}
-                  onChange={(e) => onUpdateDescription(e.target.value)}
+                  value={form.description}
+                  onChange={(e) => onUpdateForm({ description: e.target.value })}
                   className="mt-2 border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-gray-400"
                   rows={2}
                 />
@@ -177,7 +193,7 @@ export const FormBuilder = ({
               {/* Form Fields */}
               <div className="flex-1 p-6 overflow-y-auto">
                 <FormCanvas
-                  fields={formFields}
+                  fields={form.fields}
                   selectedField={selectedFieldId}
                   onSelectField={onSelectField}
                   onUpdateField={onUpdateField}
@@ -192,7 +208,7 @@ export const FormBuilder = ({
             {/* Right Sidebar - Field Editor */}
             <div className="w-80 border-l bg-white">
               <FieldEditor
-                selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
+                selectedField={selectedFieldId ? form.fields.find(f => f.id === selectedFieldId) || null : null}
                 onUpdateField={onUpdateField}
                 onClose={() => onSelectField(null)}
                 readOnly={isPublished}
