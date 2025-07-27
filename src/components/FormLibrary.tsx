@@ -119,14 +119,12 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
   }, [filteredTemplates, selectedSectors]);
 
   const handleUseTemplate = (template: FormTemplate) => {
-    console.log('FormLibrary: Using template:', template.name);
-    console.log('Template fields being passed:', template.fields);
+    console.log('FormLibrary: Template selected:', template.name);
+    console.log('FormLibrary: Template fields count:', template.fields.length);
+    console.log('FormLibrary: Passing template to parent component');
     
-    // Create a deep copy of the template to avoid reference issues
-    const templateCopy = JSON.parse(JSON.stringify(template));
-    console.log('Template copy fields:', templateCopy.fields);
-    
-    onUseTemplate(templateCopy);
+    // Pass the original template without modification
+    onUseTemplate(template);
   };
 
   const handlePreviewTemplate = (template: FormTemplate) => {
