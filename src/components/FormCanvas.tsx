@@ -104,6 +104,19 @@ export const FormCanvas = ({
     setDragOverIndex(index);
   };
 
+  const handleEditClick = (fieldId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!readOnly) {
+      onSelectField(fieldId);
+    }
+  };
+
+  const handleCardClick = (e: React.MouseEvent) => {
+    // Prevent field selection when clicking on the card itself
+    // Selection should only happen when clicking the edit button
+    e.preventDefault();
+  };
+
   if (!fields || fields.length === 0) {
     return (
       <div 
@@ -147,7 +160,7 @@ export const FormCanvas = ({
         <Card
           key={field.id}
           className={cn(
-            "p-4 cursor-pointer transition-all group",
+            "p-4 transition-all group",
             selectedField === field.id && "ring-2 ring-indigo-500 bg-indigo-50",
             !readOnly && dragOverIndex === index && "border-t-2 border-indigo-500",
             readOnly && "opacity-75"
@@ -155,7 +168,7 @@ export const FormCanvas = ({
           draggable={!readOnly}
           onDragStart={(e) => handleFieldDragStart(e, field.id)}
           onDragOver={(e) => !readOnly && handleFieldDragOver(e, index)}
-          onClick={() => onSelectField(field.id)}
+          onClick={handleCardClick}
         >
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
@@ -171,10 +184,7 @@ export const FormCanvas = ({
               <Button
                 size="sm"
                 variant="ghost"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSelectField(field.id);
-                }}
+                onClick={(e) => handleEditClick(field.id, e)}
                 disabled={readOnly}
               >
                 <Edit className="h-4 w-4" />

@@ -148,6 +148,16 @@ export const FormBuilder = ({
     console.log('FormBuilder: Received template:', template.name);
     console.log('FormBuilder: Template fields:', template.fields);
     
+    // Clear existing fields first
+    formFields.forEach(field => {
+      console.log('FormBuilder: Removing existing field:', field.id);
+      onRemoveField(field.id);
+    });
+    
+    // Clear field selection
+    onSelectField(null);
+    
+    // Update form details
     onUpdateTitle(template.name);
     onUpdateDescription(template.description);
     
@@ -161,18 +171,21 @@ export const FormBuilder = ({
       setSelectedSectors(sectors);
     }
     
-    // Clear existing fields first
-    formFields.forEach(field => onRemoveField(field.id));
-    
-    // Add template fields with unique IDs
-    const processedFields = template.fields.map((field, index) => ({
-      ...field,
-      id: `field-${Date.now()}-${index}`
-    }));
-    
-    console.log('FormBuilder: Processed fields:', processedFields);
-    processedFields.forEach(field => onAddField(field));
-    onSelectField(null);
+    // Add template fields with unique IDs after a brief delay to ensure removal is complete
+    setTimeout(() => {
+      const processedFields = template.fields.map((field, index) => ({
+        ...field,
+        id: `template-field-${Date.now()}-${index}`
+      }));
+      
+      console.log('FormBuilder: Adding processed fields:', processedFields);
+      processedFields.forEach((field, index) => {
+        setTimeout(() => {
+          console.log('FormBuilder: Adding field:', field.id, field.label);
+          onAddField(field);
+        }, index * 10); // Small delay between each field to ensure proper ordering
+      });
+    }, 100);
     
     // Switch to builder tab after applying template
     setActiveTab('builder');
@@ -337,15 +350,17 @@ export const FormBuilder = ({
               </div>
             </div>
 
-            {/* Right Sidebar - Field Editor */}
-            <div className="w-80 border-l bg-white">
-              <FieldEditor
-                selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
-                onUpdateField={onUpdateField}
-                onClose={() => onSelectField(null)}
-                readOnly={isPublished}
-              />
-            </div>
+            {/* Right Sidebar - Field Editor - Only show when a field is selected */}
+            {selectedFieldId && (
+              <div className="w-80 border-l bg-white">
+                <FieldEditor
+                  selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
+                  onUpdateField={onUpdateField}
+                  onClose={() => onSelectField(null)}
+                  readOnly={isPublished}
+                />
+              </div>
+            )}
           </>
         )}
       </div>
