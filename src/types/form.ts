@@ -196,6 +196,7 @@ export interface FormSettings {
     enabled: boolean;              // Whether to show branding on this form
     showLogo: boolean;             // Whether to display the organization logo
     showBrandColors: boolean;      // Whether to apply brand color scheme
+    useGlobalBranding?: boolean;   // Whether to inherit from global brand settings
     brandName?: string;            // Organization name to display
     logo?: string;                 // Logo image URL or base64 data
     colors?: {                     // Brand color scheme

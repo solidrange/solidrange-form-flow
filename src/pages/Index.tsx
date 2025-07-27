@@ -79,6 +79,7 @@ const Index = () => {
       enabled: true,
       showLogo: true,
       showBrandColors: true,
+      useGlobalBranding: true,  // Start with global branding by default
       brandName: 'FormFlow',
       logo: null,
       colors: {
@@ -232,6 +233,7 @@ const Index = () => {
         enabled: true,
         showLogo: true,
         showBrandColors: true,
+        useGlobalBranding: true,  // Start with global branding by default
         brandName: 'FormFlow',
         logo: null,
         colors: {

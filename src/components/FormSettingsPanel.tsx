@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Form } from '@/types/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,9 +5,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Settings, Mail, Users, Shield, Eye } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import { Settings, Mail, Users, Shield, Eye, Link, RefreshCw, Info, Palette } from 'lucide-react';
 import { EmailDistributionSettings } from './forms/EmailDistributionSettings';
+import { useBrand } from '@/contexts/BrandContext';
 
 interface FormSettingsPanelProps {
   form: Form;
@@ -17,6 +19,8 @@ interface FormSettingsPanelProps {
 }
 
 export const FormSettingsPanel = ({ form, onUpdateForm, isPublished }: FormSettingsPanelProps) => {
+  const { brand } = useBrand();
+
   const updateFormSettings = (updates: Partial<Form['settings']>) => {
     onUpdateForm({
       settings: {
@@ -25,6 +29,30 @@ export const FormSettingsPanel = ({ form, onUpdateForm, isPublished }: FormSetti
       }
     });
   };
+
+  // Function to inherit global brand settings
+  const inheritGlobalBranding = () => {
+    updateFormSettings({
+      branding: {
+        ...form.settings.branding,
+        enabled: true,
+        brandName: brand.name,
+        logo: brand.logo,
+        colors: brand.colors,
+        showLogo: true,
+        showBrandColors: true,
+        useGlobalBranding: true
+      }
+    });
+  };
+
+  // Check if using global branding
+  const isUsingGlobalBranding = (form.settings.branding as any)?.useGlobalBranding ?? false;
+  
+  // Get effective branding values (global or custom)
+  const effectiveBrandName = isUsingGlobalBranding ? brand.name : (form.settings.branding?.brandName || brand.name);
+  const effectiveLogo = isUsingGlobalBranding ? brand.logo : (form.settings.branding?.logo || brand.logo);
+  const effectiveColors = isUsingGlobalBranding ? brand.colors : (form.settings.branding?.colors || brand.colors);
 
   const DraftStateWarning = () => (
     <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
@@ -212,7 +240,7 @@ export const FormSettingsPanel = ({ form, onUpdateForm, isPublished }: FormSetti
               </div>
 
               {form.settings.branding && (
-                <div className="space-y-2">
+                <div className="space-y-6">
                   <div className="flex items-center space-x-2">
                     <Switch
                       id="branding-enabled"
@@ -226,69 +254,159 @@ export const FormSettingsPanel = ({ form, onUpdateForm, isPublished }: FormSetti
                   
                   {form.settings.branding.enabled && (
                     <>
-                      <div className="space-y-2">
-                        <Label htmlFor="brand-name">Organization Name</Label>
-                        <Input
-                          id="brand-name"
-                          value={form.settings.branding.brandName || ''}
-                          onChange={(e) => updateFormSettings({ 
-                            branding: { 
-                              ...form.settings.branding, 
-                              brandName: e.target.value 
-                            } 
-                          })}
-                          placeholder="Enter your organization name"
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <Label htmlFor="brand-logo">Organization Logo URL</Label>
-                        <Input
-                          id="brand-logo"
-                          value={form.settings.branding.logo || ''}
-                          onChange={(e) => updateFormSettings({ 
-                            branding: { 
-                              ...form.settings.branding, 
-                              logo: e.target.value 
-                            } 
-                          })}
-                          placeholder="https://example.com/logo.png"
-                        />
-                        {form.settings.branding.logo && (
-                          <div className="mt-2">
-                            <img 
-                              src={form.settings.branding.logo} 
-                              alt="Logo preview" 
-                              className="h-12 w-auto object-contain border rounded-md p-2"
-                              onError={(e) => {
-                                const target = e.target as HTMLImageElement;
-                                target.style.display = 'none';
-                              }}
-                            />
+                      {/* Global Branding Inheritance */}
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <div className="flex items-center gap-2">
+                            <Link className="h-4 w-4 text-blue-600" />
+                            <Label className="text-sm font-medium text-blue-800">
+                              Global Brand Inheritance
+                            </Label>
+                          </div>
+                          {!isUsingGlobalBranding && (
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={inheritGlobalBranding}
+                              className="h-8 text-xs"
+                            >
+                              <RefreshCw className="h-3 w-3 mr-1" />
+                              Use Global
+                            </Button>
+                          )}
+                        </div>
+                        
+                        <div className="flex items-center space-x-2">
+                          <Switch
+                            id="use-global-branding"
+                            checked={isUsingGlobalBranding}
+                            onCheckedChange={(useGlobalBranding) => updateFormSettings({ 
+                              branding: { 
+                                ...form.settings.branding, 
+                                useGlobalBranding,
+                                ...(useGlobalBranding && {
+                                  brandName: brand.name,
+                                  logo: brand.logo,
+                                  colors: brand.colors
+                                })
+                              } as any
+                            })}
+                          />
+                          <Label htmlFor="use-global-branding" className="text-sm">
+                            Inherit from global brand identity
+                          </Label>
+                        </div>
+                        
+                        {isUsingGlobalBranding && (
+                          <div className="mt-3 p-3 bg-white rounded border text-sm">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Info className="h-4 w-4 text-blue-600" />
+                              <span className="font-medium text-blue-800">Using Global Settings:</span>
+                            </div>
+                            <div className="space-y-1 text-gray-600">
+                              <div>• Name: <span className="font-medium">{brand.name}</span></div>
+                              <div>• Logo: {brand.logo ? <span className="text-green-600">✓ Configured</span> : <span className="text-gray-400">Not set</span>}</div>
+                              <div>• Colors: <span className="text-green-600">✓ Configured</span></div>
+                            </div>
                           </div>
                         )}
                       </div>
                       
-                      <div className="flex items-center space-x-2">
-                        <Switch
-                          id="show-logo"
-                          checked={form.settings.branding.showLogo}
-                          onCheckedChange={(showLogo) => updateFormSettings({ 
-                            branding: { ...form.settings.branding, showLogo } 
-                          })}
-                        />
-                        <Label htmlFor="show-logo">Show organization logo</Label>
-                      </div>
+                      <Separator />
                       
-                      <div className="flex items-center space-x-2">
-                        <Switch
-                          id="show-brand-colors"
-                          checked={form.settings.branding.showBrandColors}
-                          onCheckedChange={(showBrandColors) => updateFormSettings({ 
-                            branding: { ...form.settings.branding, showBrandColors } 
-                          })}
-                        />
-                        <Label htmlFor="show-brand-colors">Use brand colors</Label>
+                      {/* Custom Branding Override Section */}
+                      <div className={isUsingGlobalBranding ? 'opacity-50' : ''}>
+                        <div className="flex items-center gap-2 mb-4">
+                          <Palette className="h-4 w-4" />
+                          <Label className="text-base font-medium">
+                            {isUsingGlobalBranding ? 'Custom Overrides (Disabled)' : 'Custom Branding'}
+                          </Label>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="brand-name">Organization Name</Label>
+                            <Input
+                              id="brand-name"
+                              value={isUsingGlobalBranding ? effectiveBrandName : (form.settings.branding.brandName || '')}
+                              onChange={(e) => updateFormSettings({ 
+                                branding: { 
+                                  ...form.settings.branding, 
+                                  brandName: e.target.value 
+                                } 
+                              })}
+                              placeholder="Enter your organization name"
+                              disabled={isUsingGlobalBranding}
+                            />
+                            {isUsingGlobalBranding && (
+                              <p className="text-xs text-muted-foreground">
+                                Using global brand name. Disable inheritance to customize.
+                              </p>
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label htmlFor="brand-logo">Organization Logo URL</Label>
+                            <Input
+                              id="brand-logo"
+                              value={isUsingGlobalBranding ? (effectiveLogo || '') : (form.settings.branding.logo || '')}
+                              onChange={(e) => updateFormSettings({ 
+                                branding: { 
+                                  ...form.settings.branding, 
+                                  logo: e.target.value 
+                                } 
+                              })}
+                              placeholder="https://example.com/logo.png"
+                              disabled={isUsingGlobalBranding}
+                            />
+                            {isUsingGlobalBranding && (
+                              <p className="text-xs text-muted-foreground">
+                                Using global logo. Disable inheritance to customize.
+                              </p>
+                            )}
+                            
+                            {effectiveLogo && (
+                              <div className="mt-2">
+                                <img 
+                                  src={effectiveLogo} 
+                                  alt="Logo preview" 
+                                  className="h-12 w-auto object-contain border rounded-md p-2"
+                                  onError={(e) => {
+                                    const target = e.target as HTMLImageElement;
+                                    target.style.display = 'none';
+                                  }}
+                                />
+                                {isUsingGlobalBranding && (
+                                  <Badge variant="secondary" className="text-xs mt-1">
+                                    From Global Settings
+                                  </Badge>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                          
+                          <div className="flex items-center space-x-2">
+                            <Switch
+                              id="show-logo"
+                              checked={form.settings.branding.showLogo}
+                              onCheckedChange={(showLogo) => updateFormSettings({ 
+                                branding: { ...form.settings.branding, showLogo } 
+                              })}
+                            />
+                            <Label htmlFor="show-logo">Show organization logo</Label>
+                          </div>
+                          
+                          <div className="flex items-center space-x-2">
+                            <Switch
+                              id="show-brand-colors"
+                              checked={form.settings.branding.showBrandColors}
+                              onCheckedChange={(showBrandColors) => updateFormSettings({ 
+                                branding: { ...form.settings.branding, showBrandColors } 
+                              })}
+                            />
+                            <Label htmlFor="show-brand-colors">Use brand colors</Label>
+                          </div>
+                        </div>
                       </div>
                     </>
                   )}

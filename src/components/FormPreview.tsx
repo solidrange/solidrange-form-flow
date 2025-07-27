@@ -62,11 +62,14 @@ export const FormPreview = ({
 
   // Get branding settings - prioritize form-specific branding over global
   const brandingEnabled = formSettings?.branding?.enabled ?? true;
+  const useGlobalBranding = formSettings?.branding?.useGlobalBranding ?? false;
   const showLogo = formSettings?.branding?.showLogo ?? true;
   const showBrandColors = formSettings?.branding?.showBrandColors ?? true;
-  const brandName = formSettings?.branding?.brandName || brand.name;
-  const brandLogo = formSettings?.branding?.logo || brand.logo;
-  const brandColors = formSettings?.branding?.colors || brand.colors;
+  
+  // Use global or form-specific branding based on setting
+  const brandName = useGlobalBranding ? brand.name : (formSettings?.branding?.brandName || brand.name);
+  const brandLogo = useGlobalBranding ? brand.logo : (formSettings?.branding?.logo || brand.logo);
+  const brandColors = useGlobalBranding ? brand.colors : (formSettings?.branding?.colors || brand.colors);
 
   if (isExpired) {
     return (
