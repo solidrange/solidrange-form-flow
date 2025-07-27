@@ -1,20 +1,55 @@
 
 import React, { useState } from 'react';
-import { FormTemplate, FormField } from '@/types/form';
+import { FormTemplate, FormField, DocumentAttachment } from '@/types/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from '@/components/ui/button';
 import { BrandedButton } from './BrandedButton';
 import { FormLibrary } from './FormLibrary';
 import { FieldPalette } from './FieldPalette';
 import { FormCanvas } from './FormCanvas';
 import { FieldEditor } from './FieldEditor';
 
-export const FormBuilder = () => {
-  const [formTitle, setFormTitle] = useState('');
-  const [formDescription, setFormDescription] = useState('');
-  const [formFields, setFormFields] = useState<FormField[]>([]);
-  const [selectedField, setSelectedField] = useState<string | null>(null);
+interface FormBuilderProps {
+  formFields: FormField[];
+  onAddField: (field: FormField) => void;
+  onUpdateField: (fieldId: string, updates: Partial<FormField>) => void;
+  onRemoveField: (fieldId: string) => void;
+  selectedFieldId: string | null;
+  onSelectField: (fieldId: string | null) => void;
+  title: string;
+  onUpdateTitle: (title: string) => void;
+  description: string;
+  onUpdateDescription: (description: string) => void;
+  onSaveForm: () => void;
+  onPreviewForm: () => void;
+  attachments: DocumentAttachment[];
+  onUpdateAttachments: (attachments: DocumentAttachment[]) => void;
+  onSaveToLibrary: () => void;
+  isPublished: boolean;
+  onMoveToDraft: () => void;
+}
+
+export const FormBuilder = ({
+  formFields,
+  onAddField,
+  onUpdateField,
+  onRemoveField,
+  selectedFieldId,
+  onSelectField,
+  title,
+  onUpdateTitle,
+  description,
+  onUpdateDescription,
+  onSaveForm,
+  onPreviewForm,
+  attachments,
+  onUpdateAttachments,
+  onSaveToLibrary,
+  isPublished,
+  onMoveToDraft
+}: FormBuilderProps) => {
   const [activeTab, setActiveTab] = useState('build');
 
   console.log('FormBuilder: Current form fields:', formFields);
@@ -23,67 +58,28 @@ export const FormBuilder = () => {
     console.log('FormBuilder: Received template:', template.name);
     console.log('FormBuilder: Template fields:', template.fields);
     
-    setFormTitle(template.name);
-    setFormDescription(template.description);
+    onUpdateTitle(template.name);
+    onUpdateDescription(template.description);
     
-    // Ensure fields have proper structure and unique IDs
+    // Clear existing fields first
+    formFields.forEach(field => onRemoveField(field.id));
+    
+    // Add template fields with unique IDs
     const processedFields = template.fields.map((field, index) => ({
       ...field,
-      id: `field-${Date.now()}-${index}` // Ensure unique IDs
+      id: `field-${Date.now()}-${index}`
     }));
     
     console.log('FormBuilder: Processed fields:', processedFields);
-    setFormFields(processedFields);
-    setSelectedField(null);
+    processedFields.forEach(field => onAddField(field));
+    onSelectField(null);
     setActiveTab('build');
-  };
-
-  const handleAddField = (field: FormField) => {
-    console.log('FormBuilder: Adding field:', field);
-    const newField = {
-      ...field,
-      id: `field-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    };
-    setFormFields(prev => {
-      const updated = [...prev, newField];
-      console.log('FormBuilder: Updated fields after add:', updated);
-      return updated;
-    });
-  };
-
-  const handleUpdateField = (fieldId: string, updates: Partial<FormField>) => {
-    console.log('FormBuilder: Updating field:', fieldId, updates);
-    setFormFields(prev => prev.map(field => 
-      field.id === fieldId ? { ...field, ...updates } : field
-    ));
-  };
-
-  const handleRemoveField = (fieldId: string) => {
-    console.log('FormBuilder: Removing field:', fieldId);
-    setFormFields(prev => prev.filter(field => field.id !== fieldId));
-    if (selectedField === fieldId) {
-      setSelectedField(null);
-    }
   };
 
   const handleReorderFields = (dragIndex: number, hoverIndex: number) => {
     console.log('FormBuilder: Reordering fields:', dragIndex, hoverIndex);
-    setFormFields(prev => {
-      const draggedField = prev[dragIndex];
-      const newFields = [...prev];
-      newFields.splice(dragIndex, 1);
-      newFields.splice(hoverIndex, 0, draggedField);
-      return newFields;
-    });
-  };
-
-  const handleSave = () => {
-    console.log('FormBuilder: Saving form:', {
-      title: formTitle,
-      description: formDescription,
-      fields: formFields
-    });
-    // TODO: Implement actual save functionality
+    // This would need to be implemented in the parent component
+    // For now, we'll just log it
   };
 
   return (
@@ -99,8 +95,17 @@ export const FormBuilder = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {isPublished && (
+              <Button
+                onClick={onMoveToDraft}
+                variant="outline"
+                size="sm"
+              >
+                Move to Draft
+              </Button>
+            )}
             <BrandedButton
-              onClick={handleSave}
+              onClick={onSaveForm}
               variant="outline"
               size="sm"
             >
@@ -121,7 +126,7 @@ export const FormBuilder = () => {
             </TabsList>
             
             <TabsContent value="build" className="p-4 space-y-4">
-              <FieldPalette onAddField={handleAddField} />
+              <FieldPalette onAddField={onAddField} />
             </TabsContent>
             
             <TabsContent value="library" className="p-0">
@@ -138,14 +143,14 @@ export const FormBuilder = () => {
           <div className="p-6 border-b bg-gray-50">
             <Input
               placeholder="Form Title"
-              value={formTitle}
-              onChange={(e) => setFormTitle(e.target.value)}
+              value={title}
+              onChange={(e) => onUpdateTitle(e.target.value)}
               className="text-2xl font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-gray-400"
             />
             <Textarea
               placeholder="Form Description (optional)"
-              value={formDescription}
-              onChange={(e) => setFormDescription(e.target.value)}
+              value={description}
+              onChange={(e) => onUpdateDescription(e.target.value)}
               className="mt-2 border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-gray-400"
               rows={2}
             />
@@ -155,12 +160,13 @@ export const FormBuilder = () => {
           <div className="flex-1 p-6 overflow-y-auto">
             <FormCanvas
               fields={formFields}
-              selectedField={selectedField}
-              onSelectField={setSelectedField}
-              onUpdateField={handleUpdateField}
-              onRemoveField={handleRemoveField}
-              onAddField={handleAddField}
+              selectedField={selectedFieldId}
+              onSelectField={onSelectField}
+              onUpdateField={onUpdateField}
+              onRemoveField={onRemoveField}
+              onAddField={onAddField}
               onReorderFields={handleReorderFields}
+              readOnly={isPublished}
             />
           </div>
         </div>
@@ -168,9 +174,10 @@ export const FormBuilder = () => {
         {/* Right Sidebar - Field Editor */}
         <div className="w-80 border-l bg-white">
           <FieldEditor
-            selectedField={selectedField ? formFields.find(f => f.id === selectedField) : null}
-            onUpdateField={handleUpdateField}
-            onClose={() => setSelectedField(null)}
+            selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
+            onUpdateField={onUpdateField}
+            onClose={() => onSelectField(null)}
+            readOnly={isPublished}
           />
         </div>
       </div>
