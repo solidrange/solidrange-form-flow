@@ -144,8 +144,13 @@ export const FormBuilder = ({
   };
 
   const handleUseTemplate = (template: FormTemplate) => {
+    console.log('=== TEMPLATE APPLICATION START ===');
     console.log('FormBuilder: Received template:', template.name);
-    console.log('FormBuilder: Template fields:', template.fields);
+    console.log('FormBuilder: Template ID:', template.id);
+    console.log('FormBuilder: Template fields count:', template.fields.length);
+    console.log('FormBuilder: Template fields:', template.fields.map(f => ({ id: f.id, type: f.type, label: f.label })));
+    console.log('FormBuilder: Current form fields before clear:', formFields.length);
+    console.log('FormBuilder: Current form fields IDs:', formFields.map(f => f.id));
     
     // Clear field selection first
     onSelectField(null);
@@ -164,29 +169,53 @@ export const FormBuilder = ({
     }
     
     // Create template fields with unique IDs - ensure deep copy
-    const templateFields = template.fields.map((field, index) => ({
-      ...field,
-      id: `template-${template.id}-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-      // Ensure options are properly copied if they exist
-      ...(field.options && { options: [...field.options] }),
-      // Ensure acceptedFileTypes are properly copied if they exist
-      ...(field.acceptedFileTypes && { acceptedFileTypes: [...field.acceptedFileTypes] })
-    }));
+    const templateFields = template.fields.map((field, index) => {
+      const newField = {
+        ...field,
+        id: `template-${template.id}-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        // Ensure options are properly copied if they exist
+        ...(field.options && { options: [...field.options] }),
+        // Ensure acceptedFileTypes are properly copied if they exist
+        ...(field.acceptedFileTypes && { acceptedFileTypes: [...field.acceptedFileTypes] })
+      };
+      console.log(`FormBuilder: Created new field ${index + 1}:`, {
+        originalId: field.id,
+        newId: newField.id,
+        type: newField.type,
+        label: newField.label,
+        options: newField.options
+      });
+      return newField;
+    });
     
-    console.log('FormBuilder: Applying template with fields:', templateFields.length);
-    console.log('FormBuilder: Template fields to add:', templateFields);
+    console.log('FormBuilder: Total template fields to add:', templateFields.length);
+    console.log('FormBuilder: Template fields mapped:', templateFields.map(f => ({ id: f.id, type: f.type, label: f.label })));
     
     // Clear all existing fields first
     const currentFieldIds = [...formFields.map(field => field.id)];
-    currentFieldIds.forEach(fieldId => onRemoveField(fieldId));
+    console.log('FormBuilder: Clearing existing fields:', currentFieldIds);
+    currentFieldIds.forEach(fieldId => {
+      console.log('FormBuilder: Removing field:', fieldId);
+      onRemoveField(fieldId);
+    });
     
-    // Add all template fields at once after clearing
+    // Add all template fields with proper timing
+    console.log('FormBuilder: Starting to add template fields after timeout...');
     setTimeout(() => {
+      console.log('FormBuilder: Timeout executed, adding fields...');
       templateFields.forEach((field, index) => {
-        console.log(`FormBuilder: Adding field ${index + 1}:`, field.label, field.type);
+        console.log(`FormBuilder: Adding field ${index + 1}/${templateFields.length}:`, {
+          id: field.id,
+          type: field.type,
+          label: field.label,
+          required: field.required,
+          options: field.options
+        });
         onAddField(field);
       });
-    }, 50);
+      console.log('FormBuilder: All template fields added');
+      console.log('=== TEMPLATE APPLICATION END ===');
+    }, 100);
     
     // Switch to builder tab after applying template
     setActiveTab('builder');
