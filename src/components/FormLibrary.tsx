@@ -78,27 +78,42 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
     });
   }, [searchTerm, selectedCategories, selectedSectors]);
 
-  // Group templates by sector for display
+  // Group templates by sector for display - ensuring no duplicates
   const templatesBySector = useMemo(() => {
     const grouped: Record<string, FormTemplate[]> = {};
     
-    filteredTemplates.forEach(template => {
-      // Handle both string and string[] types for template.sector
-      const templateSectors = Array.isArray(template.sector) ? template.sector : [template.sector];
-      
-      templateSectors.forEach(sector => {
-        if (!grouped[sector]) {
-          grouped[sector] = [];
-        }
-        // Only add template once per sector to avoid duplicates
-        if (!grouped[sector].find(t => t.id === template.id)) {
-          grouped[sector].push(template);
+    // If no sector is selected or 'all' is selected, group all filtered templates by their sectors
+    if (selectedSectors.length === 0 || selectedSectors.includes('all')) {
+      filteredTemplates.forEach(template => {
+        // Handle both string and string[] types for template.sector
+        const templateSectors = Array.isArray(template.sector) ? template.sector : [template.sector];
+        
+        templateSectors.forEach(sector => {
+          if (!grouped[sector]) {
+            grouped[sector] = [];
+          }
+          // Only add template once per sector to avoid duplicates
+          if (!grouped[sector].find(t => t.id === template.id)) {
+            grouped[sector].push(template);
+          }
+        });
+      });
+    } else {
+      // If specific sectors are selected, only show templates for those sectors
+      selectedSectors.forEach(selectedSector => {
+        const templatesForSector = filteredTemplates.filter(template => {
+          const templateSectors = Array.isArray(template.sector) ? template.sector : [template.sector];
+          return templateSectors.includes(selectedSector);
+        });
+        
+        if (templatesForSector.length > 0) {
+          grouped[selectedSector] = templatesForSector;
         }
       });
-    });
+    }
     
     return grouped;
-  }, [filteredTemplates]);
+  }, [filteredTemplates, selectedSectors]);
 
   const handleUseTemplate = (template: FormTemplate) => {
     console.log('FormLibrary: Using template:', template.name);
