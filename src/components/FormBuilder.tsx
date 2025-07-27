@@ -14,6 +14,7 @@ import { FormPreview } from './FormPreview';
 import { FormSettingsPanel } from './FormSettingsPanel';
 import { MultiSelectCategory } from './MultiSelectCategory';
 import { MultiSelectFilter } from './MultiSelectFilter';
+import { FileAttachmentManager } from './FileAttachmentManager';
 import { Label } from '@/components/ui/label';
 
 interface FormBuilderProps {
@@ -145,7 +146,7 @@ export const FormBuilder = ({
     }
   };
 
-  const handleUseTemplate = async (template: FormTemplate) => {
+  const handleUseTemplate = (template: FormTemplate) => {
     console.log('FormBuilder: Received template:', template.name);
     console.log('FormBuilder: Template fields:', template.fields);
     
@@ -161,30 +162,36 @@ export const FormBuilder = ({
       setSelectedCategories([template.category]);
     }
     if (template.sector) {
-      // Handle both string and string[] types for sector
       const sectors = Array.isArray(template.sector) ? template.sector : [template.sector];
       setSelectedSectors(sectors);
     }
     
-    // Clear existing fields synchronously - wait for all removals to complete
-    console.log('FormBuilder: Clearing existing fields...');
-    const existingFieldIds = [...formFields.map(f => f.id)];
-    existingFieldIds.forEach(fieldId => {
-      console.log('FormBuilder: Removing existing field:', fieldId);
-      onRemoveField(fieldId);
-    });
-    
-    // Add template fields with unique IDs - no delays needed
-    console.log('FormBuilder: Adding template fields...');
-    const processedFields = template.fields.map((field, index) => ({
-      ...field,
-      id: `template-field-${Date.now()}-${index}`
-    }));
-    
-    console.log('FormBuilder: Processed fields to add:', processedFields.length);
-    processedFields.forEach((field, index) => {
-      console.log('FormBuilder: Adding field:', field.id, field.label);
-      onAddField(field);
+    // Use requestAnimationFrame to ensure DOM updates are processed
+    requestAnimationFrame(() => {
+      // Clear existing fields
+      const existingFieldIds = [...formFields.map(f => f.id)];
+      console.log('FormBuilder: Clearing existing fields:', existingFieldIds);
+      
+      // Remove all existing fields
+      existingFieldIds.forEach(fieldId => {
+        console.log('FormBuilder: Removing existing field:', fieldId);
+        onRemoveField(fieldId);
+      });
+      
+      // Add new fields after a brief delay to ensure removals are processed
+      setTimeout(() => {
+        console.log('FormBuilder: Adding template fields...');
+        const processedFields = template.fields.map((field, index) => ({
+          ...field,
+          id: `template-field-${Date.now()}-${index}-${Math.random().toString(36).substr(2, 9)}`
+        }));
+        
+        console.log('FormBuilder: Processed fields to add:', processedFields.length);
+        processedFields.forEach((field, index) => {
+          console.log('FormBuilder: Adding field:', field.id, field.label);
+          onAddField(field);
+        });
+      }, 100);
     });
     
     // Switch to builder tab after applying template
@@ -335,6 +342,17 @@ export const FormBuilder = ({
                       formatLabel={formatSectorLabel}
                     />
                   </div>
+                </div>
+
+                {/* File Attachments Section */}
+                <div className="mt-6">
+                  <FileAttachmentManager
+                    attachments={attachments}
+                    onUpdateAttachments={onUpdateAttachments}
+                    allowedTypes={['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png']}
+                    maxSize={10}
+                    readOnly={isPublished}
+                  />
                 </div>
               </div>
 
