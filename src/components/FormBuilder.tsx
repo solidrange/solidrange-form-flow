@@ -10,6 +10,7 @@ import { FormLibrary } from './FormLibrary';
 import { FieldPalette } from './FieldPalette';
 import { FormCanvas } from './FormCanvas';
 import { FieldEditor } from './FieldEditor';
+import { FormPreview } from './FormPreview';
 
 interface FormBuilderProps {
   formFields: FormField[];
@@ -50,7 +51,7 @@ export const FormBuilder = ({
   isPublished,
   onMoveToDraft
 }: FormBuilderProps) => {
-  const [activeTab, setActiveTab] = useState('build');
+  const [activeTab, setActiveTab] = useState('builder');
 
   console.log('FormBuilder: Current form fields:', formFields);
 
@@ -73,7 +74,9 @@ export const FormBuilder = ({
     console.log('FormBuilder: Processed fields:', processedFields);
     processedFields.forEach(field => onAddField(field));
     onSelectField(null);
-    setActiveTab('build');
+    
+    // Switch to builder tab after applying template
+    setActiveTab('builder');
   };
 
   const handleReorderFields = (dragIndex: number, hoverIndex: number) => {
@@ -88,11 +91,13 @@ export const FormBuilder = ({
       <div className="border-b bg-white p-4">
         <div className="flex items-center justify-between">
           <div>
-            <div className="inline-flex items-center bg-gray-100 rounded-full p-1">
-              <span className="px-3 py-1 text-sm font-medium text-gray-900 bg-white rounded-full shadow-sm">
-                Build
-              </span>
-            </div>
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="builder">Builder</TabsTrigger>
+                <TabsTrigger value="templates">Templates</TabsTrigger>
+                <TabsTrigger value="preview">Preview</TabsTrigger>
+              </TabsList>
+            </Tabs>
           </div>
           <div className="flex items-center gap-2">
             {isPublished && (
@@ -117,69 +122,84 @@ export const FormBuilder = ({
 
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Left Sidebar - Form Library or Field Palette */}
-        <div className="w-80 border-r bg-white overflow-y-auto">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="build">Fields</TabsTrigger>
-              <TabsTrigger value="library">Templates</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="build" className="p-4 space-y-4">
-              <FieldPalette onAddField={onAddField} />
-            </TabsContent>
-            
-            <TabsContent value="library" className="p-0">
-              <div className="h-full overflow-y-auto">
-                <FormLibrary onUseTemplate={handleUseTemplate} />
+        {/* Templates Tab - Full Width */}
+        {activeTab === 'templates' && (
+          <div className="flex-1 overflow-y-auto">
+            <div className="p-6">
+              <FormLibrary onUseTemplate={handleUseTemplate} />
+            </div>
+          </div>
+        )}
+
+        {/* Preview Tab - Full Width */}
+        {activeTab === 'preview' && (
+          <div className="flex-1 overflow-y-auto bg-gray-50">
+            <div className="p-6">
+              <FormPreview
+                formTitle={title}
+                formDescription={description}
+                formFields={formFields}
+                attachments={attachments}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Builder Tab - Three Column Layout */}
+        {activeTab === 'builder' && (
+          <>
+            {/* Left Sidebar - Field Palette */}
+            <div className="w-80 border-r bg-white overflow-y-auto">
+              <div className="p-4">
+                <FieldPalette onAddField={onAddField} />
               </div>
-            </TabsContent>
-          </Tabs>
-        </div>
+            </div>
 
-        {/* Center - Form Canvas */}
-        <div className="flex-1 flex flex-col">
-          {/* Form Header */}
-          <div className="p-6 border-b bg-gray-50">
-            <Input
-              placeholder="Form Title"
-              value={title}
-              onChange={(e) => onUpdateTitle(e.target.value)}
-              className="text-2xl font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-gray-400"
-            />
-            <Textarea
-              placeholder="Form Description (optional)"
-              value={description}
-              onChange={(e) => onUpdateDescription(e.target.value)}
-              className="mt-2 border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-gray-400"
-              rows={2}
-            />
-          </div>
+            {/* Center - Form Canvas */}
+            <div className="flex-1 flex flex-col">
+              {/* Form Header */}
+              <div className="p-6 border-b bg-gray-50">
+                <Input
+                  placeholder="Form Title"
+                  value={title}
+                  onChange={(e) => onUpdateTitle(e.target.value)}
+                  className="text-2xl font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-gray-400"
+                />
+                <Textarea
+                  placeholder="Form Description (optional)"
+                  value={description}
+                  onChange={(e) => onUpdateDescription(e.target.value)}
+                  className="mt-2 border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-gray-400"
+                  rows={2}
+                />
+              </div>
 
-          {/* Form Fields */}
-          <div className="flex-1 p-6 overflow-y-auto">
-            <FormCanvas
-              fields={formFields}
-              selectedField={selectedFieldId}
-              onSelectField={onSelectField}
-              onUpdateField={onUpdateField}
-              onRemoveField={onRemoveField}
-              onAddField={onAddField}
-              onReorderFields={handleReorderFields}
-              readOnly={isPublished}
-            />
-          </div>
-        </div>
+              {/* Form Fields */}
+              <div className="flex-1 p-6 overflow-y-auto">
+                <FormCanvas
+                  fields={formFields}
+                  selectedField={selectedFieldId}
+                  onSelectField={onSelectField}
+                  onUpdateField={onUpdateField}
+                  onRemoveField={onRemoveField}
+                  onAddField={onAddField}
+                  onReorderFields={handleReorderFields}
+                  readOnly={isPublished}
+                />
+              </div>
+            </div>
 
-        {/* Right Sidebar - Field Editor */}
-        <div className="w-80 border-l bg-white">
-          <FieldEditor
-            selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
-            onUpdateField={onUpdateField}
-            onClose={() => onSelectField(null)}
-            readOnly={isPublished}
-          />
-        </div>
+            {/* Right Sidebar - Field Editor */}
+            <div className="w-80 border-l bg-white">
+              <FieldEditor
+                selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
+                onUpdateField={onUpdateField}
+                onClose={() => onSelectField(null)}
+                readOnly={isPublished}
+              />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
