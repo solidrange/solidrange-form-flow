@@ -4,10 +4,10 @@ import { FormTemplate } from '@/types/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, Building2, Shield, Zap, Heart, Activity, Smartphone, Lightbulb, Briefcase, Globe } from 'lucide-react';
 import { BrandedButton } from './BrandedButton';
 import { allTemplates } from '@/data/formTemplates';
+import { MultiSelectFilter } from './MultiSelectFilter';
 
 interface FormLibraryProps {
   onUseTemplate: (template: FormTemplate) => void;
@@ -26,31 +26,28 @@ const sectorIcons = {
 };
 
 const categoryOptions = [
-  { value: 'all', label: 'All Categories', count: 270 },
-  { value: 'Registration', label: 'Registration', count: 90 },
-  { value: 'Assessment', label: 'Assessment', count: 60 },
-  { value: 'Compliance', label: 'Compliance', count: 45 },
-  { value: 'Feedback', label: 'Feedback', count: 30 },
-  { value: 'Risk', label: 'Risk', count: 45 }
+  'all', 'Registration', 'Assessment', 'Compliance', 'Feedback', 'Risk'
 ];
 
 const sectorOptions = [
-  { value: 'all', label: 'All Sectors', count: 270 },
-  { value: 'Government', label: 'Government', count: 30 },
-  { value: 'Insurance', label: 'Insurance', count: 30 },
-  { value: 'Fintech', label: 'Fintech', count: 30 },
-  { value: 'Health', label: 'Health', count: 30 },
-  { value: 'Energy', label: 'Energy', count: 30 },
-  { value: 'Telecom', label: 'Telecom', count: 30 },
-  { value: 'Startups', label: 'Startups', count: 30 },
-  { value: 'SME', label: 'SME', count: 30 },
-  { value: 'Multi-Sector', label: 'Multi-Sector', count: 30 }
+  'all', 'Government', 'Insurance', 'Fintech', 'Health', 'Energy', 
+  'Telecom', 'Startups', 'SME', 'Multi-Sector'
 ];
+
+const getCategoryCount = (category: string) => {
+  if (category === 'all') return allTemplates.length;
+  return allTemplates.filter(t => t.category === category).length;
+};
+
+const getSectorCount = (sector: string) => {
+  if (sector === 'all') return allTemplates.length;
+  return allTemplates.filter(t => t.sector === sector).length;
+};
 
 export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedSector, setSelectedSector] = useState('all');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
 
   console.log('FormLibrary: Available templates:', allTemplates.length);
 
@@ -61,12 +58,17 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
                           template.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           template.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
       
-      const matchesCategory = selectedCategory === 'all' || template.category === selectedCategory;
-      const matchesSector = selectedSector === 'all' || template.sector === selectedSector;
+      const matchesCategory = selectedCategories.length === 0 || 
+                            selectedCategories.includes('all') || 
+                            selectedCategories.includes(template.category);
+      
+      const matchesSector = selectedSectors.length === 0 || 
+                          selectedSectors.includes('all') || 
+                          selectedSectors.includes(template.sector);
       
       return matchesSearch && matchesCategory && matchesSector;
     });
-  }, [searchTerm, selectedCategory, selectedSector]);
+  }, [searchTerm, selectedCategories, selectedSectors]);
 
   // Group templates by sector for display
   const templatesBySector = useMemo(() => {
@@ -116,40 +118,36 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
         </div>
 
         {/* Category Filter */}
-        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select category..." />
-          </SelectTrigger>
-          <SelectContent>
-            {categoryOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label} ({option.count})
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <MultiSelectFilter
+          options={categoryOptions}
+          selectedValues={selectedCategories}
+          onSelectionChange={setSelectedCategories}
+          placeholder="Select categories..."
+          showCounts={true}
+          getCounts={getCategoryCount}
+        />
 
         {/* Sector Filter */}
-        <Select value={selectedSector} onValueChange={setSelectedSector}>
-          <SelectTrigger>
-            <SelectValue placeholder="Select sector..." />
-          </SelectTrigger>
-          <SelectContent>
-            {sectorOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label} ({option.count})
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <MultiSelectFilter
+          options={sectorOptions}
+          selectedValues={selectedSectors}
+          onSelectionChange={setSelectedSectors}
+          placeholder="Select sectors..."
+          showCounts={true}
+          getCounts={getSectorCount}
+        />
       </div>
 
       {/* Results Summary */}
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         <span>Showing {filteredTemplates.length} templates</span>
         {searchTerm && <Badge variant="secondary">Search: {searchTerm}</Badge>}
-        {selectedCategory !== 'all' && <Badge variant="secondary">Category: {selectedCategory}</Badge>}
-        {selectedSector !== 'all' && <Badge variant="secondary">Sector: {selectedSector}</Badge>}
+        {selectedCategories.length > 0 && !selectedCategories.includes('all') && (
+          <Badge variant="secondary">Categories: {selectedCategories.length}</Badge>
+        )}
+        {selectedSectors.length > 0 && !selectedSectors.includes('all') && (
+          <Badge variant="secondary">Sectors: {selectedSectors.length}</Badge>
+        )}
       </div>
 
       {/* Templates by Sector */}

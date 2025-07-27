@@ -12,6 +12,8 @@ import { FormCanvas } from './FormCanvas';
 import { FieldEditor } from './FieldEditor';
 import { FormPreview } from './FormPreview';
 import { FormSettingsPanel } from './FormSettingsPanel';
+import { MultiSelectCategory } from './MultiSelectCategory';
+import { MultiSelectFilter } from './MultiSelectFilter';
 
 interface FormBuilderProps {
   formFields: FormField[];
@@ -33,6 +35,11 @@ interface FormBuilderProps {
   onMoveToDraft: () => void;
 }
 
+const sectorOptions = [
+  'Government', 'Insurance', 'Fintech', 'Health', 'Energy', 
+  'Telecom', 'Startups', 'SME', 'Multi-Sector'
+];
+
 export const FormBuilder = ({
   formFields,
   onAddField,
@@ -53,6 +60,8 @@ export const FormBuilder = ({
   onMoveToDraft
 }: FormBuilderProps) => {
   const [activeTab, setActiveTab] = useState('builder');
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
 
   console.log('FormBuilder: Current form fields:', formFields);
 
@@ -142,6 +151,14 @@ export const FormBuilder = ({
     onUpdateTitle(template.name);
     onUpdateDescription(template.description);
     
+    // Set categories and sectors from template
+    if (template.category) {
+      setSelectedCategories([template.category]);
+    }
+    if (template.sector) {
+      setSelectedSectors([template.sector]);
+    }
+    
     // Clear existing fields first
     formFields.forEach(field => onRemoveField(field.id));
     
@@ -173,6 +190,14 @@ export const FormBuilder = ({
       onUpdateDescription(updates.description);
     }
     // Handle other form updates as needed
+  };
+
+  const formatSectorLabel = (sector: string) => {
+    switch (sector) {
+      case 'sme': return 'SME';
+      case 'multi-sector': return 'Multi-Sector';
+      default: return sector.charAt(0).toUpperCase() + sector.slice(1);
+    }
   };
 
   return (
@@ -276,6 +301,23 @@ export const FormBuilder = ({
                   className="mt-2 border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-gray-400"
                   rows={2}
                 />
+                
+                {/* Category and Sector Selection */}
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <MultiSelectCategory
+                    selectedCategories={selectedCategories}
+                    onCategoryChange={setSelectedCategories}
+                    disabled={isPublished}
+                  />
+                  
+                  <MultiSelectFilter
+                    options={sectorOptions}
+                    selectedValues={selectedSectors}
+                    onSelectionChange={setSelectedSectors}
+                    placeholder="Select sectors..."
+                    formatLabel={formatSectorLabel}
+                  />
+                </div>
               </div>
 
               {/* Form Fields */}
