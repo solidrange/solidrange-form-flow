@@ -167,7 +167,14 @@ const Index = () => {
    * Add a new field to the current form
    */
   const addField = (field: FormField) => {
-    setFormFields([...formFields, { ...field, id: Date.now().toString() }]);
+    console.log('Index: Adding field:', field.id, field.label, field.type);
+    // Don't override the field ID if it already exists (important for templates)
+    const fieldToAdd = field.id ? field : { ...field, id: Date.now().toString() };
+    setFormFields(prev => {
+      const updated = [...prev, fieldToAdd];
+      console.log('Index: Updated form fields count:', updated.length);
+      return updated;
+    });
   };
 
   /**

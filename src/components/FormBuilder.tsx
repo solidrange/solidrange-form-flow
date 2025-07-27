@@ -16,7 +16,7 @@ import { MultiSelectCategory } from './MultiSelectCategory';
 import { MultiSelectFilter } from './MultiSelectFilter';
 import { FileAttachmentManager } from './FileAttachmentManager';
 import { Label } from '@/components/ui/label';
-import { TemplateManager, useTemplateManager } from './TemplateManager';
+
 
 interface FormBuilderProps {
   formFields: FormField[];
@@ -144,194 +144,6 @@ export const FormBuilder = ({
     }
   };
 
-  // NEW TEMPLATE SYSTEM - Simple handler that delegates to TemplateManager
-  const FormBuilderContent = () => {
-    const { applyTemplate } = useTemplateManager();
-
-    const handleUseTemplate = (template: FormTemplate) => {
-      console.log('FormBuilder: Template selected from library:', template.name);
-      applyTemplate(template, setSelectedCategories, setSelectedSectors);
-      setActiveTab('builder');
-    };
-
-    return (
-      <div className="h-full flex flex-col">
-        {/* Header */}
-        <div className="border-b bg-white p-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-4">
-                  <TabsTrigger value="builder">Builder</TabsTrigger>
-                  <TabsTrigger value="templates">Templates</TabsTrigger>
-                  <TabsTrigger value="preview">Preview</TabsTrigger>
-                  <TabsTrigger value="settings">Settings</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-            <div className="flex items-center gap-2">
-              {isPublished && (
-                <Button
-                  onClick={onMoveToDraft}
-                  variant="outline"
-                  size="sm"
-                >
-                  Move to Draft
-                </Button>
-              )}
-              <BrandedButton
-                onClick={onSaveForm}
-                variant="outline"
-                size="sm"
-              >
-                Save Draft
-              </BrandedButton>
-            </div>
-          </div>
-        </div>
-
-        {/* Main Content */}
-        <div className="flex-1 flex overflow-hidden">
-          {/* Templates Tab - Full Width */}
-          {activeTab === 'templates' && (
-            <div className="flex-1 overflow-y-auto">
-              <div className="p-6">
-                <FormLibrary onUseTemplate={handleUseTemplate} />
-              </div>
-            </div>
-          )}
-
-          {/* Preview Tab - Full Width */}
-          {activeTab === 'preview' && (
-            <div className="flex-1 overflow-y-auto bg-gray-50">
-              <div className="p-6">
-                <FormPreview
-                  formTitle={title}
-                  formDescription={description}
-                  formFields={formFields}
-                  attachments={attachments}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Settings Tab - Full Width */}
-          {activeTab === 'settings' && (
-            <div className="flex-1 overflow-y-auto">
-              <div className="p-6">
-                <FormSettingsPanel 
-                  form={form} 
-                  onUpdateForm={handleUpdateForm} 
-                  isPublished={isPublished}
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Builder Tab - Resizable Three Column Layout */}
-          {activeTab === 'builder' && (
-            <ResizablePanelGroup direction="horizontal" className="flex-1">
-              {/* Left Sidebar - Field Palette */}
-              <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
-                <div className="h-full border-r bg-white overflow-y-auto">
-                  <div className="p-4">
-                    <FieldPalette onAddField={onAddField} />
-                  </div>
-                </div>
-              </ResizablePanel>
-              
-              <ResizableHandle withHandle />
-
-              {/* Center - Form Canvas */}
-              <ResizablePanel defaultSize={selectedFieldId ? 50 : 75} minSize={40}>
-                <div className="h-full flex flex-col">
-                  {/* Form Header */}
-                  <div className="p-6 border-b bg-gray-50">
-                    <Input
-                      placeholder="Form Title"
-                      value={title}
-                      onChange={(e) => onUpdateTitle(e.target.value)}
-                      className="text-2xl font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-gray-400"
-                    />
-                    <Textarea
-                      placeholder="Form Description (optional)"
-                      value={description}
-                      onChange={(e) => onUpdateDescription(e.target.value)}
-                      className="mt-2 border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-gray-400"
-                      rows={2}
-                    />
-                    
-                    {/* Category and Sector Selection */}
-                    <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <MultiSelectCategory
-                        selectedCategories={selectedCategories}
-                        onCategoryChange={setSelectedCategories}
-                        disabled={isPublished}
-                      />
-                      
-                      <div className="space-y-2">
-                        <Label className="text-sm font-medium text-gray-700">Sectors</Label>
-                        <MultiSelectFilter
-                          options={sectorOptions}
-                          selectedValues={selectedSectors}
-                          onSelectionChange={setSelectedSectors}
-                          placeholder="Select sectors..."
-                          formatLabel={formatSectorLabel}
-                        />
-                      </div>
-                    </div>
-
-                    {/* File Attachments Section */}
-                    <div className="mt-6">
-                      <FileAttachmentManager
-                        attachments={attachments}
-                        onUpdateAttachments={onUpdateAttachments}
-                        allowedTypes={['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png']}
-                        maxSize={10}
-                        readOnly={isPublished}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Form Fields */}
-                  <div className="flex-1 p-6 overflow-y-auto">
-                    <FormCanvas
-                      fields={formFields}
-                      selectedField={selectedFieldId}
-                      onSelectField={onSelectField}
-                      onUpdateField={onUpdateField}
-                      onRemoveField={onRemoveField}
-                      onAddField={onAddField}
-                      onReorderFields={handleReorderFields}
-                      readOnly={isPublished}
-                    />
-                  </div>
-                </div>
-              </ResizablePanel>
-
-              {/* Right Sidebar - Field Editor - Only show when a field is selected */}
-              {selectedFieldId && (
-                <>
-                  <ResizableHandle withHandle />
-                  <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
-                    <div className="h-full border-l bg-white">
-                      <FieldEditor
-                        selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
-                        onUpdateField={onUpdateField}
-                        onClose={() => onSelectField(null)}
-                        readOnly={isPublished}
-                      />
-                    </div>
-                  </ResizablePanel>
-                </>
-              )}
-            </ResizablePanelGroup>
-          )}
-        </div>
-      </div>
-    );
-  };
-
   const handleReorderFields = (dragIndex: number, hoverIndex: number) => {
     console.log('FormBuilder: Reordering fields:', dragIndex, hoverIndex);
     // This would need to be implemented in the parent component
@@ -356,16 +168,242 @@ export const FormBuilder = ({
     }
   };
 
+  // NEW TEMPLATE SYSTEM - Simple handler that delegates to TemplateManager
+  const handleUseTemplate = (template: FormTemplate) => {
+    console.log('FormBuilder: Template selected from library:', template.name);
+    console.log('FormBuilder: Template fields:', template.fields.length);
+    
+    // Clear field selection first
+    onSelectField(null);
+    
+    // Update form details
+    onUpdateTitle(template.name);
+    onUpdateDescription(template.description);
+    
+    // Set categories and sectors from template
+    if (template.category) {
+      setSelectedCategories([template.category]);
+    }
+    if (template.sector) {
+      const sectors = Array.isArray(template.sector) ? template.sector : [template.sector];
+      setSelectedSectors(sectors);
+    }
+    
+    // Create template fields with unique IDs - ensure deep copy
+    const templateFields = template.fields.map((field, index) => {
+      const newField = {
+        ...field,
+        id: `template-${template.id}-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        // Ensure options are properly copied if they exist
+        ...(field.options && { options: [...field.options] }),
+        // Ensure acceptedFileTypes are properly copied if they exist
+        ...(field.acceptedFileTypes && { acceptedFileTypes: [...field.acceptedFileTypes] })
+      };
+      console.log(`FormBuilder: Created template field ${index + 1}:`, {
+        id: newField.id,
+        type: newField.type,
+        label: newField.label
+      });
+      return newField;
+    });
+    
+    console.log('FormBuilder: Clearing existing fields...');
+    // Clear all existing fields first
+    const currentFieldIds = [...formFields.map(field => field.id)];
+    currentFieldIds.forEach(fieldId => {
+      console.log('FormBuilder: Removing field:', fieldId);
+      onRemoveField(fieldId);
+    });
+    
+    // Add template fields with delay to ensure clearing is complete
+    console.log('FormBuilder: Adding template fields after delay...');
+    setTimeout(() => {
+      templateFields.forEach((field, index) => {
+        setTimeout(() => {
+          console.log(`FormBuilder: Adding template field ${index + 1}/${templateFields.length}:`, field.label);
+          onAddField(field);
+        }, index * 100);
+      });
+    }, 200);
+    
+    // Switch to builder tab after applying template
+    setActiveTab('builder');
+  };
+
   return (
-    <TemplateManager
-      onAddField={onAddField}
-      onRemoveField={onRemoveField}
-      onUpdateTitle={onUpdateTitle}
-      onUpdateDescription={onUpdateDescription}
-      onSelectField={onSelectField}
-      formFields={formFields}
-    >
-      <FormBuilderContent />
-    </TemplateManager>
+    <div className="h-full flex flex-col">
+      {/* Header */}
+      <div className="border-b bg-white p-4">
+        <div className="flex items-center justify-between">
+          <div>
+            <Tabs value={activeTab} onValueChange={setActiveTab}>
+              <TabsList className="grid w-full grid-cols-4">
+                <TabsTrigger value="builder">Builder</TabsTrigger>
+                <TabsTrigger value="templates">Templates</TabsTrigger>
+                <TabsTrigger value="preview">Preview</TabsTrigger>
+                <TabsTrigger value="settings">Settings</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+          <div className="flex items-center gap-2">
+            {isPublished && (
+              <Button
+                onClick={onMoveToDraft}
+                variant="outline"
+                size="sm"
+              >
+                Move to Draft
+              </Button>
+            )}
+            <BrandedButton
+              onClick={onSaveForm}
+              variant="outline"
+              size="sm"
+            >
+              Save Draft
+            </BrandedButton>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Templates Tab - Full Width */}
+        {activeTab === 'templates' && (
+          <div className="flex-1 overflow-y-auto">
+            <div className="p-6">
+              <FormLibrary onUseTemplate={handleUseTemplate} />
+            </div>
+          </div>
+        )}
+
+        {/* Preview Tab - Full Width */}
+        {activeTab === 'preview' && (
+          <div className="flex-1 overflow-y-auto bg-gray-50">
+            <div className="p-6">
+              <FormPreview
+                formTitle={title}
+                formDescription={description}
+                formFields={formFields}
+                attachments={attachments}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Settings Tab - Full Width */}
+        {activeTab === 'settings' && (
+          <div className="flex-1 overflow-y-auto">
+            <div className="p-6">
+              <FormSettingsPanel 
+                form={form} 
+                onUpdateForm={handleUpdateForm} 
+                isPublished={isPublished}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Builder Tab - Resizable Three Column Layout */}
+        {activeTab === 'builder' && (
+          <ResizablePanelGroup direction="horizontal" className="flex-1">
+            {/* Left Sidebar - Field Palette */}
+            <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
+              <div className="h-full border-r bg-white overflow-y-auto">
+                <div className="p-4">
+                  <FieldPalette onAddField={onAddField} />
+                </div>
+              </div>
+            </ResizablePanel>
+            
+            <ResizableHandle withHandle />
+
+            {/* Center - Form Canvas */}
+            <ResizablePanel defaultSize={selectedFieldId ? 50 : 75} minSize={40}>
+              <div className="h-full flex flex-col">
+                {/* Form Header */}
+                <div className="p-6 border-b bg-gray-50">
+                  <Input
+                    placeholder="Form Title"
+                    value={title}
+                    onChange={(e) => onUpdateTitle(e.target.value)}
+                    className="text-2xl font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-gray-400"
+                  />
+                  <Textarea
+                    placeholder="Form Description (optional)"
+                    value={description}
+                    onChange={(e) => onUpdateDescription(e.target.value)}
+                    className="mt-2 border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-gray-400"
+                    rows={2}
+                  />
+                  
+                  {/* Category and Sector Selection */}
+                  <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <MultiSelectCategory
+                      selectedCategories={selectedCategories}
+                      onCategoryChange={setSelectedCategories}
+                      disabled={isPublished}
+                    />
+                    
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium text-gray-700">Sectors</Label>
+                      <MultiSelectFilter
+                        options={sectorOptions}
+                        selectedValues={selectedSectors}
+                        onSelectionChange={setSelectedSectors}
+                        placeholder="Select sectors..."
+                        formatLabel={formatSectorLabel}
+                      />
+                    </div>
+                  </div>
+
+                  {/* File Attachments Section */}
+                  <div className="mt-6">
+                    <FileAttachmentManager
+                      attachments={attachments}
+                      onUpdateAttachments={onUpdateAttachments}
+                      allowedTypes={['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png']}
+                      maxSize={10}
+                      readOnly={isPublished}
+                    />
+                  </div>
+                </div>
+
+                {/* Form Fields */}
+                <div className="flex-1 p-6 overflow-y-auto">
+                  <FormCanvas
+                    fields={formFields}
+                    selectedField={selectedFieldId}
+                    onSelectField={onSelectField}
+                    onUpdateField={onUpdateField}
+                    onRemoveField={onRemoveField}
+                    onAddField={onAddField}
+                    onReorderFields={handleReorderFields}
+                    readOnly={isPublished}
+                  />
+                </div>
+              </div>
+            </ResizablePanel>
+
+            {/* Right Sidebar - Field Editor - Only show when a field is selected */}
+            {selectedFieldId && (
+              <>
+                <ResizableHandle withHandle />
+                <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
+                  <div className="h-full border-l bg-white">
+                    <FieldEditor
+                      selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
+                      onUpdateField={onUpdateField}
+                      onClose={() => onSelectField(null)}
+                      readOnly={isPublished}
+                    />
+                  </div>
+                </ResizablePanel>
+              </>
+            )}
+          </ResizablePanelGroup>
+        )}
+      </div>
+    </div>
   );
 };
