@@ -31,7 +31,6 @@ export const FormTemplatePreview: React.FC<FormTemplatePreviewProps> = ({
             formTitle={template.name}
             formDescription={template.description}
             formFields={template.fields}
-            attachments={template.attachments}
           />
         </div>
       </DialogContent>
