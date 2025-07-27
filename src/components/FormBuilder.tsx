@@ -156,7 +156,9 @@ export const FormBuilder = ({
       setSelectedCategories([template.category]);
     }
     if (template.sector) {
-      setSelectedSectors([template.sector]);
+      // Handle both string and string[] types for sector
+      const sectors = Array.isArray(template.sector) ? template.sector : [template.sector];
+      setSelectedSectors(sectors);
     }
     
     // Clear existing fields first

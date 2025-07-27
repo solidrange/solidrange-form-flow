@@ -41,7 +41,11 @@ const getCategoryCount = (category: string) => {
 
 const getSectorCount = (sector: string) => {
   if (sector === 'all') return allTemplates.length;
-  return allTemplates.filter(t => t.sector === sector).length;
+  return allTemplates.filter(t => {
+    // Handle both string and string[] types for template.sector
+    const templateSectors = Array.isArray(t.sector) ? t.sector : [t.sector];
+    return templateSectors.includes(sector);
+  }).length;
 };
 
 export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
@@ -64,7 +68,11 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
       
       const matchesSector = selectedSectors.length === 0 || 
                           selectedSectors.includes('all') || 
-                          selectedSectors.includes(template.sector);
+                          (() => {
+                            // Handle both string and string[] types for template.sector
+                            const templateSectors = Array.isArray(template.sector) ? template.sector : [template.sector];
+                            return templateSectors.some(sector => selectedSectors.includes(sector));
+                          })();
       
       return matchesSearch && matchesCategory && matchesSector;
     });
@@ -75,11 +83,18 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
     const grouped: Record<string, FormTemplate[]> = {};
     
     filteredTemplates.forEach(template => {
-      const sector = template.sector as string;
-      if (!grouped[sector]) {
-        grouped[sector] = [];
-      }
-      grouped[sector].push(template);
+      // Handle both string and string[] types for template.sector
+      const templateSectors = Array.isArray(template.sector) ? template.sector : [template.sector];
+      
+      templateSectors.forEach(sector => {
+        if (!grouped[sector]) {
+          grouped[sector] = [];
+        }
+        // Only add template once per sector to avoid duplicates
+        if (!grouped[sector].find(t => t.id === template.id)) {
+          grouped[sector].push(template);
+        }
+      });
     });
     
     return grouped;
@@ -182,9 +197,17 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
                           <Badge variant="secondary" className="text-xs">
                             {template.category}
                           </Badge>
-                          <Badge variant="outline" className="text-xs">
-                            {template.sector}
-                          </Badge>
+                          {Array.isArray(template.sector) ? (
+                            template.sector.map((s) => (
+                              <Badge key={s} variant="outline" className="text-xs">
+                                {s}
+                              </Badge>
+                            ))
+                          ) : (
+                            <Badge variant="outline" className="text-xs">
+                              {template.sector}
+                            </Badge>
+                          )}
                           {template.tags.slice(0, 2).map((tag) => (
                             <Badge key={tag} variant="outline" className="text-xs">
                               {tag}
