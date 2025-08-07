@@ -386,6 +386,45 @@ export const governmentTemplates: FormTemplate[] = [
       { id: '7', type: 'textarea', label: 'Appeal Basis', required: true, placeholder: 'Why you believe records should be released' },
       { id: '8', type: 'file', label: 'Supporting Documents', required: false, acceptedFileTypes: ['pdf'] }
     ]
+  },
+  {
+    id: 'gov-21',
+    name: 'Citizen Feedback on Public Services',
+    description: 'Collect citizen feedback on government services and programs',
+    category: 'Feedback',
+    sector: 'Government',
+    tags: ['Government', 'Public Services', 'Citizen Satisfaction', 'Quality'],
+    fields: [
+      { id: '1', type: 'select', label: 'Service Used', required: true, options: ['DMV Services', 'Public Transportation', 'Parks & Recreation', 'Public Safety', 'Utilities', 'Other'] },
+      { id: '2', type: 'select', label: 'Overall Satisfaction', required: true, options: ['Very Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Very Satisfied'] },
+      { id: '3', type: 'select', label: 'Staff Helpfulness', required: true, options: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'] },
+      { id: '4', type: 'select', label: 'Wait Time', required: true, options: ['Too Long', 'Acceptable', 'Quick', 'Very Quick'] },
+      { id: '5', type: 'select', label: 'Facility Cleanliness', required: true, options: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'] },
+      { id: '6', type: 'textarea', label: 'What did we do well?', required: false, placeholder: 'Positive feedback' },
+      { id: '7', type: 'textarea', label: 'How can we improve?', required: false, placeholder: 'Suggestions for improvement' },
+      { id: '8', type: 'select', label: 'Would you recommend our services?', required: true, options: ['Definitely Not', 'Probably Not', 'Maybe', 'Probably Yes', 'Definitely Yes'] },
+      { id: '9', type: 'text', label: 'Contact Information', required: false, placeholder: 'Optional - for follow-up' }
+    ]
+  },
+  {
+    id: 'gov-22',
+    name: 'Government Cybersecurity Risk Assessment',
+    description: 'Assess cybersecurity risks in government IT infrastructure',
+    category: 'Risk',
+    sector: 'Government',
+    tags: ['Government', 'Cybersecurity', 'IT Security', 'Threat Assessment'],
+    fields: [
+      { id: '1', type: 'text', label: 'Department/Agency', required: true, placeholder: 'Government department name' },
+      { id: '2', type: 'select', label: 'System Classification', required: true, options: ['Unclassified', 'Confidential', 'Secret', 'Top Secret'] },
+      { id: '3', type: 'checkbox', label: 'Threat Vectors', required: true, options: ['Phishing', 'Malware', 'Insider Threats', 'Nation State Actors', 'Ransomware', 'Social Engineering'] },
+      { id: '4', type: 'select', label: 'Data Sensitivity Level', required: true, options: ['Public', 'Internal Use', 'Confidential', 'Restricted'] },
+      { id: '5', type: 'checkbox', label: 'Existing Security Controls', required: true, options: ['Firewalls', 'Intrusion Detection', 'Encryption', 'Multi-Factor Auth', 'Security Training'] },
+      { id: '6', type: 'select', label: 'Risk Level', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
+      { id: '7', type: 'textarea', label: 'Vulnerabilities Identified', required: true, placeholder: 'Describe security vulnerabilities' },
+      { id: '8', type: 'textarea', label: 'Mitigation Strategies', required: true, placeholder: 'Proposed risk mitigation actions' },
+      { id: '9', type: 'date', label: 'Assessment Date', required: true },
+      { id: '10', type: 'text', label: 'Security Officer', required: true, placeholder: 'Chief Information Security Officer' }
+    ]
   }
 ];
 
@@ -826,6 +865,84 @@ export const insuranceTemplates: FormTemplate[] = [
       { id: '10', type: 'text', label: 'Pilot Name', required: true, placeholder: 'Primary pilot name' },
       { id: '11', type: 'number', label: 'Pilot Hours', required: true, placeholder: 'Total flight hours' },
       { id: '12', type: 'text', label: 'Storage Location', required: true, placeholder: 'Where aircraft is kept' }
+    ]
+  },
+  {
+    id: 'insurance-21',
+    name: 'Insurance Claim Feedback Survey',
+    description: 'Collect feedback on insurance claim handling experience',
+    category: 'Feedback',
+    sector: 'Insurance',
+    tags: ['Insurance', 'Claims', 'Customer Experience', 'Service Quality'],
+    fields: [
+      { id: '1', type: 'text', label: 'Claim Number', required: true, placeholder: 'Your claim reference number' },
+      { id: '2', type: 'select', label: 'Claim Type', required: true, options: ['Auto', 'Home', 'Health', 'Life', 'Business', 'Travel'] },
+      { id: '3', type: 'select', label: 'Overall Claim Experience', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '4', type: 'select', label: 'Claim Processing Speed', required: true, options: ['Too Slow', 'Slow', 'Acceptable', 'Fast', 'Very Fast'] },
+      { id: '5', type: 'select', label: 'Adjuster Communication', required: true, options: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'] },
+      { id: '6', type: 'select', label: 'Settlement Fairness', required: true, options: ['Very Unfair', 'Unfair', 'Fair', 'Very Fair', 'Excellent'] },
+      { id: '7', type: 'textarea', label: 'What went well?', required: false, placeholder: 'Positive aspects of your experience' },
+      { id: '8', type: 'textarea', label: 'Areas for improvement?', required: false, placeholder: 'How we can improve our service' },
+      { id: '9', type: 'select', label: 'Likelihood to recommend', required: true, options: ['Very Unlikely', 'Unlikely', 'Neutral', 'Likely', 'Very Likely'] }
+    ]
+  },
+  {
+    id: 'insurance-22',
+    name: 'Insurance Underwriting Risk Assessment',
+    description: 'Comprehensive risk assessment for insurance underwriting',
+    category: 'Risk',
+    sector: 'Insurance',
+    tags: ['Insurance', 'Underwriting', 'Risk Analysis', 'Premium Calculation'],
+    fields: [
+      { id: '1', type: 'text', label: 'Applicant Name', required: true, placeholder: 'Policy applicant name' },
+      { id: '2', type: 'select', label: 'Insurance Type', required: true, options: ['Life', 'Health', 'Auto', 'Property', 'Business', 'Travel'] },
+      { id: '3', type: 'select', label: 'Risk Category', required: true, options: ['Low Risk', 'Standard Risk', 'High Risk', 'Uninsurable'] },
+      { id: '4', type: 'checkbox', label: 'Risk Factors', required: true, options: ['Age', 'Health History', 'Lifestyle', 'Occupation', 'Location', 'Credit Score'] },
+      { id: '5', type: 'number', label: 'Coverage Amount', required: true, placeholder: 'Requested coverage amount' },
+      { id: '6', type: 'textarea', label: 'Medical History', required: false, placeholder: 'Relevant medical information' },
+      { id: '7', type: 'checkbox', label: 'Additional Assessments', required: false, options: ['Medical Exam', 'Financial Review', 'Inspection', 'Background Check'] },
+      { id: '8', type: 'select', label: 'Recommended Action', required: true, options: ['Approve Standard', 'Approve with Exclusions', 'Approve with Premium Increase', 'Decline'] },
+      { id: '9', type: 'textarea', label: 'Underwriter Notes', required: true, placeholder: 'Risk assessment notes' },
+      { id: '10', type: 'text', label: 'Underwriter Name', required: true, placeholder: 'Reviewing underwriter' }
+    ]
+  },
+  {
+    id: 'fintech-21',
+    name: 'Fintech User Experience Feedback',
+    description: 'Collect user feedback on fintech app and platform experience',
+    category: 'Feedback',
+    sector: 'Fintech',
+    tags: ['Fintech', 'User Experience', 'App Feedback', 'Digital Banking'],
+    fields: [
+      { id: '1', type: 'select', label: 'Platform Used', required: true, options: ['Mobile App', 'Web Platform', 'Desktop App', 'API', 'Multiple Platforms'] },
+      { id: '2', type: 'select', label: 'Primary Use Case', required: true, options: ['Payments', 'Banking', 'Investments', 'Lending', 'Insurance', 'Crypto'] },
+      { id: '3', type: 'select', label: 'Overall Experience', required: true, options: ['Very Poor', 'Poor', 'Average', 'Good', 'Excellent'] },
+      { id: '4', type: 'select', label: 'Ease of Use', required: true, options: ['Very Difficult', 'Difficult', 'Neutral', 'Easy', 'Very Easy'] },
+      { id: '5', type: 'select', label: 'Security Confidence', required: true, options: ['Very Low', 'Low', 'Medium', 'High', 'Very High'] },
+      { id: '6', type: 'select', label: 'Transaction Speed', required: true, options: ['Too Slow', 'Slow', 'Acceptable', 'Fast', 'Very Fast'] },
+      { id: '7', type: 'textarea', label: 'Favorite Features', required: false, placeholder: 'What features do you love?' },
+      { id: '8', type: 'textarea', label: 'Improvement Suggestions', required: false, placeholder: 'How can we improve?' },
+      { id: '9', type: 'select', label: 'Recommendation Likelihood', required: true, options: ['Very Unlikely', 'Unlikely', 'Neutral', 'Likely', 'Very Likely'] }
+    ]
+  },
+  {
+    id: 'fintech-22',
+    name: 'Fintech Credit Risk Assessment',
+    description: 'Assess credit risk for fintech lending and financial services',
+    category: 'Risk',
+    sector: 'Fintech',
+    tags: ['Fintech', 'Credit Risk', 'Lending', 'Financial Assessment'],
+    fields: [
+      { id: '1', type: 'text', label: 'Applicant ID', required: true, placeholder: 'Unique applicant identifier' },
+      { id: '2', type: 'select', label: 'Product Type', required: true, options: ['Personal Loan', 'Business Loan', 'Credit Card', 'Mortgage', 'BNPL', 'Credit Line'] },
+      { id: '3', type: 'number', label: 'Requested Amount', required: true, placeholder: 'Loan/credit amount requested' },
+      { id: '4', type: 'number', label: 'Credit Score', required: true, placeholder: 'Applicant credit score' },
+      { id: '5', type: 'number', label: 'Annual Income', required: true, placeholder: 'Verified annual income' },
+      { id: '6', type: 'select', label: 'Employment Status', required: true, options: ['Full-time', 'Part-time', 'Self-employed', 'Unemployed', 'Retired'] },
+      { id: '7', type: 'number', label: 'Debt-to-Income Ratio', required: true, placeholder: 'DTI percentage' },
+      { id: '8', type: 'select', label: 'Risk Grade', required: true, options: ['A (Lowest Risk)', 'B (Low Risk)', 'C (Medium Risk)', 'D (High Risk)', 'E (Highest Risk)'] },
+      { id: '9', type: 'checkbox', label: 'Risk Factors', required: true, options: ['Payment History', 'Credit Utilization', 'Length of Credit', 'New Credit', 'Credit Mix'] },
+      { id: '10', type: 'textarea', label: 'Risk Assessment Notes', required: true, placeholder: 'Additional risk considerations' }
     ]
   }
 ];
@@ -1270,6 +1387,46 @@ export const fintechTemplates: FormTemplate[] = [
       { id: '9', type: 'radio', label: 'Production Ready', required: true, options: ['Sandbox Only', 'Production Access'] },
       { id: '10', type: 'file', label: 'Technical Documentation', required: true, acceptedFileTypes: ['pdf'] },
       { id: '11', type: 'checkbox', label: 'Compliance Certifications', required: true, options: ['PCI DSS', 'ISO 27001', 'SOC 2', 'Open Banking Standards'] }
+    ]
+  },
+  {
+    id: 'health-21',
+    name: 'Patient Care Feedback Survey',
+    description: 'Collect patient feedback on healthcare services and experience',
+    category: 'Feedback',
+    sector: 'Health',
+    tags: ['Health', 'Patient Experience', 'Care Quality', 'Healthcare Feedback'],
+    fields: [
+      { id: '1', type: 'select', label: 'Type of Visit', required: true, options: ['Emergency', 'Outpatient', 'Inpatient', 'Specialist', 'Primary Care', 'Telehealth'] },
+      { id: '2', type: 'select', label: 'Overall Care Rating', required: true, options: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'] },
+      { id: '3', type: 'select', label: 'Provider Communication', required: true, options: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'] },
+      { id: '4', type: 'select', label: 'Wait Time Satisfaction', required: true, options: ['Very Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Very Satisfied'] },
+      { id: '5', type: 'select', label: 'Staff Courtesy', required: true, options: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'] },
+      { id: '6', type: 'select', label: 'Facility Cleanliness', required: true, options: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'] },
+      { id: '7', type: 'select', label: 'Pain Management', required: false, options: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent', 'Not Applicable'] },
+      { id: '8', type: 'textarea', label: 'What went well?', required: false, placeholder: 'Positive aspects of your care' },
+      { id: '9', type: 'textarea', label: 'Areas for improvement?', required: false, placeholder: 'How can we improve?' },
+      { id: '10', type: 'select', label: 'Would you recommend us?', required: true, options: ['Definitely Not', 'Probably Not', 'Maybe', 'Probably Yes', 'Definitely Yes'] }
+    ]
+  },
+  {
+    id: 'health-22',
+    name: 'Patient Safety Risk Assessment',
+    description: 'Assess patient safety risks in healthcare settings',
+    category: 'Risk',
+    sector: 'Health',
+    tags: ['Health', 'Patient Safety', 'Risk Management', 'Healthcare Quality'],
+    fields: [
+      { id: '1', type: 'text', label: 'Patient ID', required: true, placeholder: 'Patient identifier' },
+      { id: '2', type: 'select', label: 'Care Setting', required: true, options: ['ICU', 'Emergency Department', 'Medical Ward', 'Surgical Unit', 'Outpatient', 'Long-term Care'] },
+      { id: '3', type: 'checkbox', label: 'Risk Factors', required: true, options: ['Fall Risk', 'Medication Errors', 'Infection Risk', 'Pressure Ulcers', 'Delirium', 'Suicide Risk'] },
+      { id: '4', type: 'select', label: 'Fall Risk Level', required: true, options: ['Low', 'Moderate', 'High', 'Very High'] },
+      { id: '5', type: 'checkbox', label: 'Allergies/Sensitivities', required: false, options: ['Drug Allergies', 'Food Allergies', 'Latex', 'Environmental', 'No Known Allergies'] },
+      { id: '6', type: 'select', label: 'Cognitive Status', required: true, options: ['Alert/Oriented', 'Mild Confusion', 'Moderate Confusion', 'Severe Confusion', 'Comatose'] },
+      { id: '7', type: 'checkbox', label: 'Safety Interventions', required: true, options: ['Bed Rails', 'Fall Mat', 'Frequent Monitoring', 'Restraints', 'Sitter', 'Family Present'] },
+      { id: '8', type: 'select', label: 'Overall Risk Level', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
+      { id: '9', type: 'textarea', label: 'Risk Assessment Notes', required: true, placeholder: 'Detailed risk assessment' },
+      { id: '10', type: 'text', label: 'Assessing Nurse', required: true, placeholder: 'Nurse conducting assessment' }
     ]
   }
 ];
@@ -1716,6 +1873,46 @@ export const healthTemplates: FormTemplate[] = [
       { id: '13', type: 'textarea', label: 'Social History', required: false, placeholder: 'Living situation, support system' },
       { id: '14', type: 'select', label: 'Functional Status', required: true, options: ['Independent', 'Needs Assistance', 'Dependent', 'Bedridden'] }
     ]
+  },
+  {
+    id: 'energy-21',
+    name: 'Energy Customer Service Feedback',
+    description: 'Collect customer feedback on energy utility services',
+    category: 'Feedback',
+    sector: 'Energy',
+    tags: ['Energy', 'Customer Service', 'Utility Satisfaction', 'Service Quality'],
+    fields: [
+      { id: '1', type: 'text', label: 'Account Number', required: true, placeholder: 'Your utility account number' },
+      { id: '2', type: 'select', label: 'Service Type', required: true, options: ['Electricity', 'Natural Gas', 'Solar', 'Energy Efficiency', 'Multiple Services'] },
+      { id: '3', type: 'select', label: 'Contact Reason', required: true, options: ['Billing Question', 'Service Issue', 'New Connection', 'Outage Report', 'General Inquiry'] },
+      { id: '4', type: 'select', label: 'Overall Satisfaction', required: true, options: ['Very Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Very Satisfied'] },
+      { id: '5', type: 'select', label: 'Staff Helpfulness', required: true, options: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'] },
+      { id: '6', type: 'select', label: 'Issue Resolution', required: true, options: ['Not Resolved', 'Partially Resolved', 'Fully Resolved', 'Exceeded Expectations'] },
+      { id: '7', type: 'select', label: 'Service Reliability', required: true, options: ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'] },
+      { id: '8', type: 'textarea', label: 'Positive Feedback', required: false, placeholder: 'What did we do well?' },
+      { id: '9', type: 'textarea', label: 'Improvement Suggestions', required: false, placeholder: 'How can we improve?' },
+      { id: '10', type: 'select', label: 'Recommendation Likelihood', required: true, options: ['Very Unlikely', 'Unlikely', 'Neutral', 'Likely', 'Very Likely'] }
+    ]
+  },
+  {
+    id: 'energy-22',
+    name: 'Energy Environmental Risk Assessment',
+    description: 'Assess environmental risks in energy operations and projects',
+    category: 'Risk',
+    sector: 'Energy',
+    tags: ['Energy', 'Environmental Risk', 'Sustainability', 'Compliance'],
+    fields: [
+      { id: '1', type: 'text', label: 'Project/Facility Name', required: true, placeholder: 'Energy project or facility name' },
+      { id: '2', type: 'select', label: 'Energy Type', required: true, options: ['Solar', 'Wind', 'Natural Gas', 'Coal', 'Nuclear', 'Hydroelectric', 'Geothermal'] },
+      { id: '3', type: 'checkbox', label: 'Environmental Risks', required: true, options: ['Air Pollution', 'Water Contamination', 'Soil Contamination', 'Noise Pollution', 'Wildlife Impact', 'Greenhouse Gas Emissions'] },
+      { id: '4', type: 'select', label: 'Location Type', required: true, options: ['Urban', 'Rural', 'Coastal', 'Desert', 'Forest', 'Agricultural'] },
+      { id: '5', type: 'checkbox', label: 'Sensitive Areas', required: false, options: ['Protected Wildlife', 'Water Sources', 'Residential Areas', 'Agricultural Land', 'Historical Sites'] },
+      { id: '6', type: 'select', label: 'Risk Level', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
+      { id: '7', type: 'textarea', label: 'Risk Description', required: true, placeholder: 'Detailed environmental risk assessment' },
+      { id: '8', type: 'checkbox', label: 'Mitigation Measures', required: true, options: ['Emission Controls', 'Waste Management', 'Monitoring Systems', 'Restoration Plans', 'Alternative Technologies'] },
+      { id: '9', type: 'date', label: 'Assessment Date', required: true },
+      { id: '10', type: 'text', label: 'Environmental Officer', required: true, placeholder: 'Environmental compliance officer' }
+    ]
   }
 ];
 
@@ -1935,6 +2132,46 @@ export const multiSectorTemplates: FormTemplate[] = [
       { id: '10', type: 'textarea', label: 'Mitigation Actions', required: true, placeholder: 'Proposed actions to reduce risk' },
       { id: '11', type: 'text', label: 'Responsible Person', required: true, placeholder: 'Who will implement actions' },
       { id: '12', type: 'date', label: 'Target Completion', required: true }
+    ]
+  },
+  {
+    id: 'telecom-21',
+    name: 'Telecom Network Service Feedback',
+    description: 'Collect customer feedback on telecommunications network performance',
+    category: 'Feedback',
+    sector: 'Telecom',
+    tags: ['Telecom', 'Network Performance', 'Customer Satisfaction', 'Service Quality'],
+    fields: [
+      { id: '1', type: 'text', label: 'Account Number', required: true, placeholder: 'Your telecom account number' },
+      { id: '2', type: 'checkbox', label: 'Services Used', required: true, options: ['Mobile Voice', 'Mobile Data', 'Internet', 'TV/Video', 'Landline', 'Business Services'] },
+      { id: '3', type: 'select', label: 'Overall Service Quality', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '4', type: 'select', label: 'Network Coverage', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '5', type: 'select', label: 'Data Speed Satisfaction', required: true, options: ['Very Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Very Satisfied'] },
+      { id: '6', type: 'select', label: 'Call Quality', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent', 'Not Applicable'] },
+      { id: '7', type: 'select', label: 'Customer Support', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '8', type: 'textarea', label: 'Service Issues', required: false, placeholder: 'Describe any service problems' },
+      { id: '9', type: 'textarea', label: 'Improvement Suggestions', required: false, placeholder: 'How can we improve our service?' },
+      { id: '10', type: 'select', label: 'Recommendation Likelihood', required: true, options: ['Very Unlikely', 'Unlikely', 'Neutral', 'Likely', 'Very Likely'] }
+    ]
+  },
+  {
+    id: 'telecom-22',
+    name: 'Telecom Network Security Risk Assessment',
+    description: 'Assess cybersecurity risks in telecommunications infrastructure',
+    category: 'Risk',
+    sector: 'Telecom',
+    tags: ['Telecom', 'Network Security', 'Cybersecurity', 'Infrastructure Risk'],
+    fields: [
+      { id: '1', type: 'text', label: 'Network Element', required: true, placeholder: 'Network component being assessed' },
+      { id: '2', type: 'select', label: 'Infrastructure Type', required: true, options: ['Core Network', 'Access Network', 'Transmission', 'Data Centers', 'Customer Premises', 'Management Systems'] },
+      { id: '3', type: 'checkbox', label: 'Threat Vectors', required: true, options: ['External Attacks', 'Insider Threats', 'Equipment Vulnerabilities', 'Protocol Weaknesses', 'Physical Security', 'Supply Chain'] },
+      { id: '4', type: 'select', label: 'Criticality Level', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
+      { id: '5', type: 'checkbox', label: 'Potential Impacts', required: true, options: ['Service Disruption', 'Data Breach', 'Financial Loss', 'Regulatory Fines', 'Reputation Damage', 'Customer Churn'] },
+      { id: '6', type: 'select', label: 'Risk Probability', required: true, options: ['Very Low', 'Low', 'Medium', 'High', 'Very High'] },
+      { id: '7', type: 'checkbox', label: 'Security Controls', required: true, options: ['Access Controls', 'Encryption', 'Monitoring', 'Intrusion Detection', 'Patch Management', 'Security Training'] },
+      { id: '8', type: 'select', label: 'Overall Risk Rating', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
+      { id: '9', type: 'textarea', label: 'Risk Mitigation Plan', required: true, placeholder: 'Proposed security improvements' },
+      { id: '10', type: 'text', label: 'Security Analyst', required: true, placeholder: 'Security analyst conducting assessment' }
     ]
   }
 ];
@@ -2317,6 +2554,46 @@ export const energyTemplates: FormTemplate[] = [
       { id: '7', type: 'textarea', label: 'Evacuation Procedures', required: true, placeholder: 'Emergency evacuation plans' },
       { id: '8', type: 'checkbox', label: 'Response Resources', required: true, options: ['Fire Department', 'Hazmat Team', 'Medical', 'Law Enforcement'] },
       { id: '9', type: 'file', label: 'Emergency Plan Document', required: true, acceptedFileTypes: ['pdf'] }
+    ]
+  },
+  {
+    id: 'startup-21',
+    name: 'Startup Product Beta Feedback',
+    description: 'Collect detailed feedback from beta users on startup products',
+    category: 'Feedback',
+    sector: 'Startups',
+    tags: ['Startups', 'Product Development', 'Beta Testing', 'User Feedback'],
+    fields: [
+      { id: '1', type: 'text', label: 'Beta Tester ID', required: true, placeholder: 'Your beta tester identifier' },
+      { id: '2', type: 'select', label: 'Product Category', required: true, options: ['Mobile App', 'Web App', 'SaaS Platform', 'Hardware', 'API/Service', 'Other'] },
+      { id: '3', type: 'select', label: 'Overall Experience', required: true, options: ['Very Poor', 'Poor', 'Average', 'Good', 'Excellent'] },
+      { id: '4', type: 'select', label: 'Ease of Use', required: true, options: ['Very Difficult', 'Difficult', 'Neutral', 'Easy', 'Very Easy'] },
+      { id: '5', type: 'select', label: 'Feature Completeness', required: true, options: ['Very Incomplete', 'Incomplete', 'Adequate', 'Complete', 'Comprehensive'] },
+      { id: '6', type: 'select', label: 'Performance Rating', required: true, options: ['Very Slow', 'Slow', 'Acceptable', 'Fast', 'Very Fast'] },
+      { id: '7', type: 'textarea', label: 'Favorite Features', required: false, placeholder: 'What features do you love most?' },
+      { id: '8', type: 'textarea', label: 'Missing Features', required: false, placeholder: 'What features are you missing?' },
+      { id: '9', type: 'textarea', label: 'Bug Reports', required: false, placeholder: 'Describe any bugs or issues' },
+      { id: '10', type: 'select', label: 'Purchase Intent', required: true, options: ['Definitely Not', 'Probably Not', 'Maybe', 'Probably Yes', 'Definitely Yes'] }
+    ]
+  },
+  {
+    id: 'startup-22',
+    name: 'Startup Business Risk Assessment',
+    description: 'Comprehensive risk assessment for startup business operations',
+    category: 'Risk',
+    sector: 'Startups',
+    tags: ['Startups', 'Business Risk', 'Strategic Planning', 'Risk Management'],
+    fields: [
+      { id: '1', type: 'text', label: 'Startup Name', required: true, placeholder: 'Company name' },
+      { id: '2', type: 'select', label: 'Business Stage', required: true, options: ['Pre-Launch', 'Launch', 'Early Growth', 'Growth', 'Expansion'] },
+      { id: '3', type: 'checkbox', label: 'Risk Categories', required: true, options: ['Market Risk', 'Financial Risk', 'Operational Risk', 'Technology Risk', 'Regulatory Risk', 'Competitive Risk'] },
+      { id: '4', type: 'select', label: 'Market Risk Level', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
+      { id: '5', type: 'select', label: 'Financial Risk Level', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
+      { id: '6', type: 'number', label: 'Months of Runway', required: false, placeholder: 'Months of cash remaining' },
+      { id: '7', type: 'checkbox', label: 'Key Dependencies', required: true, options: ['Key Personnel', 'Single Customer', 'Technology Platform', 'Funding Round', 'Regulatory Approval'] },
+      { id: '8', type: 'select', label: 'Overall Risk Level', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
+      { id: '9', type: 'textarea', label: 'Risk Mitigation Strategy', required: true, placeholder: 'How will you address key risks?' },
+      { id: '10', type: 'text', label: 'Risk Assessment Owner', required: true, placeholder: 'Person conducting assessment' }
     ]
   }
 ];
@@ -2701,6 +2978,46 @@ export const telecomTemplates: FormTemplate[] = [
       { id: '7', type: 'textarea', label: 'Backup Procedures', required: true, placeholder: 'Service restoration procedures' },
       { id: '8', type: 'checkbox', label: 'Recovery Resources', required: true, options: ['Mobile Command Centers', 'Portable Generators', 'Satellite Links', 'Emergency Crews'] },
       { id: '9', type: 'file', label: 'Recovery Plan Document', required: true, acceptedFileTypes: ['pdf'] }
+    ]
+  },
+  {
+    id: 'sme-21',
+    name: 'SME Employee Feedback Survey',
+    description: 'Collect employee feedback on workplace satisfaction and engagement',
+    category: 'Feedback',
+    sector: 'SME',
+    tags: ['SME', 'Employee Engagement', 'Workplace Satisfaction', 'HR Feedback'],
+    fields: [
+      { id: '1', type: 'select', label: 'Employment Type', required: true, options: ['Full-time', 'Part-time', 'Contract', 'Seasonal'] },
+      { id: '2', type: 'select', label: 'Department', required: true, options: ['Administration', 'Sales', 'Operations', 'Customer Service', 'Finance', 'Other'] },
+      { id: '3', type: 'select', label: 'Job Satisfaction', required: true, options: ['Very Dissatisfied', 'Dissatisfied', 'Neutral', 'Satisfied', 'Very Satisfied'] },
+      { id: '4', type: 'select', label: 'Work-Life Balance', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '5', type: 'select', label: 'Management Support', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '6', type: 'select', label: 'Growth Opportunities', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '7', type: 'select', label: 'Compensation Fairness', required: true, options: ['Very Unfair', 'Unfair', 'Fair', 'Very Fair', 'Excellent'] },
+      { id: '8', type: 'textarea', label: 'What do you enjoy most?', required: false, placeholder: 'Positive aspects of working here' },
+      { id: '9', type: 'textarea', label: 'Improvement Suggestions', required: false, placeholder: 'How can we improve the workplace?' },
+      { id: '10', type: 'select', label: 'Would you recommend as employer?', required: true, options: ['Definitely Not', 'Probably Not', 'Maybe', 'Probably Yes', 'Definitely Yes'] }
+    ]
+  },
+  {
+    id: 'sme-22',
+    name: 'SME Operational Risk Assessment',
+    description: 'Assess operational risks in small and medium enterprise operations',
+    category: 'Risk',
+    sector: 'SME',
+    tags: ['SME', 'Operational Risk', 'Business Operations', 'Risk Management'],
+    fields: [
+      { id: '1', type: 'text', label: 'Business Name', required: true, placeholder: 'Company name' },
+      { id: '2', type: 'select', label: 'Industry Type', required: true, options: ['Retail', 'Manufacturing', 'Services', 'Construction', 'Technology', 'Healthcare'] },
+      { id: '3', type: 'checkbox', label: 'Operational Risks', required: true, options: ['Equipment Failure', 'Supply Chain Disruption', 'Key Personnel Loss', 'IT System Failure', 'Quality Issues', 'Safety Incidents'] },
+      { id: '4', type: 'select', label: 'Business Continuity Risk', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
+      { id: '5', type: 'checkbox', label: 'Critical Dependencies', required: true, options: ['Key Suppliers', 'Technology Systems', 'Key Personnel', 'Single Location', 'Major Customer'] },
+      { id: '6', type: 'select', label: 'Financial Impact', required: true, options: ['Minimal', 'Moderate', 'Significant', 'Severe'] },
+      { id: '7', type: 'checkbox', label: 'Risk Controls', required: false, options: ['Insurance Coverage', 'Backup Systems', 'Emergency Procedures', 'Supplier Diversification', 'Staff Cross-training'] },
+      { id: '8', type: 'select', label: 'Overall Risk Level', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
+      { id: '9', type: 'textarea', label: 'Risk Mitigation Plan', required: true, placeholder: 'How will you address operational risks?' },
+      { id: '10', type: 'text', label: 'Risk Assessment Coordinator', required: true, placeholder: 'Person conducting assessment' }
     ]
   }
 ];
@@ -3105,6 +3422,86 @@ export const startupsTemplates: FormTemplate[] = [
       { id: '8', type: 'number', label: 'Conversion Rate (%)', required: false, placeholder: 'Website conversion rate' },
       { id: '9', type: 'textarea', label: 'Current Challenges', required: true, placeholder: 'Marketing challenges you are facing' },
       { id: '10', type: 'select', label: 'Analytics Tools', required: true, options: ['Google Analytics', 'Facebook Analytics', 'HubSpot', 'Mailchimp', 'Custom Dashboard', 'None'] }
+    ]
+  },
+  {
+    id: 'multi-11',
+    name: 'Vendor Performance Feedback',
+    description: 'Evaluate vendor and supplier performance across industries',
+    category: 'Feedback',
+    sector: 'Multi-Sector',
+    tags: ['Multi-Sector', 'Vendor Management', 'Supplier Performance', 'Procurement'],
+    fields: [
+      { id: '1', type: 'text', label: 'Vendor Company Name', required: true, placeholder: 'Supplier/vendor name' },
+      { id: '2', type: 'select', label: 'Service/Product Category', required: true, options: ['Professional Services', 'IT Services', 'Manufacturing', 'Logistics', 'Consulting', 'Maintenance'] },
+      { id: '3', type: 'select', label: 'Overall Performance', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '4', type: 'select', label: 'Quality of Deliverables', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '5', type: 'select', label: 'Timeliness', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '6', type: 'select', label: 'Communication', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '7', type: 'select', label: 'Value for Money', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '8', type: 'textarea', label: 'Strengths', required: false, placeholder: 'What does this vendor do well?' },
+      { id: '9', type: 'textarea', label: 'Areas for Improvement', required: false, placeholder: 'How can the vendor improve?' },
+      { id: '10', type: 'select', label: 'Future Engagement', required: true, options: ['Discontinue', 'Reduce', 'Maintain', 'Increase', 'Expand Partnership'] }
+    ]
+  },
+  {
+    id: 'multi-12',
+    name: 'Supply Chain Risk Assessment',
+    description: 'Assess supply chain risks across multiple industries',
+    category: 'Risk',
+    sector: 'Multi-Sector',
+    tags: ['Multi-Sector', 'Supply Chain', 'Risk Management', 'Business Continuity'],
+    fields: [
+      { id: '1', type: 'text', label: 'Organization Name', required: true, placeholder: 'Company conducting assessment' },
+      { id: '2', type: 'select', label: 'Industry Sector', required: true, options: ['Manufacturing', 'Retail', 'Technology', 'Healthcare', 'Automotive', 'Food & Beverage'] },
+      { id: '3', type: 'checkbox', label: 'Supply Chain Risks', required: true, options: ['Supplier Disruption', 'Quality Issues', 'Price Volatility', 'Regulatory Changes', 'Natural Disasters', 'Geopolitical Risks'] },
+      { id: '4', type: 'select', label: 'Geographic Risk', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
+      { id: '5', type: 'checkbox', label: 'Critical Suppliers', required: true, options: ['Single Source', 'Limited Alternatives', 'Long Lead Times', 'High Volume', 'Specialized Products'] },
+      { id: '6', type: 'select', label: 'Financial Impact', required: true, options: ['Minimal', 'Moderate', 'Significant', 'Severe'] },
+      { id: '7', type: 'checkbox', label: 'Risk Mitigation Strategies', required: true, options: ['Supplier Diversification', 'Strategic Inventory', 'Alternative Sourcing', 'Supplier Development', 'Contract Protection'] },
+      { id: '8', type: 'select', label: 'Overall Risk Level', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
+      { id: '9', type: 'textarea', label: 'Risk Response Plan', required: true, placeholder: 'Supply chain risk mitigation strategy' },
+      { id: '10', type: 'text', label: 'Supply Chain Manager', required: true, placeholder: 'Person responsible for supply chain' }
+    ]
+  },
+  {
+    id: 'multi-13',
+    name: 'Training Program Feedback',
+    description: 'Collect feedback on training programs across all sectors',
+    category: 'Feedback',
+    sector: 'Multi-Sector',
+    tags: ['Multi-Sector', 'Training', 'Professional Development', 'Learning'],
+    fields: [
+      { id: '1', type: 'text', label: 'Training Program Name', required: true, placeholder: 'Name of training program' },
+      { id: '2', type: 'select', label: 'Training Type', required: true, options: ['Technical Skills', 'Leadership', 'Safety', 'Compliance', 'Customer Service', 'Communication'] },
+      { id: '3', type: 'select', label: 'Delivery Method', required: true, options: ['In-Person', 'Online', 'Hybrid', 'Self-Paced', 'Workshop'] },
+      { id: '4', type: 'select', label: 'Overall Rating', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '5', type: 'select', label: 'Content Quality', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '6', type: 'select', label: 'Instructor Effectiveness', required: true, options: ['Very Poor', 'Poor', 'Fair', 'Good', 'Excellent'] },
+      { id: '7', type: 'select', label: 'Relevance to Job', required: true, options: ['Not Relevant', 'Somewhat Relevant', 'Relevant', 'Very Relevant', 'Extremely Relevant'] },
+      { id: '8', type: 'textarea', label: 'Most Valuable Aspects', required: false, placeholder: 'What was most valuable about this training?' },
+      { id: '9', type: 'textarea', label: 'Suggestions for Improvement', required: false, placeholder: 'How could this training be improved?' },
+      { id: '10', type: 'select', label: 'Would you recommend?', required: true, options: ['Definitely Not', 'Probably Not', 'Maybe', 'Probably Yes', 'Definitely Yes'] }
+    ]
+  },
+  {
+    id: 'multi-14',
+    name: 'IT Security Risk Assessment',
+    description: 'Comprehensive IT security risk assessment for any organization',
+    category: 'Risk',
+    sector: 'Multi-Sector',
+    tags: ['Multi-Sector', 'IT Security', 'Cybersecurity', 'Information Security'],
+    fields: [
+      { id: '1', type: 'text', label: 'Organization Name', required: true, placeholder: 'Company name' },
+      { id: '2', type: 'select', label: 'Organization Size', required: true, options: ['Small (1-50)', 'Medium (51-250)', 'Large (251-1000)', 'Enterprise (1000+)'] },
+      { id: '3', type: 'checkbox', label: 'IT Assets', required: true, options: ['Servers', 'Workstations', 'Mobile Devices', 'Cloud Services', 'Network Equipment', 'Databases'] },
+      { id: '4', type: 'checkbox', label: 'Security Threats', required: true, options: ['Malware', 'Phishing', 'Ransomware', 'Insider Threats', 'DDoS Attacks', 'Data Breaches'] },
+      { id: '5', type: 'select', label: 'Data Sensitivity', required: true, options: ['Public', 'Internal', 'Confidential', 'Highly Confidential'] },
+      { id: '6', type: 'checkbox', label: 'Security Controls', required: true, options: ['Firewalls', 'Antivirus', 'Encryption', 'Backup Systems', 'Access Controls', 'Security Training'] },
+      { id: '7', type: 'select', label: 'Compliance Requirements', required: false, options: ['GDPR', 'HIPAA', 'PCI-DSS', 'SOX', 'ISO 27001', 'None'] },
+      { id: '8', type: 'select', label: 'Overall Risk Level', required: true, options: ['Low', 'Medium', 'High', 'Critical'] },
+      { id: '9', type: 'textarea', label: 'Security Improvement Plan', required: true, placeholder: 'Proposed security enhancements' },
+      { id: '10', type: 'text', label: 'IT Security Officer', required: true, placeholder: 'Person responsible for IT security' }
     ]
   }
 ];
