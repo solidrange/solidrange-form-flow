@@ -8,22 +8,71 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Palette, RotateCcw, Paintbrush } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { Form } from '@/types/form';
 
 interface FormAppearanceSettingsProps {
-  formId: string;
-  onUpdate?: () => void;
+  form: Form;
+  onUpdateForm: (updates: Partial<Form>) => void;
 }
 
 export const FormAppearanceSettings: React.FC<FormAppearanceSettingsProps> = ({ 
-  formId, 
-  onUpdate 
+  form, 
+  onUpdateForm 
 }) => {
   const { brand, getCurrentThemeColors } = useBrand();
-  const [useGlobalBranding, setUseGlobalBranding] = useState(true);
-  const [customColors, setCustomColors] = useState<BrandColors>(getCurrentThemeColors());
+  
+  // Get current form branding settings with fallbacks
+  const formBranding = form.settings.branding || {
+    enabled: true,
+    useGlobalBranding: true,
+    showLogo: true,
+    showBrandColors: true,
+    brandName: brand.name,
+    logo: brand.logo,
+    colors: getCurrentThemeColors()
+  };
+  
+  const [useGlobalBranding, setUseGlobalBranding] = useState(formBranding.useGlobalBranding ?? true);
+  const [customColors, setCustomColors] = useState<BrandColors>(() => {
+    // Ensure we always have a valid BrandColors object
+    const currentThemeColors = getCurrentThemeColors();
+    const savedColors = formBranding.colors;
+    
+    // Type guard to check if savedColors has all required BrandColors properties
+    const isValidBrandColors = (colors: any): colors is BrandColors => {
+      return colors && 
+             colors.primary && colors.secondary && 
+             colors.background && colors.surface && 
+             colors.text && colors.button;
+    };
+    
+    // If savedColors is incomplete or in old format, use current theme colors
+    if (!isValidBrandColors(savedColors)) {
+      return currentThemeColors;
+    }
+    
+    return savedColors as BrandColors;
+  });
 
   const handleToggleGlobalBranding = (enabled: boolean) => {
     setUseGlobalBranding(enabled);
+    const updatedBranding = {
+      ...formBranding,
+      useGlobalBranding: enabled,
+      ...(enabled && {
+        brandName: brand.name,
+        logo: brand.logo,
+        colors: getCurrentThemeColors()
+      })
+    };
+    
+    onUpdateForm({
+      settings: {
+        ...form.settings,
+        branding: updatedBranding
+      }
+    });
+    
     if (enabled) {
       setCustomColors(getCurrentThemeColors());
     }
@@ -112,18 +161,43 @@ export const FormAppearanceSettings: React.FC<FormAppearanceSettingsProps> = ({
   };
 
   const handleSaveCustomColors = () => {
-    // Here you would save the custom colors for this specific form
-    // This would typically involve an API call to save form-specific settings
+    const updatedBranding = {
+      ...formBranding,
+      colors: customColors
+    };
+    
+    onUpdateForm({
+      settings: {
+        ...form.settings,
+        branding: updatedBranding
+      }
+    });
+    
     toast({
       title: "Form Appearance Updated",
       description: "Custom appearance settings have been saved for this form.",
     });
-    onUpdate?.();
   };
 
   const handleResetToGlobal = () => {
     setCustomColors(getCurrentThemeColors());
     setUseGlobalBranding(true);
+    
+    const updatedBranding = {
+      ...formBranding,
+      useGlobalBranding: true,
+      brandName: brand.name,
+      logo: brand.logo,
+      colors: getCurrentThemeColors()
+    };
+    
+    onUpdateForm({
+      settings: {
+        ...form.settings,
+        branding: updatedBranding
+      }
+    });
+    
     toast({
       title: "Reset to Global Settings",
       description: "Form appearance has been reset to use global brand settings.",
