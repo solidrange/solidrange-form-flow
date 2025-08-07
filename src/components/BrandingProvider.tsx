@@ -271,6 +271,55 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
         background-color: hsl(220 14.3% 95.9%) !important; 
         color: hsl(224 71.4% 4.1%) !important; 
       }
+      
+      /* FORM BUILDER COMPONENTS - CRITICAL FIXES */
+      /* Dark theme form builder */
+      .dark .border-r { border-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .border-l { border-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .border-b { border-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .bg-gray-50 { background-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .text-gray-400 { color: hsl(210 20% 98%) !important; }
+      .dark .text-gray-500 { color: hsl(210 20% 98%) !important; }
+      .dark .text-gray-600 { color: hsl(210 20% 98%) !important; }
+      .dark .text-gray-700 { color: hsl(210 20% 98%) !important; }
+      .dark .placeholder\\:text-gray-400::placeholder { color: hsl(217.9 10.6% 64.9%) !important; }
+      
+      /* Dark theme drag and drop states */
+      .dark .bg-indigo-50 { background-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .border-indigo-500 { border-color: hsl(${currentColors.primary.main}) !important; }
+      .dark .ring-indigo-500 { --tw-ring-color: hsl(${currentColors.primary.main}) !important; }
+      .dark .border-dashed { border-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .text-indigo-600 { color: hsl(${currentColors.primary.main}) !important; }
+      
+      /* Dark theme field cards and buttons */
+      .dark .disabled\\:bg-gray-50:disabled { background-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .bg-blue-50 { background-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .text-blue-700 { color: hsl(${currentColors.primary.main}) !important; }
+      .dark .border-blue-200 { border-color: hsl(${currentColors.primary.main}) !important; }
+      
+      /* Light theme form builder */
+      .light .border-r { border-color: hsl(220 13% 91%) !important; }
+      .light .border-l { border-color: hsl(220 13% 91%) !important; }
+      .light .border-b { border-color: hsl(220 13% 91%) !important; }
+      .light .bg-gray-50 { background-color: hsl(220 14.3% 95.9%) !important; }
+      .light .text-gray-400 { color: hsl(220 8.9% 46.1%) !important; }
+      .light .text-gray-500 { color: hsl(220 8.9% 46.1%) !important; }
+      .light .text-gray-600 { color: hsl(220 8.9% 46.1%) !important; }
+      .light .text-gray-700 { color: hsl(224 71.4% 4.1%) !important; }
+      .light .placeholder\\:text-gray-400::placeholder { color: hsl(220 8.9% 46.1%) !important; }
+      
+      /* Light theme drag and drop states */
+      .light .bg-indigo-50 { background-color: hsl(220 14.3% 95.9%) !important; }
+      .light .border-indigo-500 { border-color: hsl(${currentColors.primary.main}) !important; }
+      .light .ring-indigo-500 { --tw-ring-color: hsl(${currentColors.primary.main}) !important; }
+      .light .border-dashed { border-color: hsl(220 13% 91%) !important; }
+      .light .text-indigo-600 { color: hsl(${currentColors.primary.main}) !important; }
+      
+      /* Light theme field cards and buttons */
+      .light .disabled\\:bg-gray-50:disabled { background-color: hsl(220 14.3% 95.9%) !important; }
+      .light .bg-blue-50 { background-color: hsl(220 14.3% 95.9%) !important; }
+      .light .text-blue-700 { color: hsl(${currentColors.primary.main}) !important; }
+      .light .border-blue-200 { border-color: hsl(${currentColors.primary.main}) !important; }
     `;
 
     // Inject or update style element
