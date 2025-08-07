@@ -59,7 +59,7 @@ const Index = () => {
     status?: string;
     approvalType?: string;
     riskLevel?: string;
-    submissionType?: string;
+    audience?: string;
   }>({});
   
   // Form state management
@@ -723,7 +723,7 @@ const Index = () => {
     status?: string;
     approvalType?: string;
     riskLevel?: string;
-    submissionType?: string;
+    audience?: string;
   }) => {
     setSubmissionFilters(filters);
     setActiveTab("review-submissions");

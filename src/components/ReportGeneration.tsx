@@ -63,7 +63,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
     },
     filterBy: {
       dateRange: { start: '2024-01-01', end: '2024-12-31' },
-      submissionType: 'all' as 'all' | 'vendor' | 'internal' | 'external',
+      audience: 'all' as 'all' | 'vendor' | 'internal' | 'external',
       status: 'all' as 'all' | 'submitted' | 'under_review' | 'approved' | 'rejected',
       riskLevel: 'all' as 'all' | 'low' | 'medium' | 'high' | 'critical',
     },
@@ -137,7 +137,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             },
             filterBy: {
               dateRange: { start: '2024-01-01', end: '2024-12-31' },
-              submissionType: 'all' as const,
+              audience: 'all' as const,
               status: 'all' as const,
               riskLevel: 'all' as const,
             },
@@ -167,7 +167,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             },
             filterBy: {
               dateRange: { start: '2024-01-01', end: '2024-12-31' },
-              submissionType: 'all' as const,
+              audience: 'all' as const,
               status: 'all' as const,
               riskLevel: variant === 'high-risk-only' ? 'high' as const : 'all' as const,
             },
@@ -196,7 +196,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             },
             filterBy: {
               dateRange: { start: '2024-01-01', end: '2024-12-31' },
-              submissionType: 'all' as const,
+              audience: 'all' as const,
               status: variant === 'approved-only' ? 'approved' as const : 'all' as const,
               riskLevel: 'all' as const,
             },
@@ -225,7 +225,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             },
             filterBy: {
               dateRange: { start: '2024-01-01', end: '2024-12-31' },
-              submissionType: 'all' as const,
+              audience: 'all' as const,
               status: 'all' as const,
               riskLevel: 'all' as const,
             },
@@ -254,7 +254,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             },
             filterBy: {
               dateRange: { start: '2024-01-01', end: '2024-12-31' },
-              submissionType: 'all' as const,
+              audience: 'all' as const,
               status: 'all' as const,
               riskLevel: 'all' as const,
             },
@@ -283,7 +283,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             },
             filterBy: {
               dateRange: { start: '2024-01-01', end: '2024-12-31' },
-              submissionType: 'vendor' as const,
+              audience: 'vendor' as const,
               status: 'all' as const,
               riskLevel: 'all' as const,
             },
@@ -312,7 +312,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             },
             filterBy: {
               dateRange: { start: '2024-01-01', end: '2024-12-31' },
-              submissionType: 'all' as const,
+              audience: 'all' as const,
               status: 'all' as const,
               riskLevel: 'all' as const,
             },
@@ -344,7 +344,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                 start: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0], 
                 end: new Date().toISOString().split('T')[0] 
               },
-              submissionType: 'all' as const,
+              audience: 'all' as const,
               status: 'all' as const,
               riskLevel: 'all' as const,
             },
@@ -373,7 +373,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             },
             filterBy: {
               dateRange: { start: '2024-01-01', end: '2024-12-31' },
-              submissionType: 'all' as const,
+              audience: 'all' as const,
               status: 'all' as const,
               riskLevel: 'all' as const,
             },
@@ -402,7 +402,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             },
             filterBy: {
               dateRange: { start: '2024-01-01', end: '2024-12-31' },
-              submissionType: 'all' as const,
+              audience: 'all' as const,
               status: 'all' as const,
               riskLevel: 'all' as const,
             },
@@ -434,7 +434,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                 start: new Date(new Date().getFullYear(), Math.floor(new Date().getMonth() / 3) * 3, 1).toISOString().split('T')[0], 
                 end: new Date().toISOString().split('T')[0] 
               },
-              submissionType: 'all' as const,
+              audience: 'all' as const,
               status: 'all' as const,
               riskLevel: 'all' as const,
             },
@@ -463,7 +463,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             },
             filterBy: {
               dateRange: { start: '2024-01-01', end: '2024-12-31' },
-              submissionType: 'all' as const,
+              audience: 'all' as const,
               status: 'all' as const,
               riskLevel: 'all' as const,
             },
@@ -493,7 +493,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             },
             filterBy: {
               dateRange: { start: '2024-01-01', end: '2024-12-31' },
-              submissionType: 'all' as const,
+              audience: 'all' as const,
               status: 'all' as const,
               riskLevel: 'all' as const,
             },
@@ -1185,10 +1185,10 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                     />
                   </div>
                   <div>
-                    <Label>Submission Type</Label>
+                    <Label>Audience</Label>
                     <Select 
-                      value={reportConfig.filterBy.submissionType} 
-                      onValueChange={(value) => handleFilterChange('submissionType', value)}
+                      value={reportConfig.filterBy.audience} 
+                      onValueChange={(value) => handleFilterChange('audience', value)}
                     >
                       <SelectTrigger className="mt-1">
                         <SelectValue />

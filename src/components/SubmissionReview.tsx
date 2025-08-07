@@ -47,7 +47,7 @@ interface SubmissionReviewProps {
     status?: string;
     approvalType?: string;
     riskLevel?: string;
-    submissionType?: string;
+    audience?: string;
   };
   onUpdateSubmission: (submissionId: string, updates: Partial<FormSubmission>) => void;
 }
@@ -56,7 +56,7 @@ interface FilterState {
   status: string[];
   approvalType: string[];
   riskLevel: string[];
-  submissionType: string[];
+  audience: string[];
   dateRange: string;
   scoreRange: { min: number; max: number };
   searchTerm: string;
@@ -74,7 +74,7 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
     status: [],
     approvalType: [],
     riskLevel: [],
-    submissionType: [],
+    audience: [],
     dateRange: 'all',
     scoreRange: { min: 0, max: 100 },
     searchTerm: '',
@@ -94,9 +94,9 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
         status: initialFilters.status ? [initialFilters.status] : [],
         approvalType: initialFilters.approvalType ? [initialFilters.approvalType] : [],
         riskLevel: initialFilters.riskLevel ? [initialFilters.riskLevel] : [],
-        submissionType: initialFilters.submissionType ? [initialFilters.submissionType] : []
+        audience: initialFilters.audience ? [initialFilters.audience] : []
       }));
-      if (initialFilters.status || initialFilters.approvalType || initialFilters.riskLevel || initialFilters.submissionType) {
+      if (initialFilters.status || initialFilters.approvalType || initialFilters.riskLevel || initialFilters.audience) {
         setShowAdvancedFilters(true);
       }
     }
@@ -119,8 +119,8 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
     // Risk level filter
     if (filters.riskLevel.length > 0 && !filters.riskLevel.includes(submission.score?.riskLevel || '')) return false;
 
-    // Submission type filter
-    if (filters.submissionType.length > 0 && !filters.submissionType.includes(submission.submissionType)) return false;
+    // Audience filter
+    if (filters.audience.length > 0 && !filters.audience.includes(submission.audience)) return false;
 
     // Search term filter - Enhanced to search across all form responses
     if (filters.searchTerm) {
@@ -208,7 +208,7 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
     }));
   };
 
-  const toggleFilterValue = (key: 'status' | 'approvalType' | 'riskLevel' | 'submissionType', value: string) => {
+  const toggleFilterValue = (key: 'status' | 'approvalType' | 'riskLevel' | 'audience', value: string) => {
     setFilters(prev => ({
       ...prev,
       [key]: prev[key].includes(value) 
@@ -222,7 +222,7 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
       status: [],
       approvalType: [],
       riskLevel: [],
-      submissionType: [],
+      audience: [],
       dateRange: 'all',
       scoreRange: { min: 0, max: 100 },
       searchTerm: '',
@@ -238,7 +238,7 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
     filters.status.length + 
     filters.approvalType.length + 
     filters.riskLevel.length + 
-    filters.submissionType.length + 
+    filters.audience.length + 
     (filters.searchTerm ? 1 : 0) + 
     (filters.company ? 1 : 0) + 
     (filters.submitter ? 1 : 0) + 
@@ -603,8 +603,8 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
                       <div key={value} className="flex items-center space-x-2">
                         <Checkbox
                           id={`type-${value}`}
-                          checked={filters.submissionType.includes(value)}
-                          onCheckedChange={() => toggleFilterValue('submissionType', value)}
+                          checked={filters.audience.includes(value)}
+                          onCheckedChange={() => toggleFilterValue('audience', value)}
                         />
                         <Label htmlFor={`type-${value}`} className="flex items-center gap-2 text-sm cursor-pointer">
                           {icon}

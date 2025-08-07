@@ -9,7 +9,7 @@ const baseSubmissions: FormSubmission[] = [
     submitterEmail: "sarah.johnson@techcorp.com",
     submitterName: "Sarah Johnson",
     companyName: "TechCorp Solutions",
-    submissionType: "vendor",
+    audience: "vendor",
     submittedAt: new Date("2024-01-15T10:30:00Z"),
     status: "approved",
     approvalType: "fully",
@@ -77,7 +77,7 @@ const baseSubmissions: FormSubmission[] = [
     submitterEmail: "marcus@startupventures.io",
     submitterName: "Marcus Rodriguez",
     companyName: "StartupVentures Inc",
-    submissionType: "vendor",
+    audience: "vendor",
     submittedAt: new Date("2024-01-20T14:15:00Z"),
     status: "under_review",
     responses: {
@@ -135,7 +135,7 @@ const baseSubmissions: FormSubmission[] = [
     submitterEmail: "a.chen@globalsecure.com",
     submitterName: "Amanda Chen",
     companyName: "GlobalSecure Systems",
-    submissionType: "vendor",
+    audience: "vendor",
     submittedAt: new Date("2024-01-25T09:45:00Z"),
     status: "approved",
     approvalType: "fully",
@@ -204,7 +204,7 @@ const baseSubmissions: FormSubmission[] = [
     submitterEmail: "dkim@riskycorp.com",
     submitterName: "David Kim",
     companyName: "RiskyCorp LLC",
-    submissionType: "vendor",
+    audience: "vendor",
     submittedAt: new Date("2024-02-01T16:20:00Z"),
     status: "rejected",
     responses: {
@@ -251,7 +251,7 @@ const baseSubmissions: FormSubmission[] = [
     submitterEmail: "j.walsh@ourcompany.com",
     submitterName: "Jennifer Walsh",
     companyName: "Our Company",
-    submissionType: "internal",
+    audience: "internal",
     submittedAt: new Date("2024-02-05T11:00:00Z"),
     status: "approved",
     approvalType: "partially",
@@ -446,12 +446,12 @@ const generateInternalResponses = (department: string) => ({
 const additionalSubmissions: FormSubmission[] = [];
 
 for (let i = 6; i <= 100; i++) {
-  const submissionTypeRand = Math.random();
-  const isVendor = submissionTypeRand > 0.5; // 50% vendor
-  const isExternal = !isVendor && submissionTypeRand > 0.25; // 25% external  
+  const audienceRand = Math.random();
+  const isVendor = audienceRand > 0.5; // 50% vendor
+  const isExternal = !isVendor && audienceRand > 0.25; // 25% external  
   const isInternal = !isVendor && !isExternal; // 25% internal
   
-  const submissionType: 'vendor' | 'internal' | 'external' = 
+  const audience: 'vendor' | 'internal' | 'external' = 
     isVendor ? 'vendor' : isExternal ? 'external' : 'internal';
     
   const status = statuses[Math.floor(Math.random() * statuses.length)];
@@ -491,7 +491,7 @@ for (let i = 6; i <= 100; i++) {
     }.com`,
     submitterName: submitter,
     companyName: company,
-    submissionType: submissionType,
+    audience: audience,
     submittedAt: submissionDate,
     status,
     approvalType,
@@ -549,7 +549,7 @@ for (let i = 101; i <= 200; i++) {
     submitterEmail: `${submitter.toLowerCase().replace(' ', '.')}@${organization.toLowerCase().replace(/[^a-z]/g, '')}.org`,
     submitterName: submitter,
     companyName: organization,
-    submissionType: "external",
+    audience: "external",
     submittedAt: submissionDate,
     status,
     approvalType,

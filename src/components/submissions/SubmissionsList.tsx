@@ -41,7 +41,7 @@ interface FilterState {
   status: string[];
   approvalType: string[];
   riskLevel: string[];
-  submissionType: string[];
+  audience: string[];
   dateRange: string;
   scoreRange: { min: number; max: number };
   searchTerm: string;

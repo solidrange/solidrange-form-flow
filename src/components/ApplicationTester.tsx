@@ -39,18 +39,18 @@ export const ApplicationTester: React.FC = () => {
       details: 'All submissions should have complete score data'
     });
 
-    // Test 3: Check submission type distribution
-    const submissionTypes = sampleSubmissions.reduce((acc, sub) => {
-      acc[sub.submissionType] = (acc[sub.submissionType] || 0) + 1;
+    // Test 3: Check audience distribution
+    const audienceTypes = sampleSubmissions.reduce((acc, sub) => {
+      acc[sub.audience] = (acc[sub.audience] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
     
-    const hasAllTypes = submissionTypes.vendor && submissionTypes.internal && submissionTypes.external;
+    const hasAllTypes = audienceTypes.vendor && audienceTypes.internal && audienceTypes.external;
     results.push({
-      name: 'Submission Type Distribution',
+      name: 'Audience Distribution',
       passed: !!hasAllTypes,
-      message: `Types: Vendor(${submissionTypes.vendor || 0}), Internal(${submissionTypes.internal || 0}), External(${submissionTypes.external || 0})`,
-      details: 'All three submission types should be present'
+      message: `Types: Vendor(${audienceTypes.vendor || 0}), Internal(${audienceTypes.internal || 0}), External(${audienceTypes.external || 0})`,
+      details: 'All three audience types should be present'
     });
 
     // Test 4: Check status distribution

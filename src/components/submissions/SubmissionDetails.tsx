@@ -70,14 +70,14 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
    * Format submitter display name based on submission type
    */
   const getSubmitterDisplay = (submission: FormSubmission) => {
-    if (submission.submissionType === 'vendor') {
+    if (submission.audience === 'vendor') {
       return {
         name: submission.submitterName || 'Unknown User',
         email: submission.submitterEmail,
         company: submission.companyName || 'Unknown Company',
         type: 'Vendor Submission'
       };
-    } else if (submission.submissionType === 'external') {
+    } else if (submission.audience === 'external') {
       return {
         name: submission.submitterName || 'External User',
         email: submission.submitterEmail,
@@ -104,9 +104,9 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
       <Card className="border-blue-200 bg-blue-50">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            {submission.submissionType === 'vendor' ? (
+            {submission.audience === 'vendor' ? (
               <Building className="h-5 w-5 text-blue-600" />
-            ) : submission.submissionType === 'external' ? (
+            ) : submission.audience === 'external' ? (
               <User className="h-5 w-5 text-purple-600" />
             ) : (
               <User className="h-5 w-5 text-blue-600" />
@@ -131,8 +131,8 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
             <div>
               <Label className="text-sm font-medium text-gray-500">Submission Type</Label>
               <Badge variant={
-                submission.submissionType === 'vendor' ? 'default' : 
-                submission.submissionType === 'external' ? 'outline' : 
+                submission.audience === 'vendor' ? 'default' : 
+                submission.audience === 'external' ? 'outline' :
                 'secondary'
               }>
                 {submitterInfo.type}

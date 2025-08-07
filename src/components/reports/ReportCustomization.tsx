@@ -32,7 +32,7 @@ export interface ReportConfig {
   };
   filterBy: {
     dateRange: { start: string; end: string };
-    submissionType: 'all' | 'vendor' | 'internal';
+    audience: 'all' | 'vendor' | 'internal';
     status: 'all' | 'submitted' | 'approved' | 'rejected' | 'under_review';
     riskLevel: 'all' | 'low' | 'medium' | 'high' | 'critical';
   };
@@ -60,7 +60,7 @@ export const ReportCustomization = ({ submissions, onGenerateReport }: ReportCus
     },
     filterBy: {
       dateRange: { start: '', end: '' },
-      submissionType: 'all',
+      audience: 'all',
       status: 'all',
       riskLevel: 'all',
     },
@@ -106,7 +106,7 @@ export const ReportCustomization = ({ submissions, onGenerateReport }: ReportCus
   ];
 
   const filterOptions = [
-    { key: 'submissionType', label: 'Submission Type', options: ['all', 'vendor', 'internal'] },
+    { key: 'audience', label: 'Audience', options: ['all', 'vendor', 'internal'] },
     { key: 'status', label: 'Status', options: ['all', 'submitted', 'approved', 'rejected', 'under_review'] },
     { key: 'riskLevel', label: 'Risk Level', options: ['all', 'low', 'medium', 'high', 'critical'] },
   ];

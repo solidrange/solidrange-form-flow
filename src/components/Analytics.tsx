@@ -44,7 +44,7 @@ interface AnalyticsProps {
     status?: string;
     approvalType?: string;
     riskLevel?: string;
-    submissionType?: string;
+    audience?: string;
   }) => void;
 }
 
@@ -75,9 +75,9 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
   }, {} as Record<string, number>);
   // Dynamic calculation based on actual data
 
-  // Submission type analytics
-  const submissionTypes = submissions.reduce((acc, sub) => {
-    acc[sub.submissionType] = (acc[sub.submissionType] || 0) + 1;
+  // Audience analytics
+  const audienceTypes = submissions.reduce((acc, sub) => {
+    acc[sub.audience] = (acc[sub.audience] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
   // Dynamic calculation: vendor: ~50, internal: ~40, external: ~40
@@ -478,7 +478,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {Object.entries(submissionTypes).map(([type, count]) => (
+                  {Object.entries(audienceTypes).map(([type, count]) => (
                     <div key={type} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Badge variant={
