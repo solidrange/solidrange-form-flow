@@ -144,8 +144,11 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       .light .border-b { border-color: hsl(220 13% 91%) !important; }
       .light .bg-white { background-color: hsl(0 0% 100%) !important; }
       
-      /* Light theme button and interactive elements */
-      .light button { color: hsl(224 71.4% 4.1%) !important; }
+      /* CRITICAL: Light theme button contrast fixes */
+      .light button { 
+        color: hsl(224 71.4% 4.1%) !important; 
+        background-color: hsl(0 0% 100%) !important;
+      }
       .light .btn-outline { 
         color: hsl(224 71.4% 4.1%) !important; 
         border-color: hsl(220 13% 91%) !important; 
@@ -155,8 +158,32 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
         background-color: hsl(220 14.3% 95.9%) !important; 
         color: hsl(224 71.4% 4.1%) !important; 
       }
+      .light button[data-variant="default"] {
+        background-color: hsl(${currentColors.primary.main}) !important;
+        color: hsl(0 0% 100%) !important;
+      }
+      .light button[data-variant="default"]:hover {
+        background-color: hsl(${currentColors.primary.dark}) !important;
+        color: hsl(0 0% 100%) !important;
+      }
+      .light button[data-variant="secondary"] {
+        background-color: hsl(220 14.3% 95.9%) !important;
+        color: hsl(224 71.4% 4.1%) !important;
+      }
+      .light button[data-variant="secondary"]:hover {
+        background-color: hsl(220 13% 91%) !important;
+        color: hsl(224 71.4% 4.1%) !important;
+      }
+      .light button[data-variant="ghost"] {
+        background-color: transparent !important;
+        color: hsl(224 71.4% 4.1%) !important;
+      }
+      .light button[data-variant="ghost"]:hover {
+        background-color: hsl(220 14.3% 95.9%) !important;
+        color: hsl(224 71.4% 4.1%) !important;
+      }
       
-      /* Light theme form elements */
+      /* Light theme form elements with proper contrast */
       .light input, .light textarea, .light select { 
         background-color: hsl(0 0% 100%) !important; 
         color: hsl(224 71.4% 4.1%) !important; 
@@ -165,6 +192,40 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       .light input::placeholder, .light textarea::placeholder { 
         color: hsl(220 8.9% 46.1%) !important; 
       }
+      
+      /* ENHANCED BUTTON STYLING FOR BOTH THEMES */
+      /* Primary buttons with proper contrast */
+      .light .bg-primary { 
+        background-color: hsl(${currentColors.primary.main}) !important; 
+        color: hsl(0 0% 100%) !important; 
+      }
+      .light .bg-primary:hover { 
+        background-color: hsl(${currentColors.primary.dark}) !important; 
+        color: hsl(0 0% 100%) !important; 
+      }
+      .light .text-primary-foreground { color: hsl(0 0% 100%) !important; }
+      
+      /* Secondary buttons with proper contrast */
+      .light .bg-secondary { 
+        background-color: hsl(220 14.3% 95.9%) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+      }
+      .light .bg-secondary:hover { 
+        background-color: hsl(220 13% 91%) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+      }
+      .light .text-secondary-foreground { color: hsl(224 71.4% 4.1%) !important; }
+      
+      /* Accent buttons with proper contrast */
+      .light .bg-accent { 
+        background-color: hsl(220 14.3% 95.9%) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+      }
+      .light .bg-accent:hover { 
+        background-color: hsl(220 13% 91%) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+      }
+      .light .text-accent-foreground { color: hsl(224 71.4% 4.1%) !important; }
       
       /* Light/Dark toggle styling for both themes */
       .dark .bg-muted\\/50 button { 
@@ -196,6 +257,34 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       }
       .light .bg-muted\\/50 button:hover:not(.bg-primary) { 
         background-color: hsl(220 14.3% 95.9%) !important; 
+        color: hsl(224 71.4% 4.1%) !important;
+      }
+      
+      /* CRITICAL: Fix all button classes and variants */
+      .light .variant-default, .light [data-variant="default"] {
+        background-color: hsl(${currentColors.primary.main}) !important;
+        color: hsl(0 0% 100%) !important;
+        border-color: hsl(${currentColors.primary.main}) !important;
+      }
+      .light .variant-default:hover, .light [data-variant="default"]:hover {
+        background-color: hsl(${currentColors.primary.dark}) !important;
+        color: hsl(0 0% 100%) !important;
+      }
+      .light .variant-outline, .light [data-variant="outline"] {
+        background-color: hsl(0 0% 100%) !important;
+        color: hsl(224 71.4% 4.1%) !important;
+        border-color: hsl(220 13% 91%) !important;
+      }
+      .light .variant-outline:hover, .light [data-variant="outline"]:hover {
+        background-color: hsl(220 14.3% 95.9%) !important;
+        color: hsl(224 71.4% 4.1%) !important;
+      }
+      .light .variant-ghost, .light [data-variant="ghost"] {
+        background-color: transparent !important;
+        color: hsl(224 71.4% 4.1%) !important;
+      }
+      .light .variant-ghost:hover, .light [data-variant="ghost"]:hover {
+        background-color: hsl(220 14.3% 95.9%) !important;
         color: hsl(224 71.4% 4.1%) !important;
       }
       
