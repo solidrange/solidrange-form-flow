@@ -102,7 +102,7 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
         box-shadow: 0 0 0 2px hsl(${currentColors.primary.main} / 0.2); 
       }
       
-      /* Comprehensive dark mode text visibility fixes */
+      /* DARK MODE STYLING */
       .dark { color: hsl(210 20% 98%) !important; }
       .dark body { color: hsl(210 20% 98%) !important; background-color: hsl(224 71.4% 4.1%) !important; }
       .dark .text-foreground { color: hsl(210 20% 98%) !important; }
@@ -113,35 +113,66 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       .dark label { color: hsl(210 20% 98%) !important; }
       .dark small { color: hsl(210 20% 98%) !important; }
       
-      /* Header and branding fixes */
-      .dark .border-b { border-color: hsl(215 27.9% 16.9%) !important; }
-      .dark .bg-white { background-color: hsl(215 27.9% 16.9%) !important; }
-      .dark .text-white { color: hsl(210 20% 98%) !important; }
-      
-      /* Card and surface elements */
+      /* Dark theme cards and surfaces */
       .dark .bg-card { background-color: hsl(215 27.9% 16.9%) !important; }
       .dark .bg-background { background-color: hsl(224 71.4% 4.1%) !important; }
       .dark .bg-muted { background-color: hsl(215 27.9% 16.9%) !important; }
       .dark .bg-accent { background-color: hsl(215 27.9% 16.9%) !important; }
       .dark .bg-muted\\/50 { background-color: hsl(215 27.9% 16.9% / 0.5) !important; }
       .dark .bg-muted\\/30 { background-color: hsl(215 27.9% 16.9% / 0.3) !important; }
+      .dark .border-b { border-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .bg-white { background-color: hsl(215 27.9% 16.9%) !important; }
       
-      /* Button and interactive elements with better contrast */
-      .dark button { color: hsl(210 20% 98%) !important; }
-      .dark .btn-outline { color: hsl(210 20% 98%) !important; border-color: hsl(215 27.9% 16.9%) !important; background-color: transparent !important; }
-      .dark .btn-outline:hover { background-color: hsl(215 27.9% 16.9%) !important; color: hsl(210 20% 98%) !important; }
-      .dark [data-state="open"] { color: hsl(210 20% 98%) !important; }
-      .dark .text-xs { color: hsl(210 20% 98%) !important; }
-      .dark .text-sm { color: hsl(210 20% 98%) !important; }
+      /* LIGHT MODE STYLING */
+      .light { color: hsl(224 71.4% 4.1%) !important; }
+      .light body { color: hsl(224 71.4% 4.1%) !important; background-color: hsl(0 0% 100%) !important; }
+      .light .text-foreground { color: hsl(224 71.4% 4.1%) !important; }
+      .light .text-muted-foreground { color: hsl(220 8.9% 46.1%) !important; }
+      .light .text-card-foreground { color: hsl(224 71.4% 4.1%) !important; }
+      .light h1, .light h2, .light h3, .light h4, .light h5, .light h6 { color: hsl(224 71.4% 4.1%) !important; }
+      .light p, .light span, .light div { color: hsl(224 71.4% 4.1%) !important; }
+      .light label { color: hsl(224 71.4% 4.1%) !important; }
+      .light small { color: hsl(224 71.4% 4.1%) !important; }
       
-      /* Light/Dark toggle with better contrast and proper highlighting */
+      /* Light theme cards and surfaces */
+      .light .bg-card { background-color: hsl(0 0% 100%) !important; }
+      .light .bg-background { background-color: hsl(0 0% 100%) !important; }
+      .light .bg-muted { background-color: hsl(220 14.3% 95.9%) !important; }
+      .light .bg-accent { background-color: hsl(220 14.3% 95.9%) !important; }
+      .light .bg-muted\\/50 { background-color: hsl(220 14.3% 95.9% / 0.5) !important; }
+      .light .bg-muted\\/30 { background-color: hsl(220 14.3% 95.9% / 0.3) !important; }
+      .light .border-b { border-color: hsl(220 13% 91%) !important; }
+      .light .bg-white { background-color: hsl(0 0% 100%) !important; }
+      
+      /* Light theme button and interactive elements */
+      .light button { color: hsl(224 71.4% 4.1%) !important; }
+      .light .btn-outline { 
+        color: hsl(224 71.4% 4.1%) !important; 
+        border-color: hsl(220 13% 91%) !important; 
+        background-color: hsl(0 0% 100%) !important; 
+      }
+      .light .btn-outline:hover { 
+        background-color: hsl(220 14.3% 95.9%) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+      }
+      
+      /* Light theme form elements */
+      .light input, .light textarea, .light select { 
+        background-color: hsl(0 0% 100%) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+        border-color: hsl(220 13% 91%) !important;
+      }
+      .light input::placeholder, .light textarea::placeholder { 
+        color: hsl(220 8.9% 46.1%) !important; 
+      }
+      
+      /* Light/Dark toggle styling for both themes */
       .dark .bg-muted\\/50 button { 
         color: hsl(210 20% 98%) !important; 
         background-color: transparent !important; 
         border: 1px solid transparent !important;
       }
-      .dark .bg-muted\\/50 button.bg-primary,
-      .dark .bg-muted\\/50 button:has(.text-primary-foreground) { 
+      .dark .bg-muted\\/50 button.bg-primary { 
         background-color: hsl(${currentColors.primary.main}) !important; 
         color: hsl(224 71.4% 4.1%) !important; 
         border-color: hsl(${currentColors.primary.main}) !important;
@@ -152,31 +183,30 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
         color: hsl(210 20% 98%) !important;
       }
       
-      /* Form elements with proper contrast */
-      .dark input, .dark textarea, .dark select { 
-        background-color: hsl(215 27.9% 16.9%) !important; 
-        color: hsl(210 20% 98%) !important; 
-        border-color: hsl(215 27.9% 16.9%) !important;
+      .light .bg-muted\\/50 button { 
+        color: hsl(224 71.4% 4.1%) !important; 
+        background-color: transparent !important; 
+        border: 1px solid transparent !important;
       }
-      .dark input::placeholder, .dark textarea::placeholder { 
-        color: hsl(217.9 10.6% 64.9%) !important; 
+      .light .bg-muted\\/50 button.bg-primary { 
+        background-color: hsl(${currentColors.primary.main}) !important; 
+        color: hsl(0 0% 100%) !important; 
+        border-color: hsl(${currentColors.primary.main}) !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+      }
+      .light .bg-muted\\/50 button:hover:not(.bg-primary) { 
+        background-color: hsl(220 14.3% 95.9%) !important; 
+        color: hsl(224 71.4% 4.1%) !important;
       }
       
-      /* Navigation and sidebar elements */
-      .dark .sidebar { background-color: hsl(224 71.4% 4.1%) !important; color: hsl(210 20% 98%) !important; }
-      .dark [data-sidebar] { color: hsl(210 20% 98%) !important; }
+      /* Text color overrides for all text sizes and types */
+      .light .text-xs, .light .text-sm, .light .text-base, .light .text-lg { color: hsl(224 71.4% 4.1%) !important; }
+      .light .text-gray-500, .light .text-gray-600 { color: hsl(220 8.9% 46.1%) !important; }
+      .light .text-gray-700, .light .text-gray-800, .light .text-gray-900 { color: hsl(224 71.4% 4.1%) !important; }
       
-      /* Dropdown and popover elements */
-      .dark [data-radix-popper-content-wrapper] { background-color: hsl(215 27.9% 16.9%) !important; color: hsl(210 20% 98%) !important; }
-      .dark .dropdown-menu-content { background-color: hsl(215 27.9% 16.9%) !important; color: hsl(210 20% 98%) !important; }
-      
-      /* Badge and small text elements */
-      .dark .badge { color: hsl(210 20% 98%) !important; }
-      .dark .text-gray-500 { color: hsl(210 20% 98%) !important; }
-      .dark .text-gray-600 { color: hsl(210 20% 98%) !important; }
-      .dark .text-gray-700 { color: hsl(210 20% 98%) !important; }
-      .dark .text-gray-800 { color: hsl(210 20% 98%) !important; }
-      .dark .text-gray-900 { color: hsl(210 20% 98%) !important; }
+      .dark .text-xs, .dark .text-sm, .dark .text-base, .dark .text-lg { color: hsl(210 20% 98%) !important; }
+      .dark .text-gray-500, .dark .text-gray-600 { color: hsl(210 20% 98%) !important; }
+      .dark .text-gray-700, .dark .text-gray-800, .dark .text-gray-900 { color: hsl(210 20% 98%) !important; }
     `;
 
     // Inject or update style element
