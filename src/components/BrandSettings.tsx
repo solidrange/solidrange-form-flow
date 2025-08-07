@@ -261,7 +261,7 @@ export const BrandSettings: React.FC = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-muted/30 rounded-lg">
+          <div className="flex items-center justify-center p-4 sm:p-6 lg:p-8 border rounded-lg">
             <BrandLogo size="xl" showText={true} />
           </div>
         </CardContent>
@@ -403,7 +403,7 @@ export const BrandSettings: React.FC = () => {
               Color Scheme
             </CardTitle>
             
-            <div className="flex items-center gap-2 bg-muted/50 rounded-lg p-1">
+            <div className="flex items-center gap-2 border rounded-lg p-1">
               <Button
                 variant={activeTheme === 'light' ? 'default' : 'ghost'}
                 size="sm"
@@ -411,7 +411,7 @@ export const BrandSettings: React.FC = () => {
                 className={`flex items-center gap-1 sm:gap-2 btn-mobile transition-colors ${
                   activeTheme === 'light' 
                     ? 'bg-primary text-primary-foreground shadow-sm' 
-                    : 'hover:bg-muted text-foreground'
+                    : 'border text-foreground'
                 }`}
               >
                 <Sun className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -424,7 +424,7 @@ export const BrandSettings: React.FC = () => {
                 className={`flex items-center gap-1 sm:gap-2 btn-mobile transition-colors ${
                   activeTheme === 'dark' 
                     ? 'bg-primary text-primary-foreground shadow-sm' 
-                    : 'hover:bg-muted text-foreground'
+                    : 'border text-foreground'
                 }`}
               >
                 <Moon className="h-3 w-3 sm:h-4 sm:w-4" />

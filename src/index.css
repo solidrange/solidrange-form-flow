@@ -23,11 +23,11 @@
     --btn-secondary: var(--brand-secondary);
     --btn-secondary-hover: var(--brand-secondary-dark);
     
-    /* Light theme - Clean and minimalistic */
+    /* Light theme - Minimalistic transparent design */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
-    --card: 0 0% 100%;
+    --card: transparent;
     --card-foreground: 222.2 84% 4.9%;
 
     --popover: 0 0% 100%;
@@ -36,13 +36,13 @@
     --primary: var(--brand-primary);
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 98%;
+    --secondary: transparent;
     --secondary-foreground: 222.2 84% 4.9%;
 
-    --muted: 210 40% 98%;
+    --muted: transparent;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 98%;
+    --accent: transparent;
     --accent-foreground: 222.2 84% 4.9%;
 
     --destructive: 0 84.2% 60.2%;

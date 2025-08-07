@@ -60,7 +60,7 @@ export const FormManagementDialog = ({
                 Manage invitations, sharing, and view form statistics
               </p>
             </div>
-            <Badge variant="default" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+            <Badge variant="default" className="border text-foreground">
               Published
             </Badge>
           </div>
@@ -70,7 +70,7 @@ export const FormManagementDialog = ({
         <div className="grid grid-cols-4 gap-4 mb-6">
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted mx-auto mb-2">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full border mx-auto mb-2">
                 <Users className="h-4 w-4 text-foreground" />
               </div>
               <div className="text-2xl font-bold text-foreground">{totalRecipients}</div>
@@ -80,7 +80,7 @@ export const FormManagementDialog = ({
           
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 dark:bg-green-900 mx-auto mb-2">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full border mx-auto mb-2">
                 <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-300" />
               </div>
               <div className="text-2xl font-bold text-green-600 dark:text-green-300">{completedResponses}</div>
@@ -90,7 +90,7 @@ export const FormManagementDialog = ({
           
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-100 dark:bg-yellow-900 mx-auto mb-2">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full border mx-auto mb-2">
                 <Clock className="h-4 w-4 text-yellow-600 dark:text-yellow-300" />
               </div>
               <div className="text-2xl font-bold text-yellow-600 dark:text-yellow-300">{pendingInvites}</div>
@@ -100,7 +100,7 @@ export const FormManagementDialog = ({
           
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 dark:bg-purple-900 mx-auto mb-2">
+              <div className="flex items-center justify-center w-8 h-8 rounded-full border mx-auto mb-2">
                 <AlertCircle className="h-4 w-4 text-purple-600 dark:text-purple-300" />
               </div>
               <div className="text-2xl font-bold text-purple-600 dark:text-purple-300">

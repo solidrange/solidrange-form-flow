@@ -33,25 +33,25 @@ export const FormInvitationStatistics = ({ form }: FormInvitationStatisticsProps
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-muted rounded-lg">
+          <div className="text-center p-4 border rounded-lg">
             <div className="text-2xl font-bold text-foreground">
               {emailSettings.recipients.length}
             </div>
             <div className="text-sm text-muted-foreground">Total Invites</div>
           </div>
-          <div className="text-center p-4 bg-card border rounded-lg">
+          <div className="text-center p-4 border rounded-lg">
             <div className="text-2xl font-bold text-foreground">
               {completedCount}
             </div>
             <div className="text-sm text-muted-foreground">Completed</div>
           </div>
-          <div className="text-center p-4 bg-card border rounded-lg">
+          <div className="text-center p-4 border rounded-lg">
             <div className="text-2xl font-bold text-foreground">
               {startedCount}
             </div>
             <div className="text-sm text-muted-foreground">Started</div>
           </div>
-          <div className="text-center p-4 bg-card border rounded-lg">
+          <div className="text-center p-4 border rounded-lg">
             <div className="text-2xl font-bold text-foreground">
               {notStartedCount}
             </div>
@@ -59,7 +59,7 @@ export const FormInvitationStatistics = ({ form }: FormInvitationStatisticsProps
           </div>
         </div>
         
-        <div className="mt-4 p-4 bg-muted rounded-lg">
+        <div className="mt-4 p-4 border rounded-lg">
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium">Completion Rate:</span>
             <span className="text-lg font-bold text-foreground">
