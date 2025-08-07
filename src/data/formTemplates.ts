@@ -1,6 +1,49 @@
 
 import { FormTemplate } from '@/types/form';
 
+// Custom templates storage - in a real app, this would be in a database
+let customTemplates: FormTemplate[] = [];
+
+// Function to add a custom template
+export const addCustomTemplate = (template: Omit<FormTemplate, 'id'>): FormTemplate => {
+  const newTemplate: FormTemplate = {
+    ...template,
+    id: `custom-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+  };
+  
+  customTemplates.push(newTemplate);
+  return newTemplate;
+};
+
+// Function to get all custom templates
+export const getCustomTemplates = (): FormTemplate[] => {
+  return customTemplates;
+};
+
+// Function to check if a template name already exists
+export const isTemplateNameExists = (name: string): boolean => {
+  const allTemplates = getAllTemplates();
+  return allTemplates.some(template => 
+    template.name.toLowerCase() === name.toLowerCase()
+  );
+};
+
+// Function to get all templates (built-in + custom)
+export const getAllTemplates = (): FormTemplate[] => {
+  return [
+    ...governmentTemplates,
+    ...insuranceTemplates,
+    ...fintechTemplates,
+    ...healthTemplates,
+    ...energyTemplates,
+    ...telecomTemplates,
+    ...startupsTemplates,
+    ...smeTemplates,
+    ...multiSectorTemplates,
+    ...customTemplates
+  ];
+};
+
 // Government Sector Templates - 20 specific templates for government entities
 export const governmentTemplates: FormTemplate[] = [
   {

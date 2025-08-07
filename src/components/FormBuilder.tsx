@@ -66,7 +66,6 @@ export const FormBuilder = ({
   formSettings,
   onUpdateFormSettings
 }: FormBuilderProps) => {
-  const [activeTab, setActiveTab] = useState('builder');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
 
@@ -103,87 +102,12 @@ export const FormBuilder = ({
     // For now, we'll just log it
   };
 
-  const handleUpdateForm = (updates: Partial<Form>) => {
-    if (updates.title !== undefined) {
-      onUpdateTitle(updates.title);
-    }
-    if (updates.description !== undefined) {
-      onUpdateDescription(updates.description);
-    }
-    if (updates.settings !== undefined) {
-      onUpdateFormSettings(updates.settings);
-    }
-    // Handle other form updates as needed
-  };
-
   const formatSectorLabel = (sector: string) => {
     switch (sector) {
       case 'sme': return 'SME';
       case 'multi-sector': return 'Multi-Sector';
       default: return sector.charAt(0).toUpperCase() + sector.slice(1);
     }
-  };
-
-  // NEW TEMPLATE SYSTEM - Simple handler that delegates to TemplateManager
-  const handleUseTemplate = (template: FormTemplate) => {
-    console.log('FormBuilder: Template selected from library:', template.name);
-    console.log('FormBuilder: Template fields:', template.fields.length);
-    
-    // Clear field selection first
-    onSelectField(null);
-    
-    // Update form details
-    onUpdateTitle(template.name);
-    onUpdateDescription(template.description);
-    
-    // Set categories and sectors from template
-    if (template.category) {
-      setSelectedCategories([template.category]);
-    }
-    if (template.sector) {
-      const sectors = Array.isArray(template.sector) ? template.sector : [template.sector];
-      setSelectedSectors(sectors);
-    }
-    
-    // Create template fields with unique IDs - ensure deep copy
-    const templateFields = template.fields.map((field, index) => {
-      const newField = {
-        ...field,
-        id: `template-${template.id}-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-        // Ensure options are properly copied if they exist
-        ...(field.options && { options: [...field.options] }),
-        // Ensure acceptedFileTypes are properly copied if they exist
-        ...(field.acceptedFileTypes && { acceptedFileTypes: [...field.acceptedFileTypes] })
-      };
-      console.log(`FormBuilder: Created template field ${index + 1}:`, {
-        id: newField.id,
-        type: newField.type,
-        label: newField.label
-      });
-      return newField;
-    });
-    
-    console.log('FormBuilder: Clearing existing fields...');
-    // Clear all existing fields first
-    const currentFieldIds = [...formFields.map(field => field.id)];
-    currentFieldIds.forEach(fieldId => {
-      console.log('FormBuilder: Removing field:', fieldId);
-      onRemoveField(fieldId);
-    });
-    
-    // Add template fields with delay to ensure clearing is complete
-    console.log('FormBuilder: Adding template fields after delay...');
-    setTimeout(() => {
-      templateFields.forEach((field, index) => {
-        setTimeout(() => {
-          console.log(`FormBuilder: Adding template field ${index + 1}/${templateFields.length}:`, field.label);
-          onAddField(field);
-        }, index * 100);
-      });
-    }, 200);
-    
-    // Switch to builder tab after applying template
-    setActiveTab('builder');
   };
 
   return (

@@ -6,6 +6,7 @@ import { FormManagementDialog } from "@/components/FormManagementDialog";
 import Analytics from "@/components/Analytics";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { FormSettingsPanel } from "@/components/FormSettingsPanel";
+import { SaveTemplateDialog } from "@/components/SaveTemplateDialog";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { ReportGeneration } from "@/components/ReportGeneration";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -37,6 +38,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { FormField, FormTemplate, Form, EmailRecipient, DocumentAttachment } from "@/types/form";
 import { toast } from "@/hooks/use-toast";
 import { sampleSubmissions } from "@/data/sampleSubmissions";
+import { addCustomTemplate, isTemplateNameExists } from "@/data/formTemplates";
 import { BrandLogo } from "@/components/BrandLogo";
 import { GlobalSettings } from "@/components/GlobalSettings";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -70,6 +72,7 @@ const Index = () => {
   const [publishedForms, setPublishedForms] = useState<Form[]>([]);
   const [currentFormId, setCurrentFormId] = useState<string | null>(null);
   const [selectedFormForManagement, setSelectedFormForManagement] = useState<Form | null>(null);
+  const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false);
   
   // Form settings with comprehensive defaults
   const [formSettings, setFormSettings] = useState<Form['settings']>({
@@ -319,7 +322,7 @@ const Index = () => {
   };
 
   /**
-   * Save the current form as a draft
+   * Save the current form as a draft with optional template saving
    */
   const saveForm = () => {
     if (!formTitle.trim()) {
@@ -367,15 +370,17 @@ const Index = () => {
       setCurrentFormId(formId);
     }
     
-    // After saving, create a new blank form so user can continue building
-    setTimeout(() => {
-      createNewForm();
-    }, 100);
-    
     toast({
       title: "Draft Saved",
-      description: "Your form has been saved as a draft. You can now build a new form.",
+      description: "Your form has been saved as a draft.",
     });
+
+    // Show option to save as template if form has fields
+    if (formFields.length > 0) {
+      setTimeout(() => {
+        setShowSaveTemplateDialog(true);
+      }, 500);
+    }
   };
 
   /**
@@ -544,20 +549,51 @@ const Index = () => {
   };
 
   /**
-   * Apply a template to the current form
+   * Apply a template to the current form - FIXED VERSION
    */
   const useTemplate = (template: FormTemplate) => {
+    console.log('Index: Applying template:', template.name);
+    console.log('Index: Template category:', template.category);
+    console.log('Index: Template sector:', template.sector);
+    
+    // Clear field selection first
+    onSelectField(null);
+    
+    // Update form details
     setFormTitle(template.name);
     setFormDescription(template.description);
-    setFormCategory(template.category);
-    setFormTargetAudience(template.targetAudience?.[0] || "");
-    const fieldsWithIds = template.fields.map(field => ({
-      ...field,
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9)
-    }));
-    setFormFields(fieldsWithIds);
     
-    // Reset to default settings with branding enabled
+    // FIXED: Properly set category and sectors
+    setFormCategory(template.category || "");
+    if (template.sector) {
+      const sectors = Array.isArray(template.sector) ? template.sector : [template.sector];
+      setFormTargetAudience(sectors);
+    } else {
+      setFormTargetAudience([]);
+    }
+    
+    // Create template fields with unique IDs - ensure deep copy
+    const templateFields = template.fields.map((field, index) => {
+      const newField = {
+        ...field,
+        id: `template-${template.id}-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        // Ensure options are properly copied if they exist
+        ...(field.options && { options: [...field.options] }),
+        // Ensure acceptedFileTypes are properly copied if they exist
+        ...(field.acceptedFileTypes && { acceptedFileTypes: [...field.acceptedFileTypes] })
+      };
+      return newField;
+    });
+    
+    console.log('Index: Clearing existing fields...');
+    // Clear all existing fields first
+    setFormFields([]);
+    
+    // Add template fields immediately
+    console.log('Index: Adding template fields...');
+    setFormFields(templateFields);
+    
+    // Reset to default settings with branding enabled and enable scoring for vendor-risk templates
     setFormSettings({
       allowMultipleSubmissions: false,
       requireLogin: false,
@@ -567,6 +603,7 @@ const Index = () => {
         enabled: true,
         showLogo: true,
         showBrandColors: true,
+        useGlobalBranding: true,
         brandName: 'FormFlow',
         logo: null,
         colors: {
@@ -583,7 +620,7 @@ const Index = () => {
         }
       },
       scoring: {
-        enabled: template.category === 'vendor-risk', // Enable scoring for vendor risk templates
+        enabled: template.category === 'vendor-risk',
         maxTotalPoints: 100,
         showScoreToUser: false,
         passingScore: 70,
@@ -619,9 +656,10 @@ const Index = () => {
     
     setActiveBuildTab("builder");
     setActiveTab("build-form");
+    
     toast({
       title: "Template Applied",
-      description: `${template.name} template has been applied to your form with default branding.`,
+      description: `${template.name} template has been applied to your form with category "${template.category}" and sectors.`,
     });
   };
 
@@ -676,8 +714,37 @@ const Index = () => {
     { id: "settings", label: "Settings", icon: <Settings className="h-4 w-4" />, mobileLabel: "Set" }
   ];
 
+  /**
+   * Handle saving current form as a template
+   */
+  const handleSaveAsTemplate = (templateData: Omit<FormTemplate, 'id'>) => {
+    const templateWithFields: Omit<FormTemplate, 'id'> = {
+      ...templateData,
+      fields: formFields.map(field => ({
+        ...field,
+        id: field.id // Keep original field structure for templates
+      })),
+      category: typeof formCategory === 'string' ? formCategory : formCategory[0] || '',
+      sector: typeof formTargetAudience === 'string' ? formTargetAudience : formTargetAudience
+    };
+
+    const savedTemplate = addCustomTemplate(templateWithFields);
+    
+    toast({
+      title: "Template Saved",
+      description: `"${savedTemplate.name}" has been added to your template library.`,
+    });
+  };
+
   // Check if there are unpublished drafts for notification dot
   const hasUnpublishedDrafts = savedDrafts.length > 0;
+
+  // Fixed onSelectField function
+  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+  
+  const onSelectField = (fieldId: string | null) => {
+    setSelectedFieldId(fieldId);
+  };
 
   return (
     <SidebarProvider>
@@ -1062,8 +1129,8 @@ const Index = () => {
                     onAddField={addField}
                     onUpdateField={updateField}
                     onRemoveField={removeField}
-                    selectedFieldId={null}
-                    onSelectField={() => {}}
+                    selectedFieldId={selectedFieldId}
+                    onSelectField={onSelectField}
                     title={formTitle}
                     onUpdateTitle={setFormTitle}
                     description={formDescription}
@@ -1143,6 +1210,21 @@ const Index = () => {
             )}
           </div>
         </SidebarInset>
+
+        {/* Save Template Dialog */}
+        {showSaveTemplateDialog && (
+          <SaveTemplateDialog
+            isOpen={showSaveTemplateDialog}
+            onClose={() => setShowSaveTemplateDialog(false)}
+            onSave={handleSaveAsTemplate}
+            currentTemplate={{
+              name: formTitle,
+              description: formDescription,
+              category: typeof formCategory === 'string' ? formCategory : formCategory[0] || '',
+              sector: formTargetAudience
+            }}
+          />
+        )}
 
         {/* Form Management Dialog */}
         {selectedFormForManagement && (
