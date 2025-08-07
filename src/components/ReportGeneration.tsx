@@ -591,7 +591,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('executive-summary')} 
-                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-primary hover:bg-primary/90 text-primary-foreground border-0"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200"
                       variant="outline"
                     >
                       <Award className="mr-2 h-4 w-4" />
@@ -728,8 +728,8 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
 
             {/* Performance & Analytics Reports */}
             <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.2s' }}>
-              <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-t-lg">
-                <CardTitle className="flex items-center gap-2 text-green-700">
+              <CardHeader className="rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-foreground">
                   <BarChart3 className="h-5 w-5 text-green-500" />
                   Performance & Analytics Reports
                 </CardTitle>
@@ -739,7 +739,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('performance-analytics')} 
-                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200"
                       variant="outline"
                     >
                       <Activity className="mr-2 h-4 w-4" />
@@ -766,7 +766,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('score-analysis')} 
-                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white border-0"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200"
                       variant="outline"
                     >
                       <Target className="mr-2 h-4 w-4" />
@@ -795,8 +795,8 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
 
             {/* Submission & Trend Analysis */}
             <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.3s' }}>
-              <CardHeader className="bg-gradient-to-r from-purple-50 to-violet-50 rounded-t-lg">
-                <CardTitle className="flex items-center gap-2 text-purple-700">
+              <CardHeader className="rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-foreground">
                   <LineChart className="h-5 w-5 text-purple-500" />
                   Submission & Trend Analysis
                 </CardTitle>
@@ -806,7 +806,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('submission-trends')} 
-                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-purple-500 to-violet-600 hover:from-purple-600 hover:to-violet-700 text-white border-0"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200"
                       variant="outline"
                     >
                       <TrendingUp className="mr-2 h-4 w-4" />
@@ -840,7 +840,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('vendor-analysis')} 
-                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-violet-500 to-indigo-600 hover:from-violet-600 hover:to-indigo-700 text-white border-0"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200"
                       variant="outline"
                     >
                       <Building className="mr-2 h-4 w-4" />
@@ -869,8 +869,8 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
 
             {/* Operational & Quality Reports */}
             <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.4s' }}>
-              <CardHeader className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-t-lg">
-                <CardTitle className="flex items-center gap-2 text-amber-700">
+              <CardHeader className="rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-foreground">
                   <Briefcase className="h-5 w-5 text-amber-500" />
                   Operational & Quality Reports
                 </CardTitle>
@@ -907,7 +907,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('process-efficiency')} 
-                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-white border-0"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200"
                       variant="outline"
                     >
                       <Zap className="mr-2 h-4 w-4" />
@@ -936,8 +936,8 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
 
             {/* Time-based & Regulatory Reports */}
             <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.5s' }}>
-              <CardHeader className="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-t-lg">
-                <CardTitle className="flex items-center gap-2 text-teal-700">
+              <CardHeader className="rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-foreground">
                   <Calendar className="h-5 w-5 text-teal-500" />
                   Time-based & Regulatory Reports
                 </CardTitle>
@@ -947,7 +947,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('quarterly-review')} 
-                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white border-0"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200"
                       variant="outline"
                     >
                       <Calendar className="mr-2 h-4 w-4" />
@@ -1013,7 +1013,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="text-2xl font-bold text-foreground">{stats.total}</div>
                   <div className="text-sm text-gray-600">Total Submissions</div>
                 </div>
-                <div className="text-center p-4 bg-green-50 rounded-lg">
+                <div className="text-center p-4 bg-card border rounded-lg">
                   <div className="text-2xl font-bold text-green-600">{stats.approved}</div>
                   <div className="text-sm text-gray-600">Approved</div>
                 </div>
@@ -1021,7 +1021,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="text-2xl font-bold text-red-600">{stats.highRisk}</div>
                   <div className="text-sm text-gray-600">High Risk</div>
                 </div>
-                <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                <div className="text-center p-4 bg-card border rounded-lg">
                   <div className="text-2xl font-bold text-yellow-600">{stats.avgScore}%</div>
                   <div className="text-sm text-gray-600">Avg Score</div>
                 </div>

@@ -101,7 +101,7 @@ export const FormPreview = ({
         enableBranding={brandingEnabled && showBrandColors}
         brandAccent={brandingEnabled && showBrandColors}
       >
-        <CardHeader className={(brandingEnabled && showBrandColors) ? 'bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5' : ''}>
+        <CardHeader>
           {/* Branding Section */}
           {brandingEnabled && (showLogo || brandName) && (
             <div className="flex items-center gap-3 mb-4 pb-4 border-b">

@@ -39,34 +39,34 @@ export const FormInvitationStatistics = ({ form }: FormInvitationStatisticsProps
             </div>
             <div className="text-sm text-muted-foreground">Total Invites</div>
           </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">
+          <div className="text-center p-4 bg-card border rounded-lg">
+            <div className="text-2xl font-bold text-foreground">
               {completedCount}
             </div>
-            <div className="text-sm text-green-800">Completed</div>
+            <div className="text-sm text-muted-foreground">Completed</div>
           </div>
-          <div className="text-center p-4 bg-yellow-50 rounded-lg">
-            <div className="text-2xl font-bold text-yellow-600">
+          <div className="text-center p-4 bg-card border rounded-lg">
+            <div className="text-2xl font-bold text-foreground">
               {startedCount}
             </div>
-            <div className="text-sm text-yellow-800">Started</div>
+            <div className="text-sm text-muted-foreground">Started</div>
           </div>
-          <div className="text-center p-4 bg-red-50 rounded-lg">
-            <div className="text-2xl font-bold text-red-600">
+          <div className="text-center p-4 bg-card border rounded-lg">
+            <div className="text-2xl font-bold text-foreground">
               {notStartedCount}
             </div>
-            <div className="text-sm text-red-800">Not Started</div>
+            <div className="text-sm text-muted-foreground">Not Started</div>
           </div>
         </div>
         
-        <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+        <div className="mt-4 p-4 bg-muted rounded-lg">
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium">Completion Rate:</span>
             <span className="text-lg font-bold text-foreground">
               {completionRate}%
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+          <div className="w-full bg-border rounded-full h-2 mt-2">
             <div 
               className="bg-primary h-2 rounded-full" 
               style={{ width: `${completionRate}%` }}

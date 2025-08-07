@@ -428,8 +428,8 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               <CardContent>
                 <div className="space-y-6">
                   {/* Quality Score */}
-                  <div className="text-center p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg">
-                    <div className="text-3xl font-bold text-emerald-600 mb-2">
+                  <div className="text-center p-4 bg-card border rounded-lg">
+                    <div className="text-3xl font-bold text-foreground mb-2">
                       {fullApprovalRate.toFixed(1)}%
                     </div>
                     <div className="text-sm text-emerald-700 font-medium">Quality Approval Rate</div>
@@ -444,11 +444,11 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                       <span className="text-sm font-medium">Total Approved</span>
                       <span className="text-sm font-bold">{approvedSubmissions}</span>
                     </div>
-                    <div className="flex justify-between items-center p-2 bg-emerald-50 rounded">
+                    <div className="flex justify-between items-center p-2 bg-muted rounded">
                       <span className="text-sm font-medium text-emerald-700">Full Implementation</span>
                       <span className="text-sm font-bold text-emerald-600">{fullyApprovedSubmissions}</span>
                     </div>
-                    <div className="flex justify-between items-center p-2 bg-orange-50 rounded">
+                    <div className="flex justify-between items-center p-2 bg-muted rounded">
                       <span className="text-sm font-medium text-orange-700">Conditional Implementation</span>
                       <span className="text-sm font-bold text-orange-600">{partiallyApprovedSubmissions}</span>
                     </div>
