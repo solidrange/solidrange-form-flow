@@ -75,6 +75,7 @@ const Index = () => {
   const [selectedFormForManagement, setSelectedFormForManagement] = useState<Form | null>(null);
   const [showSaveOptionsDialog, setShowSaveOptionsDialog] = useState(false);
   const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false);
+  const [currentTemplateTags, setCurrentTemplateTags] = useState<string[]>([]);
   
   // Form settings with comprehensive defaults
   const [formSettings, setFormSettings] = useState<Form['settings']>({
@@ -389,11 +390,15 @@ const Index = () => {
   };
 
   /**
-   * Show template saving dialog (called from save options dialog)
+   * Show template saving dialog and also save as draft (called from save options dialog)
    */
   const handleShowSaveAsTemplate = () => {
-    setShowSaveOptionsDialog(false);
-    setShowSaveTemplateDialog(true);
+    // First save as draft
+    handleSaveDraft();
+    // Then show template dialog
+    setTimeout(() => {
+      setShowSaveTemplateDialog(true);
+    }, 100);
   };
 
   /**
@@ -584,6 +589,9 @@ const Index = () => {
     } else {
       setFormTargetAudience([]);
     }
+    
+    // Set template tags for display
+    setCurrentTemplateTags(template.tags || []);
     
     // Create template fields with unique IDs - ensure deep copy
     const templateFields = template.fields.map((field, index) => {
@@ -1157,6 +1165,11 @@ const Index = () => {
                     onMoveToDraft={() => handleMoveToDraft()}
                     formSettings={formSettings}
                     onUpdateFormSettings={updateFormSettings}
+                    formCategory={formCategory}
+                    onUpdateFormCategory={setFormCategory}
+                    formTargetAudience={formTargetAudience}
+                    onUpdateFormTargetAudience={setFormTargetAudience}
+                    currentTemplateTags={currentTemplateTags}
                   />
                 </TabsContent>
 

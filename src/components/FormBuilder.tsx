@@ -1,21 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FormTemplate, FormField, DocumentAttachment, Form } from '@/types/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { Button } from '@/components/ui/button';
 import { BrandedButton } from './BrandedButton';
-import { FormLibrary } from './FormLibrary';
 import { FieldPalette } from './FieldPalette';
 import { FormCanvas } from './FormCanvas';
 import { FieldEditor } from './FieldEditor';
-import { FormPreview } from './FormPreview';
-import { FormSettingsPanel } from './FormSettingsPanel';
 import { MultiSelectCategory } from './MultiSelectCategory';
 import { MultiSelectFilter } from './MultiSelectFilter';
 import { FileAttachmentManager } from './FileAttachmentManager';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Save } from 'lucide-react';
 
 
 interface FormBuilderProps {
@@ -38,6 +36,12 @@ interface FormBuilderProps {
   onMoveToDraft: () => void;
   formSettings: Form['settings'];
   onUpdateFormSettings: (settings: Form['settings']) => void;
+  // Add these props to sync categories/sectors/tags
+  formCategory: string | string[];
+  onUpdateFormCategory: (category: string | string[]) => void;
+  formTargetAudience: string | string[];
+  onUpdateFormTargetAudience: (audience: string | string[]) => void;
+  currentTemplateTags?: string[];
 }
 
 const sectorOptions = [
@@ -64,10 +68,16 @@ export const FormBuilder = ({
   isPublished,
   onMoveToDraft,
   formSettings,
-  onUpdateFormSettings
+  onUpdateFormSettings,
+  formCategory,
+  onUpdateFormCategory,
+  formTargetAudience,
+  onUpdateFormTargetAudience,
+  currentTemplateTags = []
 }: FormBuilderProps) => {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
+  // Convert parent state to local display format
+  const selectedCategories = typeof formCategory === 'string' ? (formCategory ? [formCategory] : []) : formCategory;
+  const selectedSectors = typeof formTargetAudience === 'string' ? (formTargetAudience ? [formTargetAudience] : []) : formTargetAudience;
 
   console.log('FormBuilder: Current form fields:', formFields);
 
@@ -82,7 +92,7 @@ export const FormBuilder = ({
     createdAt: new Date(),
     updatedAt: new Date(),
     submissions: 0,
-    category: selectedCategories[0],
+    category: selectedCategories[0] || '',
     targetAudience: selectedSectors,
     attachments: attachments,
     analytics: {
@@ -160,8 +170,10 @@ export const FormBuilder = ({
                     onClick={onSaveForm}
                     variant="outline"
                     size="sm"
+                    className="gap-2"
                   >
-                    Save Draft
+                    <Save className="h-4 w-4" />
+                    Save
                   </BrandedButton>
                 </div>
               </div>
@@ -170,7 +182,7 @@ export const FormBuilder = ({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <MultiSelectCategory
                   selectedCategories={selectedCategories}
-                  onCategoryChange={setSelectedCategories}
+                  onCategoryChange={onUpdateFormCategory}
                   disabled={isPublished}
                 />
                 
@@ -179,12 +191,26 @@ export const FormBuilder = ({
                   <MultiSelectFilter
                     options={sectorOptions}
                     selectedValues={selectedSectors}
-                    onSelectionChange={setSelectedSectors}
+                    onSelectionChange={onUpdateFormTargetAudience}
                     placeholder="Select sectors..."
                     formatLabel={formatSectorLabel}
                   />
                 </div>
               </div>
+
+              {/* Template Tags Display */}
+              {currentTemplateTags.length > 0 && (
+                <div className="mt-4">
+                  <Label className="text-sm font-medium text-gray-700">Template Tags</Label>
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {currentTemplateTags.map((tag, index) => (
+                      <Badge key={index} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* File Attachments Section */}
               <div className="mt-6">
