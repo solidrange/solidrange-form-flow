@@ -207,6 +207,70 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       .dark .text-xs, .dark .text-sm, .dark .text-base, .dark .text-lg { color: hsl(210 20% 98%) !important; }
       .dark .text-gray-500, .dark .text-gray-600 { color: hsl(210 20% 98%) !important; }
       .dark .text-gray-700, .dark .text-gray-800, .dark .text-gray-900 { color: hsl(210 20% 98%) !important; }
+      
+      /* DROPDOWN AND SELECT MENUS - CRITICAL FIX */
+      /* Dark theme dropdowns */
+      .dark [data-radix-select-content] { 
+        background-color: hsl(215 27.9% 16.9%) !important; 
+        color: hsl(210 20% 98%) !important; 
+        border-color: hsl(215 27.9% 16.9%) !important;
+      }
+      .dark [data-radix-select-item] { 
+        color: hsl(210 20% 98%) !important; 
+        background-color: transparent !important;
+      }
+      .dark [data-radix-select-item]:hover,
+      .dark [data-radix-select-item][data-highlighted] { 
+        background-color: hsl(224 71.4% 4.1%) !important; 
+        color: hsl(210 20% 98%) !important; 
+      }
+      .dark .bg-popover { background-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .text-popover-foreground { color: hsl(210 20% 98%) !important; }
+      
+      /* Light theme dropdowns */
+      .light [data-radix-select-content] { 
+        background-color: hsl(0 0% 100%) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+        border-color: hsl(220 13% 91%) !important;
+      }
+      .light [data-radix-select-item] { 
+        color: hsl(224 71.4% 4.1%) !important; 
+        background-color: transparent !important;
+      }
+      .light [data-radix-select-item]:hover,
+      .light [data-radix-select-item][data-highlighted] { 
+        background-color: hsl(220 14.3% 95.9%) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+      }
+      .light .bg-popover { background-color: hsl(0 0% 100%) !important; }
+      .light .text-popover-foreground { color: hsl(224 71.4% 4.1%) !important; }
+      
+      /* Dropdown menu components */
+      .dark [data-radix-dropdown-menu-content] { 
+        background-color: hsl(215 27.9% 16.9%) !important; 
+        color: hsl(210 20% 98%) !important; 
+        border-color: hsl(215 27.9% 16.9%) !important;
+      }
+      .dark [data-radix-dropdown-menu-item] { 
+        color: hsl(210 20% 98%) !important; 
+      }
+      .dark [data-radix-dropdown-menu-item]:hover { 
+        background-color: hsl(224 71.4% 4.1%) !important; 
+        color: hsl(210 20% 98%) !important; 
+      }
+      
+      .light [data-radix-dropdown-menu-content] { 
+        background-color: hsl(0 0% 100%) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+        border-color: hsl(220 13% 91%) !important;
+      }
+      .light [data-radix-dropdown-menu-item] { 
+        color: hsl(224 71.4% 4.1%) !important; 
+      }
+      .light [data-radix-dropdown-menu-item]:hover { 
+        background-color: hsl(220 14.3% 95.9%) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+      }
     `;
 
     // Inject or update style element
