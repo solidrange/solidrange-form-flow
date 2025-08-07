@@ -5,6 +5,7 @@ import { FormLibrary } from "@/components/FormLibrary";
 import { FormManagementDialog } from "@/components/FormManagementDialog";
 import Analytics from "@/components/Analytics";
 import { SettingsPanel } from "@/components/SettingsPanel";
+import { FormSettingsPanel } from "@/components/FormSettingsPanel";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { ReportGeneration } from "@/components/ReportGeneration";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -671,7 +672,8 @@ const Index = () => {
   const buildTabs = [
     { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" />, mobileLabel: "Build" },
     { id: "library", label: "Library", icon: <Folder className="h-4 w-4" />, mobileLabel: "Lib" },
-    { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" />, mobileLabel: "View" }
+    { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" />, mobileLabel: "View" },
+    { id: "settings", label: "Settings", icon: <Settings className="h-4 w-4" />, mobileLabel: "Set" }
   ];
 
   // Check if there are unpublished drafts for notification dot
@@ -1040,7 +1042,7 @@ const Index = () => {
 
             {activeTab === "build-form" && (
               <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-3 mb-6">
+                <TabsList className="grid w-full grid-cols-4 mb-6">
                   {buildTabs.map((tab) => (
                     <TabsTrigger 
                       key={tab.id} 
@@ -1091,6 +1093,46 @@ const Index = () => {
                     formDescription={formDescription}
                     formSettings={formSettings}
                     attachments={formAttachments}
+                  />
+                </TabsContent>
+
+                <TabsContent value="settings">
+                  <FormSettingsPanel 
+                    form={{
+                      id: currentFormId || 'current-form',
+                      title: formTitle,
+                      description: formDescription,
+                      fields: formFields,
+                      settings: formSettings,
+                      createdAt: new Date(),
+                      updatedAt: new Date(),
+                      status: getCurrentFormStatus() || 'draft',
+                      submissions: 0,
+                      category: typeof formCategory === 'string' ? formCategory : formCategory[0] || '',
+                      targetAudience: typeof formTargetAudience === 'string' ? [formTargetAudience] : formTargetAudience,
+                      attachments: formAttachments,
+                      analytics: {
+                        views: 0,
+                        submissions: 0,
+                        completionRate: 0,
+                        emailsSent: 0,
+                        emailsCompleted: 0,
+                        averageCompletionTime: 0,
+                        dropoffRate: 0
+                      }
+                    }} 
+                    onUpdateForm={(updates) => {
+                      if (updates.title !== undefined) {
+                        setFormTitle(updates.title);
+                      }
+                      if (updates.description !== undefined) {
+                        setFormDescription(updates.description);
+                      }
+                      if (updates.settings !== undefined) {
+                        updateFormSettings(updates.settings);
+                      }
+                    }} 
+                    isPublished={currentFormIsPublished()}
                   />
                 </TabsContent>
               </Tabs>
