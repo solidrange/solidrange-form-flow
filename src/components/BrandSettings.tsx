@@ -157,57 +157,17 @@ export const BrandSettings: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Brand Preview */}
+      {/* Preview Section */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Brand Preview</CardTitle>
-          <p className="text-sm text-gray-600">See how your brand identity looks across the platform</p>
+          <CardTitle className="flex items-center gap-2">
+            <Eye className="h-5 w-5" />
+            Brand Preview
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {/* Main Brand Display */}
-            <div className="flex items-center gap-4 p-4 border rounded-lg bg-gradient-to-r from-brand-primary/5 to-brand-secondary/5">
-              {brand.logo && (
-                <img 
-                  src={brand.logo} 
-                  alt="Brand Logo" 
-                  className="h-12 w-auto object-contain"
-                />
-              )}
-              <div>
-                <h3 className="font-semibold text-lg brand-text">{brand.name}</h3>
-                {brand.tagline && (
-                  <p className="text-sm text-gray-600">{brand.tagline}</p>
-                )}
-              </div>
-            </div>
-            
-            {/* Brand Application Examples */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-3 border rounded-lg">
-                <h4 className="text-sm font-medium mb-2">Navigation & UI</h4>
-                <div className="space-y-2">
-                  <div className="h-8 rounded-md" style={{ backgroundColor: `hsl(${brand.colors.primary.main})` }}>
-                    <div className="h-full flex items-center px-3 text-white text-xs">Primary Buttons</div>
-                  </div>
-                  <div className="h-6 rounded border-2" style={{ borderColor: `hsl(${brand.colors.primary.main})` }}>
-                    <div className="h-full flex items-center px-2 text-xs" style={{ color: `hsl(${brand.colors.primary.main})` }}>Focus States</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="p-3 border rounded-lg">
-                <h4 className="text-sm font-medium mb-2">Forms & Content</h4>
-                <div className="space-y-2">
-                  <div className="h-6 rounded-md" style={{ backgroundColor: `hsl(${brand.colors.secondary.main})` }}>
-                    <div className="h-full flex items-center px-2 text-white text-xs">Secondary Elements</div>
-                  </div>
-                  <div className="h-6 rounded border" style={{ borderColor: `hsl(${brand.colors.primary.light})` }}>
-                    <div className="h-full flex items-center px-2 text-xs">Form Borders</div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          <div className="flex items-center justify-center p-8 bg-muted/30 rounded-lg">
+            <BrandLogo size="xl" showText={true} />
           </div>
         </CardContent>
       </Card>
@@ -281,162 +241,65 @@ export const BrandSettings: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Color Scheme & Application */}
+      {/* Color Scheme */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Color Scheme & Application</CardTitle>
-          <p className="text-sm text-gray-600">Customize your brand colors and see how they apply across the platform</p>
+          <CardTitle className="flex items-center gap-2">
+            <Palette className="h-5 w-5" />
+            Color Scheme
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Primary Color Section */}
-          <div>
-            <h4 className="font-medium mb-3">Primary Colors</h4>
-            <p className="text-xs text-gray-500 mb-4">
-              Used for: Main buttons, navigation active states, form focus borders, primary CTAs, brand logo text
-            </p>
-            <div className="grid gap-4">
+          {/* Primary Colors */}
+          <div className="space-y-3">
+            <Label className="text-base font-medium">Primary Colors</Label>
+            <div className="grid grid-cols-3 gap-4">
               {(['main', 'light', 'dark'] as const).map((shade) => (
-                <div key={shade} className="flex items-center gap-3">
-                  <Label className="w-16 text-sm capitalize">{shade}</Label>
-                  <div className="flex-1 flex items-center gap-2">
+                <div key={shade} className="space-y-2">
+                  <Label className="text-sm capitalize">{shade}</Label>
+                  <div className="flex items-center gap-2">
                     <input
                       type="color"
                       value={hslToHex(previewColors.primary[shade])}
                       onChange={(e) => handleColorChange('primary', shade, e.target.value)}
-                      className="w-10 h-10 rounded border border-gray-300"
+                      className="w-12 h-10 rounded border border-input cursor-pointer"
                     />
                     <Badge variant="outline" className="text-xs">
                       {previewColors.primary[shade]}
                     </Badge>
                   </div>
-                  <span className="text-xs text-gray-500">
-                    {shade === 'main' && 'Primary buttons, brand text'}
-                    {shade === 'light' && 'Form borders, subtle backgrounds'}
-                    {shade === 'dark' && 'Hover states, active buttons'}
-                  </span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Secondary Color Section */}
-          <div>
-            <h4 className="font-medium mb-3">Secondary Colors</h4>
-            <p className="text-xs text-gray-500 mb-4">
-              Used for: Secondary buttons, badges, highlights, accent elements, progress indicators
-            </p>
-            <div className="grid gap-4">
+          <Separator />
+
+          {/* Secondary Colors */}
+          <div className="space-y-3">
+            <Label className="text-base font-medium">Secondary Colors</Label>
+            <div className="grid grid-cols-3 gap-4">
               {(['main', 'light', 'dark'] as const).map((shade) => (
-                <div key={shade} className="flex items-center gap-3">
-                  <Label className="w-16 text-sm capitalize">{shade}</Label>
-                  <div className="flex-1 flex items-center gap-2">
+                <div key={shade} className="space-y-2">
+                  <Label className="text-sm capitalize">{shade}</Label>
+                  <div className="flex items-center gap-2">
                     <input
                       type="color"
                       value={hslToHex(previewColors.secondary[shade])}
                       onChange={(e) => handleColorChange('secondary', shade, e.target.value)}
-                      className="w-10 h-10 rounded border border-gray-300"
+                      className="w-12 h-10 rounded border border-input cursor-pointer"
                     />
                     <Badge variant="outline" className="text-xs">
                       {previewColors.secondary[shade]}
                     </Badge>
                   </div>
-                  <span className="text-xs text-gray-500">
-                    {shade === 'main' && 'Secondary buttons, badges'}
-                    {shade === 'light' && 'Soft backgrounds, subtle accents'}
-                    {shade === 'dark' && 'Secondary hover states'}
-                  </span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Color Application Guide */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h4 className="font-medium mb-2">Color Application Reference</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-              <div>
-                <h5 className="font-medium text-sm mb-1">Light Theme</h5>
-                <ul className="space-y-1 text-gray-600">
-                  <li>• Background: White (#ffffff)</li>
-                  <li>• Text: Dark gray (#111827)</li>
-                  <li>• Cards: White with light borders</li>
-                  <li>• Buttons: Primary/Secondary colors</li>
-                  <li>• Forms: Light gray backgrounds</li>
-                </ul>
-              </div>
-              <div>
-                <h5 className="font-medium text-sm mb-1">Dark Theme</h5>
-                <ul className="space-y-1 text-gray-600">
-                  <li>• Background: Dark slate (#0f172a)</li>
-                  <li>• Text: Light gray (#f8fafc)</li>
-                  <li>• Cards: Dark with subtle borders</li>
-                  <li>• Buttons: Primary/Secondary colors</li>
-                  <li>• Forms: Dark gray backgrounds</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
           <Button onClick={handleSaveColors} className="w-full">
             Save Color Scheme
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Font Configuration */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Typography</CardTitle>
-          <p className="text-sm text-gray-600">Configure fonts for your brand</p>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-4">
-            <div>
-              <Label className="text-sm font-medium">Primary Font Family</Label>
-              <select 
-                className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-                defaultValue="inter"
-              >
-                <option value="inter">Inter (Default)</option>
-                <option value="dm-sans">DM Sans</option>
-                <option value="system">System UI</option>
-                <option value="arial">Arial</option>
-                <option value="helvetica">Helvetica</option>
-                <option value="times">Times New Roman</option>
-                <option value="georgia">Georgia</option>
-              </select>
-              <p className="text-xs text-gray-500 mt-1">Used for all body text and interface elements</p>
-            </div>
-            
-            <div>
-              <Label className="text-sm font-medium">Heading Font Family</Label>
-              <select 
-                className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-                defaultValue="inter"
-              >
-                <option value="inter">Inter (Default)</option>
-                <option value="dm-sans">DM Sans</option>
-                <option value="system">System UI</option>
-                <option value="playfair">Playfair Display</option>
-                <option value="roboto-slab">Roboto Slab</option>
-                <option value="montserrat">Montserrat</option>
-              </select>
-              <p className="text-xs text-gray-500 mt-1">Used for headings and titles</p>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium mb-2 text-sm">Font Preview</h4>
-              <div className="space-y-2">
-                <h1 className="text-xl font-bold">This is a heading (H1)</h1>
-                <h2 className="text-lg font-semibold">This is a subheading (H2)</h2>
-                <p className="text-base">This is body text that shows how your content will look with the selected font.</p>
-                <p className="text-sm text-gray-600">This is smaller text used for descriptions and captions.</p>
-              </div>
-            </div>
-          </div>
-          
-          <Button variant="default" className="w-full">
-            Save Typography
           </Button>
         </CardContent>
       </Card>
