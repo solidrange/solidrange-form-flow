@@ -71,7 +71,7 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
     <Sidebar collapsible="icon" className="border-r">
       <SidebarContent>
         {/* Brand Logo */}
-        <div className="p-2 sm:p-4 border-b">
+        <div className="p-4 border-b">
           <BrandLogo 
             size="sm" 
             showText={!isCollapsed} 
@@ -89,9 +89,9 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
                   <SidebarMenuButton
                     onClick={item.onClick}
                     isActive={activeTab === item.id}
-                    className="w-full justify-start text-xs sm:text-sm"
+                    className="w-full justify-start"
                   >
-                    <item.icon className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <item.icon className="h-4 w-4" />
                     {!isCollapsed && (
                       <>
                         <span>{item.label}</span>

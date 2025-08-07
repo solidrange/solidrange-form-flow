@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { FormSubmission } from "@/types/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -106,174 +107,295 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
       });
     }
     return acc;
-  }, [] as Array<{ month: string; submissions: number; approved: number; rejected: number }>)
-  .sort((a, b) => {
-    // Sort by month order for proper chronological display
-    const monthOrder = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    const aMonth = a.month.split(' ')[0];
-    const bMonth = b.month.split(' ')[0];
-    return monthOrder.indexOf(aMonth) - monthOrder.indexOf(bMonth);
-  });
+  }, [] as Array<{ month: string; submissions: number; approved: number; rejected: number }>);
 
-  // Chart colors
-  const COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
-
-  // Format data for charts - using actual submission data
+  // Status distribution data with approval types
   const statusData = [
-    { name: 'Approved', value: approvedSubmissions, color: '#10b981' },
-    { name: 'Pending', value: pendingSubmissions, color: '#f59e0b' },
+    { name: 'Fully Approved', value: fullyApprovedSubmissions, color: '#22c55e' },
+    { name: 'Partially Approved', value: partiallyApprovedSubmissions, color: '#84cc16' },
     { name: 'Rejected', value: rejectedSubmissions, color: '#ef4444' },
-    { name: 'Submitted', value: submittedSubmissions, color: '#6b7280' }
+    { name: 'Under Review', value: pendingSubmissions, color: '#f59e0b' },
+    { name: 'Submitted', value: submittedSubmissions, color: '#3b82f6' }
   ].filter(item => item.value > 0);
 
-  const riskData = Object.entries(riskLevels).map(([level, count]) => ({
-    name: level.charAt(0).toUpperCase() + level.slice(1),
-    value: count,
-    color: level === 'high' ? '#ef4444' : level === 'medium' ? '#f59e0b' : '#10b981'
-  }));
+  // Risk level data
+  const riskData = [
+    { name: 'Low Risk', value: riskLevels.low || 0, color: '#22c55e' },
+    { name: 'Medium Risk', value: riskLevels.medium || 0, color: '#f59e0b' },
+    { name: 'High Risk', value: riskLevels.high || 0, color: '#ef4444' },
+    { name: 'Critical Risk', value: riskLevels.critical || 0, color: '#dc2626' }
+  ].filter(item => item.value > 0);
 
-  const audienceData = Object.entries(audienceTypes).map(([type, count]) => ({
-    name: type.charAt(0).toUpperCase() + type.slice(1),
-    value: count,
-    color: type === 'vendor' ? '#3b82f6' : type === 'internal' ? '#10b981' : '#8b5cf6'
-  }));
+  // Top performing companies
+  const companyScores = submissions.reduce((acc, sub) => {
+    if (sub.companyName && sub.score) {
+      if (!acc[sub.companyName]) {
+        acc[sub.companyName] = { total: 0, count: 0, scores: [] };
+      }
+      acc[sub.companyName].total += sub.score.percentage;
+      acc[sub.companyName].count += 1;
+      acc[sub.companyName].scores.push(sub.score.percentage);
+    }
+    return acc;
+  }, {} as Record<string, { total: number; count: number; scores: number[] }>);
+
+  const topCompanies = Object.entries(companyScores)
+    .map(([company, data]) => ({
+      company,
+      avgScore: data.total / data.count,
+      submissions: data.count,
+      status: data.total / data.count >= 80 ? 'excellent' : data.total / data.count >= 60 ? 'good' : 'needs_improvement'
+    }))
+    .sort((a, b) => b.avgScore - a.avgScore)
+    .slice(0, 10);
 
   return (
-    <div className="space-y-4 sm:space-y-6">
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-        <Card className="hover:shadow-lg transition-shadow duration-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">Total Submissions</CardTitle>
-            <FileText className="h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl sm:text-2xl font-bold">{totalSubmissions}</div>
-            <p className="text-xs text-muted-foreground flex items-center gap-1">
-              <TrendingUp className="h-3 w-3" />
-              <span className="hidden sm:inline">Active forms receiving submissions</span>
-              <span className="sm:hidden">Active forms</span>
-            </p>
+    <div className="space-y-6">
+      {/* Overview Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 animate-fade-in">
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+              onClick={() => onFilterSubmissions?.({})}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-muted-foreground">Total Submissions</p>
+                <p className="text-2xl font-bold text-foreground">{totalSubmissions}</p>
+              </div>
+              <div className="flex-shrink-0">
+                <FileText className="h-8 w-8 text-blue-500" />
+              </div>
+            </div>
+            <div className="mt-2">
+              <Progress value={100} className="h-2" />
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-lg transition-shadow duration-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">Approved</CardTitle>
-            <CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 text-green-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl sm:text-2xl font-bold text-green-600">{approvedSubmissions}</div>
-            <p className="text-xs text-muted-foreground flex items-center gap-1">
-              <TrendingUp className="h-3 w-3" />
-              <span className="hidden sm:inline">{approvalRate.toFixed(1)}% approval rate</span>
-              <span className="sm:hidden">{approvalRate.toFixed(1)}%</span>
-            </p>
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+              style={{ animationDelay: '0.1s' }}
+              onClick={() => onFilterSubmissions?.({ status: 'approved' })}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-muted-foreground">Approved</p>
+                <p className="text-2xl font-bold text-green-600">{approvedSubmissions}</p>
+              </div>
+              <div className="flex-shrink-0">
+                <CheckCircle className="h-8 w-8 text-green-500" />
+              </div>
+            </div>
+            <div className="mt-2">
+              <Progress value={approvalRate} className="h-2" />
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-lg transition-shadow duration-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">Pending Review</CardTitle>
-            <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-yellow-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl sm:text-2xl font-bold text-yellow-600">{pendingSubmissions}</div>
-            <p className="text-xs text-muted-foreground flex items-center gap-1">
-              <AlertTriangle className="h-3 w-3" />
-              <span className="hidden sm:inline">Awaiting action</span>
-              <span className="sm:hidden">Pending</span>
-            </p>
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+              style={{ animationDelay: '0.2s' }}
+              onClick={() => onFilterSubmissions?.({ status: 'approved', approvalType: 'fully' })}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-muted-foreground">Fully Approved</p>
+                <p className="text-2xl font-bold text-emerald-600">{fullyApprovedSubmissions}</p>
+              </div>
+              <div className="flex-shrink-0">
+                <Award className="h-8 w-8 text-emerald-500" />
+              </div>
+            </div>
+            <div className="mt-2">
+              <Progress value={fullApprovalRate} className="h-2" />
+            </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-lg transition-shadow duration-200">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs sm:text-sm font-medium">Rejected</CardTitle>
-            <XCircle className="h-3 w-3 sm:h-4 sm:w-4 text-red-600" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-xl sm:text-2xl font-bold text-red-600">{rejectedSubmissions}</div>
-            <p className="text-xs text-muted-foreground flex items-center gap-1">
-              <TrendingDown className="h-3 w-3" />
-              <span className="hidden sm:inline">{rejectionRate.toFixed(1)}% rejection rate</span>
-              <span className="sm:hidden">{rejectionRate.toFixed(1)}%</span>
-            </p>
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+              style={{ animationDelay: '0.3s' }}
+              onClick={() => onFilterSubmissions?.({ status: 'approved', approvalType: 'partially' })}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-muted-foreground">Partially Approved</p>
+                <p className="text-2xl font-bold text-orange-600">{partiallyApprovedSubmissions}</p>
+              </div>
+              <div className="flex-shrink-0">
+                <Shield className="h-8 w-8 text-orange-500" />
+              </div>
+            </div>
+            <div className="mt-2">
+              <Progress value={100 - fullApprovalRate} className="h-2" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+              style={{ animationDelay: '0.4s' }}
+              onClick={() => onFilterSubmissions?.({ status: 'rejected' })}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-muted-foreground">Rejected</p>
+                <p className="text-2xl font-bold text-red-600">{rejectedSubmissions}</p>
+              </div>
+              <div className="flex-shrink-0">
+                <XCircle className="h-8 w-8 text-red-500" />
+              </div>
+            </div>
+            <div className="mt-2">
+              <Progress value={rejectionRate} className="h-2" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+              style={{ animationDelay: '0.5s' }}
+              onClick={() => onFilterSubmissions?.({ status: 'under_review' })}
+        >
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex-1">
+                <p className="text-sm font-medium text-muted-foreground">Pending Review</p>
+                <p className="text-2xl font-bold text-foreground">{pendingSubmissions}</p>
+              </div>
+              <div className="flex-shrink-0">
+                <Clock className="h-8 w-8 text-orange-500 animate-pulse" />
+              </div>
+            </div>
+            <div className="mt-2">
+              <Progress value={(pendingSubmissions / totalSubmissions) * 100} className="h-2" />
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Charts and Analytics */}
-      <Tabs value={selectedTimeRange} onValueChange={(value) => setSelectedTimeRange(value as any)} className="space-y-4 sm:space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <h3 className="text-base sm:text-lg font-semibold text-gray-900">Analytics Overview</h3>
-          <TabsList className="grid w-full sm:w-[300px] grid-cols-4 text-xs sm:text-sm">
-            <TabsTrigger value="7d" className="px-2 sm:px-4">7D</TabsTrigger>
-            <TabsTrigger value="30d" className="px-2 sm:px-4">30D</TabsTrigger>
-            <TabsTrigger value="90d" className="px-2 sm:px-4">90D</TabsTrigger>
-            <TabsTrigger value="1y" className="px-2 sm:px-4">1Y</TabsTrigger>
-          </TabsList>
-        </div>
+      {/* Main Analytics Tabs */}
+      <Tabs defaultValue="overview" className="space-y-4">
+        <TabsList className="grid w-full grid-cols-6">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="approvals">Approvals</TabsTrigger>
+          <TabsTrigger value="submissions">Submissions</TabsTrigger>
+          <TabsTrigger value="risk">Risk Analysis</TabsTrigger>
+          <TabsTrigger value="performance">Performance</TabsTrigger>
+          <TabsTrigger value="trends">Trends</TabsTrigger>
+        </TabsList>
 
-        <TabsContent value={selectedTimeRange} className="space-y-4 sm:space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-            {/* Submission Trends */}
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Submission Status Distribution */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                  <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Submission Trends
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5" />
+                  Submission Status Distribution
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-60 sm:h-80">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={monthlyData}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" fontSize={12} />
-                      <YAxis fontSize={12} />
-                      <Tooltip />
-                      <Line 
-                        type="monotone" 
-                        dataKey="submissions" 
-                        stroke="#2563eb" 
-                        strokeWidth={2}
-                        name="Total Submissions"
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="approved" 
-                        stroke="#16a34a" 
-                        strokeWidth={2}
-                        name="Approved"
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="rejected" 
-                        stroke="#dc2626" 
-                        strokeWidth={2}
-                        name="Rejected"
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={statusData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={100}
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {statusData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  {statusData.map((item, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                      <span className="text-sm">{item.name}: {item.value}</span>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Status Distribution */}
+            {/* Risk Level Distribution */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                  <Target className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Status Distribution
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5" />
+                  Risk Level Distribution
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-60 sm:h-80">
-                  <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={riskData}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Bar dataKey="value" fill="#8884d8" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* Approvals Tab */}
+        <TabsContent value="approvals" className="space-y-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Approval Types Breakdown */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Award className="h-5 w-5 text-emerald-500" />
+                  Approval Types Distribution
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  {/* Visual breakdown */}
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-4 h-4 bg-emerald-500 rounded-full"></div>
+                        <span className="font-medium text-emerald-700">Fully Approved</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-lg font-bold text-emerald-600">{fullyApprovedSubmissions}</span>
+                        <span className="text-sm text-gray-500 ml-2">({fullApprovalRate.toFixed(1)}%)</span>
+                      </div>
+                    </div>
+                    <Progress value={fullApprovalRate} className="h-3" />
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
+                        <span className="font-medium text-orange-700">Partially Approved</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="text-lg font-bold text-orange-600">{partiallyApprovedSubmissions}</span>
+                        <span className="text-sm text-gray-500 ml-2">({(100 - fullApprovalRate).toFixed(1)}%)</span>
+                      </div>
+                    </div>
+                    <Progress value={100 - fullApprovalRate} className="h-3" />
+                  </div>
+
+                  {/* Pie chart */}
+                  <ResponsiveContainer width="100%" height={200}>
                     <PieChart>
                       <Pie
-                        data={statusData}
+                        data={[
+                          { name: 'Fully Approved', value: fullyApprovedSubmissions, color: '#22c55e' },
+                          { name: 'Partially Approved', value: partiallyApprovedSubmissions, color: '#f59e0b' }
+                        ].filter(item => item.value > 0)}
                         cx="50%"
                         cy="50%"
                         innerRadius={40}
@@ -281,7 +403,10 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                         paddingAngle={5}
                         dataKey="value"
                       >
-                        {statusData.map((entry, index) => (
+                        {[
+                          { name: 'Fully Approved', value: fullyApprovedSubmissions, color: '#22c55e' },
+                          { name: 'Partially Approved', value: partiallyApprovedSubmissions, color: '#f59e0b' }
+                        ].filter(item => item.value > 0).map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
                         ))}
                       </Pie>
@@ -289,94 +414,51 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="flex flex-wrap justify-center gap-2 mt-4">
-                  {statusData.map((entry, index) => (
-                    <Badge key={index} variant="outline" className="text-xs">
-                      <div 
-                        className="w-2 h-2 rounded-full mr-1" 
-                        style={{ backgroundColor: entry.color }}
-                      />
-                      {entry.name}: {entry.value}
-                    </Badge>
-                  ))}
-                </div>
               </CardContent>
             </Card>
-          </div>
 
-          {/* Additional Analytics */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-            {/* Risk Level Distribution */}
+            {/* Approval Quality Metrics */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                  <Shield className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Risk Levels
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5 text-blue-500" />
+                  Approval Quality Metrics
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="h-48 sm:h-60">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={riskData} layout="horizontal">
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis type="number" fontSize={12} />
-                      <YAxis dataKey="name" type="category" fontSize={12} />
-                      <Tooltip />
-                      <Bar dataKey="value" fill="#3b82f6" />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Average Score */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                  <Star className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Average Score
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-6">
-                <div className="text-center">
-                  <div className="text-2xl sm:text-3xl font-bold text-blue-600 mb-2">
-                    {avgScore.toFixed(1)}%
+                <div className="space-y-6">
+                  {/* Quality Score */}
+                  <div className="text-center p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg">
+                    <div className="text-3xl font-bold text-emerald-600 mb-2">
+                      {fullApprovalRate.toFixed(1)}%
+                    </div>
+                    <div className="text-sm text-emerald-700 font-medium">Quality Approval Rate</div>
+                    <div className="text-xs text-gray-600 mt-1">
+                      Percentage of approvals that are full approvals
+                    </div>
                   </div>
-                  <Progress value={avgScore} className="w-full mb-4" />
-                  <p className="text-xs sm:text-sm text-muted-foreground">
-                    Based on {submissionsWithScores.length} scored submissions
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
 
-            {/* Audience Distribution */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-sm sm:text-base">
-                  <Building className="h-4 w-4 sm:h-5 sm:w-5" />
-                  Audience Distribution
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-48 sm:h-60">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={audienceData}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={60}
-                        dataKey="value"
-                        label={({ name, value }) => `${name}: ${value}`}
-                      >
-                        {audienceData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  {/* Metrics breakdown */}
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                      <span className="text-sm font-medium">Total Approved</span>
+                      <span className="text-sm font-bold">{approvedSubmissions}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-emerald-50 rounded">
+                      <span className="text-sm font-medium text-emerald-700">Full Implementation</span>
+                      <span className="text-sm font-bold text-emerald-600">{fullyApprovedSubmissions}</span>
+                    </div>
+                    <div className="flex justify-between items-center p-2 bg-orange-50 rounded">
+                      <span className="text-sm font-medium text-orange-700">Conditional Implementation</span>
+                      <span className="text-sm font-bold text-orange-600">{partiallyApprovedSubmissions}</span>
+                    </div>
+                  </div>
+
+                  {/* Trend indicator */}
+                  <div className="flex items-center justify-center gap-2 text-sm">
+                    <TrendingUp className="h-4 w-4 text-green-500" />
+                    <span className="text-green-600">Quality improving with {fullApprovalRate.toFixed(1)}% full approvals</span>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -396,79 +478,191 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {Object.entries(audienceTypes).map(([type, count]) => {
-                    const percentage = totalSubmissions > 0 ? (count / totalSubmissions) * 100 : 0;
-                    const color = type === 'vendor' ? 'bg-blue-500' : type === 'internal' ? 'bg-green-500' : 'bg-purple-500';
-                    
-                    return (
-                      <div key={type} className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="capitalize font-medium">{type}</span>
-                          <span className="text-muted-foreground">{count} ({percentage.toFixed(1)}%)</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
+                  {Object.entries(audienceTypes).map(([type, count]) => (
+                    <div key={type} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Badge variant={
+                          type === 'vendor' ? 'default' : 
+                          type === 'external' ? 'outline' : 
+                          'secondary'
+                        }>
+                          {type === 'vendor' ? 'Vendor' : 
+                           type === 'external' ? 'External' : 
+                           'Internal'}
+                        </Badge>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">{count}</span>
+                        <div className="w-20 bg-gray-200 rounded-full h-2">
                           <div 
-                            className={`${color} h-2 rounded-full transition-all duration-300`}
-                            style={{ width: `${percentage}%` }}
+                            className={`h-2 rounded-full ${
+                              type === 'vendor' ? 'bg-blue-500' :
+                              type === 'external' ? 'bg-purple-500' :
+                              'bg-green-500'
+                            }`}
+                            style={{ width: `${(count / totalSubmissions) * 100}%` }}
                           />
                         </div>
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
 
-            {/* Quick Actions */}
+            {/* Recent Activity */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Award className="h-5 w-5" />
-                  Quick Actions
+                  <Clock className="h-5 w-5" />
+                  Recent Submissions
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                <div 
-                  className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg cursor-pointer hover:bg-yellow-100 transition-colors"
-                  onClick={() => onFilterSubmissions?.({ status: 'under_review' })}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-yellow-800">Pending Reviews</p>
-                      <p className="text-sm text-yellow-600">{pendingSubmissions} submissions need attention</p>
+              <CardContent>
+                <div className="space-y-3">
+                  {submissions.slice(0, 5).map((submission) => (
+                    <div key={submission.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-sm">{submission.companyName || submission.submitterName}</p>
+                        <p className="text-xs text-gray-500">{submission.submittedAt.toLocaleDateString()}</p>
+                      </div>
+                        <Badge 
+                          variant={
+                            submission.status === 'approved' && submission.approvalType === 'fully' ? 'default' :
+                            submission.status === 'approved' && submission.approvalType === 'partially' ? 'secondary' :
+                            submission.status === 'rejected' ? 'destructive' :
+                            'outline'
+                          }
+                        >
+                          {submission.status === 'approved' 
+                            ? `${submission.approvalType === 'fully' ? 'Fully' : 'Partially'} Approved`
+                            : submission.status.replace('_', ' ')
+                          }
+                        </Badge>
                     </div>
-                    <Clock className="h-5 w-5 text-yellow-600" />
-                  </div>
-                </div>
-
-                <div 
-                  className="p-3 bg-red-50 border border-red-200 rounded-lg cursor-pointer hover:bg-red-100 transition-colors"
-                  onClick={() => onFilterSubmissions?.({ riskLevel: 'high' })}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-red-800">High Risk Items</p>
-                      <p className="text-sm text-red-600">{riskLevels.high || 0} high-risk submissions</p>
-                    </div>
-                    <AlertTriangle className="h-5 w-5 text-red-600" />
-                  </div>
-                </div>
-
-                <div 
-                  className="p-3 bg-blue-50 border border-blue-200 rounded-lg cursor-pointer hover:bg-blue-100 transition-colors"
-                  onClick={() => onFilterSubmissions?.({ approvalType: 'fully' })}
-                >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="font-medium text-blue-800">Fully Approved</p>
-                      <p className="text-sm text-blue-600">{fullyApprovedSubmissions} submissions fully approved</p>
-                    </div>
-                    <CheckCircle className="h-5 w-5 text-blue-600" />
-                  </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        {/* Risk Analysis Tab */}
+        <TabsContent value="risk" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <AlertTriangle className="h-5 w-5" />
+                Risk Analysis Overview
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <h4 className="font-medium mb-3">Risk Distribution</h4>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <PieChart>
+                      <Pie
+                        data={riskData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        dataKey="value"
+                      >
+                        {riskData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div>
+                  <h4 className="font-medium mb-3">Risk Metrics</h4>
+                  <div className="space-y-3">
+                    {riskData.map((risk, index) => (
+                      <div key={index} className="flex items-center justify-between">
+                        <span className="text-sm">{risk.name}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium">{risk.value}</span>
+                          <span className="text-xs text-gray-500">
+                            ({((risk.value / totalSubmissions) * 100).toFixed(1)}%)
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Performance Tab */}
+        <TabsContent value="performance" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                Top Performing Companies
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {topCompanies.map((company, index) => (
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-sm font-medium text-blue-600">#{index + 1}</span>
+                      </div>
+                      <div>
+                        <p className="font-medium text-sm">{company.company}</p>
+                        <p className="text-xs text-gray-500">{company.submissions} submissions</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium">{company.avgScore.toFixed(1)}%</p>
+                      <Badge 
+                        variant={
+                          company.status === 'excellent' ? 'default' :
+                          company.status === 'good' ? 'secondary' :
+                          'destructive'
+                        }
+                        className="text-xs"
+                      >
+                        {company.status.replace('_', ' ')}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Trends Tab */}
+        <TabsContent value="trends" className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                Submission Trends
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={monthlyData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Area type="monotone" dataKey="submissions" stackId="1" stroke="#8884d8" fill="#8884d8" />
+                  <Area type="monotone" dataKey="approved" stackId="1" stroke="#82ca9d" fill="#82ca9d" />
+                  <Area type="monotone" dataKey="rejected" stackId="1" stroke="#ffc658" fill="#ffc658" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
         </TabsContent>
       </Tabs>
     </div>
