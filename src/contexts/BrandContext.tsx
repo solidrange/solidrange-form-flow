@@ -13,36 +13,75 @@ export interface BrandColors {
   };
 }
 
+export interface ThemeBranding {
+  colors: BrandColors;
+  background?: string;
+  foreground?: string;
+  cardBackground?: string;
+  borderColor?: string;
+}
+
 export interface BrandIdentity {
   name: string;
   logo: string | null;
-  colors: BrandColors;
   tagline?: string;
+  lightTheme: ThemeBranding;
+  darkTheme: ThemeBranding;
+  fontFamily?: string;
+  headingFont?: string;
 }
 
 interface BrandContextType {
-  brand: BrandIdentity;
+  brand: BrandIdentity & { colors?: BrandColors }; // Backward compatibility
   updateBrand: (updates: Partial<BrandIdentity>) => void;
   updateLogo: (logoUrl: string | null) => void;
-  updateColors: (colors: Partial<BrandColors>) => void;
+  updateThemeBranding: (theme: 'lightTheme' | 'darkTheme', branding: Partial<ThemeBranding>) => void;
+  updateColors: (colors: Partial<BrandColors>) => void; // Backward compatibility
   resetToDefaults: () => void;
+  getCurrentThemeColors: () => BrandColors;
 }
 
 const defaultBrand: BrandIdentity = {
   name: 'FormFlow',
   logo: null,
   tagline: 'Build, Share, Analyze Forms with Intelligence',
-  colors: {
-    primary: {
-      main: '208 100% 47%',
-      light: '210 100% 70%',
-      dark: '208 100% 35%'
+  fontFamily: 'Inter',
+  headingFont: 'Inter',
+  lightTheme: {
+    colors: {
+      primary: {
+        main: '208 100% 47%',
+        light: '210 100% 70%',
+        dark: '208 100% 35%'
+      },
+      secondary: {
+        main: '262 83% 58%',
+        light: '262 83% 75%',
+        dark: '262 83% 45%'
+      }
     },
-    secondary: {
-      main: '262 83% 58%',
-      light: '262 83% 75%',
-      dark: '262 83% 45%'
-    }
+    background: '0 0% 100%',
+    foreground: '224 71.4% 4.1%',
+    cardBackground: '0 0% 100%',
+    borderColor: '220 13% 91%'
+  },
+  darkTheme: {
+    colors: {
+      primary: {
+        main: '208 100% 47%',
+        light: '210 100% 70%',
+        dark: '208 100% 35%'
+      },
+      secondary: {
+        main: '262 83% 58%',
+        light: '262 83% 75%',
+        dark: '262 83% 45%'
+      }
+    },
+    background: '222.2 84% 4.9%',
+    foreground: '210 40% 98%',
+    cardBackground: '222.2 84% 4.9%',
+    borderColor: '217.2 32.6% 17.5%'
   }
 };
 
@@ -69,19 +108,27 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
   // Apply brand colors to CSS variables when brand changes
   useEffect(() => {
     const root = document.documentElement;
+    const isDark = document.documentElement.classList.contains('dark');
+    const currentTheme = isDark ? brand.darkTheme : brand.lightTheme;
     
     // Apply primary colors
-    root.style.setProperty('--brand-primary', brand.colors.primary.main);
-    root.style.setProperty('--brand-primary-light', brand.colors.primary.light);
-    root.style.setProperty('--brand-primary-dark', brand.colors.primary.dark);
+    root.style.setProperty('--brand-primary', currentTheme.colors.primary.main);
+    root.style.setProperty('--brand-primary-light', currentTheme.colors.primary.light);
+    root.style.setProperty('--brand-primary-dark', currentTheme.colors.primary.dark);
     
     // Apply secondary colors
-    root.style.setProperty('--brand-secondary', brand.colors.secondary.main);
-    root.style.setProperty('--brand-secondary-light', brand.colors.secondary.light);
-    root.style.setProperty('--brand-secondary-dark', brand.colors.secondary.dark);
+    root.style.setProperty('--brand-secondary', currentTheme.colors.secondary.main);
+    root.style.setProperty('--brand-secondary-light', currentTheme.colors.secondary.light);
+    root.style.setProperty('--brand-secondary-dark', currentTheme.colors.secondary.dark);
     
     // Update primary theme color to match brand
-    root.style.setProperty('--primary', brand.colors.primary.main);
+    root.style.setProperty('--primary', currentTheme.colors.primary.main);
+    
+    // Apply theme-specific styles
+    if (currentTheme.background) root.style.setProperty('--background', currentTheme.background);
+    if (currentTheme.foreground) root.style.setProperty('--foreground', currentTheme.foreground);
+    if (currentTheme.cardBackground) root.style.setProperty('--card', currentTheme.cardBackground);
+    if (currentTheme.borderColor) root.style.setProperty('--border', currentTheme.borderColor);
     
     // Save to localStorage
     localStorage.setItem('brand-identity', JSON.stringify(brand));
@@ -95,14 +142,35 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
     setBrand(prev => ({ ...prev, logo: logoUrl }));
   };
 
-  const updateColors = (colors: Partial<BrandColors>) => {
+  const updateThemeBranding = (theme: 'lightTheme' | 'darkTheme', branding: Partial<ThemeBranding>) => {
     setBrand(prev => ({
       ...prev,
-      colors: {
-        primary: { ...prev.colors.primary, ...colors.primary },
-        secondary: { ...prev.colors.secondary, ...colors.secondary }
+      [theme]: {
+        ...prev[theme],
+        ...branding,
+        colors: branding.colors ? {
+          primary: { ...prev[theme].colors.primary, ...branding.colors.primary },
+          secondary: { ...prev[theme].colors.secondary, ...branding.colors.secondary }
+        } : prev[theme].colors
       }
     }));
+  };
+
+  // Backward compatibility function
+  const updateColors = (colors: Partial<BrandColors>) => {
+    const isDark = document.documentElement.classList.contains('dark');
+    const currentTheme = isDark ? 'darkTheme' : 'lightTheme';
+    updateThemeBranding(currentTheme, { 
+      colors: {
+        primary: { ...getCurrentThemeColors().primary, ...colors.primary },
+        secondary: { ...getCurrentThemeColors().secondary, ...colors.secondary }
+      }
+    });
+  };
+
+  const getCurrentThemeColors = (): BrandColors => {
+    const isDark = document.documentElement.classList.contains('dark');
+    return isDark ? brand.darkTheme.colors : brand.lightTheme.colors;
   };
 
   const resetToDefaults = () => {
@@ -110,13 +178,21 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
     localStorage.removeItem('brand-identity');
   };
 
+  // Add backward compatibility for colors property
+  const brandWithColors = {
+    ...brand,
+    colors: getCurrentThemeColors()
+  };
+
   return (
     <BrandContext.Provider 
       value={{ 
-        brand, 
+        brand: brandWithColors, 
         updateBrand, 
         updateLogo, 
-        updateColors, 
+        updateThemeBranding, 
+        updateColors,
+        getCurrentThemeColors,
         resetToDefaults 
       }}
     >
