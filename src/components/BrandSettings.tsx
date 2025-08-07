@@ -35,7 +35,12 @@ const colorExplanations = {
     primary: 'Primary action button colors (submit, save, create)',
     secondary: 'Secondary action button colors (cancel, back, optional actions)',
     destructive: 'Destructive action button colors (delete, remove, warning actions)'
-  }
+  },
+  accent: 'Accent color for highlights, notifications, and special elements',
+  border: 'Default border color for cards, inputs, and dividers',
+  input: 'Background color for form inputs and text areas',
+  muted: 'Muted background color for disabled states and subtle areas',
+  ring: 'Focus ring color for accessibility and keyboard navigation'
 };
 
 const fontOptions = [
@@ -51,7 +56,7 @@ const fontOptions = [
 
 export const BrandSettings: React.FC = () => {
   const { theme } = useTheme();
-  const { brand, updateBrand, updateLogo, updateThemeColors, updateFonts, resetToDefaults, getCurrentThemeColors } = useBrand();
+  const { brand, updateBrand, updateLogo, updateThemeColors, updateFonts, resetToDefaults, saveAsDefault, getCurrentThemeColors } = useBrand();
   const [tempName, setTempName] = useState(brand.name);
   const [tempTagline, setTempTagline] = useState(brand.tagline || '');
   const [activeTheme, setActiveTheme] = useState<'light' | 'dark'>('light');
@@ -537,8 +542,116 @@ export const BrandSettings: React.FC = () => {
             </div>
           </div>
 
-          <Button onClick={handleSaveColors} className="w-full btn-mobile">
-            Save {activeTheme === 'light' ? 'Light' : 'Dark'} Theme Colors
+          <Separator />
+
+          {/* Extended Theme Colors */}
+          <div className="space-y-3">
+            <Label className="text-sm sm:text-base font-medium">Extended Colors</Label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+              <div className="space-y-2">
+                <Label className="text-xs sm:text-sm font-medium">Accent</Label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={hslToHex(previewColors.accent || '220 14.3% 95.9%')}
+                    onChange={(e) => handleColorChange('accent', e.target.value)}
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded border border-input cursor-pointer"
+                  />
+                  <Badge variant="outline" className="text-xs flex-1 min-w-0">
+                    <span className="truncate">{previewColors.accent || '220 14.3% 95.9%'}</span>
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">{colorExplanations.accent}</p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-xs sm:text-sm font-medium">Border</Label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={hslToHex(previewColors.border || '220 13% 91%')}
+                    onChange={(e) => handleColorChange('border', e.target.value)}
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded border border-input cursor-pointer"
+                  />
+                  <Badge variant="outline" className="text-xs flex-1 min-w-0">
+                    <span className="truncate">{previewColors.border || '220 13% 91%'}</span>
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">{colorExplanations.border}</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs sm:text-sm font-medium">Input</Label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={hslToHex(previewColors.input || '220 13% 91%')}
+                    onChange={(e) => handleColorChange('input', e.target.value)}
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded border border-input cursor-pointer"
+                  />
+                  <Badge variant="outline" className="text-xs flex-1 min-w-0">
+                    <span className="truncate">{previewColors.input || '220 13% 91%'}</span>
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">{colorExplanations.input}</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs sm:text-sm font-medium">Muted</Label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={hslToHex(previewColors.muted || '220 14.3% 95.9%')}
+                    onChange={(e) => handleColorChange('muted', e.target.value)}
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded border border-input cursor-pointer"
+                  />
+                  <Badge variant="outline" className="text-xs flex-1 min-w-0">
+                    <span className="truncate">{previewColors.muted || '220 14.3% 95.9%'}</span>
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">{colorExplanations.muted}</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs sm:text-sm font-medium">Ring</Label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={hslToHex(previewColors.ring || previewColors.primary?.main || '208 100% 47%')}
+                    onChange={(e) => handleColorChange('ring', e.target.value)}
+                    className="w-8 h-8 sm:w-10 sm:h-10 rounded border border-input cursor-pointer"
+                  />
+                  <Badge variant="outline" className="text-xs flex-1 min-w-0">
+                    <span className="truncate">{previewColors.ring || previewColors.primary?.main || '208 100% 47%'}</span>
+                  </Badge>
+                </div>
+                <p className="text-xs text-muted-foreground">{colorExplanations.ring}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <Button onClick={handleSaveColors} className="flex-1 btn-mobile">
+              Save {activeTheme === 'light' ? 'Light' : 'Dark'} Theme Colors
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Save as Default Section */}
+      <Card className="modern-card border-primary/20">
+        <CardHeader className="pb-3 sm:pb-4">
+          <CardTitle className="flex items-center gap-2 text-primary text-mobile-base">
+            <Upload className="h-4 w-4 sm:h-5 sm:w-5" />
+            Save Current Settings
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
+            Save your current brand settings as the default theme for new forms and applications.
+          </p>
+          <Button onClick={saveAsDefault} className="w-full btn-mobile">
+            Save as Default Brand
           </Button>
         </CardContent>
       </Card>

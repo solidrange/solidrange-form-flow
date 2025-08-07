@@ -22,6 +22,11 @@ export interface BrandColors {
     secondary: string;
     destructive: string;
   };
+  accent?: string;
+  border?: string;
+  input?: string;
+  muted?: string;
+  ring?: string;
 }
 
 export interface BrandFonts {
@@ -50,6 +55,7 @@ interface BrandContextType {
   updateThemeColors: (theme: 'light' | 'dark', colors: Partial<BrandColors>) => void;
   updateFonts: (fonts: Partial<BrandFonts>) => void;
   resetToDefaults: () => void;
+  saveAsDefault: () => void;
   getCurrentThemeColors: () => BrandColors;
 }
 
@@ -84,7 +90,12 @@ const defaultBrand: BrandIdentity = {
         primary: '208 100% 47%',
         secondary: '220 14.3% 95.9%',
         destructive: '0 84.2% 60.2%'
-      }
+      },
+      accent: '220 14.3% 95.9%',
+      border: '220 13% 91%',
+      input: '220 13% 91%',
+      muted: '220 14.3% 95.9%',
+      ring: '208 100% 47%'
     }
   },
   darkTheme: {
@@ -109,7 +120,12 @@ const defaultBrand: BrandIdentity = {
         primary: '208 100% 60%',
         secondary: '215 27.9% 16.9%',
         destructive: '0 62.8% 60.6%'
-      }
+      },
+      accent: '215 27.9% 16.9%',
+      border: '215 27.9% 16.9%',
+      input: '215 27.9% 16.9%',
+      muted: '215 27.9% 16.9%',
+      ring: '208 100% 60%'
     }
   }
 };
@@ -281,6 +297,11 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
     localStorage.removeItem('brand-identity');
   };
 
+  const saveAsDefault = () => {
+    localStorage.setItem('brand-identity-default', JSON.stringify(brand));
+    localStorage.setItem('brand-identity', JSON.stringify(brand));
+  };
+
   return (
     <BrandContext.Provider 
       value={{ 
@@ -290,6 +311,7 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
         updateThemeColors, 
         updateFonts,
         resetToDefaults,
+        saveAsDefault,
         getCurrentThemeColors
       }}
     >
