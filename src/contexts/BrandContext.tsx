@@ -102,7 +102,42 @@ interface BrandProviderProps {
 export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
   const [brand, setBrand] = useState<BrandIdentity>(() => {
     const stored = localStorage.getItem('brand-identity');
-    return stored ? JSON.parse(stored) : defaultBrand;
+    if (stored) {
+      try {
+        const parsedBrand = JSON.parse(stored);
+        
+        // Migration logic: Convert old structure to new structure
+        if (parsedBrand.colors && !parsedBrand.lightTheme && !parsedBrand.darkTheme) {
+          console.log('Migrating old brand structure to new theme-based structure');
+          return {
+            ...parsedBrand,
+            lightTheme: {
+              colors: parsedBrand.colors,
+              background: '0 0% 100%',
+              foreground: '224 71.4% 4.1%',
+              cardBackground: '0 0% 100%',
+              borderColor: '220 13% 91%'
+            },
+            darkTheme: {
+              colors: parsedBrand.colors,
+              background: '222.2 84% 4.9%',
+              foreground: '210 40% 98%',
+              cardBackground: '222.2 84% 4.9%',
+              borderColor: '217.2 32.6% 17.5%'
+            }
+          };
+        }
+        
+        // Ensure the new structure has all required properties
+        if (parsedBrand.lightTheme && parsedBrand.darkTheme) {
+          return parsedBrand;
+        }
+      } catch (error) {
+        console.error('Error parsing stored brand data:', error);
+      }
+    }
+    
+    return defaultBrand;
   });
 
   // Apply brand colors to CSS variables when brand changes
@@ -170,6 +205,13 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
 
   const getCurrentThemeColors = (): BrandColors => {
     const isDark = document.documentElement.classList.contains('dark');
+    
+    // Safety check: ensure theme objects exist
+    if (!brand.lightTheme || !brand.darkTheme) {
+      console.warn('Theme objects missing, using default colors');
+      return defaultBrand.lightTheme.colors;
+    }
+    
     return isDark ? brand.darkTheme.colors : brand.lightTheme.colors;
   };
 
