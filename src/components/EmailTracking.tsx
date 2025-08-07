@@ -173,9 +173,9 @@ export const EmailTracking = ({
   const getStatusIcon = (status: EmailRecipient['status']) => {
     switch (status) {
       case 'pending':
-        return <Clock className="h-4 w-4 text-muted-foreground" />;
+        return <Clock className="h-4 w-4 text-gray-400" />;
       case 'sent':
-        return <Mail className="h-4 w-4 text-foreground" />;
+        return <Mail className="h-4 w-4 text-blue-500" />;
       case 'opened':
         return <Mail className="h-4 w-4 text-orange-500" />;
       case 'completed':
@@ -183,7 +183,7 @@ export const EmailTracking = ({
       case 'expired':
         return <AlertCircle className="h-4 w-4 text-red-500" />;
       default:
-        return <Clock className="h-4 w-4 text-muted-foreground" />;
+        return <Clock className="h-4 w-4 text-gray-400" />;
     }
   };
 
@@ -214,9 +214,9 @@ export const EmailTracking = ({
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-foreground" />
+              <Users className="h-5 w-5 text-blue-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Total Recipients</p>
+                <p className="text-sm text-gray-600">Total Recipients</p>
                 <p className="text-xl font-semibold">{recipients.length}</p>
               </div>
             </div>
@@ -228,7 +228,7 @@ export const EmailTracking = ({
             <div className="flex items-center gap-2">
               <Send className="h-5 w-5 text-green-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Sent</p>
+                <p className="text-sm text-gray-600">Sent</p>
                 <p className="text-xl font-semibold">
                   {recipients.filter(r => ['sent', 'opened', 'completed'].includes(r.status)).length}
                 </p>
@@ -242,7 +242,7 @@ export const EmailTracking = ({
             <div className="flex items-center gap-2">
               <CheckCircle className="h-5 w-5 text-green-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Completed</p>
+                <p className="text-sm text-gray-600">Completed</p>
                 <p className="text-xl font-semibold">
                   {recipients.filter(r => r.status === 'completed').length}
                 </p>
@@ -254,9 +254,9 @@ export const EmailTracking = ({
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-foreground" />
+              <AlertCircle className="h-5 w-5 text-blue-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Completion Rate</p>
+                <p className="text-sm text-gray-600">Completion Rate</p>
                 <p className="text-xl font-semibold">{completionRate}%</p>
               </div>
             </div>
@@ -411,7 +411,7 @@ export const EmailTracking = ({
         </CardHeader>
         <CardContent>
           {recipients.length === 0 ? (
-            <p className="text-center text-muted-foreground py-8">
+            <p className="text-center text-gray-500 py-8">
               No recipients added yet. Add email addresses above to get started.
             </p>
           ) : (

@@ -291,7 +291,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
           <Button 
             onClick={handleSendReminder}
             variant="outline"
-            className="bg-muted hover:bg-muted/80"
+            className="bg-blue-50 hover:bg-blue-100"
           >
             <Mail className="h-4 w-4 mr-2" />
             Send Reminder
@@ -321,7 +321,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
             <Button 
               onClick={handleResendForm}
               variant="outline"
-              className="bg-muted hover:bg-muted/80"
+              className="bg-blue-50 hover:bg-blue-100"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
               Resend Form
@@ -349,7 +349,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
             <Button 
               onClick={handleResendForm}
               variant="outline"
-              className="bg-muted hover:bg-muted/80"
+              className="bg-blue-50 hover:bg-blue-100"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
               Resend Form
@@ -451,7 +451,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
       <Card className="animate-fade-in">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Clock className="h-5 w-5 text-foreground" />
+            <Clock className="h-5 w-5 text-blue-500" />
             Activity Log
           </CardTitle>
         </CardHeader>
@@ -497,8 +497,8 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
 
           {/* AI Suggestion Box */}
           {submission.score && isFormComplete() && submission.status !== 'approved' && (
-            <div className="p-4 bg-muted rounded-lg border border-border animate-fade-in">
-              <h4 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 animate-fade-in">
+              <h4 className="text-sm font-medium text-blue-800 mb-2 flex items-center gap-2">
                 <Target className="h-4 w-4" />
                 AI Recommendation
               </h4>
@@ -506,15 +506,15 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
                 const suggestion = getApprovalSuggestion(submission);
                 return (
                   <div className="space-y-2">
-                    <p className="text-sm text-foreground">
+                    <p className="text-sm text-blue-700">
                       Suggested: <span className="font-medium capitalize">{suggestion.type} Approval</span>
                     </p>
-                    <p className="text-xs text-muted-foreground">{suggestion.reason}</p>
+                    <p className="text-xs text-blue-600">{suggestion.reason}</p>
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => setApprovalType(suggestion.type)}
-                      className="text-foreground border-border hover:bg-muted"
+                      className="text-blue-700 border-blue-300 hover:bg-blue-100"
                     >
                       Apply Suggestion
                     </Button>

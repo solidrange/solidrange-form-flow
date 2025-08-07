@@ -60,6 +60,10 @@ const App: React.FC = () => (
           <ThemeProvider>
             <TooltipProvider>
             <div className="relative min-h-screen">
+              {/* Notification systems - these show popup messages to users */}
+              <Toaster />
+              <Sonner />
+              
               {/* Page routing system - decides which page to show based on URL */}
               <BrowserRouter>
                 <Routes>
@@ -71,10 +75,6 @@ const App: React.FC = () => (
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </BrowserRouter>
-              
-              {/* Notification systems - these show popup messages to users */}
-              <Toaster />
-              <Sonner />
             </div>
           </TooltipProvider>
         </ThemeProvider>

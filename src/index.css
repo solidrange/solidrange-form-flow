@@ -9,7 +9,7 @@
     /* Brand identity colors - will be updated by BrandProvider */
     --brand-primary: 208 100% 47%;
     --brand-primary-light: 210 100% 70%;
-    --brand-primary-dark: 216 14% 20%;
+    --brand-primary-dark: 208 100% 35%;
     --brand-secondary: 262 83% 58%;
     --brand-secondary-light: 262 83% 75%;
     --brand-secondary-dark: 262 83% 45%;
@@ -23,84 +23,84 @@
     --btn-secondary: var(--brand-secondary);
     --btn-secondary-hover: var(--brand-secondary-dark);
     
-    /* Light theme - Clean and minimalistic */
+    /* Light theme - High contrast and accessibility focused */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 224 71.4% 4.1%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 224 71.4% 4.1%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 224 71.4% 4.1%;
 
     --primary: var(--brand-primary);
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 210 40% 98%;
-    --secondary-foreground: 222.2 84% 4.9%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
 
-    --muted: 210 40% 98%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
 
-    --accent: 210 40% 98%;
-    --accent-foreground: 222.2 84% 4.9%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
 
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
     --ring: var(--brand-primary);
 
     --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 222.2 84% 4.9%;
-    --sidebar-primary: 222.2 84% 4.9%;
-    --sidebar-primary-foreground: 210 40% 98%;
-    --sidebar-accent: 210 40% 98%;
-    --sidebar-accent-foreground: 222.2 84% 4.9%;
-    --sidebar-border: 214.3 31.8% 91.4%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
     --sidebar-ring: var(--brand-primary);
   }
 
   .dark {
-    /* Dark theme - Enhanced contrast for better visibility */
-    --background: 224 71.4% 4.1%;
-    --foreground: 210 20% 98%;
+    /* Dark theme */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
 
-    --card: 215 27.9% 16.9%;
-    --card-foreground: 210 20% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
 
-    --popover: 215 27.9% 16.9%;
-    --popover-foreground: 210 20% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
 
     --primary: var(--brand-primary);
-    --primary-foreground: 224 71.4% 4.1%;
+    --primary-foreground: 0 0% 98%;
 
-    --secondary: 215 27.9% 16.9%;
-    --secondary-foreground: 210 20% 98%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 215 27.9% 16.9%;
-    --muted-foreground: 217.9 10.6% 64.9%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 215 27.9% 16.9%;
-    --accent-foreground: 210 20% 98%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 50.6%;
-    --destructive-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
 
-    --border: 215 27.9% 16.9%;
-    --input: 215 27.9% 16.9%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
     --ring: var(--brand-primary);
 
-    --sidebar-background: 224 71.4% 4.1%;
-    --sidebar-foreground: 210 20% 98%;
-    --sidebar-primary: 210 20% 98%;
-    --sidebar-primary-foreground: 224 71.4% 4.1%;
-    --sidebar-accent: 215 27.9% 16.9%;
-    --sidebar-accent-foreground: 210 20% 98%;
-    --sidebar-border: 215 27.9% 16.9%;
+    --sidebar-background: 222.2 84% 4.9%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 210 40% 98%;
+    --sidebar-primary-foreground: 222.2 84% 4.9%;
+    --sidebar-accent: 217.2 32.6% 17.5%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217.2 32.6% 17.5%;
     --sidebar-ring: var(--brand-primary);
   }
 }
@@ -262,7 +262,7 @@
 
   .kpi-card::before {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-br from-muted/50 to-transparent pointer-events-none;
+    @apply absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent pointer-events-none;
   }
 
   /* Enhanced animations for modern feel - Reduced motion on mobile */
@@ -367,36 +367,24 @@
   }
 
   .hover-glow {
-    @apply transition-all duration-300 sm:hover:shadow-lg;
+    @apply transition-all duration-300 sm:hover:shadow-lg sm:hover:shadow-blue-500/25;
   }
 
   .hover-scale {
     @apply transition-transform duration-200 sm:hover:scale-105;
   }
 
-  /* Enhanced mobile-first responsive design with dark mode fixes */
+  /* Enhanced mobile-first responsive design */
   .responsive-text {
-    @apply text-xs sm:text-sm lg:text-base leading-relaxed;
-  }
-  
-  .dark .responsive-text {
-    @apply text-white;
+    @apply text-xs sm:text-sm lg:text-base text-gray-700 leading-relaxed;
   }
 
   .responsive-heading {
-    @apply text-sm sm:text-base lg:text-lg xl:text-xl font-semibold leading-tight;
-  }
-  
-  .dark .responsive-heading {
-    @apply text-white;
+    @apply text-sm sm:text-base lg:text-lg xl:text-xl text-gray-900 font-semibold leading-tight;
   }
 
   .responsive-subheading {
-    @apply text-xs sm:text-sm lg:text-base font-medium leading-snug;
-  }
-  
-  .dark .responsive-subheading {
-    @apply text-white;
+    @apply text-xs sm:text-sm lg:text-base text-gray-600 font-medium leading-snug;
   }
 
   /* Improved scrollbar styling */
@@ -471,8 +459,8 @@
 
   /* Enhanced focus states for accessibility */
   .focus-enhanced {
-    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 
-           focus:border-primary;
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
+           focus:border-blue-500;
   }
 
   /* Text size utilities for mobile */

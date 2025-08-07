@@ -70,10 +70,10 @@ export const FormManagementDialog = ({
         <div className="grid grid-cols-4 gap-4 mb-6">
           <Card>
             <CardContent className="p-4 text-center">
-              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-muted mx-auto mb-2">
-                <Users className="h-4 w-4 text-foreground" />
+              <div className="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900 mx-auto mb-2">
+                <Users className="h-4 w-4 text-blue-600 dark:text-blue-300" />
               </div>
-              <div className="text-2xl font-bold text-foreground">{totalRecipients}</div>
+              <div className="text-2xl font-bold text-blue-600 dark:text-blue-300">{totalRecipients}</div>
               <div className="text-xs text-muted-foreground">Total Invites</div>
             </CardContent>
           </Card>

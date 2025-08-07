@@ -218,9 +218,9 @@ export const FormSharingOptions = ({ form }: FormSharingOptionsProps) => {
             </div>
           </div>
 
-          <div className="p-4 bg-muted rounded-lg">
-            <h4 className="font-medium text-foreground mb-2">Sharing Tips</h4>
-            <ul className="text-sm text-muted-foreground space-y-1">
+          <div className="p-4 bg-blue-50 rounded-lg">
+            <h4 className="font-medium text-blue-900 mb-2">Sharing Tips</h4>
+            <ul className="text-sm text-blue-800 space-y-1">
               <li>• Share this link directly with respondents</li>
               <li>• Post on social media or websites</li>
               <li>• Include in emails or documents</li>
@@ -344,7 +344,7 @@ export const FormSharingOptions = ({ form }: FormSharingOptionsProps) => {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <div className="text-2xl font-bold text-foreground">{form.analytics.views}</div>
+              <div className="text-2xl font-bold text-blue-600">{form.analytics.views}</div>
               <div className="text-sm text-gray-600">Total Views</div>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">

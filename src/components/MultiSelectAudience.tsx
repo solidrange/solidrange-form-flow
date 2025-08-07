@@ -47,7 +47,7 @@ export const MultiSelectAudience = ({
             variant="outline"
             role="combobox"
             aria-expanded={isOpen}
-            className="w-full justify-between border focus:border-primary h-auto min-h-[40px] p-2"
+            className="w-full justify-between border-gray-200 focus:border-blue-500 h-auto min-h-[40px] p-2"
             disabled={disabled}
           >
             <div className="flex flex-wrap gap-1">

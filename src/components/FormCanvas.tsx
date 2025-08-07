@@ -132,13 +132,13 @@ export const FormCanvas = ({
           {readOnly ? (
             <>
               <Lock className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-              <p className="text-muted-foreground text-lg mb-2">Published Form</p>
-              <p className="text-muted-foreground text-sm">No fields to display</p>
+              <p className="text-gray-500 text-lg mb-2">Published Form</p>
+              <p className="text-gray-400 text-sm">No fields to display</p>
             </>
           ) : (
             <>
-              <p className="text-muted-foreground text-lg mb-2">No fields added yet</p>
-              <p className="text-muted-foreground text-sm">Drag fields from the palette to start building your form</p>
+              <p className="text-gray-500 text-lg mb-2">No fields added yet</p>
+              <p className="text-gray-400 text-sm">Drag fields from the palette to start building your form</p>
             </>
           )}
         </div>

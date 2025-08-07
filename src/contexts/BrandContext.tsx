@@ -22,11 +22,6 @@ export interface BrandColors {
     secondary: string;
     destructive: string;
   };
-  accent?: string;
-  border?: string;
-  input?: string;
-  muted?: string;
-  ring?: string;
 }
 
 export interface BrandFonts {
@@ -55,7 +50,6 @@ interface BrandContextType {
   updateThemeColors: (theme: 'light' | 'dark', colors: Partial<BrandColors>) => void;
   updateFonts: (fonts: Partial<BrandFonts>) => void;
   resetToDefaults: () => void;
-  saveAsDefault: () => void;
   getCurrentThemeColors: () => BrandColors;
 }
 
@@ -73,7 +67,7 @@ const defaultBrand: BrandIdentity = {
       primary: {
         main: '208 100% 47%',
         light: '210 100% 70%',
-        dark: '216 14% 20%'
+        dark: '208 100% 35%'
       },
       secondary: {
         main: '262 83% 58%',
@@ -90,42 +84,32 @@ const defaultBrand: BrandIdentity = {
         primary: '208 100% 47%',
         secondary: '220 14.3% 95.9%',
         destructive: '0 84.2% 60.2%'
-      },
-      accent: '220 14.3% 95.9%',
-      border: '220 13% 91%',
-      input: '220 13% 91%',
-      muted: '220 14.3% 95.9%',
-      ring: '208 100% 47%'
+      }
     }
   },
   darkTheme: {
     colors: {
       primary: {
-        main: '208 100% 60%',
+        main: '208 100% 55%',
         light: '210 100% 75%',
-        dark: '208 100% 45%'
+        dark: '208 100% 40%'
       },
       secondary: {
-        main: '262 83% 70%',
-        light: '262 83% 85%',
-        dark: '262 83% 55%'
+        main: '262 83% 65%',
+        light: '262 83% 80%',
+        dark: '262 83% 50%'
       },
-      background: '224 71.4% 4.1%',
-      surface: '215 27.9% 16.9%',
+      background: '222.2 84% 4.9%',
+      surface: '217.2 32.6% 17.5%',
       text: {
-        primary: '210 20% 98%',
-        secondary: '217.9 10.6% 64.9%'
+        primary: '210 40% 98%',
+        secondary: '215 20.2% 65.1%'
       },
       button: {
-        primary: '208 100% 60%',
-        secondary: '215 27.9% 16.9%',
-        destructive: '0 62.8% 60.6%'
-      },
-      accent: '215 27.9% 16.9%',
-      border: '215 27.9% 16.9%',
-      input: '215 27.9% 16.9%',
-      muted: '215 27.9% 16.9%',
-      ring: '208 100% 60%'
+        primary: '208 100% 55%',
+        secondary: '217.2 32.6% 17.5%',
+        destructive: '0 62.8% 50.6%'
+      }
     }
   }
 };
@@ -297,11 +281,6 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
     localStorage.removeItem('brand-identity');
   };
 
-  const saveAsDefault = () => {
-    localStorage.setItem('brand-identity-default', JSON.stringify(brand));
-    localStorage.setItem('brand-identity', JSON.stringify(brand));
-  };
-
   return (
     <BrandContext.Provider 
       value={{ 
@@ -311,7 +290,6 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
         updateThemeColors, 
         updateFonts,
         resetToDefaults,
-        saveAsDefault,
         getCurrentThemeColors
       }}
     >

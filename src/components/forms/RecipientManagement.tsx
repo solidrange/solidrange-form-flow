@@ -140,7 +140,7 @@ export const RecipientManagement = ({ form, onUpdateForm }: RecipientManagementP
       case 'pending':
         return <Clock className="h-4 w-4 text-yellow-500" />;
       case 'sent':
-        return <Mail className="h-4 w-4 text-foreground" />;
+        return <Mail className="h-4 w-4 text-blue-500" />;
       case 'opened':
         return <ExternalLink className="h-4 w-4 text-purple-500" />;
       case 'completed':
@@ -157,7 +157,7 @@ export const RecipientManagement = ({ form, onUpdateForm }: RecipientManagementP
       case 'pending':
         return 'bg-yellow-100 text-yellow-800';
       case 'sent':
-        return 'bg-primary/10 text-primary';
+        return 'bg-blue-100 text-blue-800';
       case 'opened':
         return 'bg-purple-100 text-purple-800';
       case 'completed':

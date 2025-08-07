@@ -11,7 +11,24 @@ import { SaveOptionsDialog } from "@/components/SaveOptionsDialog";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { ReportGeneration } from "@/components/ReportGeneration";
 import { AppSidebar } from "@/components/AppSidebar";
-import { Settings, Plus, Save, Eye, FileText, BookOpen, ClipboardList, Send, ExternalLink, Code, Globe, Trash2, Edit, ArrowLeft, Mail, Folder } from "lucide-react";
+import { 
+  Settings, 
+  Plus, 
+  Save, 
+  Eye,
+  FileText,
+  BookOpen,
+  ClipboardList,
+  Send,
+  ExternalLink,
+  Code,
+  Globe,
+  Trash2,
+  Edit,
+  ArrowLeft,
+  Mail,
+  Folder
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -26,13 +43,15 @@ import { addCustomTemplate, isTemplateNameExists } from "@/data/formTemplates";
 import { BrandLogo } from "@/components/BrandLogo";
 import { GlobalSettings } from "@/components/GlobalSettings";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
-const Index = () => {
-  const {
-    t,
-    isRTL
-  } = useLanguage();
+import {
+  SidebarProvider,
+  SidebarTrigger,
+  SidebarInset,
+} from "@/components/ui/sidebar";
 
+const Index = () => {
+  const { t, isRTL } = useLanguage();
+  
   // Tab navigation state
   const [activeTab, setActiveTab] = useState("dashboard");
   const [activeBuildTab, setActiveBuildTab] = useState("builder");
@@ -42,7 +61,7 @@ const Index = () => {
     riskLevel?: string;
     audience?: string;
   }>({});
-
+  
   // Form state management
   const [formFields, setFormFields] = useState<FormField[]>([]);
   const [formTitle, setFormTitle] = useState("Untitled Form");
@@ -58,7 +77,7 @@ const Index = () => {
   const [showSaveOptionsDialog, setShowSaveOptionsDialog] = useState(false);
   const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false);
   const [currentTemplateTags, setCurrentTemplateTags] = useState<string[]>([]);
-
+  
   // Form settings with comprehensive defaults
   const [formSettings, setFormSettings] = useState<Form['settings']>({
     allowMultipleSubmissions: false,
@@ -69,15 +88,14 @@ const Index = () => {
       enabled: true,
       showLogo: true,
       showBrandColors: true,
-      useGlobalBranding: true,
-      // Start with global branding by default
+      useGlobalBranding: true,  // Start with global branding by default
       brandName: 'FormFlow',
       logo: null,
       colors: {
         primary: {
           main: '208 100% 47%',
           light: '210 100% 70%',
-          dark: '216 14% 20%'
+          dark: '208 100% 35%'
         },
         secondary: {
           main: '262 83% 58%',
@@ -129,10 +147,13 @@ const Index = () => {
    */
   const getCurrentFormStatus = (): 'draft' | 'published' | null => {
     if (!currentFormId) return null;
+    
     const draftForm = savedDrafts.find(form => form.id === currentFormId);
     if (draftForm) return 'draft';
+    
     const publishedForm = publishedForms.find(form => form.id === currentFormId);
     if (publishedForm) return 'published';
+    
     return null;
   };
 
@@ -158,10 +179,7 @@ const Index = () => {
   const addField = (field: FormField) => {
     console.log('Index: Adding field:', field.id, field.label, field.type);
     // Don't override the field ID if it already exists (important for templates)
-    const fieldToAdd = field.id ? field : {
-      ...field,
-      id: Date.now().toString()
-    };
+    const fieldToAdd = field.id ? field : { ...field, id: Date.now().toString() };
     setFormFields(prev => {
       const updated = [...prev, fieldToAdd];
       console.log('Index: Updated form fields count:', updated.length);
@@ -173,10 +191,11 @@ const Index = () => {
    * Update an existing field in the form
    */
   const updateField = (fieldId: string, updates: Partial<FormField>) => {
-    setFormFields(fields => fields.map(field => field.id === fieldId ? {
-      ...field,
-      ...updates
-    } : field));
+    setFormFields(fields => 
+      fields.map(field => 
+        field.id === fieldId ? { ...field, ...updates } : field
+      )
+    );
   };
 
   /**
@@ -201,10 +220,7 @@ const Index = () => {
    * Update form settings with partial updates
    */
   const updateFormSettings = (updates: Partial<Form['settings']>) => {
-    setFormSettings(prev => ({
-      ...prev,
-      ...updates
-    }));
+    setFormSettings(prev => ({ ...prev, ...updates }));
   };
 
   /**
@@ -227,15 +243,14 @@ const Index = () => {
         enabled: true,
         showLogo: true,
         showBrandColors: true,
-        useGlobalBranding: true,
-        // Start with global branding by default
+        useGlobalBranding: true,  // Start with global branding by default
         brandName: 'FormFlow',
         logo: null,
         colors: {
           primary: {
             main: '208 100% 47%',
             light: '210 100% 70%',
-            dark: '216 14% 20%'
+            dark: '208 100% 35%'
           },
           secondary: {
             main: '262 83% 58%',
@@ -280,12 +295,13 @@ const Index = () => {
     });
     setCurrentFormId(null);
     setActiveBuildTab("builder");
-
+    
     // Navigate to build-form tab
     setActiveTab("build-form");
+    
     toast({
       title: "New Form Created",
-      description: "Started with a blank form."
+      description: "Started with a blank form.",
     });
   };
 
@@ -301,11 +317,12 @@ const Index = () => {
     setFormTargetAudience(form.targetAudience?.[0] || "");
     setFormAttachments(form.attachments || []);
     setCurrentFormId(form.id);
+    
     setActiveBuildTab("builder");
     setActiveTab("build-form");
     toast({
       title: "Form Loaded",
-      description: `"${form.title}" has been loaded for editing.`
+      description: `"${form.title}" has been loaded for editing.`,
     });
   };
 
@@ -317,7 +334,7 @@ const Index = () => {
       toast({
         title: "Title Required",
         description: "Please add a title before saving the form.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
@@ -354,18 +371,23 @@ const Index = () => {
         dropoffRate: 0
       }
     };
+
     if (currentFormId) {
       // Update existing draft
-      setSavedDrafts(prev => prev.map(draft => draft.id === currentFormId ? formData : draft));
+      setSavedDrafts(prev => prev.map(draft => 
+        draft.id === currentFormId ? formData : draft
+      ));
     } else {
       // Create new draft and set current form ID
       setSavedDrafts(prev => [...prev, formData]);
       setCurrentFormId(formId);
     }
+    
     setShowSaveOptionsDialog(false);
+    
     toast({
       title: "Draft Saved",
-      description: "Your form has been saved as a draft."
+      description: "Your form has been saved as a draft.",
     });
   };
 
@@ -387,28 +409,31 @@ const Index = () => {
   const handlePublishForm = (formToPublish?: Form) => {
     const titleToCheck = formToPublish?.title || formTitle;
     const fieldsToCheck = formToPublish?.fields || formFields;
+
     if (!titleToCheck.trim()) {
       toast({
         title: "Title Required",
         description: "Please add a title before publishing the form.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
+
     if (fieldsToCheck.length === 0) {
       toast({
         title: "Fields Required",
         description: "Please add at least one field before publishing the form.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
+
     if (formToPublish) {
       // Publishing from drafts tab
-      const publishedForm = {
-        ...formToPublish,
-        status: 'published' as const,
-        updatedAt: new Date()
+      const publishedForm = { 
+        ...formToPublish, 
+        status: 'published' as const, 
+        updatedAt: new Date() 
       };
       setPublishedForms(prev => [...prev, publishedForm]);
       setSavedDrafts(prev => prev.filter(draft => draft.id !== formToPublish.id));
@@ -438,6 +463,7 @@ const Index = () => {
           dropoffRate: 0
         }
       };
+      
       if (currentFormId) {
         // Remove from drafts if it was there and add to published
         setSavedDrafts(prev => prev.filter(draft => draft.id !== currentFormId));
@@ -446,15 +472,16 @@ const Index = () => {
         setPublishedForms(prev => [...prev, formData]);
         setCurrentFormId(formId);
       }
-
+      
       // After publishing, create a new blank form so user can continue building
       setTimeout(() => {
         createNewForm();
       }, 100);
     }
+    
     toast({
       title: "Form Published",
-      description: "Your form has been published successfully. You can now build a new form."
+      description: "Your form has been published successfully. You can now build a new form.",
     });
   };
 
@@ -464,34 +491,28 @@ const Index = () => {
   const handleMoveToDraft = (form?: Form) => {
     if (form) {
       // Moving from published tab
-      const draftForm = {
-        ...form,
-        status: 'draft' as const,
-        updatedAt: new Date()
-      };
+      const draftForm = { ...form, status: 'draft' as const, updatedAt: new Date() };
       setSavedDrafts(prev => [...prev, draftForm]);
       setPublishedForms(prev => prev.filter(published => published.id !== form.id));
+      
       toast({
         title: "Moved to Draft",
-        description: `"${form.title}" has been moved to drafts.`
+        description: `"${form.title}" has been moved to drafts.`,
       });
     } else {
       // Moving current form to draft
       if (currentFormId) {
         const currentForm = publishedForms.find(f => f.id === currentFormId);
         if (currentForm) {
-          const draftForm = {
-            ...currentForm,
-            status: 'draft' as const,
-            updatedAt: new Date()
-          };
+          const draftForm = { ...currentForm, status: 'draft' as const, updatedAt: new Date() };
           setSavedDrafts(prev => [...prev, draftForm]);
           setPublishedForms(prev => prev.filter(f => f.id !== currentFormId));
         }
       }
+      
       toast({
         title: "Moved to Draft",
-        description: "Current form has been moved to draft state and can now be edited."
+        description: "Current form has been moved to draft state and can now be edited.",
       });
     }
   };
@@ -501,14 +522,15 @@ const Index = () => {
    */
   const handleDeleteDraft = (draftId: string) => {
     setSavedDrafts(prev => prev.filter(draft => draft.id !== draftId));
-
+    
     // If this is the current form, create a new one
     if (currentFormId === draftId) {
       createNewForm();
     }
+    
     toast({
       title: "Draft Deleted",
-      description: "The draft form has been deleted."
+      description: "The draft form has been deleted.",
     });
   };
 
@@ -517,14 +539,15 @@ const Index = () => {
    */
   const handleDeletePublished = (formId: string) => {
     setPublishedForms(prev => prev.filter(form => form.id !== formId));
-
+    
     // If this is the current form, create a new one
     if (currentFormId === formId) {
       createNewForm();
     }
+    
     toast({
       title: "Published Form Deleted",
-      description: "The published form has been deleted."
+      description: "The published form has been deleted.",
     });
   };
 
@@ -532,11 +555,9 @@ const Index = () => {
    * Update a published form (used for invitations)
    */
   const updatePublishedForm = (formId: string, updates: Partial<Form>) => {
-    setPublishedForms(prev => prev.map(form => form.id === formId ? {
-      ...form,
-      ...updates,
-      updatedAt: new Date()
-    } : form));
+    setPublishedForms(prev => prev.map(form => 
+      form.id === formId ? { ...form, ...updates, updatedAt: new Date() } : form
+    ));
   };
 
   /**
@@ -554,14 +575,14 @@ const Index = () => {
     console.log('Index: Applying template:', template.name);
     console.log('Index: Template category:', template.category);
     console.log('Index: Template sector:', template.sector);
-
+    
     // Clear field selection first
     onSelectField(null);
-
+    
     // Update form details
     setFormTitle(template.name);
     setFormDescription(template.description);
-
+    
     // FIXED: Properly set category and sectors
     setFormCategory(template.category || "");
     if (template.sector) {
@@ -570,34 +591,31 @@ const Index = () => {
     } else {
       setFormTargetAudience([]);
     }
-
+    
     // Set template tags for display
     setCurrentTemplateTags(template.tags || []);
-
+    
     // Create template fields with unique IDs - ensure deep copy
     const templateFields = template.fields.map((field, index) => {
       const newField = {
         ...field,
         id: `template-${template.id}-${index}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
         // Ensure options are properly copied if they exist
-        ...(field.options && {
-          options: [...field.options]
-        }),
+        ...(field.options && { options: [...field.options] }),
         // Ensure acceptedFileTypes are properly copied if they exist
-        ...(field.acceptedFileTypes && {
-          acceptedFileTypes: [...field.acceptedFileTypes]
-        })
+        ...(field.acceptedFileTypes && { acceptedFileTypes: [...field.acceptedFileTypes] })
       };
       return newField;
     });
+    
     console.log('Index: Clearing existing fields...');
     // Clear all existing fields first
     setFormFields([]);
-
+    
     // Add template fields immediately
     console.log('Index: Adding template fields...');
     setFormFields(templateFields);
-
+    
     // Reset to default settings with branding enabled and enable scoring for vendor-risk templates
     setFormSettings({
       allowMultipleSubmissions: false,
@@ -615,7 +633,7 @@ const Index = () => {
           primary: {
             main: '208 100% 47%',
             light: '210 100% 70%',
-            dark: '216 14% 20%'
+            dark: '208 100% 35%'
           },
           secondary: {
             main: '262 83% 58%',
@@ -658,11 +676,13 @@ const Index = () => {
         allowUserUploads: true
       }
     });
+    
     setActiveBuildTab("builder");
     setActiveTab("build-form");
+    
     toast({
       title: "Template Applied",
-      description: `${template.name} template has been applied to your form with category "${template.category}" and sectors.`
+      description: `${template.name} template has been applied to your form with category "${template.category}" and sectors.`,
     });
   };
 
@@ -672,15 +692,17 @@ const Index = () => {
   const generateFormUrl = (formId: string) => {
     return `${window.location.origin}/form/${formId}`;
   };
+
   const generateEmbedCode = (formId: string) => {
     const formUrl = generateFormUrl(formId);
     return `<iframe src="${formUrl}" width="100%" height="600" frameborder="0"></iframe>`;
   };
+
   const handleCopyToClipboard = (text: string, type: string) => {
     navigator.clipboard.writeText(text);
     toast({
       title: "Copied!",
-      description: `${type} copied to clipboard.`
+      description: `${type} copied to clipboard.`,
     });
   };
 
@@ -708,27 +730,12 @@ const Index = () => {
   };
 
   // Create mobile-friendly tabs array for build section
-  const buildTabs = [{
-    id: "builder",
-    label: "Builder",
-    icon: <Plus className="h-4 w-4" />,
-    mobileLabel: "Build"
-  }, {
-    id: "library",
-    label: "Library",
-    icon: <Folder className="h-4 w-4" />,
-    mobileLabel: "Lib"
-  }, {
-    id: "preview",
-    label: "Preview",
-    icon: <Eye className="h-4 w-4" />,
-    mobileLabel: "View"
-  }, {
-    id: "settings",
-    label: "Settings",
-    icon: <Settings className="h-4 w-4" />,
-    mobileLabel: "Set"
-  }];
+  const buildTabs = [
+    { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" />, mobileLabel: "Build" },
+    { id: "library", label: "Library", icon: <Folder className="h-4 w-4" />, mobileLabel: "Lib" },
+    { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" />, mobileLabel: "View" },
+    { id: "settings", label: "Settings", icon: <Settings className="h-4 w-4" />, mobileLabel: "Set" }
+  ];
 
   /**
    * Handle saving current form as a template
@@ -743,10 +750,12 @@ const Index = () => {
       category: typeof formCategory === 'string' ? formCategory : formCategory[0] || '',
       sector: typeof formTargetAudience === 'string' ? formTargetAudience : formTargetAudience
     };
+
     const savedTemplate = addCustomTemplate(templateWithFields);
+    
     toast({
       title: "Template Saved",
-      description: `"${savedTemplate.name}" has been added to your template library.`
+      description: `"${savedTemplate.name}" has been added to your template library.`,
     });
   };
 
@@ -755,13 +764,20 @@ const Index = () => {
 
   // Fixed onSelectField function
   const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null);
+  
   const onSelectField = (fieldId: string | null) => {
     setSelectedFieldId(fieldId);
   };
-  return <SidebarProvider>
-      <div className={`min-h-screen flex w-full ${isRTL ? 'rtl' : ''}`}>
+
+  return (
+    <SidebarProvider>
+      <div className={`min-h-screen bg-gray-50 flex w-full ${isRTL ? 'rtl' : ''}`}>
         {/* Sidebar */}
-        <AppSidebar activeTab={activeTab} onTabChange={setActiveTab} hasUnpublishedDrafts={hasUnpublishedDrafts} />
+        <AppSidebar 
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          hasUnpublishedDrafts={hasUnpublishedDrafts}
+        />
 
         {/* Main Content */}
         <SidebarInset className="flex-1">
@@ -775,7 +791,8 @@ const Index = () => {
               </div>
               
               {/* Quick Share Button for Published Forms */}
-              {currentFormIsPublished() && <Dialog>
+              {currentFormIsPublished() && (
+                <Dialog>
                   <DialogTrigger asChild>
                     <Button variant="outline" size="sm" className="gap-2">
                       <Globe className="h-4 w-4" />
@@ -790,32 +807,44 @@ const Index = () => {
                       <div>
                         <label className="text-sm font-medium text-gray-700">Form URL</label>
                         <div className="flex gap-2 mt-1">
-                          <Input value={`${window.location.origin}/form/${currentFormId || 'current-form'}`} readOnly className="flex-1 text-sm" />
-                          <Button variant="outline" size="sm" onClick={() => {
-                        navigator.clipboard.writeText(`${window.location.origin}/form/${currentFormId || 'current-form'}`);
-                        toast({
-                          title: "Copied!",
-                          description: "Form URL copied to clipboard."
-                        });
-                      }}>
+                          <Input 
+                            value={`${window.location.origin}/form/${currentFormId || 'current-form'}`} 
+                            readOnly 
+                            className="flex-1 text-sm"
+                          />
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              navigator.clipboard.writeText(`${window.location.origin}/form/${currentFormId || 'current-form'}`);
+                              toast({
+                                title: "Copied!",
+                                description: "Form URL copied to clipboard.",
+                              });
+                            }}
+                          >
                             <ExternalLink className="h-4 w-4" />
                           </Button>
                         </div>
                       </div>
                     </div>
                   </DialogContent>
-                </Dialog>}
+                </Dialog>
+              )}
             </div>
           </div>
 
           {/* Page Content */}
           <div className="p-6">
-            {activeTab === "dashboard" && <Analytics submissions={submissions} onFilterSubmissions={filters => {
-            setSubmissionFilters(filters);
-            setActiveTab("review-submissions");
-          }} />}
+            {activeTab === "dashboard" && (
+              <Analytics submissions={submissions} onFilterSubmissions={(filters) => {
+                setSubmissionFilters(filters);
+                setActiveTab("review-submissions");
+              }} />
+            )}
 
-            {activeTab === "review-submissions" && <Tabs defaultValue="submissions" className="w-full">
+            {activeTab === "review-submissions" && (
+              <Tabs defaultValue="submissions" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-4">
                   <TabsTrigger value="submissions" className="flex items-center gap-2">
                     <FileText className="h-4 w-4" />
@@ -828,40 +857,47 @@ const Index = () => {
                 </TabsList>
 
                 <TabsContent value="submissions">
-                  <SubmissionReview submissions={submissions} form={{
-                id: currentFormId || 'current-form',
-                title: formTitle,
-                description: formDescription,
-                fields: formFields,
-                settings: formSettings,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                status: getCurrentFormStatus() || 'draft',
-                submissions: submissions.length,
-                analytics: {
-                  views: 0,
-                  submissions: submissions.length,
-                  completionRate: 0,
-                  emailsSent: 0,
-                  emailsCompleted: 0,
-                  averageCompletionTime: 0,
-                  dropoffRate: 0
-                }
-              }} initialFilters={submissionFilters} onUpdateSubmission={(id, updates) => {
-                console.log('Updating submission:', id, updates);
-                toast({
-                  title: "Submission Updated",
-                  description: "The submission has been updated successfully."
-                });
-              }} />
+                  <SubmissionReview
+                    submissions={submissions}
+                    form={{
+                      id: currentFormId || 'current-form',
+                      title: formTitle,
+                      description: formDescription,
+                      fields: formFields,
+                      settings: formSettings,
+                      createdAt: new Date(),
+                      updatedAt: new Date(),
+                      status: getCurrentFormStatus() || 'draft',
+                      submissions: submissions.length,
+                      analytics: {
+                        views: 0,
+                        submissions: submissions.length,
+                        completionRate: 0,
+                        emailsSent: 0,
+                        emailsCompleted: 0,
+                        averageCompletionTime: 0,
+                        dropoffRate: 0
+                      }
+                    }}
+                    initialFilters={submissionFilters}
+                    onUpdateSubmission={(id, updates) => {
+                      console.log('Updating submission:', id, updates);
+                      toast({
+                        title: "Submission Updated",
+                        description: "The submission has been updated successfully.",
+                      });
+                    }}
+                  />
                 </TabsContent>
 
                 <TabsContent value="reports">
                   <ReportGeneration submissions={submissions} />
                 </TabsContent>
-              </Tabs>}
+              </Tabs>
+            )}
 
-            {activeTab === "forms" && <div className="space-y-6">
+            {activeTab === "forms" && (
+              <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900">Forms</h2>
@@ -886,16 +922,20 @@ const Index = () => {
                   </TabsList>
 
                   <TabsContent value="drafts" className="space-y-4">
-                    {savedDrafts.length === 0 ? <div className="text-center py-12 bg-white">
-                        <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-foreground mb-2">No draft forms</h3>
-                        <p className="text-muted-foreground mb-4">Create a new form to get started</p>
+                    {savedDrafts.length === 0 ? (
+                      <div className="text-center py-12">
+                        <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No draft forms</h3>
+                        <p className="text-gray-600 mb-4">Create a new form to get started</p>
                         <Button onClick={createNewForm} className="gap-2">
                           <Plus className="h-4 w-4" />
                           Create Form
                         </Button>
-                      </div> : <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        {savedDrafts.map(draft => <Card key={draft.id} className="hover:shadow-md transition-shadow">
+                      </div>
+                    ) : (
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {savedDrafts.map((draft) => (
+                          <Card key={draft.id} className="hover:shadow-md transition-shadow">
                             <CardHeader className="pb-2">
                               <div className="flex items-start justify-between">
                                 <div className="flex-1 min-w-0">
@@ -913,14 +953,23 @@ const Index = () => {
                                 <span>{new Date(draft.updatedAt).toLocaleDateString()}</span>
                               </div>
                               <div className="flex gap-2">
-                                <Button size="sm" onClick={() => {
-                          loadForm(draft);
-                          setActiveTab("build-form");
-                        }} className="flex-1 gap-1">
+                                <Button 
+                                  size="sm" 
+                                  onClick={() => {
+                                    loadForm(draft);
+                                    setActiveTab("build-form");
+                                  }}
+                                  className="flex-1 gap-1"
+                                >
                                   <Edit className="h-3 w-3" />
                                   Edit
                                 </Button>
-                                <Button size="sm" variant="outline" onClick={() => handlePublishForm(draft)} className="flex-1 gap-1">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => handlePublishForm(draft)}
+                                  className="flex-1 gap-1"
+                                >
                                   <Globe className="h-3 w-3" />
                                   Publish
                                 </Button>
@@ -947,17 +996,23 @@ const Index = () => {
                                 </AlertDialog>
                               </div>
                             </CardContent>
-                          </Card>)}
-                      </div>}
+                          </Card>
+                        ))}
+                      </div>
+                    )}
                   </TabsContent>
 
                   <TabsContent value="published" className="space-y-4">
-                    {publishedForms.length === 0 ? <div className="text-center py-12">
-                        <Globe className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-foreground mb-2">No published forms</h3>
-                        <p className="text-muted-foreground">Publish a form to make it available to respondents</p>
-                      </div> : <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        {publishedForms.map(form => <Card key={form.id} className="hover:shadow-md transition-shadow">
+                    {publishedForms.length === 0 ? (
+                      <div className="text-center py-12">
+                        <Globe className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">No published forms</h3>
+                        <p className="text-gray-600">Publish a form to make it available to respondents</p>
+                      </div>
+                    ) : (
+                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        {publishedForms.map((form) => (
+                          <Card key={form.id} className="hover:shadow-md transition-shadow">
                             <CardHeader className="pb-2">
                               <div className="flex items-start justify-between">
                                 <div className="flex-1 min-w-0">
@@ -990,8 +1045,15 @@ const Index = () => {
                                       <div>
                                         <label className="text-sm font-medium">Form URL</label>
                                         <div className="flex gap-2 mt-1">
-                                          <Input value={generateFormUrl(form.id)} readOnly className="flex-1" />
-                                          <Button size="sm" onClick={() => handleCopyToClipboard(generateFormUrl(form.id), "URL")}>
+                                          <Input 
+                                            value={generateFormUrl(form.id)} 
+                                            readOnly 
+                                            className="flex-1"
+                                          />
+                                          <Button 
+                                            size="sm" 
+                                            onClick={() => handleCopyToClipboard(generateFormUrl(form.id), "URL")}
+                                          >
                                             Copy
                                           </Button>
                                         </div>
@@ -999,8 +1061,15 @@ const Index = () => {
                                       <div>
                                         <label className="text-sm font-medium">Embed Code</label>
                                         <div className="flex gap-2 mt-1">
-                                          <Input value={generateEmbedCode(form.id)} readOnly className="flex-1" />
-                                          <Button size="sm" onClick={() => handleCopyToClipboard(generateEmbedCode(form.id), "Embed code")}>
+                                          <Input 
+                                            value={generateEmbedCode(form.id)} 
+                                            readOnly 
+                                            className="flex-1"
+                                          />
+                                          <Button 
+                                            size="sm" 
+                                            onClick={() => handleCopyToClipboard(generateEmbedCode(form.id), "Embed code")}
+                                          >
                                             Copy
                                           </Button>
                                         </div>
@@ -1009,12 +1078,22 @@ const Index = () => {
                                   </DialogContent>
                                 </Dialog>
 
-                                <Button size="sm" variant="outline" onClick={() => setSelectedFormForManagement(form)} className="flex-1 gap-1">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => setSelectedFormForManagement(form)}
+                                  className="flex-1 gap-1"
+                                >
                                   <Mail className="h-3 w-3" />
                                   Manage
                                 </Button>
 
-                                <Button size="sm" variant="outline" onClick={() => handleMoveToDraft(form)} className="gap-1">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => handleMoveToDraft(form)}
+                                  className="gap-1"
+                                >
                                   <ArrowLeft className="h-3 w-3" />
                                   Draft
                                 </Button>
@@ -1042,88 +1121,167 @@ const Index = () => {
                                 </AlertDialog>
                               </div>
                             </CardContent>
-                          </Card>)}
-                      </div>}
+                          </Card>
+                        ))}
+                      </div>
+                    )}
                   </TabsContent>
                 </Tabs>
-              </div>}
+              </div>
+            )}
 
-            {activeTab === "build-form" && <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
+            {activeTab === "build-form" && (
+              <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-4 mb-6">
-                  {buildTabs.map(tab => <TabsTrigger key={tab.id} value={tab.id} className="flex items-center gap-2">
+                  {buildTabs.map((tab) => (
+                    <TabsTrigger 
+                      key={tab.id} 
+                      value={tab.id} 
+                      className="flex items-center gap-2"
+                    >
                       {tab.icon}
                       <span className="hidden sm:inline">{tab.label}</span>
                       <span className="inline sm:hidden">{tab.mobileLabel}</span>
-                    </TabsTrigger>)}
+                    </TabsTrigger>
+                  ))}
                 </TabsList>
 
                 <TabsContent value="builder">
-                  <FormBuilder formFields={formFields} onAddField={addField} onUpdateField={updateField} onRemoveField={removeField} selectedFieldId={selectedFieldId} onSelectField={onSelectField} title={formTitle} onUpdateTitle={setFormTitle} description={formDescription} onUpdateDescription={setFormDescription} onSaveForm={saveForm} onPreviewForm={() => {}} attachments={formAttachments} onUpdateAttachments={setFormAttachments} onSaveToLibrary={handleSaveToLibrary} isPublished={currentFormIsPublished()} onMoveToDraft={() => handleMoveToDraft()} formSettings={formSettings} onUpdateFormSettings={updateFormSettings} formCategory={formCategory} onUpdateFormCategory={setFormCategory} formTargetAudience={formTargetAudience} onUpdateFormTargetAudience={setFormTargetAudience} currentTemplateTags={currentTemplateTags} formAudience={formAudience} onUpdateFormAudience={setFormAudience} />
+                  <FormBuilder
+                    formFields={formFields}
+                    onAddField={addField}
+                    onUpdateField={updateField}
+                    onRemoveField={removeField}
+                    selectedFieldId={selectedFieldId}
+                    onSelectField={onSelectField}
+                    title={formTitle}
+                    onUpdateTitle={setFormTitle}
+                    description={formDescription}
+                    onUpdateDescription={setFormDescription}
+                    onSaveForm={saveForm}
+                    onPreviewForm={() => {}}
+                    attachments={formAttachments}
+                    onUpdateAttachments={setFormAttachments}
+                    onSaveToLibrary={handleSaveToLibrary}
+                    isPublished={currentFormIsPublished()}
+                    onMoveToDraft={() => handleMoveToDraft()}
+                    formSettings={formSettings}
+                    onUpdateFormSettings={updateFormSettings}
+                    formCategory={formCategory}
+                    onUpdateFormCategory={setFormCategory}
+                    formTargetAudience={formTargetAudience}
+                    onUpdateFormTargetAudience={setFormTargetAudience}
+                    currentTemplateTags={currentTemplateTags}
+                    formAudience={formAudience}
+                    onUpdateFormAudience={setFormAudience}
+                  />
                 </TabsContent>
 
                 <TabsContent value="library">
-                  <FormLibrary onUseTemplate={useTemplate} />
+                  <FormLibrary 
+                    onUseTemplate={useTemplate}
+                  />
                 </TabsContent>
 
                 <TabsContent value="preview">
-                  <FormPreview formFields={formFields} formTitle={formTitle} formDescription={formDescription} formSettings={formSettings} attachments={formAttachments} />
+                  <FormPreview
+                    formFields={formFields}
+                    formTitle={formTitle}
+                    formDescription={formDescription}
+                    formSettings={formSettings}
+                    attachments={formAttachments}
+                  />
                 </TabsContent>
 
                 <TabsContent value="settings">
-                  <FormSettingsPanel form={{
-                id: currentFormId || 'current-form',
-                title: formTitle,
-                description: formDescription,
-                fields: formFields,
-                settings: formSettings,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                status: getCurrentFormStatus() || 'draft',
-                submissions: 0,
-                category: typeof formCategory === 'string' ? formCategory : formCategory[0] || '',
-                targetAudience: typeof formTargetAudience === 'string' ? [formTargetAudience] : formTargetAudience,
-                attachments: formAttachments,
-                analytics: {
-                  views: 0,
-                  submissions: 0,
-                  completionRate: 0,
-                  emailsSent: 0,
-                  emailsCompleted: 0,
-                  averageCompletionTime: 0,
-                  dropoffRate: 0
-                }
-              }} onUpdateForm={updates => {
-                if (updates.title !== undefined) {
-                  setFormTitle(updates.title);
-                }
-                if (updates.description !== undefined) {
-                  setFormDescription(updates.description);
-                }
-                if (updates.settings !== undefined) {
-                  updateFormSettings(updates.settings);
-                }
-              }} isPublished={currentFormIsPublished()} />
+                  <FormSettingsPanel 
+                    form={{
+                      id: currentFormId || 'current-form',
+                      title: formTitle,
+                      description: formDescription,
+                      fields: formFields,
+                      settings: formSettings,
+                      createdAt: new Date(),
+                      updatedAt: new Date(),
+                      status: getCurrentFormStatus() || 'draft',
+                      submissions: 0,
+                      category: typeof formCategory === 'string' ? formCategory : formCategory[0] || '',
+                      targetAudience: typeof formTargetAudience === 'string' ? [formTargetAudience] : formTargetAudience,
+                      attachments: formAttachments,
+                      analytics: {
+                        views: 0,
+                        submissions: 0,
+                        completionRate: 0,
+                        emailsSent: 0,
+                        emailsCompleted: 0,
+                        averageCompletionTime: 0,
+                        dropoffRate: 0
+                      }
+                    }} 
+                    onUpdateForm={(updates) => {
+                      if (updates.title !== undefined) {
+                        setFormTitle(updates.title);
+                      }
+                      if (updates.description !== undefined) {
+                        setFormDescription(updates.description);
+                      }
+                      if (updates.settings !== undefined) {
+                        updateFormSettings(updates.settings);
+                      }
+                    }} 
+                    isPublished={currentFormIsPublished()}
+                  />
                 </TabsContent>
-              </Tabs>}
+              </Tabs>
+            )}
 
-            {activeTab === "global-settings" && <GlobalSettings />}
+            {activeTab === "global-settings" && (
+              <GlobalSettings />
+            )}
           </div>
         </SidebarInset>
 
         {/* Save Options Dialog */}
-        {showSaveOptionsDialog && <SaveOptionsDialog isOpen={showSaveOptionsDialog} onClose={() => setShowSaveOptionsDialog(false)} onSaveDraft={handleSaveDraft} onSaveAsTemplate={handleShowSaveAsTemplate} formTitle={formTitle} />}
+        {showSaveOptionsDialog && (
+          <SaveOptionsDialog
+            isOpen={showSaveOptionsDialog}
+            onClose={() => setShowSaveOptionsDialog(false)}
+            onSaveDraft={handleSaveDraft}
+            onSaveAsTemplate={handleShowSaveAsTemplate}
+            formTitle={formTitle}
+          />
+        )}
 
         {/* Save Template Dialog */}
-        {showSaveTemplateDialog && <SaveTemplateDialog isOpen={showSaveTemplateDialog} onClose={() => setShowSaveTemplateDialog(false)} onSave={handleSaveAsTemplate} currentTemplate={{
-        name: formTitle,
-        description: formDescription,
-        category: typeof formCategory === 'string' ? formCategory : formCategory[0] || '',
-        sector: formTargetAudience
-      }} originalTags={currentTemplateTags} />}
+        {showSaveTemplateDialog && (
+          <SaveTemplateDialog
+            isOpen={showSaveTemplateDialog}
+            onClose={() => setShowSaveTemplateDialog(false)}
+            onSave={handleSaveAsTemplate}
+            currentTemplate={{
+              name: formTitle,
+              description: formDescription,
+              category: typeof formCategory === 'string' ? formCategory : formCategory[0] || '',
+              sector: formTargetAudience
+            }}
+            originalTags={currentTemplateTags}
+          />
+        )}
 
         {/* Form Management Dialog */}
-        {selectedFormForManagement && <FormManagementDialog form={selectedFormForManagement} isOpen={!!selectedFormForManagement} onClose={() => setSelectedFormForManagement(null)} onUpdateForm={updates => updatePublishedForm(selectedFormForManagement.id, updates)} generateFormUrl={generateFormUrl} generateEmbedCode={generateEmbedCode} />}
+        {selectedFormForManagement && (
+          <FormManagementDialog
+            form={selectedFormForManagement}
+            isOpen={!!selectedFormForManagement}
+            onClose={() => setSelectedFormForManagement(null)}
+            onUpdateForm={(updates) => updatePublishedForm(selectedFormForManagement.id, updates)}
+            generateFormUrl={generateFormUrl}
+            generateEmbedCode={generateEmbedCode}
+          />
+        )}
       </div>
-    </SidebarProvider>;
+    </SidebarProvider>
+  );
 };
+
 export default Index;

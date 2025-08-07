@@ -57,7 +57,7 @@ export const FieldPalette = ({ onAddField }: FieldPaletteProps) => {
     <Card className="h-full">
       <CardHeader>
         <CardTitle className="text-lg">Form Fields</CardTitle>
-        <p className="text-sm text-muted-foreground">Drag fields to the canvas to add them</p>
+        <p className="text-sm text-gray-500">Drag fields to the canvas to add them</p>
       </CardHeader>
       <CardContent className="space-y-2">
         {fieldTypes.map(({ type, label, icon: Icon }) => (

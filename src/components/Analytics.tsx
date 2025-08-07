@@ -163,7 +163,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                 <p className="text-2xl font-bold text-foreground">{totalSubmissions}</p>
               </div>
               <div className="flex-shrink-0">
-                <FileText className="h-8 w-8 text-foreground" />
+                <FileText className="h-8 w-8 text-blue-500" />
               </div>
             </div>
             <div className="mt-2">
@@ -370,7 +370,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                       </div>
                       <div className="text-right">
                         <span className="text-lg font-bold text-emerald-600">{fullyApprovedSubmissions}</span>
-                        <span className="text-sm text-muted-foreground ml-2">({fullApprovalRate.toFixed(1)}%)</span>
+                        <span className="text-sm text-gray-500 ml-2">({fullApprovalRate.toFixed(1)}%)</span>
                       </div>
                     </div>
                     <Progress value={fullApprovalRate} className="h-3" />
@@ -382,7 +382,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                       </div>
                       <div className="text-right">
                         <span className="text-lg font-bold text-orange-600">{partiallyApprovedSubmissions}</span>
-                        <span className="text-sm text-muted-foreground ml-2">({(100 - fullApprovalRate).toFixed(1)}%)</span>
+                        <span className="text-sm text-gray-500 ml-2">({(100 - fullApprovalRate).toFixed(1)}%)</span>
                       </div>
                     </div>
                     <Progress value={100 - fullApprovalRate} className="h-3" />
@@ -421,15 +421,15 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-foreground" />
+                  <Target className="h-5 w-5 text-blue-500" />
                   Approval Quality Metrics
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
                   {/* Quality Score */}
-                  <div className="text-center p-4 bg-card border rounded-lg">
-                    <div className="text-3xl font-bold text-foreground mb-2">
+                  <div className="text-center p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg">
+                    <div className="text-3xl font-bold text-emerald-600 mb-2">
                       {fullApprovalRate.toFixed(1)}%
                     </div>
                     <div className="text-sm text-emerald-700 font-medium">Quality Approval Rate</div>
@@ -440,15 +440,15 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
 
                   {/* Metrics breakdown */}
                   <div className="space-y-3">
-                    <div className="flex justify-between items-center p-2 bg-muted rounded">
+                    <div className="flex justify-between items-center p-2 bg-gray-50 rounded">
                       <span className="text-sm font-medium">Total Approved</span>
                       <span className="text-sm font-bold">{approvedSubmissions}</span>
                     </div>
-                    <div className="flex justify-between items-center p-2 bg-muted rounded">
+                    <div className="flex justify-between items-center p-2 bg-emerald-50 rounded">
                       <span className="text-sm font-medium text-emerald-700">Full Implementation</span>
                       <span className="text-sm font-bold text-emerald-600">{fullyApprovedSubmissions}</span>
                     </div>
-                    <div className="flex justify-between items-center p-2 bg-muted rounded">
+                    <div className="flex justify-between items-center p-2 bg-orange-50 rounded">
                       <span className="text-sm font-medium text-orange-700">Conditional Implementation</span>
                       <span className="text-sm font-bold text-orange-600">{partiallyApprovedSubmissions}</span>
                     </div>
@@ -496,7 +496,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                         <div className="w-20 bg-gray-200 rounded-full h-2">
                           <div 
                             className={`h-2 rounded-full ${
-                              type === 'vendor' ? 'bg-primary' :
+                              type === 'vendor' ? 'bg-blue-500' :
                               type === 'external' ? 'bg-purple-500' :
                               'bg-green-500'
                             }`}
@@ -521,10 +521,10 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               <CardContent>
                 <div className="space-y-3">
                   {submissions.slice(0, 5).map((submission) => (
-                    <div key={submission.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                    <div key={submission.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div>
                         <p className="font-medium text-sm">{submission.companyName || submission.submitterName}</p>
-                        <p className="text-xs text-muted-foreground">{submission.submittedAt.toLocaleDateString()}</p>
+                        <p className="text-xs text-gray-500">{submission.submittedAt.toLocaleDateString()}</p>
                       </div>
                         <Badge 
                           variant={
@@ -610,14 +610,14 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
             <CardContent>
               <div className="space-y-3">
                 {topCompanies.map((company, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
-                        <span className="text-sm font-medium text-foreground">#{index + 1}</span>
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <span className="text-sm font-medium text-blue-600">#{index + 1}</span>
                       </div>
                       <div>
                         <p className="font-medium text-sm">{company.company}</p>
-                        <p className="text-xs text-muted-foreground">{company.submissions} submissions</p>
+                        <p className="text-xs text-gray-500">{company.submissions} submissions</p>
                       </div>
                     </div>
                     <div className="text-right">
