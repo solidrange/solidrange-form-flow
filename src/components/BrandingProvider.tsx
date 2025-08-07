@@ -240,8 +240,8 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
       }
       .dark .bg-muted\\/50 button:hover:not(.bg-primary) { 
-        background-color: hsl(215 27.9% 16.9%) !important; 
-        color: hsl(210 20% 98%) !important;
+        background-color: hsl(${currentColors.primary.light} / 0.3) !important; 
+        color: hsl(${currentColors.primary.light}) !important;
       }
       
       .light .bg-muted\\/50 button { 
@@ -250,14 +250,14 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
         border: 1px solid transparent !important;
       }
       .light .bg-muted\\/50 button.bg-primary { 
-        background-color: hsl(${currentColors.primary.main}) !important; 
-        color: hsl(0 0% 100%) !important; 
-        border-color: hsl(${currentColors.primary.main}) !important;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+        background-color: hsl(${currentColors.primary.dark}) !important; 
+        color: hsl(210 20% 98%) !important; 
+        border-color: hsl(${currentColors.primary.dark}) !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
       }
       .light .bg-muted\\/50 button:hover:not(.bg-primary) { 
-        background-color: hsl(220 14.3% 95.9%) !important; 
-        color: hsl(224 71.4% 4.1%) !important;
+        background-color: hsl(${currentColors.primary.dark} / 0.1) !important; 
+        color: hsl(${currentColors.primary.dark}) !important;
       }
       
       /* CRITICAL: Fix all button classes and variants */
@@ -297,8 +297,8 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       .dark .text-gray-500, .dark .text-gray-600 { color: hsl(210 20% 98%) !important; }
       .dark .text-gray-700, .dark .text-gray-800, .dark .text-gray-900 { color: hsl(210 20% 98%) !important; }
       
-      /* DROPDOWN AND SELECT MENUS - CRITICAL FIX */
-      /* Dark theme dropdowns */
+      /* DROPDOWN AND SELECT MENUS - ENHANCED SELECTION INDICATORS */
+      /* Dark theme dropdowns - lighter colors for selection */
       .dark [data-radix-select-content] { 
         background-color: hsl(215 27.9% 16.9%) !important; 
         color: hsl(210 20% 98%) !important; 
@@ -309,14 +309,15 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
         background-color: transparent !important;
       }
       .dark [data-radix-select-item]:hover,
-      .dark [data-radix-select-item][data-highlighted] { 
-        background-color: hsl(224 71.4% 4.1%) !important; 
-        color: hsl(210 20% 98%) !important; 
+      .dark [data-radix-select-item][data-highlighted],
+      .dark [data-radix-select-item][data-state="checked"] { 
+        background-color: hsl(${currentColors.primary.light}) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
       }
       .dark .bg-popover { background-color: hsl(215 27.9% 16.9%) !important; }
       .dark .text-popover-foreground { color: hsl(210 20% 98%) !important; }
       
-      /* Light theme dropdowns */
+      /* Light theme dropdowns - darker colors for selection */
       .light [data-radix-select-content] { 
         background-color: hsl(0 0% 100%) !important; 
         color: hsl(224 71.4% 4.1%) !important; 
@@ -327,14 +328,15 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
         background-color: transparent !important;
       }
       .light [data-radix-select-item]:hover,
-      .light [data-radix-select-item][data-highlighted] { 
-        background-color: hsl(220 14.3% 95.9%) !important; 
-        color: hsl(224 71.4% 4.1%) !important; 
+      .light [data-radix-select-item][data-highlighted],
+      .light [data-radix-select-item][data-state="checked"] { 
+        background-color: hsl(${currentColors.primary.dark}) !important; 
+        color: hsl(210 20% 98%) !important; 
       }
       .light .bg-popover { background-color: hsl(0 0% 100%) !important; }
       .light .text-popover-foreground { color: hsl(224 71.4% 4.1%) !important; }
       
-      /* Dropdown menu components */
+      /* Dropdown menu components - enhanced selection */
       .dark [data-radix-dropdown-menu-content] { 
         background-color: hsl(215 27.9% 16.9%) !important; 
         color: hsl(210 20% 98%) !important; 
@@ -343,9 +345,10 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       .dark [data-radix-dropdown-menu-item] { 
         color: hsl(210 20% 98%) !important; 
       }
-      .dark [data-radix-dropdown-menu-item]:hover { 
-        background-color: hsl(224 71.4% 4.1%) !important; 
-        color: hsl(210 20% 98%) !important; 
+      .dark [data-radix-dropdown-menu-item]:hover,
+      .dark [data-radix-dropdown-menu-item][data-highlighted] { 
+        background-color: hsl(${currentColors.primary.light}) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
       }
       
       .light [data-radix-dropdown-menu-content] { 
@@ -356,9 +359,10 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       .light [data-radix-dropdown-menu-item] { 
         color: hsl(224 71.4% 4.1%) !important; 
       }
-      .light [data-radix-dropdown-menu-item]:hover { 
-        background-color: hsl(220 14.3% 95.9%) !important; 
-        color: hsl(224 71.4% 4.1%) !important; 
+      .light [data-radix-dropdown-menu-item]:hover,
+      .light [data-radix-dropdown-menu-item][data-highlighted] { 
+        background-color: hsl(${currentColors.primary.dark}) !important; 
+        color: hsl(210 20% 98%) !important; 
       }
       
       /* FORM BUILDER COMPONENTS - CRITICAL FIXES */
@@ -407,8 +411,84 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       /* Light theme field cards and buttons */
       .light .disabled\\:bg-gray-50:disabled { background-color: hsl(220 14.3% 95.9%) !important; }
       .light .bg-blue-50 { background-color: hsl(220 14.3% 95.9%) !important; }
-      .light .text-blue-700 { color: hsl(${currentColors.primary.main}) !important; }
-      .light .border-blue-200 { border-color: hsl(${currentColors.primary.main}) !important; }
+      .light .text-blue-700 { color: hsl(${currentColors.primary.dark}) !important; }
+      .light .border-blue-200 { border-color: hsl(${currentColors.primary.dark}) !important; }
+      
+      /* ENHANCED SELECTION INDICATORS FOR TABS AND NAVIGATION */
+      /* Dark theme - lighter colors for active/selected states */
+      .dark [data-state="active"] { 
+        background-color: hsl(${currentColors.primary.light}) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+      }
+      .dark [data-state="active"]:hover { 
+        background-color: hsl(${currentColors.primary.main}) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+      }
+      .dark .bg-accent[data-state="active"] { 
+        background-color: hsl(${currentColors.primary.light}) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+      }
+      
+      /* Light theme - darker colors for active/selected states */
+      .light [data-state="active"] { 
+        background-color: hsl(${currentColors.primary.dark}) !important; 
+        color: hsl(210 20% 98%) !important; 
+      }
+      .light [data-state="active"]:hover { 
+        background-color: hsl(${currentColors.primary.main}) !important; 
+        color: hsl(210 20% 98%) !important; 
+      }
+      .light .bg-accent[data-state="active"] { 
+        background-color: hsl(${currentColors.primary.dark}) !important; 
+        color: hsl(210 20% 98%) !important; 
+      }
+      
+      /* SIDEBAR AND NAVIGATION SELECTION ENHANCEMENTS */
+      /* Dark theme - lighter selection indicators */
+      .dark .sidebar-menu-button[data-active="true"],
+      .dark .sidebar-menu-button.active,
+      .dark .bg-accent { 
+        background-color: hsl(${currentColors.primary.light} / 0.3) !important; 
+        color: hsl(${currentColors.primary.light}) !important; 
+      }
+      .dark .sidebar-menu-button[data-active="true"]:hover,
+      .dark .sidebar-menu-button.active:hover { 
+        background-color: hsl(${currentColors.primary.light} / 0.5) !important; 
+        color: hsl(210 20% 98%) !important; 
+      }
+      
+      /* Light theme - darker selection indicators */
+      .light .sidebar-menu-button[data-active="true"],
+      .light .sidebar-menu-button.active { 
+        background-color: hsl(${currentColors.primary.dark} / 0.2) !important; 
+        color: hsl(${currentColors.primary.dark}) !important; 
+      }
+      .light .sidebar-menu-button[data-active="true"]:hover,
+      .light .sidebar-menu-button.active:hover { 
+        background-color: hsl(${currentColors.primary.dark} / 0.3) !important; 
+        color: hsl(210 20% 98%) !important; 
+      }
+      
+      /* FORM BUILDER SELECTION INDICATORS */
+      /* Dark theme - enhanced drag and drop with lighter selection */
+      .dark .bg-indigo-50 { background-color: hsl(${currentColors.primary.light} / 0.3) !important; }
+      .dark .border-indigo-500 { border-color: hsl(${currentColors.primary.light}) !important; }
+      .dark .ring-indigo-500 { --tw-ring-color: hsl(${currentColors.primary.light}) !important; }
+      .dark .border-dashed { border-color: hsl(${currentColors.primary.light}) !important; }
+      .dark .text-indigo-600 { color: hsl(${currentColors.primary.light}) !important; }
+      .dark .bg-blue-50 { background-color: hsl(${currentColors.primary.light} / 0.2) !important; }
+      .dark .text-blue-700 { color: hsl(${currentColors.primary.light}) !important; }
+      .dark .border-blue-200 { border-color: hsl(${currentColors.primary.light}) !important; }
+      
+      /* Light theme - enhanced drag and drop with darker selection */
+      .light .bg-indigo-50 { background-color: hsl(${currentColors.primary.dark} / 0.1) !important; }
+      .light .border-indigo-500 { border-color: hsl(${currentColors.primary.dark}) !important; }
+      .light .ring-indigo-500 { --tw-ring-color: hsl(${currentColors.primary.dark}) !important; }
+      .light .border-dashed { border-color: hsl(${currentColors.primary.dark}) !important; }
+      .light .text-indigo-600 { color: hsl(${currentColors.primary.dark}) !important; }
+      .light .bg-blue-50 { background-color: hsl(${currentColors.primary.dark} / 0.1) !important; }
+      .light .text-blue-700 { color: hsl(${currentColors.primary.dark}) !important; }
+      .light .border-blue-200 { border-color: hsl(${currentColors.primary.dark}) !important; }
     `;
 
     // Inject or update style element
