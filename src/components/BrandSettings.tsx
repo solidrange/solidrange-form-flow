@@ -149,6 +149,11 @@ export const BrandSettings: React.FC = () => {
   };
 
   const hslToHex = (hsl: string): string => {
+    // Handle undefined or invalid input
+    if (!hsl || typeof hsl !== 'string') {
+      return '#000000'; // Default to black
+    }
+    
     const [h, s, l] = hsl.split(' ').map((val, idx) => {
       if (idx === 0) return parseInt(val);
       return parseInt(val.replace('%', '')) / 100;
@@ -200,30 +205,45 @@ export const BrandSettings: React.FC = () => {
     });
   };
 
-  const ColorInput = ({ colorPath, label, explanation }: { colorPath: string, label: string, explanation: string }) => (
-    <div className="space-y-2">
-      <div className="flex items-center gap-2">
-        <Label className="text-xs sm:text-sm font-medium">{label}</Label>
-        <div className="group relative">
-          <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-          <div className="invisible group-hover:visible absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-xs rounded whitespace-nowrap z-50 max-w-xs">
-            {explanation}
+  const ColorInput = ({ colorPath, label, explanation }: { colorPath: string, label: string, explanation: string }) => {
+    // Safely get the color value with fallback
+    const getColorValue = (path: string) => {
+      try {
+        const value = path.split('.').reduce((obj, key) => obj && obj[key], previewColors);
+        return value || '208 100% 47%'; // Default HSL value
+      } catch (error) {
+        console.warn(`Error accessing color path ${path}:`, error);
+        return '208 100% 47%'; // Default HSL value
+      }
+    };
+    
+    const colorValue = getColorValue(colorPath);
+    
+    return (
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <Label className="text-xs sm:text-sm font-medium">{label}</Label>
+          <div className="group relative">
+            <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+            <div className="invisible group-hover:visible absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-xs rounded whitespace-nowrap z-50 max-w-xs">
+              {explanation}
+            </div>
           </div>
         </div>
+        <div className="flex items-center gap-2">
+          <input
+            type="color"
+            value={hslToHex(colorValue)}
+            onChange={(e) => handleColorChange(colorPath, e.target.value)}
+            className="w-8 h-8 sm:w-10 sm:h-10 rounded border border-input cursor-pointer"
+          />
+          <Badge variant="outline" className="text-xs flex-1 min-w-0">
+            <span className="truncate">{colorValue}</span>
+          </Badge>
+        </div>
       </div>
-      <div className="flex items-center gap-2">
-        <input
-          type="color"
-          value={hslToHex(colorPath.split('.').reduce((obj, key) => obj[key], previewColors))}
-          onChange={(e) => handleColorChange(colorPath, e.target.value)}
-          className="w-8 h-8 sm:w-10 sm:h-10 rounded border border-input cursor-pointer"
-        />
-        <Badge variant="outline" className="text-xs flex-1 min-w-0">
-          <span className="truncate">{colorPath.split('.').reduce((obj, key) => obj[key], previewColors)}</span>
-        </Badge>
-      </div>
-    </div>
-  );
+    );
+  };
 
   return (
     <div className="space-y-4 sm:space-y-6 px-2 sm:px-4 lg:px-6">
