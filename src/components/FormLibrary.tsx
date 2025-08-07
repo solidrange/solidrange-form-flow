@@ -244,11 +244,18 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
                               {template.sector}
                             </Badge>
                           )}
-                          {template.tags.slice(0, 2).map((tag) => (
-                            <Badge key={tag} variant="outline" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
+                          {template.tags
+                            .filter((tag) => {
+                              // Filter out tags that match the sector name(s)
+                              const sectors = Array.isArray(template.sector) ? template.sector : [template.sector];
+                              return !sectors.includes(tag);
+                            })
+                            .slice(0, 2)
+                            .map((tag) => (
+                              <Badge key={tag} variant="outline" className="text-xs">
+                                {tag}
+                              </Badge>
+                            ))}
                         </div>
                         
                         <div className="text-xs text-muted-foreground">
