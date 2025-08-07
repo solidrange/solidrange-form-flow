@@ -35,22 +35,6 @@ const sectorOptions = [
   'Telecom', 'Startups', 'SME', 'Multi-Sector'
 ];
 
-const getCategoryCount = (category: string) => {
-  const allTemplates = getAllTemplates();
-  if (category === 'all') return allTemplates.length;
-  return allTemplates.filter(t => t.category === category).length;
-};
-
-const getSectorCount = (sector: string) => {
-  const allTemplates = getAllTemplates();
-  if (sector === 'all') return allTemplates.length;
-  return allTemplates.filter(t => {
-    // Handle both string and string[] types for template.sector
-    const templateSectors = Array.isArray(t.sector) ? t.sector : [t.sector];
-    return templateSectors.includes(sector);
-  }).length;
-};
-
 export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -60,6 +44,21 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
 
   const allTemplates = getAllTemplates();
   console.log('FormLibrary: Available templates:', allTemplates.length);
+
+  // Move these functions inside the component so they have access to allTemplates
+  const getCategoryCount = (category: string) => {
+    if (category === 'all') return allTemplates.length;
+    return allTemplates.filter(t => t.category === category).length;
+  };
+
+  const getSectorCount = (sector: string) => {
+    if (sector === 'all') return allTemplates.length;
+    return allTemplates.filter(t => {
+      // Handle both string and string[] types for template.sector
+      const templateSectors = Array.isArray(t.sector) ? t.sector : [t.sector];
+      return templateSectors.includes(sector);
+    }).length;
+  };
 
   // Filter templates based on search, category, and sector
   const filteredTemplates = useMemo(() => {
