@@ -104,7 +104,7 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       
       /* DARK MODE STYLING */
       .dark { color: hsl(210 20% 98%) !important; }
-      .dark body { color: hsl(210 20% 98%) !important; background-color: hsl(224 71.4% 4.1%) !important; }
+      .dark body { color: hsl(210 20% 98%) !important; }
       .dark .text-foreground { color: hsl(210 20% 98%) !important; }
       .dark .text-muted-foreground { color: hsl(210 20% 98%) !important; }
       .dark .text-card-foreground { color: hsl(210 20% 98%) !important; }
@@ -125,7 +125,7 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       
       /* LIGHT MODE STYLING */
       .light { color: hsl(224 71.4% 4.1%) !important; }
-      .light body { color: hsl(224 71.4% 4.1%) !important; background-color: hsl(0 0% 100%) !important; }
+      .light body { color: hsl(224 71.4% 4.1%) !important; }
       .light .text-foreground { color: hsl(224 71.4% 4.1%) !important; }
       .light .text-muted-foreground { color: hsl(220 8.9% 46.1%) !important; }
       .light .text-card-foreground { color: hsl(224 71.4% 4.1%) !important; }

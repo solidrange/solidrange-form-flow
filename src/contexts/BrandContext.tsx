@@ -73,7 +73,7 @@ const defaultBrand: BrandIdentity = {
       primary: {
         main: '208 100% 47%',
         light: '210 100% 70%',
-        dark: '208 100% 35%'
+        dark: '216 14% 20%'
       },
       secondary: {
         main: '262 83% 58%',
