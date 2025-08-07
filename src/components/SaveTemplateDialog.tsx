@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { X } from "lucide-react";
 import { FormTemplate } from "@/types/form";
 import { toast } from "@/hooks/use-toast";
 
@@ -27,7 +29,27 @@ export const SaveTemplateDialog = ({
 }: SaveTemplateDialogProps) => {
   const [templateName, setTemplateName] = useState(currentTemplate?.name || '');
   const [templateDescription, setTemplateDescription] = useState(currentTemplate?.description || '');
+  const [templateTags, setTemplateTags] = useState<string[]>([]);
+  const [currentTag, setCurrentTag] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+
+  const addTag = () => {
+    if (currentTag.trim() && !templateTags.includes(currentTag.trim())) {
+      setTemplateTags([...templateTags, currentTag.trim()]);
+      setCurrentTag('');
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setTemplateTags(templateTags.filter(tag => tag !== tagToRemove));
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addTag();
+    }
+  };
 
   const handleSave = async () => {
     if (!templateName.trim()) {
@@ -48,7 +70,7 @@ export const SaveTemplateDialog = ({
         category: currentTemplate?.category || '',
         sector: currentTemplate?.sector || '',
         fields: [], // This will be populated by the parent component
-        tags: []
+        tags: templateTags
       };
 
       onSave(template);
@@ -72,6 +94,8 @@ export const SaveTemplateDialog = ({
   const handleClose = () => {
     setTemplateName(currentTemplate?.name || '');
     setTemplateDescription(currentTemplate?.description || '');
+    setTemplateTags([]);
+    setCurrentTag('');
     onClose();
   };
 
@@ -107,6 +131,50 @@ export const SaveTemplateDialog = ({
               className="w-full"
               rows={3}
             />
+          </div>
+
+          
+          <div className="space-y-2">
+            <Label htmlFor="template-tags">Tags</Label>
+            <div className="space-y-2">
+              <div className="flex gap-2">
+                <Input
+                  id="template-tags"
+                  value={currentTag}
+                  onChange={(e) => setCurrentTag(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Add tags (press Enter)"
+                  className="flex-1"
+                />
+                <Button 
+                  type="button" 
+                  onClick={addTag} 
+                  variant="outline" 
+                  size="sm"
+                  disabled={!currentTag.trim()}
+                >
+                  Add
+                </Button>
+              </div>
+              
+              {templateTags.length > 0 && (
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {templateTags.map((tag, index) => (
+                    <Badge key={index} variant="secondary" className="gap-1">
+                      {tag}
+                      <X 
+                        className="h-3 w-3 cursor-pointer" 
+                        onClick={() => removeTag(tag)}
+                      />
+                    </Badge>
+                  ))}
+                </div>
+              )}
+              
+              <p className="text-xs text-gray-500">
+                Add relevant tags to make your template easier to find in the library
+              </p>
+            </div>
           </div>
 
           {currentTemplate?.category && (

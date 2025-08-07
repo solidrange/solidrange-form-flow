@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, Building2, Shield, Zap, Heart, Activity, Smartphone, Lightbulb, Briefcase, Globe, Eye } from 'lucide-react';
 import { BrandedButton } from './BrandedButton';
-import { allTemplates } from '@/data/formTemplates';
+import { getAllTemplates } from '@/data/formTemplates';
 import { MultiSelectFilter } from './MultiSelectFilter';
 import { FormTemplatePreview } from './FormTemplatePreview';
 
@@ -36,11 +36,13 @@ const sectorOptions = [
 ];
 
 const getCategoryCount = (category: string) => {
+  const allTemplates = getAllTemplates();
   if (category === 'all') return allTemplates.length;
   return allTemplates.filter(t => t.category === category).length;
 };
 
 const getSectorCount = (sector: string) => {
+  const allTemplates = getAllTemplates();
   if (sector === 'all') return allTemplates.length;
   return allTemplates.filter(t => {
     // Handle both string and string[] types for template.sector
@@ -56,6 +58,7 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
   const [previewTemplate, setPreviewTemplate] = useState<FormTemplate | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
+  const allTemplates = getAllTemplates();
   console.log('FormLibrary: Available templates:', allTemplates.length);
 
   // Filter templates based on search, category, and sector

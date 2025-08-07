@@ -44,6 +44,16 @@ export const getAllTemplates = (): FormTemplate[] => {
   ];
 };
 
+// Function to search templates by tags
+export const searchTemplatesByTags = (searchTerm: string): FormTemplate[] => {
+  const allTemplates = getAllTemplates();
+  return allTemplates.filter(template => 
+    template.tags.some(tag => 
+      tag.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+};
+
 // Government Sector Templates - 20 specific templates for government entities
 export const governmentTemplates: FormTemplate[] = [
   {

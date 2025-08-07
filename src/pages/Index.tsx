@@ -7,6 +7,7 @@ import Analytics from "@/components/Analytics";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { FormSettingsPanel } from "@/components/FormSettingsPanel";
 import { SaveTemplateDialog } from "@/components/SaveTemplateDialog";
+import { SaveOptionsDialog } from "@/components/SaveOptionsDialog";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { ReportGeneration } from "@/components/ReportGeneration";
 import { AppSidebar } from "@/components/AppSidebar";
@@ -72,6 +73,7 @@ const Index = () => {
   const [publishedForms, setPublishedForms] = useState<Form[]>([]);
   const [currentFormId, setCurrentFormId] = useState<string | null>(null);
   const [selectedFormForManagement, setSelectedFormForManagement] = useState<Form | null>(null);
+  const [showSaveOptionsDialog, setShowSaveOptionsDialog] = useState(false);
   const [showSaveTemplateDialog, setShowSaveTemplateDialog] = useState(false);
   
   // Form settings with comprehensive defaults
@@ -322,7 +324,7 @@ const Index = () => {
   };
 
   /**
-   * Save the current form as a draft with optional template saving
+   * Save the current form as a draft - now shows options dialog first
    */
   const saveForm = () => {
     if (!formTitle.trim()) {
@@ -334,6 +336,14 @@ const Index = () => {
       return;
     }
 
+    // Show save options dialog instead of saving immediately
+    setShowSaveOptionsDialog(true);
+  };
+
+  /**
+   * Actually save the form as draft (called from save options dialog)
+   */
+  const handleSaveDraft = () => {
     const formId = currentFormId || Date.now().toString();
     const formData: Form = {
       id: formId,
@@ -370,17 +380,20 @@ const Index = () => {
       setCurrentFormId(formId);
     }
     
+    setShowSaveOptionsDialog(false);
+    
     toast({
       title: "Draft Saved",
       description: "Your form has been saved as a draft.",
     });
+  };
 
-    // Show option to save as template if form has fields
-    if (formFields.length > 0) {
-      setTimeout(() => {
-        setShowSaveTemplateDialog(true);
-      }, 500);
-    }
+  /**
+   * Show template saving dialog (called from save options dialog)
+   */
+  const handleShowSaveAsTemplate = () => {
+    setShowSaveOptionsDialog(false);
+    setShowSaveTemplateDialog(true);
   };
 
   /**
@@ -1210,6 +1223,17 @@ const Index = () => {
             )}
           </div>
         </SidebarInset>
+
+        {/* Save Options Dialog */}
+        {showSaveOptionsDialog && (
+          <SaveOptionsDialog
+            isOpen={showSaveOptionsDialog}
+            onClose={() => setShowSaveOptionsDialog(false)}
+            onSaveDraft={handleSaveDraft}
+            onSaveAsTemplate={handleShowSaveAsTemplate}
+            formTitle={formTitle}
+          />
+        )}
 
         {/* Save Template Dialog */}
         {showSaveTemplateDialog && (
