@@ -783,20 +783,20 @@ const Index = () => {
         <SidebarInset className="flex-1">
           {/* Header */}
           <div className="bg-white border-b shadow-sm sticky top-0 z-40">
-            <div className="flex items-center justify-between h-14 px-4">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between h-12 sm:h-14 px-2 sm:px-4">
+              <div className="flex items-center gap-1 sm:gap-2 min-w-0 flex-1">
                 <SidebarTrigger />
-                <div className="h-4 w-px bg-border" />
-                <h1 className="font-semibold text-lg">{t(activeTab.replace('-', ''))}</h1>
+                <div className="h-4 w-px bg-border hidden sm:block" />
+                <h1 className="font-semibold text-sm sm:text-lg truncate">{t(activeTab.replace('-', ''))}</h1>
               </div>
               
               {/* Quick Share Button for Published Forms */}
               {currentFormIsPublished() && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-2">
-                      <Globe className="h-4 w-4" />
-                      Share
+                    <Button variant="outline" size="sm" className="gap-1 sm:gap-2 text-xs sm:text-sm px-2 sm:px-3">
+                      <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="hidden sm:inline">Share</span>
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl">
@@ -835,7 +835,7 @@ const Index = () => {
           </div>
 
           {/* Page Content */}
-          <div className="p-6">
+          <div className="p-2 sm:p-4 lg:p-6">
             {activeTab === "dashboard" && (
               <Analytics submissions={submissions} onFilterSubmissions={(filters) => {
                 setSubmissionFilters(filters);
@@ -845,9 +845,9 @@ const Index = () => {
 
             {activeTab === "review-submissions" && (
               <Tabs defaultValue="submissions" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-4">
-                  <TabsTrigger value="submissions" className="flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
+                <TabsList className="grid w-full grid-cols-2 mb-2 sm:mb-4 text-xs sm:text-sm">
+                  <TabsTrigger value="submissions" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-4">
+                    <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
                     Submissions
                   </TabsTrigger>
                   <TabsTrigger value="reports" className="flex items-center gap-2">

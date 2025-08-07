@@ -127,9 +127,140 @@ export const FormBuilder = ({
   };
 
   return (
-    <div className="h-full flex">
-      {/* Resizable Three Column Layout */}
-      <ResizablePanelGroup direction="horizontal" className="flex-1">
+    <div className="h-full flex flex-col lg:flex-row">
+      {/* Mobile: Stack vertically, Desktop: Resizable Three Column Layout */}
+      <div className="lg:hidden flex flex-col h-full">
+        {/* Mobile Layout */}
+        <div className="border-b bg-white p-2">
+          <FieldPalette onAddField={onAddField} />
+        </div>
+        <div className="flex-1 overflow-y-auto">
+          {/* Mobile Form Canvas */}
+          <div className="h-full flex flex-col">
+            {/* Form Header */}
+            <div className="p-3 border-b bg-gray-50">
+              <div className="flex flex-col gap-3">
+                <div className="flex-1">
+                  <Input
+                    placeholder="Form Title"
+                    value={title}
+                    onChange={(e) => onUpdateTitle(e.target.value)}
+                    className="text-lg font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-gray-400"
+                  />
+                  <Textarea
+                    placeholder="Form Description (optional)"
+                    value={description}
+                    onChange={(e) => onUpdateDescription(e.target.value)}
+                    className="mt-2 border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-gray-400 text-sm"
+                    rows={2}
+                  />
+                </div>
+                <div className="flex items-center gap-2">
+                  {isPublished && (
+                    <Button
+                      onClick={onMoveToDraft}
+                      variant="outline"
+                      size="sm"
+                      className="text-xs"
+                    >
+                      Move to Draft
+                    </Button>
+                  )}
+                  <BrandedButton
+                    onClick={onSaveForm}
+                    variant="outline"
+                    size="sm"
+                    className="gap-1 text-xs"
+                  >
+                    <Save className="h-3 w-3" />
+                    Save
+                  </BrandedButton>
+                </div>
+              </div>
+              
+              {/* Category, Sector, and Audience Selection - Mobile Stack */}
+              <div className="grid grid-cols-1 gap-3 mt-4">
+                <MultiSelectCategory
+                  selectedCategories={selectedCategories}
+                  onCategoryChange={onUpdateFormCategory}
+                  disabled={isPublished}
+                />
+                
+                <div className="space-y-2">
+                  <Label className="text-xs font-medium text-gray-700">Sectors</Label>
+                  <MultiSelectFilter
+                    options={sectorOptions}
+                    selectedValues={selectedSectors}
+                    onSelectionChange={onUpdateFormTargetAudience}
+                    placeholder="Select sectors..."
+                    formatLabel={formatSectorLabel}
+                  />
+                </div>
+
+                <MultiSelectAudience
+                  selectedAudiences={formAudience}
+                  onAudienceChange={onUpdateFormAudience}
+                  disabled={isPublished}
+                />
+              </div>
+
+              {/* Template Tags Display */}
+              {currentTemplateTags.length > 0 && (
+                <div className="mt-3">
+                  <Label className="text-xs font-medium text-gray-700">Template Tags</Label>
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {currentTemplateTags.map((tag, index) => (
+                      <Badge key={index} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* File Attachments Section */}
+              <div className="mt-4">
+                <FileAttachmentManager
+                  attachments={attachments}
+                  onUpdateAttachments={onUpdateAttachments}
+                  allowedTypes={['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png']}
+                  maxSize={10}
+                  readOnly={isPublished}
+                />
+              </div>
+            </div>
+
+            {/* Form Fields */}
+            <div className="flex-1 p-3 overflow-y-auto">
+              <FormCanvas
+                fields={formFields}
+                selectedField={selectedFieldId}
+                onSelectField={onSelectField}
+                onUpdateField={onUpdateField}
+                onRemoveField={onRemoveField}
+                onAddField={onAddField}
+                onReorderFields={handleReorderFields}
+                readOnly={isPublished}
+              />
+            </div>
+
+            {/* Field Editor - Mobile Modal or Bottom Sheet */}
+            {selectedFieldId && (
+              <div className="border-t bg-white max-h-96 overflow-y-auto">
+                <FieldEditor
+                  selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
+                  onUpdateField={onUpdateField}
+                  onClose={() => onSelectField(null)}
+                  readOnly={isPublished}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+      
+      {/* Desktop Layout */}
+      <ResizablePanelGroup direction="horizontal" className="flex-1 hidden lg:flex">
         {/* Left Sidebar - Field Palette */}
         <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
           <div className="h-full border-r bg-white overflow-y-auto">
