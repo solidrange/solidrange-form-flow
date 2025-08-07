@@ -41,9 +41,11 @@ export const FormAppearanceSettings: React.FC<FormAppearanceSettingsProps> = ({
     // Type guard to check if savedColors has all required BrandColors properties
     const isValidBrandColors = (colors: any): colors is BrandColors => {
       return colors && 
-             colors.primary && colors.secondary && 
+             colors.primary && colors.primary.main && colors.primary.light && colors.primary.dark &&
+             colors.secondary && colors.secondary.main && colors.secondary.light && colors.secondary.dark &&
              colors.background && colors.surface && 
-             colors.text && colors.button;
+             colors.text && colors.text.primary && colors.text.secondary && 
+             colors.button;
     };
     
     // If savedColors is incomplete or in old format, use current theme colors
@@ -204,19 +206,29 @@ export const FormAppearanceSettings: React.FC<FormAppearanceSettingsProps> = ({
     });
   };
 
+  // Safe accessor for nested color properties
+  const getColorValue = (colorPath: string): string => {
+    try {
+      const value = colorPath.split('.').reduce((obj, key) => obj?.[key], customColors);
+      return value || '0 0% 50%'; // Default gray color
+    } catch {
+      return '0 0% 50%'; // Default gray color
+    }
+  };
+
   const ColorInput = ({ colorPath, label }: { colorPath: string, label: string }) => (
     <div className="space-y-2">
       <Label className="text-xs sm:text-sm font-medium">{label}</Label>
       <div className="flex items-center gap-2">
         <input
           type="color"
-          value={hslToHex(colorPath.split('.').reduce((obj, key) => obj[key], customColors))}
+          value={hslToHex(getColorValue(colorPath))}
           onChange={(e) => handleColorChange(colorPath, e.target.value)}
           disabled={useGlobalBranding}
           className="w-8 h-8 sm:w-10 sm:h-10 rounded border border-input cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         />
         <Badge variant="outline" className="text-xs flex-1 min-w-0">
-          <span className="truncate">{colorPath.split('.').reduce((obj, key) => obj[key], customColors)}</span>
+          <span className="truncate">{getColorValue(colorPath)}</span>
         </Badge>
       </div>
     </div>
@@ -326,23 +338,23 @@ export const FormAppearanceSettings: React.FC<FormAppearanceSettingsProps> = ({
         <CardContent>
           <div className="space-y-3 p-4 rounded-lg border" style={{
             backgroundColor: useGlobalBranding 
-              ? `hsl(${getCurrentThemeColors().surface})` 
-              : `hsl(${customColors.surface})`,
+              ? `hsl(${getCurrentThemeColors()?.surface || '0 0% 100%'})` 
+              : `hsl(${customColors?.surface || '0 0% 100%'})`,
             borderColor: useGlobalBranding 
-              ? `hsl(${getCurrentThemeColors().primary.light})` 
-              : `hsl(${customColors.primary.light})`
+              ? `hsl(${getCurrentThemeColors()?.primary?.light || '0 0% 80%'})` 
+              : `hsl(${customColors?.primary?.light || '0 0% 80%'})`
           }}>
             <h3 className="font-medium text-mobile-sm" style={{
               color: useGlobalBranding 
-                ? `hsl(${getCurrentThemeColors().text.primary})` 
-                : `hsl(${customColors.text.primary})`
+                ? `hsl(${getCurrentThemeColors()?.text?.primary || '0 0% 0%'})` 
+                : `hsl(${customColors?.text?.primary || '0 0% 0%'})`
             }}>
               Sample Form Title
             </h3>
             <p className="text-xs sm:text-sm" style={{
               color: useGlobalBranding 
-                ? `hsl(${getCurrentThemeColors().text.secondary})` 
-                : `hsl(${customColors.text.secondary})`
+                ? `hsl(${getCurrentThemeColors()?.text?.secondary || '0 0% 40%'})` 
+                : `hsl(${customColors?.text?.secondary || '0 0% 40%'})`
             }}>
               This is how your form will look with the current settings.
             </p>
@@ -351,11 +363,11 @@ export const FormAppearanceSettings: React.FC<FormAppearanceSettingsProps> = ({
               className="btn-mobile"
               style={{
                 backgroundColor: useGlobalBranding 
-                  ? `hsl(${getCurrentThemeColors().primary.main})` 
-                  : `hsl(${customColors.primary.main})`,
+                  ? `hsl(${getCurrentThemeColors()?.primary?.main || '220 100% 50%'})` 
+                  : `hsl(${customColors?.primary?.main || '220 100% 50%'})`,
                 borderColor: useGlobalBranding 
-                  ? `hsl(${getCurrentThemeColors().primary.main})` 
-                  : `hsl(${customColors.primary.main})`
+                  ? `hsl(${getCurrentThemeColors()?.primary?.main || '220 100% 50%'})` 
+                  : `hsl(${customColors?.primary?.main || '220 100% 50%'})`
               }}
             >
               Sample Button
