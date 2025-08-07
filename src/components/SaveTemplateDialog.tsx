@@ -19,19 +19,26 @@ interface SaveTemplateDialogProps {
     category?: string;
     sector?: string | string[];
   };
+  originalTags?: string[]; // Add original tags prop
 }
 
 export const SaveTemplateDialog = ({ 
   isOpen, 
   onClose, 
   onSave, 
-  currentTemplate 
+  currentTemplate,
+  originalTags = []
 }: SaveTemplateDialogProps) => {
   const [templateName, setTemplateName] = useState(currentTemplate?.name || '');
   const [templateDescription, setTemplateDescription] = useState(currentTemplate?.description || '');
-  const [templateTags, setTemplateTags] = useState<string[]>([]);
+  const [templateTags, setTemplateTags] = useState<string[]>(originalTags);
   const [currentTag, setCurrentTag] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+
+  // Update tags when originalTags prop changes
+  React.useEffect(() => {
+    setTemplateTags(originalTags);
+  }, [originalTags]);
 
   const addTag = () => {
     if (currentTag.trim() && !templateTags.includes(currentTag.trim())) {
@@ -94,7 +101,7 @@ export const SaveTemplateDialog = ({
   const handleClose = () => {
     setTemplateName(currentTemplate?.name || '');
     setTemplateDescription(currentTemplate?.description || '');
-    setTemplateTags([]);
+    setTemplateTags(originalTags);
     setCurrentTag('');
     onClose();
   };
@@ -163,7 +170,7 @@ export const SaveTemplateDialog = ({
                     <Badge key={index} variant="secondary" className="gap-1">
                       {tag}
                       <X 
-                        className="h-3 w-3 cursor-pointer" 
+                        className="h-3 w-3 cursor-pointer hover:text-red-500" 
                         onClick={() => removeTag(tag)}
                       />
                     </Badge>
@@ -172,7 +179,10 @@ export const SaveTemplateDialog = ({
               )}
               
               <p className="text-xs text-gray-500">
-                Add relevant tags to make your template easier to find in the library
+                {originalTags.length > 0 
+                  ? "Original template tags are pre-populated. Remove or add tags as needed."
+                  : "Add relevant tags to make your template easier to find in the library"
+                }
               </p>
             </div>
           </div>

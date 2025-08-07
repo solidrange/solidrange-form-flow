@@ -1260,6 +1260,7 @@ const Index = () => {
               category: typeof formCategory === 'string' ? formCategory : formCategory[0] || '',
               sector: formTargetAudience
             }}
+            originalTags={currentTemplateTags}
           />
         )}
 
