@@ -212,14 +212,19 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
                         <CardTitle className="text-base font-medium leading-tight">
                           {template.name}
                         </CardTitle>
-                        <BrandedButton
-                          onClick={() => handlePreviewTemplate(template)}
-                          size="sm"
-                          brandVariant="outline"
-                          className="ml-2 p-2"
-                        >
-                          <Eye className="h-4 w-4" />
-                        </BrandedButton>
+                        <div className="flex items-center gap-2 ml-2">
+                          <Badge variant="secondary" className="text-xs">
+                            {template.category}
+                          </Badge>
+                          <BrandedButton
+                            onClick={() => handlePreviewTemplate(template)}
+                            size="sm"
+                            brandVariant="outline"
+                            className="p-2"
+                          >
+                            <Eye className="h-4 w-4" />
+                          </BrandedButton>
+                        </div>
                       </div>
                       <p className="text-sm text-muted-foreground line-clamp-2">
                         {template.description}
@@ -228,9 +233,6 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
                     <CardContent className="pt-0">
                       <div className="space-y-3">
                         <div className="flex flex-wrap gap-1">
-                          <Badge variant="secondary" className="text-xs">
-                            {template.category}
-                          </Badge>
                           {Array.isArray(template.sector) ? (
                             template.sector.map((s) => (
                               <Badge key={s} variant="outline" className="text-xs">
