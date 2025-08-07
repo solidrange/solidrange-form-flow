@@ -90,25 +90,25 @@ const defaultBrand: BrandIdentity = {
   darkTheme: {
     colors: {
       primary: {
-        main: '208 100% 55%',
+        main: '208 100% 60%',
         light: '210 100% 75%',
-        dark: '208 100% 40%'
+        dark: '208 100% 45%'
       },
       secondary: {
-        main: '262 83% 65%',
-        light: '262 83% 80%',
-        dark: '262 83% 50%'
+        main: '262 83% 70%',
+        light: '262 83% 85%',
+        dark: '262 83% 55%'
       },
-      background: '222.2 84% 4.9%',
-      surface: '217.2 32.6% 17.5%',
+      background: '224 71.4% 4.1%',
+      surface: '215 27.9% 16.9%',
       text: {
-        primary: '210 40% 98%',
-        secondary: '215 20.2% 65.1%'
+        primary: '210 20% 98%',
+        secondary: '217.9 10.6% 64.9%'
       },
       button: {
-        primary: '208 100% 55%',
-        secondary: '217.2 32.6% 17.5%',
-        destructive: '0 62.8% 50.6%'
+        primary: '208 100% 60%',
+        secondary: '215 27.9% 16.9%',
+        destructive: '0 62.8% 60.6%'
       }
     }
   }

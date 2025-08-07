@@ -48,6 +48,14 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
     // Override default primary for buttons and interactive elements
     root.style.setProperty('--primary', currentColors.primary.main);
     
+    // Apply theme-specific colors for proper contrast
+    root.style.setProperty('--background', currentColors.background);
+    root.style.setProperty('--card', currentColors.surface);
+    root.style.setProperty('--foreground', currentColors.text.primary);
+    root.style.setProperty('--card-foreground', currentColors.text.primary);
+    root.style.setProperty('--muted-foreground', currentColors.text.secondary);
+    root.style.setProperty('--primary-foreground', isDark ? '224 71.4% 4.1%' : '210 20% 98%');
+    
     // Form-specific branding
     root.style.setProperty('--form-accent', currentColors.primary.main);
     root.style.setProperty('--form-border', currentColors.primary.light);
@@ -59,15 +67,50 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
     root.style.setProperty('--btn-secondary', currentColors.secondary.main);
     root.style.setProperty('--btn-secondary-hover', currentColors.secondary.dark);
 
-    // Create dynamic CSS for branded components
+    // Create dynamic CSS for branded components with proper contrast
     const brandingCSS = `
-      .brand-primary { background-color: hsl(${currentColors.primary.main}); }
-      .brand-primary-hover:hover { background-color: hsl(${currentColors.primary.dark}); }
-      .brand-secondary { background-color: hsl(${currentColors.secondary.main}); }
-      .brand-secondary-hover:hover { background-color: hsl(${currentColors.secondary.dark}); }
+      .brand-primary { 
+        background-color: hsl(${currentColors.primary.main}); 
+        color: ${isDark ? 'hsl(224 71.4% 4.1%)' : 'hsl(210 20% 98%)'};
+      }
+      .brand-primary-hover:hover { 
+        background-color: hsl(${currentColors.primary.dark}); 
+        color: ${isDark ? 'hsl(224 71.4% 4.1%)' : 'hsl(210 20% 98%)'};
+      }
+      .brand-secondary { 
+        background-color: hsl(${currentColors.secondary.main}); 
+        color: ${isDark ? 'hsl(224 71.4% 4.1%)' : 'hsl(210 20% 98%)'};
+      }
+      .brand-secondary-hover:hover { 
+        background-color: hsl(${currentColors.secondary.dark}); 
+        color: ${isDark ? 'hsl(224 71.4% 4.1%)' : 'hsl(210 20% 98%)'};
+      }
       .brand-border { border-color: hsl(${currentColors.primary.main}); }
       .brand-text { color: hsl(${currentColors.primary.main}); }
-      .brand-focus:focus { border-color: hsl(${currentColors.primary.main}); box-shadow: 0 0 0 2px hsl(${currentColors.primary.main} / 0.2); }
+      .brand-focus:focus { 
+        border-color: hsl(${currentColors.primary.main}); 
+        box-shadow: 0 0 0 2px hsl(${currentColors.primary.main} / 0.2); 
+      }
+      
+      /* Enhanced text contrast for dark mode */
+      .dark .text-foreground { color: hsl(210 20% 98%); }
+      .dark .text-muted-foreground { color: hsl(217.9 10.6% 64.9%); }
+      .dark .text-card-foreground { color: hsl(210 20% 98%); }
+      
+      /* Button text contrast */
+      .dark button { color: hsl(210 20% 98%); }
+      .dark .btn-outline { color: hsl(210 20% 98%); border-color: hsl(215 27.9% 16.9%); }
+      .dark .btn-outline:hover { background-color: hsl(215 27.9% 16.9%); color: hsl(210 20% 98%); }
+      
+      /* Input and form elements contrast */
+      .dark input, .dark textarea, .dark select { 
+        background-color: hsl(215 27.9% 16.9%); 
+        color: hsl(210 20% 98%); 
+        border-color: hsl(215 27.9% 16.9%);
+      }
+      .dark input::placeholder, .dark textarea::placeholder { 
+        color: hsl(217.9 10.6% 64.9%); 
+      }
     `;
 
     // Inject or update style element
