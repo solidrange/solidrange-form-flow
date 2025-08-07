@@ -461,7 +461,7 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
     <div className="space-y-4 animate-fade-in">
       {/* Header with Search and Filters */}
       <div className="space-y-4">
-        <h1 className="text-2xl font-bold">Submissions ({sortedSubmissions.length})</h1>
+        <h1 className="text-2xl font-bold bg-transparent">Submissions ({sortedSubmissions.length})</h1>
         
         {/* Search Bar */}
         <div className="relative">
