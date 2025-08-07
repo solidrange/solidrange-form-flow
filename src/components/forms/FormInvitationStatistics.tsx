@@ -62,7 +62,7 @@ export const FormInvitationStatistics = ({ form }: FormInvitationStatisticsProps
         <div className="mt-4 p-4 bg-gray-50 rounded-lg">
           <div className="flex justify-between items-center">
             <span className="text-sm font-medium">Completion Rate:</span>
-            <span className="text-lg font-bold text-blue-600">
+            <span className="text-lg font-bold text-foreground">
               {completionRate}%
             </span>
           </div>

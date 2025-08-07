@@ -451,7 +451,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
       <Card className="animate-fade-in">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
-            <Clock className="h-5 w-5 text-blue-500" />
+            <Clock className="h-5 w-5 text-foreground" />
             Activity Log
           </CardTitle>
         </CardHeader>

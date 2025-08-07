@@ -582,7 +582,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in">
               <CardHeader className="bg-muted rounded-t-lg">
                 <CardTitle className="flex items-center gap-2 text-foreground">
-                  <TrendingUp className="h-5 w-5 text-blue-500" />
+                  <TrendingUp className="h-5 w-5 text-foreground" />
                   Executive & Summary Reports
                 </CardTitle>
               </CardHeader>
@@ -1010,7 +1010,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="text-center p-4 bg-muted rounded-lg">
-                  <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
+                  <div className="text-2xl font-bold text-foreground">{stats.total}</div>
                   <div className="text-sm text-gray-600">Total Submissions</div>
                 </div>
                 <div className="text-center p-4 bg-green-50 rounded-lg">

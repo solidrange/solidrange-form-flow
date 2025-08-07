@@ -105,11 +105,11 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             {submission.audience === 'vendor' ? (
-              <Building className="h-5 w-5 text-blue-600" />
+              <Building className="h-5 w-5 text-foreground" />
             ) : submission.audience === 'external' ? (
               <User className="h-5 w-5 text-purple-600" />
             ) : (
-              <User className="h-5 w-5 text-blue-600" />
+              <User className="h-5 w-5 text-foreground" />
             )}
             Submitter Information
           </CardTitle>

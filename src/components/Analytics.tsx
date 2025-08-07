@@ -163,7 +163,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                 <p className="text-2xl font-bold text-foreground">{totalSubmissions}</p>
               </div>
               <div className="flex-shrink-0">
-                <FileText className="h-8 w-8 text-blue-500" />
+                <FileText className="h-8 w-8 text-foreground" />
               </div>
             </div>
             <div className="mt-2">
@@ -421,7 +421,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-blue-500" />
+                  <Target className="h-5 w-5 text-foreground" />
                   Approval Quality Metrics
                 </CardTitle>
               </CardHeader>

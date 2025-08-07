@@ -344,7 +344,7 @@ export const FormSharingOptions = ({ form }: FormSharingOptionsProps) => {
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{form.analytics.views}</div>
+              <div className="text-2xl font-bold text-foreground">{form.analytics.views}</div>
               <div className="text-sm text-gray-600">Total Views</div>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">

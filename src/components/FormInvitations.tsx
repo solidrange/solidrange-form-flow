@@ -62,7 +62,7 @@ export const FormInvitations = ({ form, onUpdateForm }: FormInvitationsProps) =>
                 <p className="text-gray-500 mb-4">
                   Publish your form to enable email invitations and track recipient responses.
                 </p>
-                <p className="text-sm text-blue-600">
+                <p className="text-sm text-muted-foreground">
                   Note: All invitation data will be preserved when switching between draft and published states.
                 </p>
               </CardContent>

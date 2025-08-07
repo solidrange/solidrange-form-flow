@@ -175,7 +175,7 @@ export const EmailTracking = ({
       case 'pending':
         return <Clock className="h-4 w-4 text-gray-400" />;
       case 'sent':
-        return <Mail className="h-4 w-4 text-blue-500" />;
+        return <Mail className="h-4 w-4 text-foreground" />;
       case 'opened':
         return <Mail className="h-4 w-4 text-orange-500" />;
       case 'completed':
@@ -214,7 +214,7 @@ export const EmailTracking = ({
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <Users className="h-5 w-5 text-blue-500" />
+              <Users className="h-5 w-5 text-foreground" />
               <div>
                 <p className="text-sm text-gray-600">Total Recipients</p>
                 <p className="text-xl font-semibold">{recipients.length}</p>
@@ -254,7 +254,7 @@ export const EmailTracking = ({
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-blue-500" />
+              <AlertCircle className="h-5 w-5 text-foreground" />
               <div>
                 <p className="text-sm text-gray-600">Completion Rate</p>
                 <p className="text-xl font-semibold">{completionRate}%</p>
