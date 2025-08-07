@@ -468,12 +468,12 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
         {/* Submissions Tab */}
         <TabsContent value="submissions" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Submission Type Breakdown */}
+            {/* Audience Breakdown */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Building className="h-5 w-5" />
-                  Submission Types
+                  Audience Distribution
                 </CardTitle>
               </CardHeader>
               <CardContent>
