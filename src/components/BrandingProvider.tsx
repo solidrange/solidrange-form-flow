@@ -56,6 +56,16 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
     root.style.setProperty('--muted-foreground', currentColors.text.secondary);
     root.style.setProperty('--primary-foreground', isDark ? '224 71.4% 4.1%' : '210 20% 98%');
     
+    // Additional theme-specific overrides
+    root.style.setProperty('--popover', currentColors.surface);
+    root.style.setProperty('--popover-foreground', currentColors.text.primary);
+    root.style.setProperty('--secondary', isDark ? '215 27.9% 16.9%' : '220 14.3% 95.9%');
+    root.style.setProperty('--secondary-foreground', currentColors.text.primary);
+    root.style.setProperty('--accent', isDark ? '215 27.9% 16.9%' : '220 14.3% 95.9%');
+    root.style.setProperty('--accent-foreground', currentColors.text.primary);
+    root.style.setProperty('--border', isDark ? '215 27.9% 16.9%' : '220 13% 91%');
+    root.style.setProperty('--input', isDark ? '215 27.9% 16.9%' : '220 13% 91%');
+    
     // Form-specific branding
     root.style.setProperty('--form-accent', currentColors.primary.main);
     root.style.setProperty('--form-border', currentColors.primary.light);
@@ -92,25 +102,54 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
         box-shadow: 0 0 0 2px hsl(${currentColors.primary.main} / 0.2); 
       }
       
-      /* Enhanced text contrast for dark mode */
-      .dark .text-foreground { color: hsl(210 20% 98%); }
-      .dark .text-muted-foreground { color: hsl(217.9 10.6% 64.9%); }
-      .dark .text-card-foreground { color: hsl(210 20% 98%); }
+      /* Comprehensive dark mode text visibility fixes */
+      .dark { color: hsl(210 20% 98%); }
+      .dark body { color: hsl(210 20% 98%); background-color: hsl(224 71.4% 4.1%); }
+      .dark .text-foreground { color: hsl(210 20% 98%) !important; }
+      .dark .text-muted-foreground { color: hsl(217.9 10.6% 64.9%) !important; }
+      .dark .text-card-foreground { color: hsl(210 20% 98%) !important; }
+      .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 { color: hsl(210 20% 98%); }
+      .dark p, .dark span, .dark div { color: hsl(210 20% 98%); }
+      .dark label { color: hsl(210 20% 98%); }
       
-      /* Button text contrast */
+      /* Card and surface elements */
+      .dark .bg-card { background-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .bg-background { background-color: hsl(224 71.4% 4.1%) !important; }
+      .dark .bg-muted { background-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .bg-accent { background-color: hsl(215 27.9% 16.9%) !important; }
+      
+      /* Button and interactive elements */
       .dark button { color: hsl(210 20% 98%); }
-      .dark .btn-outline { color: hsl(210 20% 98%); border-color: hsl(215 27.9% 16.9%); }
+      .dark .btn-outline { color: hsl(210 20% 98%); border-color: hsl(215 27.9% 16.9%); background-color: transparent; }
       .dark .btn-outline:hover { background-color: hsl(215 27.9% 16.9%); color: hsl(210 20% 98%); }
+      .dark [data-state="open"] { color: hsl(210 20% 98%); }
       
-      /* Input and form elements contrast */
+      /* Form elements with proper contrast */
       .dark input, .dark textarea, .dark select { 
-        background-color: hsl(215 27.9% 16.9%); 
-        color: hsl(210 20% 98%); 
-        border-color: hsl(215 27.9% 16.9%);
+        background-color: hsl(215 27.9% 16.9%) !important; 
+        color: hsl(210 20% 98%) !important; 
+        border-color: hsl(215 27.9% 16.9%) !important;
       }
       .dark input::placeholder, .dark textarea::placeholder { 
-        color: hsl(217.9 10.6% 64.9%); 
+        color: hsl(217.9 10.6% 64.9%) !important; 
       }
+      
+      /* Navigation and sidebar elements */
+      .dark .sidebar { background-color: hsl(224 71.4% 4.1%); color: hsl(210 20% 98%); }
+      .dark [data-sidebar] { color: hsl(210 20% 98%); }
+      
+      /* Dropdown and popover elements */
+      .dark [data-radix-popper-content-wrapper] { background-color: hsl(215 27.9% 16.9%); color: hsl(210 20% 98%); }
+      .dark .dropdown-menu-content { background-color: hsl(215 27.9% 16.9%); color: hsl(210 20% 98%); }
+      
+      /* Text variants with proper contrast */
+      .dark .text-sm { color: hsl(210 20% 98%); }
+      .dark .text-xs { color: hsl(217.9 10.6% 64.9%); }
+      .dark .text-gray-500 { color: hsl(217.9 10.6% 64.9%); }
+      .dark .text-gray-600 { color: hsl(217.9 10.6% 64.9%); }
+      .dark .text-gray-700 { color: hsl(210 20% 98%); }
+      .dark .text-gray-800 { color: hsl(210 20% 98%); }
+      .dark .text-gray-900 { color: hsl(210 20% 98%); }
     `;
 
     // Inject or update style element
