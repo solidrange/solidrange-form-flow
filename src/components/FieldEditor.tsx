@@ -28,7 +28,7 @@ export const FieldEditor = ({ selectedField, onUpdateField, onClose, readOnly = 
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-500 text-center py-8">
+          <p className="text-muted-foreground text-center py-8">
             {readOnly ? "Published form - Select a field to view properties" : "Select a field to edit its properties"}
           </p>
         </CardContent>
@@ -98,7 +98,7 @@ export const FieldEditor = ({ selectedField, onUpdateField, onClose, readOnly = 
         <CardTitle className="text-lg flex items-center gap-2">
           {readOnly && <Lock className="h-4 w-4" />}
           Field Properties
-          {readOnly && <span className="text-sm font-normal text-gray-500">(Read Only)</span>}
+          {readOnly && <span className="text-sm font-normal text-muted-foreground">(Read Only)</span>}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">

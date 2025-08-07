@@ -152,13 +152,13 @@ export const FormBuilder = ({
                     placeholder="Form Title"
                     value={title}
                     onChange={(e) => onUpdateTitle(e.target.value)}
-                    className="text-2xl font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-gray-400"
+                    className="text-2xl font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-muted-foreground"
                   />
                   <Textarea
                     placeholder="Form Description (optional)"
                     value={description}
                     onChange={(e) => onUpdateDescription(e.target.value)}
-                    className="mt-2 border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-gray-400"
+                    className="mt-2 border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-muted-foreground"
                     rows={2}
                   />
                 </div>
@@ -193,7 +193,7 @@ export const FormBuilder = ({
                 />
                 
                 <div className="space-y-2">
-                  <Label className="text-sm font-medium text-gray-700">Sectors</Label>
+                  <Label className="text-sm font-medium text-foreground">Sectors</Label>
                   <MultiSelectFilter
                     options={sectorOptions}
                     selectedValues={selectedSectors}
@@ -213,7 +213,7 @@ export const FormBuilder = ({
               {/* Template Tags Display */}
               {currentTemplateTags.length > 0 && (
                 <div className="mt-4">
-                  <Label className="text-sm font-medium text-gray-700">Template Tags</Label>
+                  <Label className="text-sm font-medium text-foreground">Template Tags</Label>
                   <div className="flex flex-wrap gap-1 mt-2">
                     {currentTemplateTags.map((tag, index) => (
                       <Badge key={index} variant="outline" className="text-xs bg-muted text-foreground border-border">

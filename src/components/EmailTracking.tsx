@@ -173,7 +173,7 @@ export const EmailTracking = ({
   const getStatusIcon = (status: EmailRecipient['status']) => {
     switch (status) {
       case 'pending':
-        return <Clock className="h-4 w-4 text-gray-400" />;
+        return <Clock className="h-4 w-4 text-muted-foreground" />;
       case 'sent':
         return <Mail className="h-4 w-4 text-foreground" />;
       case 'opened':
@@ -183,7 +183,7 @@ export const EmailTracking = ({
       case 'expired':
         return <AlertCircle className="h-4 w-4 text-red-500" />;
       default:
-        return <Clock className="h-4 w-4 text-gray-400" />;
+        return <Clock className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
@@ -411,7 +411,7 @@ export const EmailTracking = ({
         </CardHeader>
         <CardContent>
           {recipients.length === 0 ? (
-            <p className="text-center text-gray-500 py-8">
+            <p className="text-center text-muted-foreground py-8">
               No recipients added yet. Add email addresses above to get started.
             </p>
           ) : (
