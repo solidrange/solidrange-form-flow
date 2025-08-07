@@ -39,7 +39,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         size === 'sm' ? 'text-xs' : size === 'md' ? 'text-sm' : size === 'lg' ? 'text-lg' : 'text-xl'
       )}
       style={{
-        background: `linear-gradient(135deg, hsl(${brand.colors.primary.main}), hsl(${brand.colors.secondary.main}))`
+        background: `linear-gradient(135deg, hsl(${brand.lightTheme.colors.primary.main}), hsl(${brand.lightTheme.colors.secondary.main}))`
       }}
     >
       {brand.name.charAt(0).toUpperCase()}
@@ -71,7 +71,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
               textSizeClasses[size],
               'text-foreground leading-tight'
             )}
-            style={{ color: `hsl(${brand.colors.primary.main})` }}
+            style={{ color: `hsl(${brand.lightTheme.colors.primary.main})` }}
           >
             {brand.name}
           </span>

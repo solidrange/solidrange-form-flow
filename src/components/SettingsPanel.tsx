@@ -173,7 +173,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
       showBrandColors: true,
       brandName: brand.name,
       logo: brand.logo,
-      colors: brand.colors
+      colors: brand.lightTheme.colors
     };
 
     onUpdate({
@@ -215,7 +215,7 @@ export const SettingsPanel = ({ form, onUpdate }: SettingsPanelProps) => {
   const handleUseBrandDefaults = () => {
     handleBrandingChange('brandName', brand.name);
     handleBrandingChange('logo', brand.logo);
-    handleBrandingChange('colors', brand.colors);
+    handleBrandingChange('colors', brand.lightTheme.colors);
     toast({
       title: "Brand Applied",
       description: "Global brand settings have been applied to this form.",

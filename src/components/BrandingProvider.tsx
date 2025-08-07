@@ -31,39 +31,43 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
     // Apply dynamic CSS variables for comprehensive theming
     const root = document.documentElement;
     
+    // Get current theme colors
+    const isDark = document.documentElement.classList.contains('dark');
+    const currentColors = isDark ? brand.darkTheme.colors : brand.lightTheme.colors;
+    
     // Primary color variations
-    root.style.setProperty('--brand-primary', brand.colors.primary.main);
-    root.style.setProperty('--brand-primary-light', brand.colors.primary.light);
-    root.style.setProperty('--brand-primary-dark', brand.colors.primary.dark);
+    root.style.setProperty('--brand-primary', currentColors.primary.main);
+    root.style.setProperty('--brand-primary-light', currentColors.primary.light);
+    root.style.setProperty('--brand-primary-dark', currentColors.primary.dark);
     
     // Secondary color variations
-    root.style.setProperty('--brand-secondary', brand.colors.secondary.main);
-    root.style.setProperty('--brand-secondary-light', brand.colors.secondary.light);
-    root.style.setProperty('--brand-secondary-dark', brand.colors.secondary.dark);
+    root.style.setProperty('--brand-secondary', currentColors.secondary.main);
+    root.style.setProperty('--brand-secondary-light', currentColors.secondary.light);
+    root.style.setProperty('--brand-secondary-dark', currentColors.secondary.dark);
     
     // Override default primary for buttons and interactive elements
-    root.style.setProperty('--primary', brand.colors.primary.main);
+    root.style.setProperty('--primary', currentColors.primary.main);
     
     // Form-specific branding
-    root.style.setProperty('--form-accent', brand.colors.primary.main);
-    root.style.setProperty('--form-border', brand.colors.primary.light);
-    root.style.setProperty('--form-focus', brand.colors.primary.dark);
+    root.style.setProperty('--form-accent', currentColors.primary.main);
+    root.style.setProperty('--form-border', currentColors.primary.light);
+    root.style.setProperty('--form-focus', currentColors.primary.dark);
     
     // Button variations
-    root.style.setProperty('--btn-primary', brand.colors.primary.main);
-    root.style.setProperty('--btn-primary-hover', brand.colors.primary.dark);
-    root.style.setProperty('--btn-secondary', brand.colors.secondary.main);
-    root.style.setProperty('--btn-secondary-hover', brand.colors.secondary.dark);
+    root.style.setProperty('--btn-primary', currentColors.primary.main);
+    root.style.setProperty('--btn-primary-hover', currentColors.primary.dark);
+    root.style.setProperty('--btn-secondary', currentColors.secondary.main);
+    root.style.setProperty('--btn-secondary-hover', currentColors.secondary.dark);
 
     // Create dynamic CSS for branded components
     const brandingCSS = `
-      .brand-primary { background-color: hsl(${brand.colors.primary.main}); }
-      .brand-primary-hover:hover { background-color: hsl(${brand.colors.primary.dark}); }
-      .brand-secondary { background-color: hsl(${brand.colors.secondary.main}); }
-      .brand-secondary-hover:hover { background-color: hsl(${brand.colors.secondary.dark}); }
-      .brand-border { border-color: hsl(${brand.colors.primary.main}); }
-      .brand-text { color: hsl(${brand.colors.primary.main}); }
-      .brand-focus:focus { border-color: hsl(${brand.colors.primary.main}); box-shadow: 0 0 0 2px hsl(${brand.colors.primary.main} / 0.2); }
+      .brand-primary { background-color: hsl(${currentColors.primary.main}); }
+      .brand-primary-hover:hover { background-color: hsl(${currentColors.primary.dark}); }
+      .brand-secondary { background-color: hsl(${currentColors.secondary.main}); }
+      .brand-secondary-hover:hover { background-color: hsl(${currentColors.secondary.dark}); }
+      .brand-border { border-color: hsl(${currentColors.primary.main}); }
+      .brand-text { color: hsl(${currentColors.primary.main}); }
+      .brand-focus:focus { border-color: hsl(${currentColors.primary.main}); box-shadow: 0 0 0 2px hsl(${currentColors.primary.main} / 0.2); }
     `;
 
     // Inject or update style element
@@ -78,22 +82,35 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
   }, [brand]);
 
   const applyBrandingStyles = (element: HTMLElement) => {
-    element.style.setProperty('--primary', brand.colors.primary.main);
-    element.style.setProperty('--secondary', brand.colors.secondary.main);
+    const isDark = document.documentElement.classList.contains('dark');
+    const currentColors = isDark ? brand.darkTheme.colors : brand.lightTheme.colors;
+    element.style.setProperty('--primary', currentColors.primary.main);
+    element.style.setProperty('--secondary', currentColors.secondary.main);
   };
 
   const getBrandingClasses = () => {
     return 'brand-primary brand-primary-hover';
   };
 
-  const getPrimaryColor = () => `hsl(${brand.colors.primary.main})`;
-  const getSecondaryColor = () => `hsl(${brand.colors.secondary.main})`;
+  const getPrimaryColor = () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    const currentColors = isDark ? brand.darkTheme.colors : brand.lightTheme.colors;
+    return `hsl(${currentColors.primary.main})`;
+  };
+  
+  const getSecondaryColor = () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    const currentColors = isDark ? brand.darkTheme.colors : brand.lightTheme.colors;
+    return `hsl(${currentColors.secondary.main})`;
+  };
 
   const getBrandingCSS = () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    const currentColors = isDark ? brand.darkTheme.colors : brand.lightTheme.colors;
     return `
-      --brand-primary: ${brand.colors.primary.main};
-      --brand-secondary: ${brand.colors.secondary.main};
-      --primary: ${brand.colors.primary.main};
+      --brand-primary: ${currentColors.primary.main};
+      --brand-secondary: ${currentColors.secondary.main};
+      --primary: ${currentColors.primary.main};
     `;
   };
 

@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Settings, Mail, Users, Shield, Eye, Link, RefreshCw, Info, Palette } from 'lucide-react';
 import { EmailDistributionSettings } from './forms/EmailDistributionSettings';
+import { FormAppearanceSettings } from './FormAppearanceSettings';
 import { useBrand } from '@/contexts/BrandContext';
 
 interface FormSettingsPanelProps {
@@ -38,7 +39,7 @@ export const FormSettingsPanel = ({ form, onUpdateForm, isPublished }: FormSetti
         enabled: true,
         brandName: brand.name,
         logo: brand.logo,
-        colors: brand.colors,
+        colors: brand.lightTheme.colors,
         showLogo: true,
         showBrandColors: true,
         useGlobalBranding: true
@@ -52,7 +53,7 @@ export const FormSettingsPanel = ({ form, onUpdateForm, isPublished }: FormSetti
   // Get effective branding values (global or custom)
   const effectiveBrandName = isUsingGlobalBranding ? brand.name : (form.settings.branding?.brandName || brand.name);
   const effectiveLogo = isUsingGlobalBranding ? brand.logo : (form.settings.branding?.logo || brand.logo);
-  const effectiveColors = isUsingGlobalBranding ? brand.colors : (form.settings.branding?.colors || brand.colors);
+  const effectiveColors = isUsingGlobalBranding ? brand.lightTheme.colors : (form.settings.branding?.colors || brand.lightTheme.colors);
 
   const DraftStateWarning = () => (
     <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
@@ -287,7 +288,7 @@ export const FormSettingsPanel = ({ form, onUpdateForm, isPublished }: FormSetti
                                 ...(useGlobalBranding && {
                                   brandName: brand.name,
                                   logo: brand.logo,
-                                  colors: brand.colors
+                                  colors: brand.lightTheme.colors
                                 })
                               } as any
                             })}
