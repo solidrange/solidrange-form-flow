@@ -564,7 +564,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
   return (
       <div className="space-y-6 animate-fade-in">
         <div className="animate-slide-up">
-          <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
+          <h2 className="text-2xl font-bold mb-2 text-foreground">
             Report Generation
           </h2>
           <p className="text-muted-foreground">Generate comprehensive reports and analytics for your form submissions.</p>
@@ -580,8 +580,8 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Executive & Summary Reports */}
             <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in">
-              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-t-lg">
-                <CardTitle className="flex items-center gap-2 text-blue-700">
+              <CardHeader className="bg-muted rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-foreground">
                   <TrendingUp className="h-5 w-5 text-blue-500" />
                   Executive & Summary Reports
                 </CardTitle>
@@ -591,7 +591,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('executive-summary')} 
-                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-primary hover:bg-primary/90 text-primary-foreground border-0"
                       variant="outline"
                     >
                       <Award className="mr-2 h-4 w-4" />
@@ -974,7 +974,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('regulatory-audit')} 
-                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white border-0"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-secondary hover:bg-secondary/90 text-secondary-foreground border-0"
                       variant="outline"
                     >
                       <Shield className="mr-2 h-4 w-4" />

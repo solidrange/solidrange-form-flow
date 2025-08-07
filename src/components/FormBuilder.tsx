@@ -216,7 +216,7 @@ export const FormBuilder = ({
                   <Label className="text-sm font-medium text-gray-700">Template Tags</Label>
                   <div className="flex flex-wrap gap-1 mt-2">
                     {currentTemplateTags.map((tag, index) => (
-                      <Badge key={index} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                      <Badge key={index} variant="outline" className="text-xs bg-muted text-foreground border-border">
                         {tag}
                       </Badge>
                     ))}

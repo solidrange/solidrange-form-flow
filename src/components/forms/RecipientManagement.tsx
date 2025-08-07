@@ -157,7 +157,7 @@ export const RecipientManagement = ({ form, onUpdateForm }: RecipientManagementP
       case 'pending':
         return 'bg-yellow-100 text-yellow-800';
       case 'sent':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-primary/10 text-primary';
       case 'opened':
         return 'bg-purple-100 text-purple-800';
       case 'completed':

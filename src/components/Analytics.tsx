@@ -496,7 +496,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                         <div className="w-20 bg-gray-200 rounded-full h-2">
                           <div 
                             className={`h-2 rounded-full ${
-                              type === 'vendor' ? 'bg-blue-500' :
+                              type === 'vendor' ? 'bg-primary' :
                               type === 'external' ? 'bg-purple-500' :
                               'bg-green-500'
                             }`}
@@ -612,8 +612,8 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                 {topCompanies.map((company, index) => (
                   <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <span className="text-sm font-medium text-blue-600">#{index + 1}</span>
+                      <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                        <span className="text-sm font-medium text-foreground">#{index + 1}</span>
                       </div>
                       <div>
                         <p className="font-medium text-sm">{company.company}</p>

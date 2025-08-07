@@ -386,7 +386,7 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       
       /* Dark theme field cards and buttons */
       .dark .disabled\\:bg-gray-50:disabled { background-color: hsl(215 27.9% 16.9%) !important; }
-      .dark .bg-blue-50 { background-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .bg-muted { background-color: hsl(215 27.9% 16.9%) !important; }
       .dark .text-blue-700 { color: hsl(${currentColors.primary.main}) !important; }
       .dark .border-blue-200 { border-color: hsl(${currentColors.primary.main}) !important; }
       
@@ -410,7 +410,7 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       
       /* Light theme field cards and buttons */
       .light .disabled\\:bg-gray-50:disabled { background-color: hsl(220 14.3% 95.9%) !important; }
-      .light .bg-blue-50 { background-color: hsl(220 14.3% 95.9%) !important; }
+      .light .bg-muted { background-color: hsl(220 14.3% 95.9%) !important; }
       .light .text-blue-700 { color: hsl(${currentColors.primary.dark}) !important; }
       .light .border-blue-200 { border-color: hsl(${currentColors.primary.dark}) !important; }
       
@@ -476,7 +476,7 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       .dark .ring-indigo-500 { --tw-ring-color: hsl(${currentColors.primary.light}) !important; }
       .dark .border-dashed { border-color: hsl(${currentColors.primary.light}) !important; }
       .dark .text-indigo-600 { color: hsl(${currentColors.primary.light}) !important; }
-      .dark .bg-blue-50 { background-color: hsl(${currentColors.primary.light} / 0.2) !important; }
+      .dark .bg-muted { background-color: hsl(${currentColors.primary.light} / 0.2) !important; }
       .dark .text-blue-700 { color: hsl(${currentColors.primary.light}) !important; }
       .dark .border-blue-200 { border-color: hsl(${currentColors.primary.light}) !important; }
       
@@ -486,7 +486,7 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       .light .ring-indigo-500 { --tw-ring-color: hsl(${currentColors.primary.dark}) !important; }
       .light .border-dashed { border-color: hsl(${currentColors.primary.dark}) !important; }
       .light .text-indigo-600 { color: hsl(${currentColors.primary.dark}) !important; }
-      .light .bg-blue-50 { background-color: hsl(${currentColors.primary.dark} / 0.1) !important; }
+      .light .bg-muted { background-color: hsl(${currentColors.primary.dark} / 0.1) !important; }
       .light .text-blue-700 { color: hsl(${currentColors.primary.dark}) !important; }
       .light .border-blue-200 { border-color: hsl(${currentColors.primary.dark}) !important; }
     `;
