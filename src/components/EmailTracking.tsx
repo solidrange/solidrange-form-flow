@@ -216,7 +216,7 @@ export const EmailTracking = ({
             <div className="flex items-center gap-2">
               <Users className="h-5 w-5 text-foreground" />
               <div>
-                <p className="text-sm text-gray-600">Total Recipients</p>
+                <p className="text-sm text-muted-foreground">Total Recipients</p>
                 <p className="text-xl font-semibold">{recipients.length}</p>
               </div>
             </div>
@@ -228,7 +228,7 @@ export const EmailTracking = ({
             <div className="flex items-center gap-2">
               <Send className="h-5 w-5 text-green-500" />
               <div>
-                <p className="text-sm text-gray-600">Sent</p>
+                <p className="text-sm text-muted-foreground">Sent</p>
                 <p className="text-xl font-semibold">
                   {recipients.filter(r => ['sent', 'opened', 'completed'].includes(r.status)).length}
                 </p>
@@ -242,7 +242,7 @@ export const EmailTracking = ({
             <div className="flex items-center gap-2">
               <CheckCircle className="h-5 w-5 text-green-500" />
               <div>
-                <p className="text-sm text-gray-600">Completed</p>
+                <p className="text-sm text-muted-foreground">Completed</p>
                 <p className="text-xl font-semibold">
                   {recipients.filter(r => r.status === 'completed').length}
                 </p>
@@ -256,7 +256,7 @@ export const EmailTracking = ({
             <div className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-foreground" />
               <div>
-                <p className="text-sm text-gray-600">Completion Rate</p>
+                <p className="text-sm text-muted-foreground">Completion Rate</p>
                 <p className="text-xl font-semibold">{completionRate}%</p>
               </div>
             </div>

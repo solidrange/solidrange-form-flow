@@ -25,7 +25,7 @@ export const FormInvitations = ({ form, onUpdateForm }: FormInvitationsProps) =>
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-semibold">Form Invitations & Sharing</h2>
-          <p className="text-gray-600 mt-1">Manage email invitations and sharing options for your published form</p>
+          <p className="text-muted-foreground mt-1">Manage email invitations and sharing options for your published form</p>
         </div>
         <Badge variant="default" className="bg-green-100 text-green-800">
           Published Form

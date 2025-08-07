@@ -924,9 +924,9 @@ const Index = () => {
                   <TabsContent value="drafts" className="space-y-4">
                     {savedDrafts.length === 0 ? (
                       <div className="text-center py-12">
-                        <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No draft forms</h3>
-                        <p className="text-gray-600 mb-4">Create a new form to get started</p>
+                        <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-foreground mb-2">No draft forms</h3>
+                        <p className="text-muted-foreground mb-4">Create a new form to get started</p>
                         <Button onClick={createNewForm} className="gap-2">
                           <Plus className="h-4 w-4" />
                           Create Form
@@ -1005,9 +1005,9 @@ const Index = () => {
                   <TabsContent value="published" className="space-y-4">
                     {publishedForms.length === 0 ? (
                       <div className="text-center py-12">
-                        <Globe className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No published forms</h3>
-                        <p className="text-gray-600">Publish a form to make it available to respondents</p>
+                        <Globe className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-foreground mb-2">No published forms</h3>
+                        <p className="text-muted-foreground">Publish a form to make it available to respondents</p>
                       </div>
                     ) : (
                       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
