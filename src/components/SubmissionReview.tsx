@@ -593,7 +593,7 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
               {/* Type and Sort */}
               <div className="space-y-6">
                 <div className="space-y-3">
-                  <Label className="text-sm font-semibold">Type</Label>
+                  <Label className="text-sm font-semibold">Audience</Label>
                   <div className="space-y-2">
                      {[
                        { value: 'vendor', label: 'Vendor', icon: <Building className="h-3 w-3" /> },

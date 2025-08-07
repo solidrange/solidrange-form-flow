@@ -10,6 +10,7 @@ import { FormCanvas } from './FormCanvas';
 import { FieldEditor } from './FieldEditor';
 import { MultiSelectCategory } from './MultiSelectCategory';
 import { MultiSelectFilter } from './MultiSelectFilter';
+import { MultiSelectAudience } from './MultiSelectAudience';
 import { FileAttachmentManager } from './FileAttachmentManager';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
@@ -42,6 +43,9 @@ interface FormBuilderProps {
   formTargetAudience: string | string[];
   onUpdateFormTargetAudience: (audience: string | string[]) => void;
   currentTemplateTags?: string[];
+  // Add audience prop
+  formAudience: string[];
+  onUpdateFormAudience: (audience: string[]) => void;
 }
 
 const sectorOptions = [
@@ -73,7 +77,9 @@ export const FormBuilder = ({
   onUpdateFormCategory,
   formTargetAudience,
   onUpdateFormTargetAudience,
-  currentTemplateTags = []
+  currentTemplateTags = [],
+  formAudience,
+  onUpdateFormAudience
 }: FormBuilderProps) => {
   // Convert parent state to local display format
   const selectedCategories = typeof formCategory === 'string' ? (formCategory ? [formCategory] : []) : formCategory;
@@ -178,8 +184,8 @@ export const FormBuilder = ({
                 </div>
               </div>
               
-              {/* Category and Sector Selection */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Category, Sector, and Audience Selection */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <MultiSelectCategory
                   selectedCategories={selectedCategories}
                   onCategoryChange={onUpdateFormCategory}
@@ -196,6 +202,12 @@ export const FormBuilder = ({
                     formatLabel={formatSectorLabel}
                   />
                 </div>
+
+                <MultiSelectAudience
+                  selectedAudiences={formAudience}
+                  onAudienceChange={onUpdateFormAudience}
+                  disabled={isPublished}
+                />
               </div>
 
               {/* Template Tags Display */}

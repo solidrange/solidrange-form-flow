@@ -69,6 +69,7 @@ const Index = () => {
   const [formAttachments, setFormAttachments] = useState<DocumentAttachment[]>([]);
   const [formCategory, setFormCategory] = useState<string | string[]>("");
   const [formTargetAudience, setFormTargetAudience] = useState<string | string[]>("");
+  const [formAudience, setFormAudience] = useState<string[]>([]);
   const [savedDrafts, setSavedDrafts] = useState<Form[]>([]);
   const [publishedForms, setPublishedForms] = useState<Form[]>([]);
   const [currentFormId, setCurrentFormId] = useState<string | null>(null);
@@ -231,6 +232,7 @@ const Index = () => {
     setFormDescription("");
     setFormCategory("");
     setFormTargetAudience("");
+    setFormAudience([]);
     setFormAttachments([]);
     setFormSettings({
       allowMultipleSubmissions: false,
@@ -1170,6 +1172,8 @@ const Index = () => {
                     formTargetAudience={formTargetAudience}
                     onUpdateFormTargetAudience={setFormTargetAudience}
                     currentTemplateTags={currentTemplateTags}
+                    formAudience={formAudience}
+                    onUpdateFormAudience={setFormAudience}
                   />
                 </TabsContent>
 
