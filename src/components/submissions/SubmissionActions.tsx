@@ -498,7 +498,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
           {/* AI Suggestion Box */}
           {submission.score && isFormComplete() && submission.status !== 'approved' && (
             <div className="p-4 bg-muted rounded-lg border border-border animate-fade-in">
-              <h4 className="text-sm font-medium text-blue-800 mb-2 flex items-center gap-2">
+              <h4 className="text-sm font-medium text-foreground mb-2 flex items-center gap-2">
                 <Target className="h-4 w-4" />
                 AI Recommendation
               </h4>
@@ -506,10 +506,10 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
                 const suggestion = getApprovalSuggestion(submission);
                 return (
                   <div className="space-y-2">
-                    <p className="text-sm text-blue-700">
+                    <p className="text-sm text-foreground">
                       Suggested: <span className="font-medium capitalize">{suggestion.type} Approval</span>
                     </p>
-                    <p className="text-xs text-blue-600">{suggestion.reason}</p>
+                    <p className="text-xs text-muted-foreground">{suggestion.reason}</p>
                     <Button
                       size="sm"
                       variant="outline"

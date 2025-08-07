@@ -34,10 +34,10 @@ export const FormInvitationStatistics = ({ form }: FormInvitationStatisticsProps
       <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center p-4 bg-muted rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-2xl font-bold text-foreground">
               {emailSettings.recipients.length}
             </div>
-            <div className="text-sm text-blue-800">Total Invites</div>
+            <div className="text-sm text-muted-foreground">Total Invites</div>
           </div>
           <div className="text-center p-4 bg-green-50 rounded-lg">
             <div className="text-2xl font-bold text-green-600">

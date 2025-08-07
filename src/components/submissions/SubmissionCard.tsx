@@ -118,8 +118,8 @@ export const SubmissionCard = ({ submission, form, isSelected, onClick }: Submis
 
   return (
     <Card 
-      className={`cursor-pointer transition-colors hover:bg-gray-50 ${
-        isSelected ? 'ring-1 sm:ring-2 ring-blue-500' : ''
+      className={`cursor-pointer transition-colors hover:bg-muted/50 ${
+        isSelected ? 'ring-1 sm:ring-2 ring-primary' : ''
       }`}
       onClick={onClick}
     >
