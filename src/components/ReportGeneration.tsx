@@ -647,8 +647,8 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
 
             {/* Risk & Compliance Reports */}
             <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in" style={{ animationDelay: '0.1s' }}>
-              <CardHeader className="bg-gradient-to-r from-red-50 to-orange-50 rounded-t-lg">
-                <CardTitle className="flex items-center gap-2 text-red-700">
+              <CardHeader className="rounded-t-lg">
+                <CardTitle className="flex items-center gap-2 text-foreground">
                   <Shield className="h-5 w-5 text-red-500" />
                   Risk & Compliance Reports
                 </CardTitle>
@@ -658,7 +658,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('risk-analysis')} 
-                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-red-500 to-orange-600 hover:from-red-600 hover:to-orange-700 text-white border-0"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200"
                       variant="outline"
                     >
                       <AlertCircle className="mr-2 h-4 w-4" />
@@ -880,7 +880,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="space-y-2">
                     <Button 
                       onClick={() => generateQuickReport('quality-assurance')} 
-                      className="w-full justify-start hover:scale-105 transition-transform duration-200 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white border-0"
+                      className="w-full justify-start hover:scale-105 transition-transform duration-200"
                       variant="outline"
                     >
                       <CheckCircle className="mr-2 h-4 w-4" />

@@ -771,7 +771,7 @@ const Index = () => {
 
   return (
     <SidebarProvider>
-      <div className={`min-h-screen bg-gray-50 flex w-full ${isRTL ? 'rtl' : ''}`}>
+      <div className={`min-h-screen flex w-full ${isRTL ? 'rtl' : ''}`}>
         {/* Sidebar */}
         <AppSidebar 
           activeTab={activeTab}
