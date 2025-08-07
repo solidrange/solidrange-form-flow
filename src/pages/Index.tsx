@@ -782,11 +782,11 @@ const Index = () => {
         {/* Main Content */}
         <SidebarInset className="flex-1">
           {/* Header */}
-          <div className="border-b sticky top-0 z-40">
+          <div className="bg-white border-b shadow-sm sticky top-0 z-40">
             <div className="flex items-center justify-between h-14 px-4">
               <div className="flex items-center gap-2">
                 <SidebarTrigger />
-                <div className="h-4 w-px border-r" />
+                <div className="h-4 w-px bg-border" />
                 <h1 className="font-semibold text-lg">{t(activeTab.replace('-', ''))}</h1>
               </div>
               

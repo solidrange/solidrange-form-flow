@@ -1013,7 +1013,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="text-2xl font-bold text-foreground">{stats.total}</div>
                   <div className="text-sm text-gray-600">Total Submissions</div>
                 </div>
-                <div className="text-center p-4 border rounded-lg">
+                <div className="text-center p-4 bg-card border rounded-lg">
                   <div className="text-2xl font-bold text-green-600">{stats.approved}</div>
                   <div className="text-sm text-gray-600">Approved</div>
                 </div>
@@ -1021,7 +1021,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
                   <div className="text-2xl font-bold text-red-600">{stats.highRisk}</div>
                   <div className="text-sm text-gray-600">High Risk</div>
                 </div>
-                <div className="text-center p-4 border rounded-lg">
+                <div className="text-center p-4 bg-card border rounded-lg">
                   <div className="text-2xl font-bold text-yellow-600">{stats.avgScore}%</div>
                   <div className="text-sm text-gray-600">Avg Score</div>
                 </div>

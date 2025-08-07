@@ -218,7 +218,7 @@ export const FormSharingOptions = ({ form }: FormSharingOptionsProps) => {
             </div>
           </div>
 
-          <div className="p-4 border rounded-lg">
+          <div className="p-4 bg-muted rounded-lg">
             <h4 className="font-medium text-foreground mb-2">Sharing Tips</h4>
             <ul className="text-sm text-muted-foreground space-y-1">
               <li>• Share this link directly with respondents</li>
@@ -291,9 +291,9 @@ export const FormSharingOptions = ({ form }: FormSharingOptionsProps) => {
             </div>
           </div>
 
-          <div className="p-4 border rounded-lg">
-            <h4 className="font-medium text-foreground mb-2">Embedding Guide</h4>
-            <ul className="text-sm text-muted-foreground space-y-1">
+          <div className="p-4 bg-green-50 rounded-lg">
+            <h4 className="font-medium text-green-900 mb-2">Embedding Guide</h4>
+            <ul className="text-sm text-green-800 space-y-1">
               <li>• Copy the HTML code above</li>
               <li>• Paste it into your website's HTML</li>
               <li>• Adjust width and height as needed</li>
@@ -323,9 +323,9 @@ export const FormSharingOptions = ({ form }: FormSharingOptionsProps) => {
             </Button>
           </div>
 
-          <div className="p-4 border rounded-lg">
-            <h4 className="font-medium text-foreground mb-2">PDF Features</h4>
-            <ul className="text-sm text-muted-foreground space-y-1">
+          <div className="p-4 bg-orange-50 rounded-lg">
+            <h4 className="font-medium text-orange-900 mb-2">PDF Features</h4>
+            <ul className="text-sm text-orange-800 space-y-1">
               <li>• Fillable form fields for all input types</li>
               <li>• Proper field labels and descriptions</li>
               <li>• Required field indicators (*)</li>
@@ -343,23 +343,23 @@ export const FormSharingOptions = ({ form }: FormSharingOptionsProps) => {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 border rounded-lg">
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
               <div className="text-2xl font-bold text-foreground">{form.analytics.views}</div>
-              <div className="text-sm text-muted-foreground">Total Views</div>
+              <div className="text-sm text-gray-600">Total Views</div>
             </div>
-            <div className="text-center p-4 border rounded-lg">
-              <div className="text-2xl font-bold text-foreground">{form.analytics.submissions}</div>
-              <div className="text-sm text-muted-foreground">Submissions</div>
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <div className="text-2xl font-bold text-green-600">{form.analytics.submissions}</div>
+              <div className="text-sm text-gray-600">Submissions</div>
             </div>
-            <div className="text-center p-4 border rounded-lg">
-              <div className="text-2xl font-bold text-foreground">{form.analytics.emailsSent}</div>
-              <div className="text-sm text-muted-foreground">Emails Sent</div>
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <div className="text-2xl font-bold text-purple-600">{form.analytics.emailsSent}</div>
+              <div className="text-sm text-gray-600">Emails Sent</div>
             </div>
-            <div className="text-center p-4 border rounded-lg">
-              <div className="text-2xl font-bold text-foreground">
+            <div className="text-center p-4 bg-gray-50 rounded-lg">
+              <div className="text-2xl font-bold text-orange-600">
                 {form.analytics.completionRate}%
               </div>
-              <div className="text-sm text-muted-foreground">Completion Rate</div>
+              <div className="text-sm text-gray-600">Completion Rate</div>
             </div>
           </div>
         </CardContent>

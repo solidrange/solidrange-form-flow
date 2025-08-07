@@ -428,7 +428,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               <CardContent>
                 <div className="space-y-6">
                   {/* Quality Score */}
-                  <div className="text-center p-4 border rounded-lg">
+                  <div className="text-center p-4 bg-card border rounded-lg">
                     <div className="text-3xl font-bold text-foreground mb-2">
                       {fullApprovalRate.toFixed(1)}%
                     </div>
@@ -440,15 +440,15 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
 
                   {/* Metrics breakdown */}
                   <div className="space-y-3">
-                    <div className="flex justify-between items-center p-2 border rounded">
+                    <div className="flex justify-between items-center p-2 bg-muted rounded">
                       <span className="text-sm font-medium">Total Approved</span>
                       <span className="text-sm font-bold">{approvedSubmissions}</span>
                     </div>
-                    <div className="flex justify-between items-center p-2 border rounded">
+                    <div className="flex justify-between items-center p-2 bg-muted rounded">
                       <span className="text-sm font-medium text-emerald-700">Full Implementation</span>
                       <span className="text-sm font-bold text-emerald-600">{fullyApprovedSubmissions}</span>
                     </div>
-                    <div className="flex justify-between items-center p-2 border rounded">
+                    <div className="flex justify-between items-center p-2 bg-muted rounded">
                       <span className="text-sm font-medium text-orange-700">Conditional Implementation</span>
                       <span className="text-sm font-bold text-orange-600">{partiallyApprovedSubmissions}</span>
                     </div>
@@ -493,7 +493,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
                       </div>
                       <div className="flex items-center gap-2">
                         <span className="text-sm font-medium">{count}</span>
-                        <div className="w-20 border rounded-full h-2">
+                        <div className="w-20 bg-gray-200 rounded-full h-2">
                           <div 
                             className={`h-2 rounded-full ${
                               type === 'vendor' ? 'bg-primary' :
@@ -521,7 +521,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               <CardContent>
                 <div className="space-y-3">
                   {submissions.slice(0, 5).map((submission) => (
-                    <div key={submission.id} className="flex items-center justify-between p-3 border rounded-lg">
+                    <div key={submission.id} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                       <div>
                         <p className="font-medium text-sm">{submission.companyName || submission.submitterName}</p>
                         <p className="text-xs text-muted-foreground">{submission.submittedAt.toLocaleDateString()}</p>
@@ -610,7 +610,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
             <CardContent>
               <div className="space-y-3">
                 {topCompanies.map((company, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-3 bg-muted rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
                         <span className="text-sm font-medium text-foreground">#{index + 1}</span>
