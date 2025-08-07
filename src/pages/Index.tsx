@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
 import { FormLibrary } from "@/components/FormLibrary";
-import { FormInvitations } from "@/components/FormInvitations";
+import { FormManagementDialog } from "@/components/FormManagementDialog";
 import Analytics from "@/components/Analytics";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { SubmissionReview } from "@/components/SubmissionReview";
@@ -68,6 +68,7 @@ const Index = () => {
   const [savedDrafts, setSavedDrafts] = useState<Form[]>([]);
   const [publishedForms, setPublishedForms] = useState<Form[]>([]);
   const [currentFormId, setCurrentFormId] = useState<string | null>(null);
+  const [selectedFormForManagement, setSelectedFormForManagement] = useState<Form | null>(null);
   
   // Form settings with comprehensive defaults
   const [formSettings, setFormSettings] = useState<Form['settings']>({
@@ -985,10 +986,15 @@ const Index = () => {
                                   </DialogContent>
                                 </Dialog>
 
-                                <FormInvitations
-                                  form={form}
-                                  onUpdateForm={(updates) => updatePublishedForm(form.id, updates)}
-                                />
+                                <Button 
+                                  size="sm" 
+                                  variant="outline"
+                                  onClick={() => setSelectedFormForManagement(form)}
+                                  className="flex-1 gap-1"
+                                >
+                                  <Mail className="h-3 w-3" />
+                                  Manage
+                                </Button>
 
                                 <Button 
                                   size="sm" 
@@ -1033,29 +1039,61 @@ const Index = () => {
             )}
 
             {activeTab === "build-form" && (
-              <div className="space-y-6">
-                <FormBuilder
-                  formFields={formFields}
-                  onAddField={addField}
-                  onUpdateField={updateField}
-                  onRemoveField={removeField}
-                  selectedFieldId={null}
-                  onSelectField={() => {}}
-                  title={formTitle}
-                  onUpdateTitle={setFormTitle}
-                  description={formDescription}
-                  onUpdateDescription={setFormDescription}
-                  onSaveForm={saveForm}
-                  onPreviewForm={() => {}}
-                  attachments={formAttachments}
-                  onUpdateAttachments={setFormAttachments}
-                  onSaveToLibrary={handleSaveToLibrary}
-                  isPublished={currentFormIsPublished()}
-                  onMoveToDraft={() => handleMoveToDraft()}
-                  formSettings={formSettings}
-                  onUpdateFormSettings={updateFormSettings}
-                />
-              </div>
+              <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-3 mb-6">
+                  {buildTabs.map((tab) => (
+                    <TabsTrigger 
+                      key={tab.id} 
+                      value={tab.id} 
+                      className="flex items-center gap-2"
+                    >
+                      {tab.icon}
+                      <span className="hidden sm:inline">{tab.label}</span>
+                      <span className="sm:hidden">{tab.mobileLabel}</span>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+
+                <TabsContent value="builder">
+                  <FormBuilder
+                    formFields={formFields}
+                    onAddField={addField}
+                    onUpdateField={updateField}
+                    onRemoveField={removeField}
+                    selectedFieldId={null}
+                    onSelectField={() => {}}
+                    title={formTitle}
+                    onUpdateTitle={setFormTitle}
+                    description={formDescription}
+                    onUpdateDescription={setFormDescription}
+                    onSaveForm={saveForm}
+                    onPreviewForm={() => {}}
+                    attachments={formAttachments}
+                    onUpdateAttachments={setFormAttachments}
+                    onSaveToLibrary={handleSaveToLibrary}
+                    isPublished={currentFormIsPublished()}
+                    onMoveToDraft={() => handleMoveToDraft()}
+                    formSettings={formSettings}
+                    onUpdateFormSettings={updateFormSettings}
+                  />
+                </TabsContent>
+
+                <TabsContent value="library">
+                  <FormLibrary 
+                    onUseTemplate={useTemplate}
+                  />
+                </TabsContent>
+
+                <TabsContent value="preview">
+                  <FormPreview
+                    formFields={formFields}
+                    formTitle={formTitle}
+                    formDescription={formDescription}
+                    formSettings={formSettings}
+                    attachments={formAttachments}
+                  />
+                </TabsContent>
+              </Tabs>
             )}
 
             {activeTab === "global-settings" && (
@@ -1063,6 +1101,18 @@ const Index = () => {
             )}
           </div>
         </SidebarInset>
+
+        {/* Form Management Dialog */}
+        {selectedFormForManagement && (
+          <FormManagementDialog
+            form={selectedFormForManagement}
+            isOpen={!!selectedFormForManagement}
+            onClose={() => setSelectedFormForManagement(null)}
+            onUpdateForm={(updates) => updatePublishedForm(selectedFormForManagement.id, updates)}
+            generateFormUrl={generateFormUrl}
+            generateEmbedCode={generateEmbedCode}
+          />
+        )}
       </div>
     </SidebarProvider>
   );
