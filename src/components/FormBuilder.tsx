@@ -2,20 +2,18 @@ import React, { useState } from 'react';
 import { FormTemplate, FormField, DocumentAttachment, Form } from '@/types/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { Button } from '@/components/ui/button';
 import { BrandedButton } from './BrandedButton';
-import { FormLibrary } from './FormLibrary';
 import { FieldPalette } from './FieldPalette';
 import { FormCanvas } from './FormCanvas';
 import { FieldEditor } from './FieldEditor';
-import { FormPreview } from './FormPreview';
-import { FormSettingsPanel } from './FormSettingsPanel';
 import { MultiSelectCategory } from './MultiSelectCategory';
 import { MultiSelectFilter } from './MultiSelectFilter';
 import { FileAttachmentManager } from './FileAttachmentManager';
 import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
 
 
 interface FormBuilderProps {
@@ -66,7 +64,6 @@ export const FormBuilder = ({
   formSettings,
   onUpdateFormSettings
 }: FormBuilderProps) => {
-  const [activeTab, setActiveTab] = useState('builder');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
 
@@ -181,9 +178,6 @@ export const FormBuilder = ({
         }, index * 100);
       });
     }, 200);
-    
-    // Switch to builder tab after applying template
-    setActiveTab('builder');
   };
 
   return (
@@ -191,15 +185,11 @@ export const FormBuilder = ({
       {/* Header */}
       <div className="border-b bg-white p-4">
         <div className="flex items-center justify-between">
-          <div>
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="builder">Builder</TabsTrigger>
-                <TabsTrigger value="templates">Templates</TabsTrigger>
-                <TabsTrigger value="preview">Preview</TabsTrigger>
-                <TabsTrigger value="settings">Settings</TabsTrigger>
-              </TabsList>
-            </Tabs>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-gray-900">Form Builder</h2>
+            {isPublished && (
+              <Badge variant="default" className="ml-2">Published</Badge>
+            )}
           </div>
           <div className="flex items-center gap-2">
             {isPublished && (
@@ -222,144 +212,104 @@ export const FormBuilder = ({
         </div>
       </div>
 
-      {/* Main Content */}
+      {/* Main Content - Resizable Three Column Layout */}
       <div className="flex-1 flex overflow-hidden">
-        {/* Templates Tab - Full Width */}
-        {activeTab === 'templates' && (
-          <div className="flex-1 overflow-y-auto">
-            <div className="p-6">
-              <FormLibrary onUseTemplate={handleUseTemplate} />
-            </div>
-          </div>
-        )}
-
-        {/* Preview Tab - Full Width */}
-        {activeTab === 'preview' && (
-          <div className="flex-1 overflow-y-auto bg-gray-50">
-            <div className="p-6">
-              <FormPreview
-                formTitle={title}
-                formDescription={description}
-                formFields={formFields}
-                formSettings={form.settings}
-                attachments={attachments}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Settings Tab - Full Width */}
-        {activeTab === 'settings' && (
-          <div className="flex-1 overflow-y-auto">
-            <div className="p-6">
-              <FormSettingsPanel 
-                form={form} 
-                onUpdateForm={handleUpdateForm} 
-                isPublished={isPublished}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Builder Tab - Resizable Three Column Layout */}
-        {activeTab === 'builder' && (
-          <ResizablePanelGroup direction="horizontal" className="flex-1">
-            {/* Left Sidebar - Field Palette */}
-            <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
-              <div className="h-full border-r bg-white overflow-y-auto">
-                <div className="p-4">
-                  <FieldPalette onAddField={onAddField} />
-                </div>
+        <ResizablePanelGroup direction="horizontal" className="flex-1">
+          {/* Left Sidebar - Field Palette */}
+          <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
+            <div className="h-full border-r bg-white overflow-y-auto">
+              <div className="p-4">
+                <FieldPalette onAddField={onAddField} />
               </div>
-            </ResizablePanel>
-            
-            <ResizableHandle withHandle />
+            </div>
+          </ResizablePanel>
+          
+          <ResizableHandle withHandle />
 
-            {/* Center - Form Canvas */}
-            <ResizablePanel defaultSize={selectedFieldId ? 50 : 75} minSize={40}>
-              <div className="h-full flex flex-col">
-                {/* Form Header */}
-                <div className="p-6 border-b bg-gray-50">
-                  <Input
-                    placeholder="Form Title"
-                    value={title}
-                    onChange={(e) => onUpdateTitle(e.target.value)}
-                    className="text-2xl font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-gray-400"
-                  />
-                  <Textarea
-                    placeholder="Form Description (optional)"
-                    value={description}
-                    onChange={(e) => onUpdateDescription(e.target.value)}
-                    className="mt-2 border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-gray-400"
-                    rows={2}
+          {/* Center - Form Canvas */}
+          <ResizablePanel defaultSize={selectedFieldId ? 50 : 75} minSize={40}>
+            <div className="h-full flex flex-col">
+              {/* Form Header */}
+              <div className="p-6 border-b bg-gray-50">
+                <Input
+                  placeholder="Form Title"
+                  value={title}
+                  onChange={(e) => onUpdateTitle(e.target.value)}
+                  className="text-2xl font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-gray-400"
+                />
+                <Textarea
+                  placeholder="Form Description (optional)"
+                  value={description}
+                  onChange={(e) => onUpdateDescription(e.target.value)}
+                  className="mt-2 border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-gray-400"
+                  rows={2}
+                />
+                
+                {/* Category and Sector Selection */}
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <MultiSelectCategory
+                    selectedCategories={selectedCategories}
+                    onCategoryChange={setSelectedCategories}
+                    disabled={isPublished}
                   />
                   
-                  {/* Category and Sector Selection */}
-                  <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <MultiSelectCategory
-                      selectedCategories={selectedCategories}
-                      onCategoryChange={setSelectedCategories}
-                      disabled={isPublished}
-                    />
-                    
-                    <div className="space-y-2">
-                      <Label className="text-sm font-medium text-gray-700">Sectors</Label>
-                      <MultiSelectFilter
-                        options={sectorOptions}
-                        selectedValues={selectedSectors}
-                        onSelectionChange={setSelectedSectors}
-                        placeholder="Select sectors..."
-                        formatLabel={formatSectorLabel}
-                      />
-                    </div>
-                  </div>
-
-                  {/* File Attachments Section */}
-                  <div className="mt-6">
-                    <FileAttachmentManager
-                      attachments={attachments}
-                      onUpdateAttachments={onUpdateAttachments}
-                      allowedTypes={['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png']}
-                      maxSize={10}
-                      readOnly={isPublished}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-gray-700">Sectors</Label>
+                    <MultiSelectFilter
+                      options={sectorOptions}
+                      selectedValues={selectedSectors}
+                      onSelectionChange={setSelectedSectors}
+                      placeholder="Select sectors..."
+                      formatLabel={formatSectorLabel}
                     />
                   </div>
                 </div>
 
-                {/* Form Fields */}
-                <div className="flex-1 p-6 overflow-y-auto">
-                  <FormCanvas
-                    fields={formFields}
-                    selectedField={selectedFieldId}
-                    onSelectField={onSelectField}
-                    onUpdateField={onUpdateField}
-                    onRemoveField={onRemoveField}
-                    onAddField={onAddField}
-                    onReorderFields={handleReorderFields}
+                {/* File Attachments Section */}
+                <div className="mt-6">
+                  <FileAttachmentManager
+                    attachments={attachments}
+                    onUpdateAttachments={onUpdateAttachments}
+                    allowedTypes={['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png']}
+                    maxSize={10}
                     readOnly={isPublished}
                   />
                 </div>
               </div>
-            </ResizablePanel>
 
-            {/* Right Sidebar - Field Editor - Only show when a field is selected */}
-            {selectedFieldId && (
-              <>
-                <ResizableHandle withHandle />
-                <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
-                  <div className="h-full border-l bg-white">
-                    <FieldEditor
-                      selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
-                      onUpdateField={onUpdateField}
-                      onClose={() => onSelectField(null)}
-                      readOnly={isPublished}
-                    />
-                  </div>
-                </ResizablePanel>
-              </>
-            )}
-          </ResizablePanelGroup>
-        )}
+              {/* Form Fields */}
+              <div className="flex-1 p-6 overflow-y-auto">
+                <FormCanvas
+                  fields={formFields}
+                  selectedField={selectedFieldId}
+                  onSelectField={onSelectField}
+                  onUpdateField={onUpdateField}
+                  onRemoveField={onRemoveField}
+                  onAddField={onAddField}
+                  onReorderFields={handleReorderFields}
+                  readOnly={isPublished}
+                />
+              </div>
+            </div>
+          </ResizablePanel>
+
+          {/* Right Sidebar - Field Editor - Only show when a field is selected */}
+          {selectedFieldId && (
+            <>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
+                <div className="h-full border-l bg-white">
+                  <FieldEditor
+                    selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
+                    onUpdateField={onUpdateField}
+                    onClose={() => onSelectField(null)}
+                    readOnly={isPublished}
+                  />
+                </div>
+              </ResizablePanel>
+            </>
+          )}
+        </ResizablePanelGroup>
       </div>
     </div>
   );
