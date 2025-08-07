@@ -3,7 +3,6 @@ import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
 import { FormLibrary } from "@/components/FormLibrary";
 import { FormManagementDialog } from "@/components/FormManagementDialog";
-import { FormSettingsPanel } from "@/components/FormSettingsPanel";
 import Analytics from "@/components/Analytics";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { SubmissionReview } from "@/components/SubmissionReview";
@@ -51,6 +50,7 @@ const Index = () => {
   
   // Tab navigation state
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeBuildTab, setActiveBuildTab] = useState("builder");
   const [submissionFilters, setSubmissionFilters] = useState<{
     status?: string;
     approvalType?: string;
@@ -285,8 +285,10 @@ const Index = () => {
       }
     });
     setCurrentFormId(null);
-    // Navigate to builder tab
-    setActiveTab("builder");
+    setActiveBuildTab("builder");
+    
+    // Navigate to build-form tab
+    setActiveTab("build-form");
     
     toast({
       title: "New Form Created",
@@ -307,7 +309,8 @@ const Index = () => {
     setFormAttachments(form.attachments || []);
     setCurrentFormId(form.id);
     
-    setActiveTab("builder");
+    setActiveBuildTab("builder");
+    setActiveTab("build-form");
     toast({
       title: "Form Loaded",
       description: `"${form.title}" has been loaded for editing.`,
@@ -613,7 +616,8 @@ const Index = () => {
       }
     });
     
-    setActiveTab("builder");
+    setActiveBuildTab("builder");
+    setActiveTab("build-form");
     toast({
       title: "Template Applied",
       description: `${template.name} template has been applied to your form with default branding.`,
@@ -859,9 +863,10 @@ const Index = () => {
                               <div className="flex gap-2">
                                 <Button 
                                   size="sm" 
-                  onClick={() => {
-                    loadForm(draft);
-                  }}
+                                  onClick={() => {
+                                    loadForm(draft);
+                                    setActiveTab("build-form");
+                                  }}
                                   className="flex-1 gap-1"
                                 >
                                   <Edit className="h-3 w-3" />
@@ -1033,90 +1038,62 @@ const Index = () => {
               </div>
             )}
 
-            {activeTab === "builder" && (
-              <FormBuilder
-                formFields={formFields}
-                onAddField={addField}
-                onUpdateField={updateField}
-                onRemoveField={removeField}
-                selectedFieldId={null}
-                onSelectField={() => {}}
-                title={formTitle}
-                onUpdateTitle={setFormTitle}
-                description={formDescription}
-                onUpdateDescription={setFormDescription}
-                onSaveForm={saveForm}
-                onPreviewForm={() => {}}
-                attachments={formAttachments}
-                onUpdateAttachments={setFormAttachments}
-                onSaveToLibrary={handleSaveToLibrary}
-                isPublished={currentFormIsPublished()}
-                onMoveToDraft={() => handleMoveToDraft()}
-                formSettings={formSettings}
-                onUpdateFormSettings={updateFormSettings}
-              />
-            )}
+            {activeTab === "build-form" && (
+              <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
+                <TabsList className="grid w-full grid-cols-3 mb-6">
+                  {buildTabs.map((tab) => (
+                    <TabsTrigger 
+                      key={tab.id} 
+                      value={tab.id} 
+                      className="flex items-center gap-2"
+                    >
+                      {tab.icon}
+                      <span className="hidden sm:inline">{tab.label}</span>
+                      <span className="sm:hidden">{tab.mobileLabel}</span>
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
 
-            {activeTab === "library" && (
-              <FormLibrary 
-                onUseTemplate={useTemplate}
-              />
-            )}
+                <TabsContent value="builder">
+                  <FormBuilder
+                    formFields={formFields}
+                    onAddField={addField}
+                    onUpdateField={updateField}
+                    onRemoveField={removeField}
+                    selectedFieldId={null}
+                    onSelectField={() => {}}
+                    title={formTitle}
+                    onUpdateTitle={setFormTitle}
+                    description={formDescription}
+                    onUpdateDescription={setFormDescription}
+                    onSaveForm={saveForm}
+                    onPreviewForm={() => {}}
+                    attachments={formAttachments}
+                    onUpdateAttachments={setFormAttachments}
+                    onSaveToLibrary={handleSaveToLibrary}
+                    isPublished={currentFormIsPublished()}
+                    onMoveToDraft={() => handleMoveToDraft()}
+                    formSettings={formSettings}
+                    onUpdateFormSettings={updateFormSettings}
+                  />
+                </TabsContent>
 
-            {activeTab === "preview" && (
-              <FormPreview
-                formFields={formFields}
-                formTitle={formTitle}
-                formDescription={formDescription}
-                formSettings={formSettings}
-                attachments={formAttachments}
-              />
-            )}
+                <TabsContent value="library">
+                  <FormLibrary 
+                    onUseTemplate={useTemplate}
+                  />
+                </TabsContent>
 
-            {activeTab === "settings" && (
-              <div className="max-w-4xl mx-auto">
-                <div className="mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900">Form Settings</h2>
-                  <p className="text-gray-600">Configure your form settings and preferences</p>
-                </div>
-                <FormSettingsPanel 
-                  form={{
-                    id: currentFormId || 'current-form',
-                    title: formTitle,
-                    description: formDescription,
-                    fields: formFields,
-                    settings: formSettings,
-                    status: getCurrentFormStatus() || 'draft',
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    submissions: 0,
-                    category: typeof formCategory === 'string' ? formCategory : formCategory[0] || '',
-                    targetAudience: typeof formTargetAudience === 'string' ? [formTargetAudience] : formTargetAudience,
-                    attachments: formAttachments,
-                    analytics: {
-                      views: 0,
-                      submissions: 0,
-                      completionRate: 0,
-                      emailsSent: 0,
-                      emailsCompleted: 0,
-                      averageCompletionTime: 0,
-                      dropoffRate: 0
-                    }
-                  }}
-                  onUpdateForm={(updates) => {
-                    if (updates.title !== undefined) {
-                      setFormTitle(updates.title);
-                    }
-                    if (updates.description !== undefined) {
-                      setFormDescription(updates.description);
-                    }
-                    if (updates.settings !== undefined) {
-                      setFormSettings(updates.settings);
-                    }
-                  }}
-                  isPublished={currentFormIsPublished()}
-                />
-              </div>
+                <TabsContent value="preview">
+                  <FormPreview
+                    formFields={formFields}
+                    formTitle={formTitle}
+                    formDescription={formDescription}
+                    formSettings={formSettings}
+                    attachments={formAttachments}
+                  />
+                </TabsContent>
+              </Tabs>
             )}
 
             {activeTab === "global-settings" && (

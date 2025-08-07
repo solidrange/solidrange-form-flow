@@ -4,9 +4,7 @@ import {
   BarChart3, 
   ClipboardList, 
   Folder, 
-  Plus,
-  BookOpen,
-  Eye,
+  Wrench, 
   Settings,
   ChevronLeft,
   ChevronRight
@@ -43,30 +41,6 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
       onClick: () => onTabChange("dashboard")
     },
     {
-      id: "builder",
-      label: "Builder",
-      icon: Plus,
-      onClick: () => onTabChange("builder")
-    },
-    {
-      id: "library",
-      label: "Library",
-      icon: BookOpen,
-      onClick: () => onTabChange("library")
-    },
-    {
-      id: "preview",
-      label: "Preview",
-      icon: Eye,
-      onClick: () => onTabChange("preview")
-    },
-    {
-      id: "settings",
-      label: "Settings",
-      icon: Settings,
-      onClick: () => onTabChange("settings")
-    },
-    {
       id: "review-submissions",
       label: "Review",
       icon: ClipboardList,
@@ -78,6 +52,18 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
       icon: Folder,
       onClick: () => onTabChange("forms"),
       badge: hasUnpublishedDrafts
+    },
+    {
+      id: "build-form",
+      label: "Build",
+      icon: Wrench,
+      onClick: () => onTabChange("build-form")
+    },
+    {
+      id: "global-settings",
+      label: "Settings",
+      icon: Settings,
+      onClick: () => onTabChange("global-settings")
     }
   ];
 
