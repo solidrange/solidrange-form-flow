@@ -1141,7 +1141,7 @@ const Index = () => {
                     >
                       {tab.icon}
                       <span className="hidden sm:inline">{tab.label}</span>
-                      <span className="sm:hidden">{tab.mobileLabel}</span>
+                      <span className="inline sm:hidden">{tab.mobileLabel}</span>
                     </TabsTrigger>
                   ))}
                 </TabsList>

@@ -80,22 +80,22 @@ export const FormSettingsPanel = ({ form, onUpdateForm, isPublished }: FormSetti
           <TabsTrigger value="general" className="text-xs sm:text-sm">
             <Settings className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
             <span className="hidden sm:inline">General</span>
-            <span className="sm:hidden">Gen</span>
+            <span className="inline sm:hidden">Gen</span>
           </TabsTrigger>
           <TabsTrigger value="access" className="text-xs sm:text-sm">
             <Shield className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
             <span className="hidden sm:inline">Access</span>
-            <span className="sm:hidden">Acc</span>
+            <span className="inline sm:hidden">Acc</span>
           </TabsTrigger>
           <TabsTrigger value="invitations" className="text-xs sm:text-sm">
             <Mail className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
             <span className="hidden sm:inline">Invitations</span>
-            <span className="sm:hidden">Invite</span>
+            <span className="inline sm:hidden">Invite</span>
           </TabsTrigger>
           <TabsTrigger value="appearance" className="text-xs sm:text-sm">
             <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
             <span className="hidden sm:inline">Appearance</span>
-            <span className="sm:hidden">Look</span>
+            <span className="inline sm:hidden">Look</span>
           </TabsTrigger>
         </TabsList>
 
