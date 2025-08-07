@@ -163,33 +163,49 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
 
   const getCurrentThemeColors = (): BrandColors => {
     const isDark = document.documentElement.classList.contains('dark');
-    return isDark ? brand.darkTheme.colors : brand.lightTheme.colors;
+    const theme = isDark ? brand.darkTheme : brand.lightTheme;
+    
+    // Ensure theme and colors exist, fallback to default if not
+    if (!theme || !theme.colors) {
+      const fallbackTheme = isDark ? defaultBrand.darkTheme : defaultBrand.lightTheme;
+      return fallbackTheme.colors;
+    }
+    
+    return theme.colors;
   };
 
   // Apply brand colors and fonts to CSS variables when brand changes
   useEffect(() => {
     const root = document.documentElement;
+    
+    // Ensure brand object is properly initialized
+    if (!brand || !brand.lightTheme || !brand.darkTheme) {
+      console.warn('Brand object not properly initialized, using defaults');
+      setBrand(defaultBrand);
+      return;
+    }
+    
     const currentColors = getCurrentThemeColors();
     
-    // Apply brand colors
-    root.style.setProperty('--brand-primary', currentColors.primary.main);
-    root.style.setProperty('--brand-primary-light', currentColors.primary.light);
-    root.style.setProperty('--brand-primary-dark', currentColors.primary.dark);
-    root.style.setProperty('--brand-secondary', currentColors.secondary.main);
-    root.style.setProperty('--brand-secondary-light', currentColors.secondary.light);
-    root.style.setProperty('--brand-secondary-dark', currentColors.secondary.dark);
+    // Apply brand colors with fallbacks
+    root.style.setProperty('--brand-primary', currentColors.primary?.main || defaultBrand.lightTheme.colors.primary.main);
+    root.style.setProperty('--brand-primary-light', currentColors.primary?.light || defaultBrand.lightTheme.colors.primary.light);
+    root.style.setProperty('--brand-primary-dark', currentColors.primary?.dark || defaultBrand.lightTheme.colors.primary.dark);
+    root.style.setProperty('--brand-secondary', currentColors.secondary?.main || defaultBrand.lightTheme.colors.secondary.main);
+    root.style.setProperty('--brand-secondary-light', currentColors.secondary?.light || defaultBrand.lightTheme.colors.secondary.light);
+    root.style.setProperty('--brand-secondary-dark', currentColors.secondary?.dark || defaultBrand.lightTheme.colors.secondary.dark);
     
     // Apply comprehensive color system
-    root.style.setProperty('--primary', currentColors.primary.main);
-    root.style.setProperty('--background', currentColors.background);
-    root.style.setProperty('--card', currentColors.surface);
-    root.style.setProperty('--foreground', currentColors.text.primary);
-    root.style.setProperty('--muted-foreground', currentColors.text.secondary);
+    root.style.setProperty('--primary', currentColors.primary?.main || defaultBrand.lightTheme.colors.primary.main);
+    root.style.setProperty('--background', currentColors.background || defaultBrand.lightTheme.colors.background);
+    root.style.setProperty('--card', currentColors.surface || defaultBrand.lightTheme.colors.surface);
+    root.style.setProperty('--foreground', currentColors.text?.primary || defaultBrand.lightTheme.colors.text.primary);
+    root.style.setProperty('--muted-foreground', currentColors.text?.secondary || defaultBrand.lightTheme.colors.text.secondary);
     
-    // Apply fonts
-    root.style.setProperty('--font-heading', brand.fonts.heading);
-    root.style.setProperty('--font-body', brand.fonts.body);
-    root.style.setProperty('--font-mono', brand.fonts.mono);
+    // Apply fonts with fallbacks
+    root.style.setProperty('--font-heading', brand.fonts?.heading || defaultBrand.fonts.heading);
+    root.style.setProperty('--font-body', brand.fonts?.body || defaultBrand.fonts.body);
+    root.style.setProperty('--font-mono', brand.fonts?.mono || defaultBrand.fonts.mono);
     
     // Save to localStorage
     localStorage.setItem('brand-identity', JSON.stringify(brand));
@@ -198,16 +214,22 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
   // Listen for theme changes and reapply colors
   useEffect(() => {
     const observer = new MutationObserver(() => {
+      // Ensure brand is properly initialized before accessing colors
+      if (!brand || !brand.lightTheme || !brand.darkTheme) {
+        return;
+      }
+      
       const currentColors = getCurrentThemeColors();
       const root = document.documentElement;
       
-      root.style.setProperty('--brand-primary', currentColors.primary.main);
-      root.style.setProperty('--brand-primary-light', currentColors.primary.light);
-      root.style.setProperty('--brand-primary-dark', currentColors.primary.dark);
-      root.style.setProperty('--brand-secondary', currentColors.secondary.main);
-      root.style.setProperty('--brand-secondary-light', currentColors.secondary.light);
-      root.style.setProperty('--brand-secondary-dark', currentColors.secondary.dark);
-      root.style.setProperty('--primary', currentColors.primary.main);
+      // Apply colors with fallbacks
+      root.style.setProperty('--brand-primary', currentColors.primary?.main || defaultBrand.lightTheme.colors.primary.main);
+      root.style.setProperty('--brand-primary-light', currentColors.primary?.light || defaultBrand.lightTheme.colors.primary.light);
+      root.style.setProperty('--brand-primary-dark', currentColors.primary?.dark || defaultBrand.lightTheme.colors.primary.dark);
+      root.style.setProperty('--brand-secondary', currentColors.secondary?.main || defaultBrand.lightTheme.colors.secondary.main);
+      root.style.setProperty('--brand-secondary-light', currentColors.secondary?.light || defaultBrand.lightTheme.colors.secondary.light);
+      root.style.setProperty('--brand-secondary-dark', currentColors.secondary?.dark || defaultBrand.lightTheme.colors.secondary.dark);
+      root.style.setProperty('--primary', currentColors.primary?.main || defaultBrand.lightTheme.colors.primary.main);
     });
 
     observer.observe(document.documentElement, {
