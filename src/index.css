@@ -374,17 +374,29 @@
     @apply transition-transform duration-200 sm:hover:scale-105;
   }
 
-  /* Enhanced mobile-first responsive design */
+  /* Enhanced mobile-first responsive design with dark mode fixes */
   .responsive-text {
-    @apply text-xs sm:text-sm lg:text-base text-gray-700 leading-relaxed;
+    @apply text-xs sm:text-sm lg:text-base leading-relaxed;
+  }
+  
+  .dark .responsive-text {
+    @apply text-white;
   }
 
   .responsive-heading {
-    @apply text-sm sm:text-base lg:text-lg xl:text-xl text-gray-900 font-semibold leading-tight;
+    @apply text-sm sm:text-base lg:text-lg xl:text-xl font-semibold leading-tight;
+  }
+  
+  .dark .responsive-heading {
+    @apply text-white;
   }
 
   .responsive-subheading {
-    @apply text-xs sm:text-sm lg:text-base text-gray-600 font-medium leading-snug;
+    @apply text-xs sm:text-sm lg:text-base font-medium leading-snug;
+  }
+  
+  .dark .responsive-subheading {
+    @apply text-white;
   }
 
   /* Improved scrollbar styling */

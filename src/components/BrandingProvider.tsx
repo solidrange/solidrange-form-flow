@@ -103,26 +103,46 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       }
       
       /* Comprehensive dark mode text visibility fixes */
-      .dark { color: hsl(210 20% 98%); }
-      .dark body { color: hsl(210 20% 98%); background-color: hsl(224 71.4% 4.1%); }
+      .dark { color: hsl(210 20% 98%) !important; }
+      .dark body { color: hsl(210 20% 98%) !important; background-color: hsl(224 71.4% 4.1%) !important; }
       .dark .text-foreground { color: hsl(210 20% 98%) !important; }
-      .dark .text-muted-foreground { color: hsl(217.9 10.6% 64.9%) !important; }
+      .dark .text-muted-foreground { color: hsl(210 20% 98%) !important; }
       .dark .text-card-foreground { color: hsl(210 20% 98%) !important; }
-      .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 { color: hsl(210 20% 98%); }
-      .dark p, .dark span, .dark div { color: hsl(210 20% 98%); }
-      .dark label { color: hsl(210 20% 98%); }
+      .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 { color: hsl(210 20% 98%) !important; }
+      .dark p, .dark span, .dark div { color: hsl(210 20% 98%) !important; }
+      .dark label { color: hsl(210 20% 98%) !important; }
+      .dark small { color: hsl(210 20% 98%) !important; }
+      
+      /* Header and branding fixes */
+      .dark .border-b { border-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .bg-white { background-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .text-white { color: hsl(210 20% 98%) !important; }
       
       /* Card and surface elements */
       .dark .bg-card { background-color: hsl(215 27.9% 16.9%) !important; }
       .dark .bg-background { background-color: hsl(224 71.4% 4.1%) !important; }
       .dark .bg-muted { background-color: hsl(215 27.9% 16.9%) !important; }
       .dark .bg-accent { background-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .bg-muted\\/50 { background-color: hsl(215 27.9% 16.9% / 0.5) !important; }
+      .dark .bg-muted\\/30 { background-color: hsl(215 27.9% 16.9% / 0.3) !important; }
       
-      /* Button and interactive elements */
-      .dark button { color: hsl(210 20% 98%); }
-      .dark .btn-outline { color: hsl(210 20% 98%); border-color: hsl(215 27.9% 16.9%); background-color: transparent; }
-      .dark .btn-outline:hover { background-color: hsl(215 27.9% 16.9%); color: hsl(210 20% 98%); }
-      .dark [data-state="open"] { color: hsl(210 20% 98%); }
+      /* Button and interactive elements with better contrast */
+      .dark button { color: hsl(210 20% 98%) !important; }
+      .dark .btn-outline { color: hsl(210 20% 98%) !important; border-color: hsl(215 27.9% 16.9%) !important; background-color: transparent !important; }
+      .dark .btn-outline:hover { background-color: hsl(215 27.9% 16.9%) !important; color: hsl(210 20% 98%) !important; }
+      .dark [data-state="open"] { color: hsl(210 20% 98%) !important; }
+      .dark .text-xs { color: hsl(210 20% 98%) !important; }
+      .dark .text-sm { color: hsl(210 20% 98%) !important; }
+      
+      /* Light/Dark toggle with better contrast */
+      .dark button[data-state] { color: hsl(210 20% 98%) !important; }
+      .dark .bg-muted\\/50 button { color: hsl(210 20% 98%) !important; background-color: transparent !important; }
+      .dark .bg-muted\\/50 button[data-state="active"], 
+      .dark .bg-muted\\/50 button.variant-default { 
+        background-color: hsl(${currentColors.primary.main}) !important; 
+        color: hsl(224 71.4% 4.1%) !important; 
+      }
+      .dark .bg-muted\\/50 button:hover { background-color: hsl(215 27.9% 16.9%) !important; }
       
       /* Form elements with proper contrast */
       .dark input, .dark textarea, .dark select { 
@@ -135,21 +155,20 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       }
       
       /* Navigation and sidebar elements */
-      .dark .sidebar { background-color: hsl(224 71.4% 4.1%); color: hsl(210 20% 98%); }
-      .dark [data-sidebar] { color: hsl(210 20% 98%); }
+      .dark .sidebar { background-color: hsl(224 71.4% 4.1%) !important; color: hsl(210 20% 98%) !important; }
+      .dark [data-sidebar] { color: hsl(210 20% 98%) !important; }
       
       /* Dropdown and popover elements */
-      .dark [data-radix-popper-content-wrapper] { background-color: hsl(215 27.9% 16.9%); color: hsl(210 20% 98%); }
-      .dark .dropdown-menu-content { background-color: hsl(215 27.9% 16.9%); color: hsl(210 20% 98%); }
+      .dark [data-radix-popper-content-wrapper] { background-color: hsl(215 27.9% 16.9%) !important; color: hsl(210 20% 98%) !important; }
+      .dark .dropdown-menu-content { background-color: hsl(215 27.9% 16.9%) !important; color: hsl(210 20% 98%) !important; }
       
-      /* Text variants with proper contrast */
-      .dark .text-sm { color: hsl(210 20% 98%); }
-      .dark .text-xs { color: hsl(217.9 10.6% 64.9%); }
-      .dark .text-gray-500 { color: hsl(217.9 10.6% 64.9%); }
-      .dark .text-gray-600 { color: hsl(217.9 10.6% 64.9%); }
-      .dark .text-gray-700 { color: hsl(210 20% 98%); }
-      .dark .text-gray-800 { color: hsl(210 20% 98%); }
-      .dark .text-gray-900 { color: hsl(210 20% 98%); }
+      /* Badge and small text elements */
+      .dark .badge { color: hsl(210 20% 98%) !important; }
+      .dark .text-gray-500 { color: hsl(210 20% 98%) !important; }
+      .dark .text-gray-600 { color: hsl(210 20% 98%) !important; }
+      .dark .text-gray-700 { color: hsl(210 20% 98%) !important; }
+      .dark .text-gray-800 { color: hsl(210 20% 98%) !important; }
+      .dark .text-gray-900 { color: hsl(210 20% 98%) !important; }
     `;
 
     // Inject or update style element
