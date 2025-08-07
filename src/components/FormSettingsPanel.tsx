@@ -56,12 +56,12 @@ export const FormSettingsPanel = ({ form, onUpdateForm, isPublished }: FormSetti
   const effectiveColors = isUsingGlobalBranding ? brand.lightTheme.colors : (form.settings.branding?.colors || brand.lightTheme.colors);
 
   const DraftStateWarning = () => (
-    <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
+    <div className="bg-muted border border-border rounded-md p-3 mb-4">
       <div className="flex items-center gap-2">
-        <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+        <Badge variant="secondary" className="bg-secondary text-secondary-foreground">
           Draft Mode
         </Badge>
-        <span className="text-sm text-blue-700">
+        <span className="text-sm text-muted-foreground">
           Settings can be configured but will only take effect when the form is published
         </span>
       </div>

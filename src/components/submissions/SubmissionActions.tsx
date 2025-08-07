@@ -291,7 +291,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
           <Button 
             onClick={handleSendReminder}
             variant="outline"
-            className="bg-blue-50 hover:bg-blue-100"
+            className="bg-muted hover:bg-muted/80"
           >
             <Mail className="h-4 w-4 mr-2" />
             Send Reminder
@@ -321,7 +321,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
             <Button 
               onClick={handleResendForm}
               variant="outline"
-              className="bg-blue-50 hover:bg-blue-100"
+              className="bg-muted hover:bg-muted/80"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
               Resend Form
@@ -349,7 +349,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
             <Button 
               onClick={handleResendForm}
               variant="outline"
-              className="bg-blue-50 hover:bg-blue-100"
+              className="bg-muted hover:bg-muted/80"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
               Resend Form
@@ -497,7 +497,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
 
           {/* AI Suggestion Box */}
           {submission.score && isFormComplete() && submission.status !== 'approved' && (
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200 animate-fade-in">
+            <div className="p-4 bg-muted rounded-lg border border-border animate-fade-in">
               <h4 className="text-sm font-medium text-blue-800 mb-2 flex items-center gap-2">
                 <Target className="h-4 w-4" />
                 AI Recommendation
@@ -514,7 +514,7 @@ export const SubmissionActions = ({ submission, form, onUpdateSubmission, onRese
                       size="sm"
                       variant="outline"
                       onClick={() => setApprovalType(suggestion.type)}
-                      className="text-blue-700 border-blue-300 hover:bg-blue-100"
+                      className="text-foreground border-border hover:bg-muted"
                     >
                       Apply Suggestion
                     </Button>

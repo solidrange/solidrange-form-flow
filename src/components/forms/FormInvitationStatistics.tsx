@@ -33,7 +33,7 @@ export const FormInvitationStatistics = ({ form }: FormInvitationStatisticsProps
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
+          <div className="text-center p-4 bg-muted rounded-lg">
             <div className="text-2xl font-bold text-blue-600">
               {emailSettings.recipients.length}
             </div>

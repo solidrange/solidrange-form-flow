@@ -218,9 +218,9 @@ export const FormSharingOptions = ({ form }: FormSharingOptionsProps) => {
             </div>
           </div>
 
-          <div className="p-4 bg-blue-50 rounded-lg">
-            <h4 className="font-medium text-blue-900 mb-2">Sharing Tips</h4>
-            <ul className="text-sm text-blue-800 space-y-1">
+          <div className="p-4 bg-muted rounded-lg">
+            <h4 className="font-medium text-foreground mb-2">Sharing Tips</h4>
+            <ul className="text-sm text-muted-foreground space-y-1">
               <li>• Share this link directly with respondents</li>
               <li>• Post on social media or websites</li>
               <li>• Include in emails or documents</li>

@@ -101,7 +101,7 @@ export const SubmissionDetails = ({ submission, form }: SubmissionDetailsProps) 
   return (
     <div className="space-y-6">
       {/* Submitter Information */}
-      <Card className="border-blue-200 bg-blue-50">
+      <Card className="border-border bg-card">
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             {submission.audience === 'vendor' ? (
