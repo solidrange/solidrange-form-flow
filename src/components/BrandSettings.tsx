@@ -403,7 +403,11 @@ export const BrandSettings: React.FC = () => {
                 variant={activeTheme === 'light' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => handleThemeSwitch('light')}
-                className="flex items-center gap-1 sm:gap-2 btn-mobile"
+                className={`flex items-center gap-1 sm:gap-2 btn-mobile transition-colors ${
+                  activeTheme === 'light' 
+                    ? 'bg-primary text-primary-foreground shadow-sm' 
+                    : 'hover:bg-muted text-foreground'
+                }`}
               >
                 <Sun className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="text-xs sm:text-sm">Light</span>
@@ -412,7 +416,11 @@ export const BrandSettings: React.FC = () => {
                 variant={activeTheme === 'dark' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => handleThemeSwitch('dark')}
-                className="flex items-center gap-1 sm:gap-2 btn-mobile"
+                className={`flex items-center gap-1 sm:gap-2 btn-mobile transition-colors ${
+                  activeTheme === 'dark' 
+                    ? 'bg-primary text-primary-foreground shadow-sm' 
+                    : 'hover:bg-muted text-foreground'
+                }`}
               >
                 <Moon className="h-3 w-3 sm:h-4 sm:w-4" />
                 <span className="text-xs sm:text-sm">Dark</span>

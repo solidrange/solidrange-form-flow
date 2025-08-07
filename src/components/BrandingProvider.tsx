@@ -134,15 +134,23 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
       .dark .text-xs { color: hsl(210 20% 98%) !important; }
       .dark .text-sm { color: hsl(210 20% 98%) !important; }
       
-      /* Light/Dark toggle with better contrast */
-      .dark button[data-state] { color: hsl(210 20% 98%) !important; }
-      .dark .bg-muted\\/50 button { color: hsl(210 20% 98%) !important; background-color: transparent !important; }
-      .dark .bg-muted\\/50 button[data-state="active"], 
-      .dark .bg-muted\\/50 button.variant-default { 
+      /* Light/Dark toggle with better contrast and proper highlighting */
+      .dark .bg-muted\\/50 button { 
+        color: hsl(210 20% 98%) !important; 
+        background-color: transparent !important; 
+        border: 1px solid transparent !important;
+      }
+      .dark .bg-muted\\/50 button.bg-primary,
+      .dark .bg-muted\\/50 button:has(.text-primary-foreground) { 
         background-color: hsl(${currentColors.primary.main}) !important; 
         color: hsl(224 71.4% 4.1%) !important; 
+        border-color: hsl(${currentColors.primary.main}) !important;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
       }
-      .dark .bg-muted\\/50 button:hover { background-color: hsl(215 27.9% 16.9%) !important; }
+      .dark .bg-muted\\/50 button:hover:not(.bg-primary) { 
+        background-color: hsl(215 27.9% 16.9%) !important; 
+        color: hsl(210 20% 98%) !important;
+      }
       
       /* Form elements with proper contrast */
       .dark input, .dark textarea, .dark select { 
