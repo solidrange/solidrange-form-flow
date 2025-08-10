@@ -160,7 +160,7 @@ export const FormCanvas = ({
         <Card
           key={field.id}
           className={cn(
-            "p-4 transition-all group",
+            "p-2 sm:p-4 transition-all group",
             selectedField === field.id && "ring-2 ring-indigo-500 bg-indigo-50",
             !readOnly && dragOverIndex === index && "border-t-2 border-indigo-500",
             readOnly && "opacity-75"
@@ -171,23 +171,25 @@ export const FormCanvas = ({
           onClick={handleCardClick}
         >
           <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 min-w-0 flex-1">
               {readOnly ? (
-                <Lock className="h-4 w-4 text-gray-400" />
+                <Lock className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400 flex-shrink-0" />
               ) : (
-                <GripVertical className="h-4 w-4 text-gray-400 cursor-grab group-hover:text-gray-600" />
+                <GripVertical className="h-3 w-3 sm:h-4 sm:w-4 text-gray-400 cursor-grab group-hover:text-gray-600 flex-shrink-0" />
               )}
-              <span className="font-medium">{field.label}</span>
-              {field.required && <span className="text-red-500">*</span>}
+              <span className="font-medium text-sm sm:text-base truncate">{field.label}</span>
+              {field.required && <span className="text-red-500 flex-shrink-0">*</span>}
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1 sm:gap-2 flex-shrink-0">
               <Button
                 size="sm"
                 variant="ghost"
                 onClick={(e) => handleEditClick(field.id, e)}
                 disabled={readOnly}
+                className="h-8 w-8 p-0 sm:h-auto sm:w-auto sm:px-3"
               >
-                <Edit className="h-4 w-4" />
+                <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="sr-only sm:not-sr-only sm:ml-1 hidden sm:inline">Edit</span>
               </Button>
               <Button
                 size="sm"
@@ -197,8 +199,10 @@ export const FormCanvas = ({
                   if (!readOnly) onRemoveField(field.id);
                 }}
                 disabled={readOnly}
+                className="h-8 w-8 p-0 sm:h-auto sm:w-auto sm:px-3"
               >
-                <Trash2 className="h-4 w-4" />
+                <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+                <span className="sr-only sm:not-sr-only sm:ml-1 hidden sm:inline">Delete</span>
               </Button>
             </div>
           </div>
@@ -209,52 +213,56 @@ export const FormCanvas = ({
               <input
                 type={field.type}
                 placeholder={field.placeholder || `Enter ${field.type}`}
-                className="w-full p-2 border rounded disabled:bg-gray-50"
+                className="w-full p-2 sm:p-2 text-xs sm:text-sm border rounded disabled:bg-gray-50"
                 disabled
               />
             ) : field.type === 'textarea' ? (
               <textarea
                 placeholder={field.placeholder || 'Enter text'}
-                className="w-full p-2 border rounded disabled:bg-gray-50"
-                rows={3}
+                className="w-full p-2 sm:p-2 text-xs sm:text-sm border rounded disabled:bg-gray-50"
+                rows={2}
                 disabled
               />
             ) : field.type === 'select' ? (
-              <select className="w-full p-2 border rounded disabled:bg-gray-50" disabled>
+              <select className="w-full p-2 sm:p-2 text-xs sm:text-sm border rounded disabled:bg-gray-50" disabled>
                 <option>Select an option</option>
-                {field.options?.map((option, idx) => (
-                  <option key={idx}>{option}</option>
+                {field.options?.slice(0, 2).map((option, idx) => (
+                  <option key={idx}>{option.length > 15 ? `${option.slice(0, 15)}...` : option}</option>
                 ))}
+                {field.options && field.options.length > 2 && <option>...</option>}
               </select>
             ) : field.type === 'radio' || field.type === 'checkbox' ? (
-              <div className="space-y-2">
-                {field.options?.map((option, idx) => (
-                  <label key={idx} className="flex items-center gap-2">
-                    <input type={field.type} disabled />
-                    <span>{option}</span>
+              <div className="space-y-1 sm:space-y-2">
+                {field.options?.slice(0, 2).map((option, idx) => (
+                  <label key={idx} className="flex items-center gap-1 sm:gap-2">
+                    <input type={field.type} disabled className="flex-shrink-0" />
+                    <span className="text-xs sm:text-sm truncate">{option}</span>
                   </label>
                 ))}
+                {field.options && field.options.length > 2 && (
+                  <span className="text-xs text-gray-400">+{field.options.length - 2} more</span>
+                )}
               </div>
             ) : field.type === 'date' ? (
-              <input type="date" className="w-full p-2 border rounded disabled:bg-gray-50" disabled />
+              <input type="date" className="w-full p-2 sm:p-2 text-xs sm:text-sm border rounded disabled:bg-gray-50" disabled />
             ) : field.type === 'file' ? (
-              <div className="w-full p-2 border rounded disabled:bg-gray-50">
-                <span className="text-gray-500">File upload</span>
+              <div className="w-full p-2 sm:p-2 border rounded disabled:bg-gray-50">
+                <span className="text-gray-500 text-xs sm:text-sm">File upload</span>
                 {field.acceptedFileTypes && (
-                  <span className="text-xs text-gray-400 ml-2">
-                    ({field.acceptedFileTypes.join(', ')})
+                  <span className="text-xs text-gray-400 ml-1 sm:ml-2 hidden sm:inline">
+                    ({field.acceptedFileTypes.slice(0, 2).join(', ')}{field.acceptedFileTypes.length > 2 ? '...' : ''})
                   </span>
                 )}
               </div>
             ) : field.type === 'rating' ? (
               <div className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <span key={star} className="text-gray-300 text-xl cursor-pointer hover:text-yellow-400">★</span>
+                  <span key={star} className="text-gray-300 text-sm sm:text-xl cursor-pointer hover:text-yellow-400">★</span>
                 ))}
               </div>
             ) : field.type === 'signature' ? (
-              <div className="w-full h-24 border-2 border-dashed border-gray-300 rounded flex items-center justify-center">
-                <span className="text-gray-500">Signature Area</span>
+              <div className="w-full h-16 sm:h-24 border-2 border-dashed border-gray-300 rounded flex items-center justify-center">
+                <span className="text-gray-500 text-xs sm:text-sm">Signature Area</span>
               </div>
             ) : null}
           </div>

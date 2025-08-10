@@ -55,22 +55,22 @@ export const FieldPalette = ({ onAddField }: FieldPaletteProps) => {
 
   return (
     <Card className="h-full">
-      <CardHeader>
-        <CardTitle className="text-lg">Form Fields</CardTitle>
-        <p className="text-sm text-gray-500">Drag fields to the canvas to add them</p>
+      <CardHeader className="p-3 sm:p-6">
+        <CardTitle className="text-base sm:text-lg">Form Fields</CardTitle>
+        <p className="text-xs sm:text-sm text-gray-500 hidden sm:block">Drag fields to the canvas to add them</p>
       </CardHeader>
-      <CardContent className="space-y-2">
+      <CardContent className="space-y-1 sm:space-y-2 p-3 sm:p-6">
         {fieldTypes.map(({ type, label, icon: Icon }) => (
           <Button
             key={type}
             variant="outline"
-            className="w-full justify-start gap-3 h-12 cursor-grab active:cursor-grabbing"
+            className="w-full justify-start gap-2 sm:gap-3 h-10 sm:h-12 cursor-grab active:cursor-grabbing text-xs sm:text-sm"
             draggable
             onDragStart={(e) => handleDragStart(e, type)}
             onClick={() => handleAddField(type)}
           >
-            <Icon className="h-4 w-4" />
-            {label}
+            <Icon className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+            <span className="truncate">{label}</span>
           </Button>
         ))}
       </CardContent>
