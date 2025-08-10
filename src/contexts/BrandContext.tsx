@@ -277,19 +277,10 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
   };
 
   const resetToDefaults = () => {
-    // Save the current light theme as the new default before resetting
-    const currentLightTheme = brand.lightTheme;
-    
-    const updatedDefault = {
-      ...defaultBrand,
-      lightTheme: currentLightTheme || defaultBrand.lightTheme
-    };
-    
-    // Update the internal default brand reference
-    Object.assign(defaultBrand, updatedDefault);
-    
-    setBrand(updatedDefault);
-    localStorage.setItem('brand-identity-default', JSON.stringify(updatedDefault));
+    // Reset to the original default brand
+    setBrand(defaultBrand);
+    localStorage.removeItem('brand-identity');
+    localStorage.removeItem('brand-identity-default');
   };
 
   return (

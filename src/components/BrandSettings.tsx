@@ -194,10 +194,19 @@ export const BrandSettings: React.FC = () => {
     resetToDefaults();
     setTempName('FormFlow');
     setTempTagline('Build, Share, Analyze Forms with Intelligence');
-    setPreviewColors(getCurrentThemeColors());
+    // Reset to original default colors
+    const originalDefaultColors = {
+      primary: { main: '208 100% 47%', light: '210 100% 70%', dark: '208 100% 35%' },
+      secondary: { main: '262 83% 58%', light: '262 83% 75%', dark: '262 83% 45%' },
+      background: '0 0% 100%',
+      surface: '0 0% 98%',
+      text: { primary: '224 71.4% 4.1%', secondary: '220 8.9% 46.1%' },
+      button: { primary: '208 100% 47%', secondary: '220 14.3% 95.9%', destructive: '0 84.2% 60.2%' }
+    };
+    setPreviewColors(originalDefaultColors);
     toast({
       title: "Brand Reset",
-      description: "Your brand has been reset to defaults with current light theme saved as new baseline.",
+      description: "Your brand has been reset to original defaults.",
     });
   };
 
