@@ -111,6 +111,10 @@ export const BrandSettings: React.FC = () => {
       }
       
       current[keys[keys.length - 1]] = hslValue;
+      
+      // Apply changes immediately to the theme
+      updateThemeColors(activeTheme, updated);
+      
       return updated;
     });
   };
@@ -186,14 +190,6 @@ export const BrandSettings: React.FC = () => {
     return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}`;
   };
 
-  const handleSaveColors = () => {
-    updateThemeColors(activeTheme, previewColors);
-    toast({
-      title: "Colors Updated",
-      description: `Your ${activeTheme} theme colors have been saved.`,
-    });
-  };
-
   const handleReset = () => {
     resetToDefaults();
     setTempName('FormFlow');
@@ -201,7 +197,7 @@ export const BrandSettings: React.FC = () => {
     setPreviewColors(getCurrentThemeColors());
     toast({
       title: "Brand Reset",
-      description: "Your brand has been reset to defaults.",
+      description: "Your brand has been reset to defaults with current light theme saved as new baseline.",
     });
   };
 
@@ -529,9 +525,11 @@ export const BrandSettings: React.FC = () => {
             </div>
           </div>
 
-          <Button onClick={handleSaveColors} className="w-full btn-mobile">
-            Save {activeTheme === 'light' ? 'Light' : 'Dark'} Theme Colors
-          </Button>
+          <div className="bg-muted/30 rounded-lg p-3 sm:p-4">
+            <p className="text-xs sm:text-sm text-muted-foreground text-center">
+              Changes are applied automatically as you modify colors
+            </p>
+          </div>
         </CardContent>
       </Card>
 
