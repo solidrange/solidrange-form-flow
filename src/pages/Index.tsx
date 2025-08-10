@@ -853,10 +853,10 @@ const Index = () => {
           {/* Page Content - Mobile optimized padding */}
           <div className="p-3 sm:p-4 lg:p-6">
             {activeTab === "dashboard" && (
-              <Analytics submissions={submissions} onFilterSubmissions={(filters) => {
-                setSubmissionFilters(filters);
-                setActiveTab("review-submissions");
-              }} />
+              <Analytics 
+                submissions={submissions} 
+                onFilterSubmissions={handleFilterSubmissions}
+              />
             )}
 
             {activeTab === "review-submissions" && (
