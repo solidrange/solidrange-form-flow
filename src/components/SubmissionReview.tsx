@@ -475,9 +475,9 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
         </div>
 
         {/* Filter Controls */}
-        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <Select value={filterStatus} onValueChange={setFilterStatus}>
-            <SelectTrigger className="w-full sm:w-40 h-10">
+            <SelectTrigger className="w-40 h-10">
               <div className="flex items-center gap-2">
                 <Filter className="h-4 w-4" />
                 <SelectValue />
@@ -495,7 +495,7 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
           <Button
             variant="outline"
             onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-            className="h-10 px-4 w-full sm:w-auto"
+            className="h-10 px-4"
           >
             <MoreHorizontal className="h-4 w-4 mr-2" />
             Advanced Filters

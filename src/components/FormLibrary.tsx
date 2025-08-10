@@ -148,7 +148,7 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
       </div>
 
       {/* Filters */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -206,7 +206,7 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
                 <Badge variant="outline">{sectorTemplates.length} templates</Badge>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {sectorTemplates.map((template) => (
                   <Card key={template.id} className="hover:shadow-md transition-shadow">
                     <CardHeader className="pb-3">
