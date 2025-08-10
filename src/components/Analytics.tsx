@@ -152,7 +152,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
   return (
     <div className="space-y-6">
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 animate-fade-in">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 animate-fade-in">
         <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
               onClick={() => onFilterSubmissions?.({})}
         >
@@ -275,14 +275,16 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
 
       {/* Main Analytics Tabs */}
       <Tabs defaultValue="overview" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="approvals">Approvals</TabsTrigger>
-          <TabsTrigger value="submissions">Submissions</TabsTrigger>
-          <TabsTrigger value="risk">Risk Analysis</TabsTrigger>
-          <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="trends">Trends</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="inline-flex w-max min-w-full grid-cols-6">
+            <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
+            <TabsTrigger value="approvals" className="text-xs sm:text-sm">Approvals</TabsTrigger>
+            <TabsTrigger value="submissions" className="text-xs sm:text-sm">Submissions</TabsTrigger>
+            <TabsTrigger value="risk" className="text-xs sm:text-sm">Risk Analysis</TabsTrigger>
+            <TabsTrigger value="performance" className="text-xs sm:text-sm">Performance</TabsTrigger>
+            <TabsTrigger value="trends" className="text-xs sm:text-sm">Trends</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4">

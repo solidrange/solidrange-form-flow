@@ -783,11 +783,11 @@ const Index = () => {
         <SidebarInset className="flex-1">
           {/* Header */}
           <div className="bg-white border-b shadow-sm sticky top-0 z-40">
-            <div className="flex items-center justify-between h-14 px-4">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between h-14 px-2 md:px-4">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
                 <SidebarTrigger />
                 <div className="h-4 w-px bg-border" />
-                <h1 className="font-semibold text-lg">{t(activeTab.replace('-', ''))}</h1>
+                <h1 className="font-semibold text-base md:text-lg truncate">{t(activeTab.replace('-', ''))}</h1>
               </div>
               
               {/* Quick Share Button for Published Forms */}
@@ -835,7 +835,7 @@ const Index = () => {
           </div>
 
           {/* Page Content */}
-          <div className="p-6">
+          <div className="p-2 md:p-6">
             {activeTab === "dashboard" && (
               <Analytics submissions={submissions} onFilterSubmissions={(filters) => {
                 setSubmissionFilters(filters);
@@ -933,7 +933,7 @@ const Index = () => {
                         </Button>
                       </div>
                     ) : (
-                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {savedDrafts.map((draft) => (
                           <Card key={draft.id} className="hover:shadow-md transition-shadow">
                             <CardHeader className="pb-2">
@@ -1010,7 +1010,7 @@ const Index = () => {
                         <p className="text-gray-600">Publish a form to make it available to respondents</p>
                       </div>
                     ) : (
-                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {publishedForms.map((form) => (
                           <Card key={form.id} className="hover:shadow-md transition-shadow">
                             <CardHeader className="pb-2">
@@ -1132,7 +1132,8 @@ const Index = () => {
 
             {activeTab === "build-form" && (
               <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-4 mb-6">
+                <div className="overflow-x-auto mb-6">
+                  <TabsList className="inline-flex w-max min-w-full grid-cols-4">
                   {buildTabs.map((tab) => (
                     <TabsTrigger 
                       key={tab.id} 
@@ -1144,7 +1145,8 @@ const Index = () => {
                       <span className="inline sm:hidden">{tab.mobileLabel}</span>
                     </TabsTrigger>
                   ))}
-                </TabsList>
+                  </TabsList>
+                </div>
 
                 <TabsContent value="builder">
                   <FormBuilder

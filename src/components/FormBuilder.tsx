@@ -128,11 +128,141 @@ export const FormBuilder = ({
 
   return (
     <div className="h-full flex">
-      {/* Resizable Three Column Layout */}
-      <ResizablePanelGroup direction="horizontal" className="flex-1">
+      {/* Mobile/Desktop Layout */}
+      <div className="flex-1 flex flex-col lg:hidden">
+        {/* Mobile Layout - Stacked */}
+        <div className="border-b bg-background">
+          <div className="p-4">
+            <FieldPalette onAddField={onAddField} />
+          </div>
+        </div>
+        <div className="flex-1 flex flex-col">
+          {/* Form Header */}
+          <div className="p-4 border-b bg-muted/30">
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Input
+                  placeholder="Form Title"
+                  value={title}
+                  onChange={(e) => onUpdateTitle(e.target.value)}
+                  className="text-xl font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-gray-400"
+                />
+                <Textarea
+                  placeholder="Form Description (optional)"
+                  value={description}
+                  onChange={(e) => onUpdateDescription(e.target.value)}
+                  className="border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-gray-400"
+                  rows={2}
+                />
+              </div>
+              
+              <div className="flex items-center gap-2 justify-end">
+                {isPublished && (
+                  <Button
+                    onClick={onMoveToDraft}
+                    variant="outline"
+                    size="sm"
+                  >
+                    Move to Draft
+                  </Button>
+                )}
+                <BrandedButton
+                  onClick={onSaveForm}
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                >
+                  <Save className="h-4 w-4" />
+                  Save
+                </BrandedButton>
+              </div>
+              
+              {/* Category, Sector, and Audience Selection */}
+              <div className="space-y-4">
+                <MultiSelectCategory
+                  selectedCategories={selectedCategories}
+                  onCategoryChange={onUpdateFormCategory}
+                  disabled={isPublished}
+                />
+                
+                <div className="space-y-2">
+                  <Label className="text-sm font-medium text-gray-700">Sectors</Label>
+                  <MultiSelectFilter
+                    options={sectorOptions}
+                    selectedValues={selectedSectors}
+                    onSelectionChange={onUpdateFormTargetAudience}
+                    placeholder="Select sectors..."
+                    formatLabel={formatSectorLabel}
+                  />
+                </div>
+
+                <MultiSelectAudience
+                  selectedAudiences={formAudience}
+                  onAudienceChange={onUpdateFormAudience}
+                  disabled={isPublished}
+                />
+              </div>
+
+              {/* Template Tags Display */}
+              {currentTemplateTags.length > 0 && (
+                <div>
+                  <Label className="text-sm font-medium text-gray-700">Template Tags</Label>
+                  <div className="flex flex-wrap gap-1 mt-2">
+                    {currentTemplateTags.map((tag, index) => (
+                      <Badge key={index} variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* File Attachments Section */}
+              <div>
+                <FileAttachmentManager
+                  attachments={attachments}
+                  onUpdateAttachments={onUpdateAttachments}
+                  allowedTypes={['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png']}
+                  maxSize={10}
+                  readOnly={isPublished}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Form Fields */}
+          <div className="flex-1 p-4 overflow-y-auto">
+            <FormCanvas
+              fields={formFields}
+              selectedField={selectedFieldId}
+              onSelectField={onSelectField}
+              onUpdateField={onUpdateField}
+              onRemoveField={onRemoveField}
+              onAddField={onAddField}
+              onReorderFields={handleReorderFields}
+              readOnly={isPublished}
+            />
+          </div>
+
+          {/* Field Editor Mobile Sheet */}
+          {selectedFieldId && (
+            <div className="border-t bg-background p-4">
+              <FieldEditor
+                selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
+                onUpdateField={onUpdateField}
+                onClose={() => onSelectField(null)}
+                readOnly={isPublished}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Desktop Layout - Resizable Panels */}
+      <ResizablePanelGroup direction="horizontal" className="flex-1 hidden lg:flex">
         {/* Left Sidebar - Field Palette */}
         <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
-          <div className="h-full border-r bg-white overflow-y-auto">
+          <div className="h-full border-r bg-background overflow-y-auto">
             <div className="p-4">
               <FieldPalette onAddField={onAddField} />
             </div>
@@ -145,7 +275,7 @@ export const FormBuilder = ({
         <ResizablePanel defaultSize={selectedFieldId ? 50 : 75} minSize={40}>
           <div className="h-full flex flex-col">
             {/* Form Header */}
-            <div className="p-6 border-b bg-gray-50">
+            <div className="p-6 border-b bg-muted/30">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex-1">
                   <Input
@@ -257,7 +387,7 @@ export const FormBuilder = ({
           <>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
-              <div className="h-full border-l bg-white">
+              <div className="h-full border-l bg-background">
                 <FieldEditor
                   selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
                   onUpdateField={onUpdateField}
