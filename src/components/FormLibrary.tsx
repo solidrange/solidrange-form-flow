@@ -4,11 +4,13 @@ import { FormTemplate } from '@/types/form';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { Search, Building2, Shield, Zap, Heart, Activity, Smartphone, Lightbulb, Briefcase, Globe, Eye } from 'lucide-react';
+import { Search, Building2, Shield, Zap, Heart, Activity, Smartphone, Lightbulb, Briefcase, Globe, Eye, Trash2 } from 'lucide-react';
 import { BrandedButton } from './BrandedButton';
-import { getAllTemplates } from '@/data/formTemplates';
+import { getAllTemplates, deleteCustomTemplate, isCustomTemplate } from '@/data/formTemplates';
 import { MultiSelectFilter } from './MultiSelectFilter';
 import { FormTemplatePreview } from './FormTemplatePreview';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { toast } from '@/hooks/use-toast';
 
 interface FormLibraryProps {
   onUseTemplate: (template: FormTemplate) => void;
@@ -41,9 +43,27 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
   const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
   const [previewTemplate, setPreviewTemplate] = useState<FormTemplate | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0); // To force re-render after delete
 
   const allTemplates = getAllTemplates();
   console.log('FormLibrary: Available templates:', allTemplates.length);
+
+  const handleDeleteTemplate = (templateId: string, templateName: string) => {
+    const success = deleteCustomTemplate(templateId);
+    if (success) {
+      setRefreshKey(prev => prev + 1); // Force re-render
+      toast({
+        title: "Template Deleted",
+        description: `"${templateName}" has been deleted from your template library.`,
+      });
+    } else {
+      toast({
+        title: "Delete Failed",
+        description: "Template could not be deleted.",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Move these functions inside the component so they have access to allTemplates
   const getCategoryCount = (category: string) => {
@@ -81,7 +101,7 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
       
       return matchesSearch && matchesCategory && matchesSector;
     });
-  }, [searchTerm, selectedCategories, selectedSectors]);
+  }, [searchTerm, selectedCategories, selectedSectors, refreshKey]);
 
   // Group templates by sector for display - ensuring no duplicates
   const templatesBySector = useMemo(() => {
@@ -214,19 +234,49 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
                         <CardTitle className="text-base font-medium leading-tight">
                           {template.name}
                         </CardTitle>
-                        <div className="flex items-center gap-2 ml-2">
-                          <Badge variant="secondary" className="text-xs">
-                            {template.category}
-                          </Badge>
-                          <BrandedButton
-                            onClick={() => handlePreviewTemplate(template)}
-                            size="sm"
-                            brandVariant="outline"
-                            className="p-2"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </BrandedButton>
-                        </div>
+                         <div className="flex items-center gap-1 ml-2">
+                           <Badge variant="secondary" className="text-xs">
+                             {template.category}
+                           </Badge>
+                           <BrandedButton
+                             onClick={() => handlePreviewTemplate(template)}
+                             size="sm"
+                             brandVariant="outline"
+                             className="p-2"
+                           >
+                             <Eye className="h-4 w-4" />
+                           </BrandedButton>
+                           {isCustomTemplate(template.id) && (
+                             <AlertDialog>
+                               <AlertDialogTrigger asChild>
+                                 <BrandedButton
+                                   size="sm"
+                                   brandVariant="outline"
+                                   className="p-2 text-destructive hover:text-destructive"
+                                 >
+                                   <Trash2 className="h-4 w-4" />
+                                 </BrandedButton>
+                               </AlertDialogTrigger>
+                               <AlertDialogContent>
+                                 <AlertDialogHeader>
+                                   <AlertDialogTitle>Delete Template</AlertDialogTitle>
+                                   <AlertDialogDescription>
+                                     Are you sure you want to delete "{template.name}"? This action cannot be undone.
+                                   </AlertDialogDescription>
+                                 </AlertDialogHeader>
+                                 <AlertDialogFooter>
+                                   <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                   <AlertDialogAction 
+                                     onClick={() => handleDeleteTemplate(template.id, template.name)}
+                                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                   >
+                                     Delete
+                                   </AlertDialogAction>
+                                 </AlertDialogFooter>
+                               </AlertDialogContent>
+                             </AlertDialog>
+                           )}
+                         </div>
                       </div>
                       <p className="text-sm text-muted-foreground line-clamp-2">
                         {template.description}

@@ -44,7 +44,17 @@ export const getAllTemplates = (): FormTemplate[] => {
   ];
 };
 
-// Function to search templates by tags
+// Function to delete a custom template
+export const deleteCustomTemplate = (templateId: string): boolean => {
+  const initialLength = customTemplates.length;
+  customTemplates = customTemplates.filter(template => template.id !== templateId);
+  return customTemplates.length < initialLength; // Returns true if template was deleted
+};
+
+// Function to check if a template is custom (can be deleted)
+export const isCustomTemplate = (templateId: string): boolean => {
+  return templateId.startsWith('custom-');
+};
 export const searchTemplatesByTags = (searchTerm: string): FormTemplate[] => {
   const allTemplates = getAllTemplates();
   return allTemplates.filter(template => 
