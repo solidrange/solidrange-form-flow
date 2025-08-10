@@ -771,6 +771,18 @@ const Index = () => {
     setSelectedFieldId(fieldId);
   };
 
+  // Function to get properly formatted page titles
+  const getPageTitle = (tabId: string): string => {
+    const titleMap: Record<string, string> = {
+      'dashboard': 'Dashboard',
+      'review-submissions': 'Review Submissions',
+      'forms': 'Forms',
+      'build-form': 'Form Builder',
+      'global-settings': 'Global Settings'
+    };
+    return titleMap[tabId] || tabId;
+  };
+
   return (
     <SidebarProvider defaultOpen={!isMobile}>
       <div className={`min-h-screen bg-gray-50 flex w-full ${isRTL ? 'rtl' : ''}`}>
@@ -789,7 +801,7 @@ const Index = () => {
               <div className="flex items-center gap-2 min-w-0 flex-1">
                 <SidebarTrigger className="shrink-0" />
                 <div className="h-4 w-px bg-border hidden sm:block" />
-                <h1 className="font-semibold text-base sm:text-lg truncate">{t(activeTab.replace('-', ''))}</h1>
+                <h1 className="font-semibold text-base sm:text-lg truncate">{getPageTitle(activeTab)}</h1>
               </div>
               
               {/* Quick Share Button for Published Forms - Mobile optimized */}
