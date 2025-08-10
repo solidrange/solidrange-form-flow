@@ -469,39 +469,84 @@ interface AIRecommendation {
 
 ### 7.1 High-Level Architecture
 
-```mermaid
+<lov-mermaid>
 graph TB
     subgraph "Client Layer"
-        UI[React 18 SPA]
-        PWA[Progressive Web App]
+        UI[React 18 SPA<br/>TypeScript + Vite]
+        PWA[Progressive Web App<br/>Service Worker]
+        MOBILE[Mobile Interface<br/>Responsive Design]
     end
     
     subgraph "Application Layer"
-        API[REST API Layer]
-        AUTH[Authentication Service]
-        FILE[File Management Service]
-        EMAIL[Email Service]
-        AI[AI Processing Service]
+        API[REST API Layer<br/>Future Backend]
+        AUTH[Authentication Service<br/>JWT + RBAC]
+        FILE[File Management Service<br/>Upload & Validation]
+        EMAIL[Email Service<br/>Campaign Management]
+        AI[AI Processing Service<br/>Scoring Engine]
     end
     
     subgraph "Data Layer"
-        DB[(Primary Database)]
-        CACHE[(Redis Cache)]
-        FILES[(File Storage)]
-        SEARCH[(Search Index)]
+        LOCAL[Local Storage<br/>Current Implementation]
+        CACHE[Browser Cache<br/>React Query]
+        TEMPLATES[Template Storage<br/>169 Industry Forms]
+        ANALYTICS[Analytics Storage<br/>Performance Data]
     end
     
-    UI --> API
+    subgraph "Processing Layer"
+        VALIDATION[Form Validation<br/>Zod + React Hook Form]
+        SCORING[AI Scoring<br/>Confidence Analysis]
+        REPORTING[Report Generation<br/>PDF/Excel Export]
+        WORKFLOW[Workflow Engine<br/>Approval Process]
+    end
+    
+    UI --> VALIDATION
     PWA --> API
+    MOBILE --> UI
+    
     API --> AUTH
     API --> FILE
     API --> EMAIL
     API --> AI
-    API --> DB
-    API --> CACHE
-    FILE --> FILES
-    AI --> SEARCH
-```
+    
+    VALIDATION --> LOCAL
+    AI --> CACHE
+    EMAIL --> TEMPLATES
+    
+    LOCAL --> SCORING
+    CACHE --> REPORTING
+    TEMPLATES --> WORKFLOW
+    ANALYTICS --> REPORTING
+    
+    style UI fill:#2196f3,color:#fff
+    style AI fill:#9c27b0,color:#fff
+    style LOCAL fill:#4caf50,color:#fff
+    style SCORING fill:#ff9800,color:#fff
+</lov-mermaid>
+### 7.2 Component Integration Flow
+
+<lov-mermaid>
+sequenceDiagram
+    participant U as User
+    participant FB as FormBuilder
+    participant AI as AI Engine
+    participant LS as Local Storage
+    participant AN as Analytics
+    
+    U->>FB: Create New Form
+    FB->>LS: Save Draft
+    U->>FB: Add Fields & Configure
+    FB->>LS: Update Draft
+    U->>FB: Publish Form
+    FB->>LS: Store Published Form
+    
+    Note over U,AN: Form Submission Process
+    U->>FB: Submit Form Data
+    FB->>AI: Analyze Submission
+    AI->>AN: Log Scoring Data
+    AI->>FB: Return Recommendation
+    FB->>LS: Store Submission
+    FB->>U: Display Result
+</lov-mermaid>
 
 ### 7.2 Component Architecture
 
