@@ -37,18 +37,21 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
     {
       id: "dashboard",
       label: "Dashboard",
+      mobileLabel: "Home",
       icon: BarChart3,
       onClick: () => onTabChange("dashboard")
     },
     {
       id: "review-submissions",
       label: "Review",
+      mobileLabel: "Review",
       icon: ClipboardList,
       onClick: () => onTabChange("review-submissions")
     },
     {
       id: "forms",
       label: "Forms",
+      mobileLabel: "Forms",
       icon: Folder,
       onClick: () => onTabChange("forms"),
       badge: hasUnpublishedDrafts
@@ -56,12 +59,14 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
     {
       id: "build-form",
       label: "Build",
+      mobileLabel: "Build",
       icon: Wrench,
       onClick: () => onTabChange("build-form")
     },
     {
       id: "global-settings",
       label: "Settings",
+      mobileLabel: "Settings",
       icon: Settings,
       onClick: () => onTabChange("global-settings")
     }
@@ -70,8 +75,8 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
   return (
     <Sidebar collapsible="icon" className="border-r">
       <SidebarContent>
-        {/* Brand Logo */}
-        <div className="p-4 border-b">
+        {/* Brand Logo - Mobile optimized */}
+        <div className="p-3 sm:p-4 border-b">
           <BrandLogo 
             size="sm" 
             showText={!isCollapsed} 
@@ -80,7 +85,7 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
           />
         </div>
 
-        {/* Navigation Menu */}
+        {/* Navigation Menu - Mobile optimized */}
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
@@ -89,18 +94,23 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
                   <SidebarMenuButton
                     onClick={item.onClick}
                     isActive={activeTab === item.id}
-                    className="w-full justify-start"
+                    className="w-full justify-start min-h-[44px] touch-manipulation"
                   >
-                    <item.icon className="h-4 w-4" />
+                    <item.icon className="h-4 w-4 shrink-0" />
                     {!isCollapsed && (
                       <>
-                        <span>{item.label}</span>
+                        <span className="text-sm sm:text-base truncate">{item.label}</span>
                         {item.badge && (
-                          <div className="ml-auto">
+                          <div className="ml-auto shrink-0">
                             <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                           </div>
                         )}
                       </>
+                    )}
+                    {isCollapsed && item.badge && (
+                      <div className="absolute -top-1 -right-1">
+                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                      </div>
                     )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>

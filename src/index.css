@@ -647,6 +647,16 @@
   button, input, select, textarea {
     @apply min-h-[44px];
   }
+  
+  /* Larger sidebar navigation targets */
+  [data-sidebar="menu-button"] {
+    @apply min-h-[48px] touch-manipulation;
+  }
+  
+  /* Larger tab triggers for mobile */
+  [role="tab"] {
+    @apply min-h-[44px] touch-manipulation;
+  }
 }
 
 /* Improve mobile scroll behavior */
@@ -659,5 +669,33 @@
   /* Smooth scrolling for mobile */
   * {
     -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Mobile-first sidebar adjustments */
+  [data-sidebar="sidebar"] {
+    @apply w-64;
+  }
+  
+  /* Ensure sidebar trigger is always accessible */
+  [data-sidebar="trigger"] {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+  
+  /* Mobile tab styling */
+  [data-state="active"] {
+    @apply ring-0 outline-none;
+  }
+}
+
+/* Mobile-specific sidebar improvements */
+@media (max-width: 640px) {
+  /* Make sidebar overlay on mobile */
+  [data-sidebar="sidebar"] {
+    @apply fixed inset-y-0 left-0 z-50 w-64 transform transition-transform;
+  }
+  
+  /* Mobile header adjustments */
+  .sticky {
+    @apply z-50;
   }
 }

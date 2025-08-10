@@ -43,6 +43,7 @@ import { addCustomTemplate, isTemplateNameExists } from "@/data/formTemplates";
 import { BrandLogo } from "@/components/BrandLogo";
 import { GlobalSettings } from "@/components/GlobalSettings";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   SidebarProvider,
   SidebarTrigger,
@@ -51,6 +52,7 @@ import {
 
 const Index = () => {
   const { t, isRTL } = useLanguage();
+  const isMobile = useIsMobile();
   
   // Tab navigation state
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -770,9 +772,9 @@ const Index = () => {
   };
 
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={!isMobile}>
       <div className={`min-h-screen bg-gray-50 flex w-full ${isRTL ? 'rtl' : ''}`}>
-        {/* Sidebar */}
+        {/* Sidebar - Hidden on mobile, accessible via trigger */}
         <AppSidebar 
           activeTab={activeTab}
           onTabChange={setActiveTab}
@@ -781,22 +783,22 @@ const Index = () => {
 
         {/* Main Content */}
         <SidebarInset className="flex-1">
-          {/* Header */}
+          {/* Header - Mobile optimized */}
           <div className="bg-white border-b shadow-sm sticky top-0 z-40">
-            <div className="flex items-center justify-between h-14 px-4">
-              <div className="flex items-center gap-2">
-                <SidebarTrigger />
-                <div className="h-4 w-px bg-border" />
-                <h1 className="font-semibold text-lg">{t(activeTab.replace('-', ''))}</h1>
+            <div className="flex items-center justify-between h-12 sm:h-14 px-3 sm:px-4">
+              <div className="flex items-center gap-2 min-w-0 flex-1">
+                <SidebarTrigger className="shrink-0" />
+                <div className="h-4 w-px bg-border hidden sm:block" />
+                <h1 className="font-semibold text-base sm:text-lg truncate">{t(activeTab.replace('-', ''))}</h1>
               </div>
               
-              {/* Quick Share Button for Published Forms */}
+              {/* Quick Share Button for Published Forms - Mobile optimized */}
               {currentFormIsPublished() && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-2">
+                    <Button variant="outline" size="sm" className="gap-1 sm:gap-2 shrink-0">
                       <Globe className="h-4 w-4" />
-                      Share
+                      <span className="hidden sm:inline">Share</span>
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl">
@@ -834,8 +836,8 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Page Content */}
-          <div className="p-6">
+          {/* Page Content - Mobile optimized padding */}
+          <div className="p-3 sm:p-4 lg:p-6">
             {activeTab === "dashboard" && (
               <Analytics submissions={submissions} onFilterSubmissions={(filters) => {
                 setSubmissionFilters(filters);
@@ -845,14 +847,14 @@ const Index = () => {
 
             {activeTab === "review-submissions" && (
               <Tabs defaultValue="submissions" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-4">
-                  <TabsTrigger value="submissions" className="flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
-                    Submissions
+                <TabsList className="grid w-full grid-cols-2 mb-4 h-10 sm:h-auto">
+                  <TabsTrigger value="submissions" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-1.5 sm:py-2">
+                    <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>Submissions</span>
                   </TabsTrigger>
-                  <TabsTrigger value="reports" className="flex items-center gap-2">
-                    <ClipboardList className="h-4 w-4" />
-                    Reports
+                  <TabsTrigger value="reports" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-1.5 sm:py-2">
+                    <ClipboardList className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>Reports</span>
                   </TabsTrigger>
                 </TabsList>
 
@@ -898,26 +900,26 @@ const Index = () => {
 
             {activeTab === "forms" && (
               <div className="space-y-6">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Forms</h2>
-                    <p className="text-gray-600">Manage your draft and published forms</p>
+                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Forms</h2>
+                    <p className="text-sm sm:text-base text-gray-600">Manage your draft and published forms</p>
                   </div>
-                  <Button onClick={createNewForm} className="gap-2">
+                  <Button onClick={createNewForm} className="gap-2 self-start sm:self-auto">
                     <Plus className="h-4 w-4" />
-                    New Form
+                    <span className="text-sm sm:text-base">New Form</span>
                   </Button>
                 </div>
 
                 <Tabs defaultValue="drafts" className="w-full">
                   <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="drafts" className="flex items-center gap-2">
-                      <Edit className="h-4 w-4" />
-                      Drafts ({savedDrafts.length})
+                    <TabsTrigger value="drafts" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                      <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="truncate">Drafts ({savedDrafts.length})</span>
                     </TabsTrigger>
-                    <TabsTrigger value="published" className="flex items-center gap-2">
-                      <Globe className="h-4 w-4" />
-                      Published ({publishedForms.length})
+                    <TabsTrigger value="published" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                      <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="truncate">Published ({publishedForms.length})</span>
                     </TabsTrigger>
                   </TabsList>
 
@@ -933,7 +935,7 @@ const Index = () => {
                         </Button>
                       </div>
                     ) : (
-                      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {savedDrafts.map((draft) => (
                           <Card key={draft.id} className="hover:shadow-md transition-shadow">
                             <CardHeader className="pb-2">
@@ -1132,12 +1134,12 @@ const Index = () => {
 
             {activeTab === "build-form" && (
               <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-4 mb-6">
+                <TabsList className="grid w-full grid-cols-4 mb-4 sm:mb-6 h-10 sm:h-auto">
                   {buildTabs.map((tab) => (
                     <TabsTrigger 
                       key={tab.id} 
                       value={tab.id} 
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-1.5 sm:py-2 px-1 sm:px-3"
                     >
                       {tab.icon}
                       <span className="hidden sm:inline">{tab.label}</span>
