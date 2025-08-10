@@ -229,55 +229,59 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {sectorTemplates.map((template) => (
                   <Card key={template.id} className="hover:shadow-md transition-shadow">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <CardTitle className="text-base font-medium leading-tight">
-                          {template.name}
-                        </CardTitle>
-                         <div className="flex items-center gap-1 ml-2">
-                           <Badge variant="secondary" className="text-xs">
+                     <CardHeader className="pb-3">
+                       <div className="flex items-start justify-between gap-2">
+                         <CardTitle className="text-base font-medium leading-tight flex-1 min-w-0 pr-2">
+                           {template.name}
+                         </CardTitle>
+                         <div className="flex items-center gap-1.5 flex-shrink-0">
+                           <Badge variant="secondary" className="text-xs whitespace-nowrap">
                              {template.category}
                            </Badge>
-                           <BrandedButton
-                             onClick={() => handlePreviewTemplate(template)}
-                             size="sm"
-                             brandVariant="outline"
-                             className="p-2"
-                           >
-                             <Eye className="h-4 w-4" />
-                           </BrandedButton>
-                           {isCustomTemplate(template.id) && (
-                             <AlertDialog>
-                               <AlertDialogTrigger asChild>
-                                 <BrandedButton
-                                   size="sm"
-                                   brandVariant="outline"
-                                   className="p-2 text-destructive hover:text-destructive"
-                                 >
-                                   <Trash2 className="h-4 w-4" />
-                                 </BrandedButton>
-                               </AlertDialogTrigger>
-                               <AlertDialogContent>
-                                 <AlertDialogHeader>
-                                   <AlertDialogTitle>Delete Template</AlertDialogTitle>
-                                   <AlertDialogDescription>
-                                     Are you sure you want to delete "{template.name}"? This action cannot be undone.
-                                   </AlertDialogDescription>
-                                 </AlertDialogHeader>
-                                 <AlertDialogFooter>
-                                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                   <AlertDialogAction 
-                                     onClick={() => handleDeleteTemplate(template.id, template.name)}
-                                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                           <div className="flex items-center gap-1">
+                             <BrandedButton
+                               onClick={() => handlePreviewTemplate(template)}
+                               size="sm"
+                               brandVariant="outline"
+                               className="p-1.5 h-8 w-8 flex-shrink-0"
+                               aria-label="Preview template"
+                             >
+                               <Eye className="h-4 w-4" />
+                             </BrandedButton>
+                             {isCustomTemplate(template.id) && (
+                               <AlertDialog>
+                                 <AlertDialogTrigger asChild>
+                                   <BrandedButton
+                                     size="sm"
+                                     brandVariant="outline"
+                                     className="p-1.5 h-8 w-8 flex-shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                     aria-label="Delete template"
                                    >
-                                     Delete
-                                   </AlertDialogAction>
-                                 </AlertDialogFooter>
-                               </AlertDialogContent>
-                             </AlertDialog>
-                           )}
+                                     <Trash2 className="h-4 w-4" />
+                                   </BrandedButton>
+                                 </AlertDialogTrigger>
+                                 <AlertDialogContent className="sm:max-w-md">
+                                   <AlertDialogHeader>
+                                     <AlertDialogTitle>Delete Template</AlertDialogTitle>
+                                     <AlertDialogDescription>
+                                       Are you sure you want to delete "{template.name}"? This action cannot be undone.
+                                     </AlertDialogDescription>
+                                   </AlertDialogHeader>
+                                   <AlertDialogFooter className="flex-col-reverse sm:flex-row gap-2">
+                                     <AlertDialogCancel className="mt-2 sm:mt-0">Cancel</AlertDialogCancel>
+                                     <AlertDialogAction 
+                                       onClick={() => handleDeleteTemplate(template.id, template.name)}
+                                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                                     >
+                                       Delete
+                                     </AlertDialogAction>
+                                   </AlertDialogFooter>
+                                 </AlertDialogContent>
+                               </AlertDialog>
+                             )}
+                           </div>
                          </div>
-                      </div>
+                       </div>
                       <p className="text-sm text-muted-foreground line-clamp-2">
                         {template.description}
                       </p>
