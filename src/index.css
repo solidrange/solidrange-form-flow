@@ -485,47 +485,44 @@
     direction: rtl;
   }
 
-  [dir="rtl"] .sidebar {
-    @apply border-l border-r-0;
+  /* RTL specific layout adjustments */
+  [dir="rtl"] .sidebar-border-fix {
+    border-left-width: 1px;
+    border-right-width: 0;
   }
 
-  [dir="rtl"] .flex-row-reverse {
-    @apply flex-row-reverse;
+  /* RTL text alignment utilities */
+  [dir="rtl"] .rtl-text-right {
+    text-align: right;
   }
 
-  [dir="rtl"] .text-right {
-    @apply text-right;
+  [dir="rtl"] .rtl-text-left {
+    text-align: left;
   }
 
-  [dir="rtl"] .text-left {
-    @apply text-left;
+  /* RTL margin utilities */
+  [dir="rtl"] .rtl-ml-auto {
+    margin-left: 0;
+    margin-right: auto;
   }
 
-  [dir="rtl"] .mr-auto {
-    @apply ml-auto mr-0;
+  [dir="rtl"] .rtl-mr-auto {
+    margin-right: 0;
+    margin-left: auto;
   }
 
-  [dir="rtl"] .ml-auto {
-    @apply mr-auto ml-0;
+  /* RTL positioning utilities */
+  [dir="rtl"] .rtl-right-1 {
+    right: auto;
+    left: 0.25rem;
   }
 
-  [dir="rtl"] .ml-2 {
-    @apply mr-2 ml-0;
+  [dir="rtl"] .rtl-left-1 {
+    left: auto;
+    right: 0.25rem;
   }
 
-  [dir="rtl"] .mr-2 {
-    @apply ml-2 mr-0;
-  }
-
-  [dir="rtl"] .-right-1 {
-    @apply -left-1 right-auto;
-  }
-
-  [dir="rtl"] .-left-1 {
-    @apply -right-1 left-auto;
-  }
-
-  /* RTL specific animations */
+  /* RTL animations - reverse directions */
   [dir="rtl"] .animate-slide-in-right {
     animation: slideInLeft 0.3s ease-out forwards;
   }

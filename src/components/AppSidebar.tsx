@@ -75,7 +75,7 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
   ];
 
   return (
-    <Sidebar collapsible="icon" className={`border-r ${isRTL ? 'border-l border-r-0' : ''}`}>
+    <Sidebar collapsible="icon" className={`border-r ${isRTL ? 'sidebar-border-fix' : ''}`}>
       <SidebarContent>
         {/* Brand Logo - Mobile optimized */}
         <div className="p-3 sm:p-4 border-b">
@@ -97,10 +97,10 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
                     onClick={item.onClick}
                     isActive={activeTab === item.id}
                     className={`w-full min-h-[44px] touch-manipulation ${
-                      isRTL ? 'justify-end flex-row-reverse' : 'justify-start'
+                      isRTL ? 'flex-row-reverse' : 'justify-start'
                     }`}
                   >
-                    <item.icon className={`h-4 w-4 shrink-0 ${isRTL && !isCollapsed ? 'ml-2' : ''}`} />
+                    <item.icon className={`h-4 w-4 shrink-0`} />
                     {!isCollapsed && (
                       <>
                         <span className={`text-sm sm:text-base truncate ${isRTL ? 'text-right' : 'text-left'}`}>
