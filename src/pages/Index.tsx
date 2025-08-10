@@ -774,18 +774,18 @@ const Index = () => {
   // Function to get properly formatted page titles
   const getPageTitle = (tabId: string): string => {
     const titleMap: Record<string, string> = {
-      'dashboard': 'Dashboard',
-      'review-submissions': 'Review Submissions',
-      'forms': 'Forms',
-      'build-form': 'Form Builder',
-      'global-settings': 'Global Settings'
+      'dashboard': t('dashboard'),
+      'review-submissions': t('review'),
+      'forms': t('forms'),
+      'build-form': t('build'),
+      'global-settings': t('settings')
     };
     return titleMap[tabId] || tabId;
   };
 
   return (
     <SidebarProvider defaultOpen={!isMobile}>
-      <div className={`min-h-screen bg-gray-50 flex w-full ${isRTL ? 'rtl' : ''}`}>
+      <div className={`min-h-screen bg-gray-50 flex w-full`}>
         {/* Sidebar - Hidden on mobile, accessible via trigger */}
         <AppSidebar 
           activeTab={activeTab}
@@ -798,10 +798,12 @@ const Index = () => {
           {/* Header - Mobile optimized */}
           <div className="bg-white border-b shadow-sm sticky top-0 z-40">
             <div className="flex items-center justify-between h-12 sm:h-14 px-3 sm:px-4">
-              <div className="flex items-center gap-2 min-w-0 flex-1">
+              <div className={`flex items-center gap-2 min-w-0 flex-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <SidebarTrigger className="shrink-0" />
                 <div className="h-4 w-px bg-border hidden sm:block" />
-                <h1 className="font-semibold text-base sm:text-lg truncate">{getPageTitle(activeTab)}</h1>
+                <h1 className={`font-semibold text-base sm:text-lg truncate ${isRTL ? 'text-right' : 'text-left'}`}>
+                  {getPageTitle(activeTab)}
+                </h1>
               </div>
               
               {/* Quick Share Button for Published Forms - Mobile optimized */}
@@ -912,26 +914,26 @@ const Index = () => {
 
             {activeTab === "forms" && (
               <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
-                  <div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Forms</h2>
-                    <p className="text-sm sm:text-base text-gray-600">Manage your draft and published forms</p>
+                  <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
+                    <div className={isRTL ? 'text-right' : 'text-left'}>
+                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t('forms')}</h2>
+                      <p className="text-sm sm:text-base text-gray-600">Manage your draft and published forms</p>
+                    </div>
+                    <Button onClick={createNewForm} className={`gap-2 self-start sm:self-auto ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <Plus className="h-4 w-4" />
+                      <span className="text-sm sm:text-base">{t('newForm')}</span>
+                    </Button>
                   </div>
-                  <Button onClick={createNewForm} className="gap-2 self-start sm:self-auto">
-                    <Plus className="h-4 w-4" />
-                    <span className="text-sm sm:text-base">New Form</span>
-                  </Button>
-                </div>
 
                 <Tabs defaultValue="drafts" className="w-full">
                   <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="drafts" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                    <TabsTrigger value="drafts" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="truncate">Drafts ({savedDrafts.length})</span>
+                      <span className="truncate">{t('drafts')} ({savedDrafts.length})</span>
                     </TabsTrigger>
-                    <TabsTrigger value="published" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                    <TabsTrigger value="published" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="truncate">Published ({publishedForms.length})</span>
+                      <span className="truncate">{t('published')} ({publishedForms.length})</span>
                     </TabsTrigger>
                   </TabsList>
 
@@ -939,11 +941,11 @@ const Index = () => {
                     {savedDrafts.length === 0 ? (
                       <div className="text-center py-12">
                         <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No draft forms</h3>
-                        <p className="text-gray-600 mb-4">Create a new form to get started</p>
-                        <Button onClick={createNewForm} className="gap-2">
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">{t('noForms')}</h3>
+                        <p className="text-gray-600 mb-4">{t('createFirstForm')}</p>
+                        <Button onClick={createNewForm} className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                           <Plus className="h-4 w-4" />
-                          Create Form
+                          {t('newForm')}
                         </Button>
                       </div>
                     ) : (
@@ -958,7 +960,7 @@ const Index = () => {
                                     {draft.description || "No description"}
                                   </p>
                                 </div>
-                                <Badge variant="secondary">Draft</Badge>
+                                <Badge variant="secondary">{t('draftStatus')}</Badge>
                               </div>
                             </CardHeader>
                             <CardContent className="pt-0">
@@ -967,26 +969,26 @@ const Index = () => {
                                 <span>{new Date(draft.updatedAt).toLocaleDateString()}</span>
                               </div>
                               <div className="flex gap-2">
-                                <Button 
-                                  size="sm" 
-                                  onClick={() => {
-                                    loadForm(draft);
-                                    setActiveTab("build-form");
-                                  }}
-                                  className="flex-1 gap-1"
-                                >
-                                  <Edit className="h-3 w-3" />
-                                  Edit
-                                </Button>
-                                <Button 
-                                  size="sm" 
-                                  variant="outline"
-                                  onClick={() => handlePublishForm(draft)}
-                                  className="flex-1 gap-1"
-                                >
-                                  <Globe className="h-3 w-3" />
-                                  Publish
-                                </Button>
+                                  <Button 
+                                    size="sm" 
+                                    onClick={() => {
+                                      loadForm(draft);
+                                      setActiveTab("build-form");
+                                    }}
+                                    className={`flex-1 gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}
+                                  >
+                                    <Edit className="h-3 w-3" />
+                                    {t('edit')}
+                                  </Button>
+                                  <Button 
+                                    size="sm" 
+                                    variant="outline"
+                                    onClick={() => handlePublishForm(draft)}
+                                    className={`flex-1 gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}
+                                  >
+                                    <Globe className="h-3 w-3" />
+                                    {t('publishForm')}
+                                  </Button>
                                 <AlertDialog>
                                   <AlertDialogTrigger asChild>
                                     <Button size="sm" variant="outline" className="px-2">
@@ -1020,7 +1022,7 @@ const Index = () => {
                     {publishedForms.length === 0 ? (
                       <div className="text-center py-12">
                         <Globe className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No published forms</h3>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">{t('noForms')}</h3>
                         <p className="text-gray-600">Publish a form to make it available to respondents</p>
                       </div>
                     ) : (
@@ -1035,7 +1037,7 @@ const Index = () => {
                                     {form.description || "No description"}
                                   </p>
                                 </div>
-                                <Badge variant="default">Published</Badge>
+                                <Badge variant="default">{t('publishedStatus')}</Badge>
                               </div>
                             </CardHeader>
                             <CardContent className="pt-0">
