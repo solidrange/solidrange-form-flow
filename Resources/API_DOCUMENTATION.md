@@ -1,7 +1,7 @@
 # Form Builder & Submission Management API Documentation
 
 ## Overview
-This document outlines the complete API specification and database schema for implementing the backend of the Form Builder and Submission Management system. The current frontend is built with React 18, TypeScript, and modern web technologies, requiring a robust backend to support its enterprise-grade features.
+This document outlines the complete API specification and database schema for implementing a .NET backend for the Form Builder and Submission Management system. The current system is a fully functional React 18 application in production, serving as the specification baseline for backend development. This documentation provides the exact requirements needed to develop a compatible .NET API that supports all current frontend features.
 
 ## Current Frontend Architecture
 The application is currently a React-based SPA with the following capabilities:
