@@ -6,6 +6,7 @@ import {
   Folder, 
   Wrench, 
   Settings,
+  FileText,
   ChevronLeft,
   ChevronRight
 } from "lucide-react";
@@ -64,6 +65,13 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
       mobileLabel: t("build"),
       icon: Wrench,
       onClick: () => onTabChange("build-form")
+    },
+    {
+      id: "resources",
+      label: "Resources",
+      mobileLabel: "Resources",
+      icon: FileText,
+      onClick: () => onTabChange("resources")
     },
     {
       id: "global-settings",

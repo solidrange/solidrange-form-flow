@@ -42,6 +42,7 @@ import { sampleSubmissions } from "@/data/sampleSubmissions";
 import { addCustomTemplate, isTemplateNameExists } from "@/data/formTemplates";
 import { BrandLogo } from "@/components/BrandLogo";
 import { GlobalSettings } from "@/components/GlobalSettings";
+import { Resources } from "@/components/Resources";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
@@ -1249,6 +1250,10 @@ const Index = () => {
                   />
                 </TabsContent>
               </Tabs>
+            )}
+
+            {activeTab === "resources" && (
+              <Resources />
             )}
 
             {activeTab === "global-settings" && (

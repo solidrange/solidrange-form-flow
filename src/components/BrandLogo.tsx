@@ -73,13 +73,11 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
             )}
             style={{ color: `hsl(${brand.lightTheme.colors.primary.main})` }}
           >
-            {brand.name}
+            SolidForm
           </span>
-          {brand.tagline && size !== 'sm' && (
-            <span className="text-xs text-muted-foreground leading-tight">
-              {brand.tagline}
-            </span>
-          )}
+          <span className="text-xs text-muted-foreground leading-tight">
+            V1.0.0 - Enterprise Assessment Simplified
+          </span>
         </div>
       )}
     </div>
