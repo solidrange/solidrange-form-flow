@@ -54,9 +54,9 @@ interface BrandContextType {
 }
 
 const defaultBrand: BrandIdentity = {
-  name: 'FormFlow',
+  name: 'SolidForm',
   logo: null,
-  tagline: 'Build, Share, Analyze Forms with Intelligence',
+  tagline: 'Enterprise Assessment Simplified',
   fonts: {
     heading: 'Inter',
     body: 'Inter',

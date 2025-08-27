@@ -132,6 +132,15 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        
+        {/* Version info at bottom */}
+        <div className="mt-auto p-3 border-t">
+          <div className="text-center">
+            <span className="text-xs text-muted-foreground">
+              V1.0.0
+            </span>
+          </div>
+        </div>
       </SidebarContent>
     </Sidebar>
   );

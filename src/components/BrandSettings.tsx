@@ -192,8 +192,8 @@ export const BrandSettings: React.FC = () => {
 
   const handleReset = () => {
     resetToDefaults();
-    setTempName('FormFlow');
-    setTempTagline('Build, Share, Analyze Forms with Intelligence');
+    setTempName('SolidForm');
+    setTempTagline('Enterprise Assessment Simplified');
     // Reset to original default colors
     const originalDefaultColors = {
       primary: { main: '208 100% 47%', light: '210 100% 70%', dark: '208 100% 35%' },
