@@ -79,12 +79,20 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
       <SidebarContent>
         {/* Brand Logo - Mobile optimized */}
         <div className="p-3 sm:p-4 border-b">
-          <BrandLogo 
-            size="sm" 
-            showText={!isCollapsed} 
-            className="cursor-pointer"
-            onClick={() => onTabChange("dashboard")}
-          />
+          <div className="cursor-pointer" onClick={() => onTabChange("dashboard")}>
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-gradient-to-br from-primary to-primary/80 rounded-lg flex items-center justify-center">
+                <span className="text-primary-foreground font-bold text-sm">SF</span>
+              </div>
+              {!isCollapsed && (
+                <div className="flex flex-col">
+                  <span className="font-bold text-foreground text-lg leading-tight">SolidForm</span>
+                  <span className="text-xs text-muted-foreground">V1.0.0</span>
+                  <span className="text-xs text-muted-foreground italic">Enterprise Assessment Simplified</span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {/* Navigation Menu - Mobile optimized */}
