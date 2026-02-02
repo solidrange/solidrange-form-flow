@@ -51,6 +51,8 @@ import {
   SidebarTrigger,
   SidebarInset,
 } from "@/components/ui/sidebar";
+import { MobileBottomNav, MobileNavDrawer, MobileMoreSheet } from "@/components/mobile";
+import { HelpPanel } from "@/components/tour/HelpPanel";
 
 const Index = () => {
   const { t, isRTL } = useLanguage();
@@ -781,6 +783,11 @@ const Index = () => {
     setSelectedFieldId(fieldId);
   };
 
+  // Mobile navigation state
+  const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
+  const [helpPanelOpen, setHelpPanelOpen] = useState(false);
+
   // Function to get properly formatted page titles
   const getPageTitle = (tabId: string): string => {
     const titleMap: Record<string, string> = {
@@ -788,41 +795,66 @@ const Index = () => {
       'review-submissions': t('review'),
       'forms': t('forms'),
       'build-form': t('build'),
-      'global-settings': t('settings')
+      'global-settings': t('settings'),
+      'resources': 'Resources'
     };
     return titleMap[tabId] || tabId;
   };
 
   return (
     <SidebarProvider defaultOpen={!isMobile}>
-      <div className={`min-h-screen bg-gray-50 flex w-full`}>
-        {/* Sidebar - Hidden on mobile, accessible via trigger */}
-        <AppSidebar 
+      <div className={`min-h-screen bg-background flex w-full`}>
+        {/* Desktop Sidebar - Hidden on mobile */}
+        <div className="hidden md:block">
+          <AppSidebar 
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            hasUnpublishedDrafts={hasUnpublishedDrafts}
+          />
+        </div>
+
+        {/* Mobile Navigation Drawer */}
+        <MobileNavDrawer
+          open={mobileDrawerOpen}
+          onOpenChange={setMobileDrawerOpen}
           activeTab={activeTab}
           onTabChange={setActiveTab}
           hasUnpublishedDrafts={hasUnpublishedDrafts}
+          onHelpClick={() => setHelpPanelOpen(true)}
         />
 
+        {/* Mobile More Sheet */}
+        <MobileMoreSheet
+          open={mobileMoreOpen}
+          onOpenChange={setMobileMoreOpen}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          onHelpClick={() => setHelpPanelOpen(true)}
+        />
+
+        {/* Help Panel */}
+        <HelpPanel open={helpPanelOpen} onOpenChange={setHelpPanelOpen} />
+
         {/* Main Content */}
-        <SidebarInset className="flex-1">
-          {/* Header - Mobile optimized */}
-          <div className="bg-background border-b border-border shadow-sm sticky top-0 z-40">
-            <div className="flex items-center justify-between h-12 sm:h-14 px-3 sm:px-4">
+        <SidebarInset className="flex-1 flex flex-col">
+          {/* Header - Desktop version */}
+          <div className="bg-background border-b border-border shadow-sm sticky top-0 z-40 hidden md:block">
+            <div className="flex items-center justify-between h-14 px-4">
               <div className={`flex items-center gap-2 min-w-0 flex-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <SidebarTrigger className="shrink-0" />
-                <div className="h-4 w-px bg-border hidden sm:block" />
-                <h1 className={`font-semibold text-base sm:text-lg truncate text-foreground ${isRTL ? 'text-right' : 'text-left'}`}>
+                <div className="h-4 w-px bg-border" />
+                <h1 className={`font-semibold text-lg truncate text-foreground ${isRTL ? 'text-right' : 'text-left'}`}>
                   {getPageTitle(activeTab)}
                 </h1>
               </div>
               
-              {/* Quick Share Button for Published Forms - Mobile optimized */}
+              {/* Quick Share Button for Published Forms */}
               {currentFormIsPublished() && (
                 <Dialog>
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="gap-1 sm:gap-2 shrink-0">
+                    <Button variant="outline" size="sm" className="gap-2 shrink-0">
                       <Globe className="h-4 w-4" />
-                      <span className="hidden sm:inline">Share</span>
+                      <span>Share</span>
                     </Button>
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl">
@@ -860,8 +892,29 @@ const Index = () => {
             </div>
           </div>
 
-          {/* Page Content - Mobile optimized padding */}
-          <div className="p-3 sm:p-4 lg:p-6 bg-background min-h-[calc(100vh-3.5rem)]">
+          {/* Mobile Header */}
+          <div className="bg-background border-b border-border shadow-sm sticky top-0 z-40 md:hidden">
+            <div className={`flex items-center justify-between h-14 px-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
+              <button
+                onClick={() => setMobileDrawerOpen(true)}
+                className="h-10 w-10 flex items-center justify-center rounded-lg hover:bg-muted touch-manipulation"
+                aria-label="Open menu"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="4" x2="20" y1="12" y2="12"/>
+                  <line x1="4" x2="20" y1="6" y2="6"/>
+                  <line x1="4" x2="20" y1="18" y2="18"/>
+                </svg>
+              </button>
+              <h1 className="font-semibold text-base truncate text-foreground flex-1 text-center px-2">
+                {getPageTitle(activeTab)}
+              </h1>
+              <div className="w-10" /> {/* Spacer for balance */}
+            </div>
+          </div>
+
+          {/* Page Content - Mobile optimized with bottom nav padding */}
+          <div className="p-3 sm:p-4 lg:p-6 bg-background flex-1 pb-20 md:pb-6">
             {activeTab === "dashboard" && (
               <Analytics 
                 submissions={submissions} 
@@ -1309,6 +1362,14 @@ const Index = () => {
             generateEmbedCode={generateEmbedCode}
           />
         )}
+
+        {/* Mobile Bottom Navigation */}
+        <MobileBottomNav
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          hasUnpublishedDrafts={hasUnpublishedDrafts}
+          onMoreClick={() => setMobileMoreOpen(true)}
+        />
       </div>
     </SidebarProvider>
   );

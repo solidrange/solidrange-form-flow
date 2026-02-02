@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FormTemplate, FormField, DocumentAttachment, Form } from '@/types/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,7 +14,9 @@ import { MultiSelectAudience } from './MultiSelectAudience';
 import { FileAttachmentManager } from './FileAttachmentManager';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Save } from 'lucide-react';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Save, Plus, Settings, X } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 
 interface FormBuilderProps {
@@ -81,6 +83,10 @@ export const FormBuilder = ({
   formAudience,
   onUpdateFormAudience
 }: FormBuilderProps) => {
+  const isMobile = useIsMobile();
+  const [showFieldPalette, setShowFieldPalette] = useState(false);
+  const [showFieldEditor, setShowFieldEditor] = useState(false);
+  
   // Convert parent state to local display format
   const selectedCategories = typeof formCategory === 'string' ? (formCategory ? [formCategory] : []) : formCategory;
   const selectedSectors = typeof formTargetAudience === 'string' ? (formTargetAudience ? [formTargetAudience] : []) : formTargetAudience;
@@ -126,6 +132,112 @@ export const FormBuilder = ({
     }
   };
 
+  // Mobile Layout
+  if (isMobile) {
+    return (
+      <div className="h-full flex flex-col">
+        {/* Mobile Header with action buttons */}
+        <div className="p-3 border-b bg-muted/30 flex items-center justify-between gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowFieldPalette(true)}
+            className="gap-1.5"
+          >
+            <Plus className="h-4 w-4" />
+            Add Field
+          </Button>
+          <div className="flex items-center gap-2">
+            <BrandedButton
+              onClick={onSaveForm}
+              variant="outline"
+              size="sm"
+              className="gap-1.5"
+            >
+              <Save className="h-4 w-4" />
+              Save
+            </BrandedButton>
+          </div>
+        </div>
+
+        {/* Form Title Section */}
+        <div className="p-3 border-b bg-background" data-tour-id="form-title">
+          <Input
+            placeholder="Form Title"
+            value={title}
+            onChange={(e) => onUpdateTitle(e.target.value)}
+            className="text-lg font-bold border-none bg-transparent p-0 focus-visible:ring-0 placeholder:text-muted-foreground"
+          />
+          <Textarea
+            placeholder="Description (optional)"
+            value={description}
+            onChange={(e) => onUpdateDescription(e.target.value)}
+            className="mt-2 text-sm border-none bg-transparent p-0 resize-none focus-visible:ring-0 placeholder:text-muted-foreground"
+            rows={1}
+          />
+        </div>
+
+        {/* Form Canvas - Main scrollable area */}
+        <div className="flex-1 p-3 overflow-y-auto" data-tour-id="form-canvas">
+          <FormCanvas
+            fields={formFields}
+            selectedField={selectedFieldId}
+            onSelectField={(id) => {
+              onSelectField(id);
+              if (id) setShowFieldEditor(true);
+            }}
+            onUpdateField={onUpdateField}
+            onRemoveField={onRemoveField}
+            onAddField={onAddField}
+            onReorderFields={handleReorderFields}
+            readOnly={isPublished}
+          />
+        </div>
+
+        {/* Mobile Field Palette Sheet */}
+        <Sheet open={showFieldPalette} onOpenChange={setShowFieldPalette}>
+          <SheetContent side="bottom" className="h-[70vh] rounded-t-2xl">
+            <SheetHeader className="pb-4">
+              <SheetTitle>Add Field</SheetTitle>
+            </SheetHeader>
+            <div className="overflow-y-auto h-full pb-8">
+              <FieldPalette 
+                onAddField={(field) => {
+                  onAddField(field);
+                  setShowFieldPalette(false);
+                }} 
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+
+        {/* Mobile Field Editor Sheet */}
+        <Sheet open={showFieldEditor && !!selectedFieldId} onOpenChange={(open) => {
+          setShowFieldEditor(open);
+          if (!open) onSelectField(null);
+        }}>
+          <SheetContent side="bottom" className="h-[80vh] rounded-t-2xl">
+            <SheetHeader className="pb-4">
+              <SheetTitle>Edit Field</SheetTitle>
+            </SheetHeader>
+            <div className="overflow-y-auto h-full pb-8">
+              <FieldEditor
+                selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
+                onUpdateField={onUpdateField}
+                onClose={() => {
+                  onSelectField(null);
+                  setShowFieldEditor(false);
+                }}
+                readOnly={isPublished}
+              />
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
+    );
+  }
+
+  // Desktop Layout - Resizable Panels
   return (
     <div className="h-full flex">
       {/* Resizable Three Column Layout */}
