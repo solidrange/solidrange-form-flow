@@ -2,6 +2,7 @@ import React from 'react';
 import { useBrand } from '@/contexts/BrandContext';
 import { cn } from '@/lib/utils';
 import solidRangeLogo from '@/assets/solidrange-logo.svg';
+import solidFormLogo from '@/assets/solidform-logo.png';
 
 interface BrandLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -82,15 +83,12 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       )}
       onClick={onClick}
     >
-      {brand.logo ? (
-        <img 
-          src={brand.logo} 
-          alt={`${brand.name} logo`}
-          className={cn(sizeClasses[size], 'object-contain')}
-        />
-      ) : (
-        <DefaultLogo />
-      )}
+      {/* Always use the SolidForm logo */}
+      <img 
+        src={solidFormLogo} 
+        alt={`${brand.name} logo`}
+        className={cn(sizeClasses[size], 'object-contain')}
+      />
       
       {showText && (
         <div className="flex flex-col items-start">
