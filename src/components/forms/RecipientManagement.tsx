@@ -187,7 +187,7 @@ export const RecipientManagement = ({ form, onUpdateForm }: RecipientManagementP
               <Input
                 id="recipient-email"
                 type="email"
-                placeholder="user@example.com"
+                placeholder="ahmed.alsaud@company.com.sa"
                 value={newRecipientEmail}
                 onChange={(e) => setNewRecipientEmail(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addRecipient()}
@@ -197,7 +197,7 @@ export const RecipientManagement = ({ form, onUpdateForm }: RecipientManagementP
               <Label htmlFor="recipient-name">Name (Optional)</Label>
               <Input
                 id="recipient-name"
-                placeholder="John Doe"
+                placeholder="Ahmed Al-Saud"
                 value={newRecipientName}
                 onChange={(e) => setNewRecipientName(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addRecipient()}
