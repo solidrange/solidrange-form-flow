@@ -75,40 +75,36 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     );
   };
 
+  const solidRangeLogoSizesLarge = {
+    sm: 'h-5',
+    md: 'h-6',
+    lg: 'h-8',
+    xl: 'h-10'
+  };
+
   return (
     <div 
       className={cn(
-        'flex items-center gap-2 cursor-pointer select-none',
+        'flex flex-col items-start cursor-pointer select-none',
         className
       )}
       onClick={onClick}
     >
-      {/* Always use the SolidForm logo */}
+      {/* Product name on top */}
+      {renderStyledName()}
+      
+      {/* SolidRange parent company logo - larger size */}
       <img 
-        src={solidFormLogo} 
-        alt={`${brand.name} logo`}
-        className={cn(sizeClasses[size], 'object-contain')}
+        src={solidRangeLogo} 
+        alt="SolidRange" 
+        className={cn(solidRangeLogoSizesLarge[size], 'w-auto object-contain mt-1')}
       />
       
-      {showText && (
-        <div className="flex flex-col items-start">
-          {/* Product name on top */}
-          {renderStyledName()}
-          
-          {/* SolidRange parent company logo */}
-          <img 
-            src={solidRangeLogo} 
-            alt="SolidRange" 
-            className={cn(solidRangeLogoSizes[size], 'w-auto object-contain mt-0.5')}
-          />
-          
-          {/* Tagline at the bottom */}
-          {brand.tagline && (
-            <span className="text-[10px] text-muted-foreground leading-tight mt-1">
-              {brand.tagline}
-            </span>
-          )}
-        </div>
+      {/* Tagline at the bottom */}
+      {showText && brand.tagline && (
+        <span className="text-[10px] text-muted-foreground leading-tight mt-1">
+          {brand.tagline}
+        </span>
       )}
     </div>
   );
