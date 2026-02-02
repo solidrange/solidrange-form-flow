@@ -48,11 +48,13 @@ export function MobileBottomNav({
           const isActive = activeTab === item.id;
           const Icon = item.icon;
           const showBadge = item.id === "forms" && hasUnpublishedDrafts;
+          const tourId = `mobile-nav-${item.id === "review-submissions" ? "review" : item.id}`;
           
           return (
             <button
               key={item.id}
               onClick={() => onTabChange(item.id)}
+              data-tour-id={tourId}
               className={cn(
                 "flex-1 flex flex-col items-center justify-center gap-0.5 px-2 py-2",
                 "transition-colors duration-200 touch-manipulation",
@@ -88,6 +90,7 @@ export function MobileBottomNav({
         {/* More button for Settings & Resources */}
         <button
           onClick={onMoreClick}
+          data-tour-id="mobile-nav-more"
           className={cn(
             "flex-1 flex flex-col items-center justify-center gap-0.5 px-2 py-2",
             "transition-colors duration-200 touch-manipulation",

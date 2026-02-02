@@ -45,6 +45,7 @@ export function MobileHeader({
           variant="ghost"
           size="icon"
           onClick={onMenuClick}
+          data-tour-id="mobile-menu-button"
           className="h-10 w-10 shrink-0 touch-manipulation"
           aria-label="Open menu"
         >
@@ -53,10 +54,13 @@ export function MobileHeader({
       )}
 
       {/* Title - centered */}
-      <h1 className={cn(
-        "flex-1 text-base font-semibold text-foreground truncate",
-        isRTL ? "text-right" : "text-left"
-      )}>
+      <h1 
+        className={cn(
+          "flex-1 text-base font-semibold text-foreground truncate",
+          isRTL ? "text-right" : "text-left"
+        )}
+        data-tour-id="mobile-brand-logo"
+      >
         {title}
       </h1>
 

@@ -2,14 +2,30 @@
 
 ## Tour Coverage Matrix
 
-| Tour ID | Tour Name | Target Page(s) | Roles | Steps (Admin/User) | Status |
-|---------|-----------|----------------|-------|-------------------|--------|
-| welcome-tour | Welcome to SolidForm | Dashboard (sidebar nav) | Admin, User | 7 / 6 | ✅ Active |
-| dashboard-tour | Dashboard Overview | Dashboard | Admin, User | 2 / 2 | ✅ Active |
-| form-builder-tour | Form Builder | Build Form | Admin, User | 4 / 4 | ✅ Active |
-| submissions-tour | Submission Review | Review Submissions | Admin, User | 3 / 2 | ✅ Active |
-| settings-tour | Settings & Configuration | Global Settings | Admin | 3 / N/A | ✅ Active |
-| forms-library-tour | Forms Library | Forms | Admin, User | 3 / 2 | ✅ Active |
+| Tour ID | Tour Name | Target Page(s) | Roles | Steps (Admin/User) Desktop | Steps (Admin/User) Mobile | Status |
+|---------|-----------|----------------|-------|---------------------------|--------------------------|--------|
+| welcome-tour | Welcome to SolidForm | Dashboard (sidebar/bottom nav) | Admin, User | 7 / 6 | 7 / 6 | ✅ Active |
+| dashboard-tour | Dashboard Overview | Dashboard | Admin, User | 2 / 2 | 2 / 2 | ✅ Active |
+| form-builder-tour | Form Builder | Build Form | Admin, User | 4 / 4 | 4 / 4 | ✅ Active |
+| submissions-tour | Submission Review | Review Submissions | Admin, User | 3 / 2 | 3 / 2 | ✅ Active |
+| settings-tour | Settings & Configuration | Global Settings | Admin | 3 / N/A | 3 / N/A | ✅ Active |
+| forms-library-tour | Forms Library | Forms | Admin, User | 3 / 2 | 3 / 2 | ✅ Active |
+
+---
+
+## Layout-Aware Tour System
+
+The tour system now supports **layout-specific steps** that adapt to desktop or mobile viewports.
+
+### Layout Modes
+- **desktop**: Steps shown only on viewports ≥768px
+- **mobile**: Steps shown only on viewports <768px
+- **both**: Steps shown on all viewports
+
+### How It Works
+1. `TourContext` detects viewport width and sets `layoutMode`
+2. Steps are filtered by both `roles` AND `layout` before display
+3. Step content uses layout-appropriate language (e.g., "Click sidebar" vs "Tap bottom bar")
 
 ---
 
@@ -17,7 +33,7 @@
 
 This registry is the **single source of truth** for all `data-tour-id` attributes. When defining tour steps, always use IDs from this registry.
 
-### Navigation Elements (Sidebar - AppSidebar.tsx)
+### Desktop Navigation Elements (Sidebar - AppSidebar.tsx)
 | Logical Name | data-tour-id | Component | Description |
 |--------------|--------------|-----------|-------------|
 | Brand Logo | `brand-logo` | AppSidebar | Logo and product name in sidebar header |
@@ -29,6 +45,17 @@ This registry is the **single source of truth** for all `data-tour-id` attribute
 | Resources Nav | `nav-resources` | AppSidebar | Resources navigation item (dev flag) |
 | Help Nav | `nav-help` | AppSidebar | Help & Tours navigation item |
 
+### Mobile Navigation Elements (MobileBottomNav.tsx, MobileHeader.tsx)
+| Logical Name | data-tour-id | Component | Description |
+|--------------|--------------|-----------|-------------|
+| Mobile Brand/Title | `mobile-brand-logo` | MobileHeader | App title in mobile header |
+| Mobile Menu Button | `mobile-menu-button` | MobileHeader | Hamburger menu button |
+| Mobile Dashboard | `mobile-nav-dashboard` | MobileBottomNav | Dashboard bottom nav icon |
+| Mobile Review | `mobile-nav-review` | MobileBottomNav | Review Submissions bottom nav icon |
+| Mobile Forms | `mobile-nav-forms` | MobileBottomNav | Forms Library bottom nav icon |
+| Mobile Build | `mobile-nav-build` | MobileBottomNav | Build Form bottom nav icon |
+| Mobile More | `mobile-nav-more` | MobileBottomNav | More options bottom nav icon |
+
 ### Dashboard Page (Analytics.tsx)
 | Logical Name | data-tour-id | Component | Description |
 |--------------|--------------|-----------|-------------|
@@ -38,7 +65,8 @@ This registry is the **single source of truth** for all `data-tour-id` attribute
 ### Form Builder Page (FormBuilder.tsx)
 | Logical Name | data-tour-id | Component | Description |
 |--------------|--------------|-----------|-------------|
-| Field Palette | `field-palette` | FormBuilder | Left sidebar with field types |
+| Field Palette | `field-palette` | FormBuilder | Left sidebar with field types (desktop) |
+| Mobile Add Field | `mobile-add-field` | FormBuilder | Add field button (mobile) |
 | Form Title Area | `form-title` | FormBuilder | Form title and description input |
 | Form Canvas | `form-canvas` | FormBuilder | Main form editing area |
 | Save Button | `save-form` | FormBuilder | Save form button |
@@ -68,57 +96,72 @@ This registry is the **single source of truth** for all `data-tour-id` attribute
 
 ## Step-by-Step Verification Matrix
 
-### Welcome Tour (Admin: 7 steps, User: 6 steps)
+### Welcome Tour - Desktop (Admin: 7 steps, User: 6 steps)
 
-| Step | ID | Title | Expected Route | Expected Target | Content Summary | Admin | User | Last Verified |
-|------|----|----|----------------|-----------------|-----------------|-------|------|---------------|
-| 1 | welcome-1 | Welcome to SolidForm | dashboard | brand-logo | Introduction to platform | ✅ | ✅ | 2026-02-02 |
-| 2 | welcome-2 | Dashboard | dashboard | nav-dashboard | Analytics and metrics | ✅ | ✅ | 2026-02-02 |
-| 3 | welcome-3 | Review Submissions | dashboard | nav-review | Manage submissions | ✅ | ✅ | 2026-02-02 |
-| 4 | welcome-4 | Forms Library | dashboard | nav-forms | Access all forms | ✅ | ✅ | 2026-02-02 |
-| 5 | welcome-5 | Form Builder | dashboard | nav-build | Create/customize forms | ✅ | ✅ | 2026-02-02 |
-| 6 | welcome-6 | Global Settings | dashboard | nav-settings | Configure settings | ✅ | N/A | 2026-02-02 |
-| 7 | welcome-7 | Help & Support | dashboard | nav-help | Access help resources | ✅ | ✅ | 2026-02-02 |
+| Step | ID | Title | Target | Layout | Content Summary | Admin | User |
+|------|----|-------|--------|--------|-----------------|-------|------|
+| 1 | welcome-1-desktop | Welcome to SolidForm | brand-logo | desktop | Introduction to platform | ✅ | ✅ |
+| 2 | welcome-2-desktop | Dashboard | nav-dashboard | desktop | Click sidebar to view analytics | ✅ | ✅ |
+| 3 | welcome-3-desktop | Review Submissions | nav-review | desktop | Manage submissions | ✅ | ✅ |
+| 4 | welcome-4-desktop | Forms Library | nav-forms | desktop | Access all forms | ✅ | ✅ |
+| 5 | welcome-5-desktop | Form Builder | nav-build | desktop | Create/customize forms | ✅ | ✅ |
+| 6 | welcome-6-desktop | Global Settings | nav-settings | desktop | Configure settings | ✅ | N/A |
+| 7 | welcome-7-desktop | Help & Support | nav-help | desktop | Access help resources | ✅ | ✅ |
 
-### Dashboard Tour (Admin: 2 steps, User: 2 steps)
+### Welcome Tour - Mobile (Admin: 7 steps, User: 6 steps)
 
-| Step | ID | Title | Expected Route | Expected Target | Content Summary | Admin | User | Last Verified |
-|------|----|----|----------------|-----------------|-----------------|-------|------|---------------|
-| 1 | dash-1 | Key Statistics | dashboard | dashboard-stats | Overview metrics | ✅ | ✅ | 2026-02-02 |
-| 2 | dash-2 | Analytics Charts | dashboard | dashboard-charts | Visual insights | ✅ | ✅ | 2026-02-02 |
+| Step | ID | Title | Target | Layout | Content Summary | Admin | User |
+|------|----|-------|--------|--------|-----------------|-------|------|
+| 1 | welcome-1-mobile | Welcome to SolidForm | mobile-brand-logo | mobile | Introduction | ✅ | ✅ |
+| 2 | welcome-2-mobile | Dashboard | mobile-nav-dashboard | mobile | Tap to view analytics | ✅ | ✅ |
+| 3 | welcome-3-mobile | Review Submissions | mobile-nav-review | mobile | Tap to manage submissions | ✅ | ✅ |
+| 4 | welcome-4-mobile | Forms Library | mobile-nav-forms | mobile | Access forms | ✅ | ✅ |
+| 5 | welcome-5-mobile | Form Builder | mobile-nav-build | mobile | Create forms | ✅ | ✅ |
+| 6 | welcome-6-mobile | More Options | mobile-nav-more | mobile | Access Settings/Help | ✅ | ✅ |
+| 7 | welcome-7-mobile | Navigation Menu | mobile-menu-button | mobile | Open full nav drawer | ✅ | ✅ |
 
-### Form Builder Tour (Admin: 4 steps, User: 4 steps)
+### Dashboard Tour (Both Layouts: 2 steps)
 
-| Step | ID | Title | Expected Route | Expected Target | Content Summary | Admin | User | Last Verified |
-|------|----|----|----------------|-----------------|-----------------|-------|------|---------------|
-| 1 | builder-1 | Field Palette | build-form | field-palette | Field types | ✅ | ✅ | 2026-02-02 |
-| 2 | builder-2 | Form Title | build-form | form-title | Title/description | ✅ | ✅ | 2026-02-02 |
-| 3 | builder-3 | Form Canvas | build-form | form-canvas | Main editing area | ✅ | ✅ | 2026-02-02 |
-| 4 | builder-4 | Save Form | build-form | save-form | Save options | ✅ | ✅ | 2026-02-02 |
+| Step | ID | Title | Target | Layout | Content Summary | Admin | User |
+|------|----|-------|--------|--------|-----------------|-------|------|
+| 1 | dash-1 | Key Statistics | dashboard-stats | both | Overview metrics | ✅ | ✅ |
+| 2 | dash-2 | Analytics Charts | dashboard-charts | both | Visual insights | ✅ | ✅ |
 
-### Submissions Tour (Admin: 3 steps, User: 2 steps)
+### Form Builder Tour
 
-| Step | ID | Title | Expected Route | Expected Target | Content Summary | Admin | User | Last Verified |
-|------|----|----|----------------|-----------------|-----------------|-------|------|---------------|
-| 1 | sub-1 | Filter & Search | review-submissions | submission-filters | Search controls | ✅ | ✅ | 2026-02-02 |
-| 2 | sub-2 | Submission List | review-submissions | submission-list | Browse submissions | ✅ | ✅ | 2026-02-02 |
-| 3 | sub-3 | Review & Actions | review-submissions | submission-actions | Take actions | ✅ | N/A | 2026-02-02 |
+| Step | ID | Title | Target | Layout | Content Summary | Admin | User |
+|------|----|-------|--------|--------|-----------------|-------|------|
+| 1 | builder-1-desktop | Field Palette | field-palette | desktop | Field types sidebar | ✅ | ✅ |
+| 1 | builder-1-mobile | Add Fields | mobile-add-field | mobile | Add field button | ✅ | ✅ |
+| 2 | builder-2 | Form Title | form-title | both | Title/description | ✅ | ✅ |
+| 3 | builder-3 | Form Canvas | form-canvas | both | Main editing area | ✅ | ✅ |
+| 4 | builder-4 | Save Form | save-form | both | Save options | ✅ | ✅ |
 
-### Settings Tour (Admin only: 3 steps)
+### Submissions Tour
 
-| Step | ID | Title | Expected Route | Expected Target | Content Summary | Admin | User | Last Verified |
-|------|----|----|----------------|-----------------|-----------------|-------|------|---------------|
-| 1 | set-1 | Language Settings | global-settings | language-settings | Language config | ✅ | N/A | 2026-02-02 |
-| 2 | set-2 | Brand Identity | global-settings | brand-settings | Branding options | ✅ | N/A | 2026-02-02 |
-| 3 | set-3 | Developer Settings | global-settings | developer-settings | Dev resources toggle | ✅ | N/A | 2026-02-02 |
+| Step | ID | Title | Target | Layout | Content Summary | Admin | User |
+|------|----|-------|--------|--------|-----------------|-------|------|
+| 1 | sub-1 | Filter & Search | submission-filters | both | Search controls | ✅ | ✅ |
+| 2 | sub-2 | Submission List | submission-list | both | Browse submissions | ✅ | ✅ |
+| 3 | sub-3-desktop | Review & Actions | submission-actions | desktop | Take actions (desktop) | ✅ | N/A |
+| 3 | sub-3-mobile | Review & Actions | submission-actions | mobile | Tap to take actions | ✅ | N/A |
 
-### Forms Library Tour (Admin: 3 steps, User: 2 steps)
+### Settings Tour (Admin only: 3 steps, both layouts)
 
-| Step | ID | Title | Expected Route | Expected Target | Content Summary | Admin | User | Last Verified |
-|------|----|----|----------------|-----------------|-----------------|-------|------|---------------|
-| 1 | lib-1 | Forms Organization | forms | forms-tabs | Tab navigation | ✅ | ✅ | 2026-02-02 |
-| 2 | lib-2 | Form Cards | forms | forms-list | Form grid | ✅ | ✅ | 2026-02-02 |
-| 3 | lib-3 | Form Actions | forms | forms-actions | Edit/publish/delete | ✅ | N/A | 2026-02-02 |
+| Step | ID | Title | Target | Layout | Content Summary | Admin | User |
+|------|----|-------|--------|--------|-----------------|-------|------|
+| 1 | set-1 | Language Settings | language-settings | both | Language config | ✅ | N/A |
+| 2 | set-2 | Brand Identity | brand-settings | both | Branding options | ✅ | N/A |
+| 3 | set-3 | Developer Settings | developer-settings | both | Dev resources toggle | ✅ | N/A |
+
+### Forms Library Tour
+
+| Step | ID | Title | Target | Layout | Content Summary | Admin | User |
+|------|----|-------|--------|--------|-----------------|-------|------|
+| 1 | lib-1 | Forms Organization | forms-tabs | both | Tab navigation | ✅ | ✅ |
+| 2 | lib-2 | Form Cards | forms-list | both | Form grid | ✅ | ✅ |
+| 3 | lib-3-desktop | Form Actions | forms-actions | desktop | Edit/publish/delete (desktop) | ✅ | N/A |
+| 3 | lib-3-mobile | Form Actions | forms-actions | mobile | Tap action button | ✅ | N/A |
 
 ---
 
@@ -127,12 +170,13 @@ This registry is the **single source of truth** for all `data-tour-id` attribute
 Before each release, verify the following for each tour:
 
 ### Pre-Flight Checks
-- [ ] Help panel opens from sidebar
+- [ ] Help panel opens from sidebar (desktop) or More sheet (mobile)
+- [ ] Layout mode indicator shows correct mode in Help panel
 - [ ] Role selector switches between Admin/User correctly
 - [ ] Tour list displays appropriate tours for each role
 - [ ] LocalStorage is cleared to test fresh state
 
-### Per-Tour Verification
+### Desktop Verification (viewport ≥768px)
 For each tour, run through with "Start Tour" and verify:
 
 1. **Navigation**
@@ -145,14 +189,37 @@ For each tour, run through with "Start Tour" and verify:
    - [ ] No "Element not found" warning appears
 
 3. **Content-Target Alignment** ⚠️ CRITICAL
-   - [ ] Step title matches the highlighted element's label
-   - [ ] Step description describes the highlighted element, not another
-   - [ ] Current screen is the one described in step text
+   - [ ] Step references "sidebar", "click", desktop UI language
+   - [ ] Step targets desktop-specific elements (nav-*, brand-logo)
 
 4. **Overlay Card**
    - [ ] Card is positioned correctly (not off-screen)
-   - [ ] Card doesn't overlap/cover the highlighted element
-   - [ ] Text matches current UI labels
+   - [ ] Card width is 380px
+   - [ ] Text is readable
+
+### Mobile Verification (viewport <768px)
+For each tour, run through with "Start Tour" and verify:
+
+1. **Navigation**
+   - [ ] Tour navigates to correct page for first step
+   - [ ] Bottom navigation responds to tour navigation
+   
+2. **Element Highlighting**
+   - [ ] Spotlight appears around target element
+   - [ ] Spotlight has smaller padding (6px vs 8px)
+   - [ ] No "Element not found" warning appears
+   - [ ] Longer wait times handle drawer/sheet animations
+
+3. **Content-Target Alignment** ⚠️ CRITICAL
+   - [ ] Step references "tap", "bottom bar", mobile UI language
+   - [ ] Step targets mobile-specific elements (mobile-nav-*, mobile-menu-button)
+   - [ ] No references to "sidebar" or "click" on mobile
+
+4. **Overlay Card**
+   - [ ] Card is full-width with 16px margin
+   - [ ] Card positioned at bottom (above bottom nav) when possible
+   - [ ] Touch targets ≥44px for all buttons
+   - [ ] Abbreviated button labels (no "Back", "Skip" text on very small screens)
 
 5. **Controls**
    - [ ] "Next" advances to next step
@@ -162,33 +229,24 @@ For each tour, run through with "Start Tour" and verify:
    - [ ] "Resume" continues from paused step
    - [ ] "X" closes tour
 
-6. **Completion**
-   - [ ] Final step shows "Complete Tour" button
-   - [ ] Feedback dialog appears on completion
-   - [ ] Tour marked as complete in Help panel
-   - [ ] "Restart Tour" works after completion
-
 ---
 
-## Role-Based Access Verification
+## Mobile-Specific Considerations
 
-### Admin Role Tours
-All tours should be accessible:
-- ✅ Welcome to SolidForm (7 steps)
-- ✅ Dashboard Overview (2 steps)
-- ✅ Form Builder (4 steps)
-- ✅ Submission Review (3 steps)
-- ✅ Settings & Configuration (3 steps)
-- ✅ Forms Library (3 steps)
+### Wait Times
+- Desktop: 150ms between retries, 200ms initial delay
+- Mobile: 200ms between retries, 300ms initial delay (for drawer/sheet animations)
 
-### User Role Tours
-Limited tours visible (no Settings tour):
-- ✅ Welcome to SolidForm (6 steps - excludes Settings step)
-- ✅ Dashboard Overview (2 steps)
-- ✅ Form Builder (4 steps)
-- ✅ Submission Review (2 steps - excludes Actions step)
-- ❌ Settings & Configuration (not available)
-- ✅ Forms Library (2 steps - excludes Actions step)
+### Touch Targets
+All tour controls must have minimum 44x44px tap targets:
+- Next/Back/Skip buttons: min-h-[44px]
+- Close (X) button: h-8 w-8 minimum
+- Feedback buttons: min-h-[44px]
+
+### Positioning
+- Mobile cards positioned at bottom when space allows
+- Cards avoid overlapping bottom navigation (80px clearance)
+- Centered horizontally with max-width of 340px
 
 ---
 
@@ -198,8 +256,9 @@ Limited tours visible (no Settings tour):
 
 1. **Before making changes**, check if the element has a `data-tour-id` attribute
 2. **If it does**, update `src/data/tourSteps.ts` to match any label/position changes
-3. **Test affected tours** after the change
-4. **Update this document** if tours are added, removed, or significantly modified
+3. **Check BOTH desktop and mobile steps** for the affected tour
+4. **Test affected tours** at both breakpoints after the change
+5. **Update this document** if tours are added, removed, or significantly modified
 
 ### PR Checklist for Tour-Related Changes
 
@@ -207,26 +266,20 @@ Add these items to your PR checklist when modifying navigation, labels, or layou
 
 - [ ] Does this change affect any element with `data-tour-id`?
 - [ ] If yes, have tour steps in `tourSteps.ts` been updated?
-- [ ] Has the verification matrix been updated with new verification date?
-- [ ] Have you run the Welcome tour and confirmed text/target alignment?
+- [ ] Has the step's `layout` field been set correctly?
+- [ ] Have you tested the tour at BOTH desktop (≥768px) and mobile (<768px)?
+- [ ] Has the verification matrix been updated?
 
 ### Preventing Content-Target Mismatch
 
 The most common tour bug is **misaligned content and target**. To prevent this:
 
 1. **Always use the registry**: When defining a step, use `data-tour-id` values from the registry above
-2. **Verify route matches screen**: The `route` property must match where the target element exists
-3. **Read your step aloud**: "The [title] step describes [element] on the [route] page" - all three must align
-4. **Role filtering awareness**: When filtering steps by role, verify step indices don't shift unexpectedly
-
-### How to Add or Modify a Tour Step
-
-1. **Choose target element** from the Data Tour ID Registry above
-2. **Specify the correct route** where the element exists
-3. **Write step content** that describes ONLY that element
-4. **Define role access** (which roles can see this step)
-5. **Update the verification matrix** with the new step
-6. **Test the tour** for both Admin and User roles
+2. **Set correct layout**: Use `layout: 'desktop'` for sidebar elements, `layout: 'mobile'` for bottom nav
+3. **Use layout-appropriate language**:
+   - Desktop: "Click", "sidebar", "left panel"
+   - Mobile: "Tap", "bottom bar", "menu icon"
+4. **Role filtering awareness**: When filtering steps by role AND layout, verify step indices don't shift unexpectedly
 
 ---
 
@@ -235,29 +288,31 @@ The most common tour bug is **misaligned content and target**. To prevent this:
 1. **Removed Tours**: Reports tour was removed as reports functionality is integrated into Analytics
 2. **Developer Resources**: Resources tour not included since section is hidden behind developer flag
 3. **Form Preview**: Preview tour not included as it requires published form context
+4. **Orientation Changes**: Tour may need restart if user rotates device during tour
 
 ---
 
 ## Troubleshooting Common Issues
 
-### "Element not found" during tour
-- Check if `data-tour-id` exists in the component
-- Verify the `route` property is correct
-- Element may be conditionally rendered (check permissions)
+### "Element not found" during tour (mobile)
+- Check if `data-tour-id` exists with `mobile-` prefix for mobile elements
+- Verify the step has `layout: 'mobile'` (not 'desktop')
+- Mobile elements may need longer wait times (drawer animations)
+
+### "Element not found" during tour (desktop)
+- Check if `data-tour-id` exists in the sidebar component
+- Verify the step has `layout: 'desktop'` (not 'mobile')
+- Ensure sidebar is expanded/visible
 
 ### Step content doesn't match highlighted element
-- Verify step's `targetSelector` uses correct `data-tour-id`
-- Check role-based filtering isn't shifting step indices
-- Compare step order in config vs rendered order
+- Verify step's `layout` field matches the current viewport
+- Check that mobile steps use mobile-specific language
+- Ensure desktop steps don't reference mobile UI
 
-### Tour resets unexpectedly
-- Check for localStorage issues
-- Role change during tour will reset it (expected behavior)
-- Verify no duplicate tour IDs exist
-
-### Stale tour state
-- Clear localStorage keys: `solidform_tour_state`, `solidform_tour_analytics`, `solidform_user_role`
-- Restart the tour from Help panel
+### Tour shows desktop steps on mobile (or vice versa)
+- Check `getStepsForRoleAndLayout` is being called correctly
+- Verify `layoutMode` is updating on resize
+- Clear localStorage and restart tour
 
 ---
 
@@ -267,3 +322,4 @@ The most common tour bug is **misaligned content and target**. To prevent this:
 |---------|------|---------|
 | 1.0.0 | 2026-02-02 | Initial tour system implementation |
 | 1.1.0 | 2026-02-02 | Added verification matrix, governance rules, and data-tour-id registry |
+| 2.0.0 | 2026-02-02 | Added mobile-aware tours: layout detection, mobile-specific steps, responsive overlay |

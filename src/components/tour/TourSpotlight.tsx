@@ -8,16 +8,19 @@ interface SpotlightRect {
   height: number;
 }
 
-const MAX_WAIT_ATTEMPTS = 20;
+const MAX_WAIT_ATTEMPTS = 25; // Increased for mobile transitions
 const WAIT_INTERVAL = 150;
+const MOBILE_WAIT_INTERVAL = 200; // Slightly longer for mobile animations
 
 export const TourSpotlight: React.FC = () => {
-  const { isTourActive, currentStep } = useTour();
+  const { isTourActive, currentStep, layoutMode } = useTour();
   const [targetRect, setTargetRect] = useState<SpotlightRect | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const [elementNotFound, setElementNotFound] = useState(false);
   const observerRef = useRef<ResizeObserver | null>(null);
   const waitAttemptsRef = useRef(0);
+  
+  const isMobile = layoutMode === 'mobile';
 
   useEffect(() => {
     if (!isTourActive || !currentStep) {
@@ -30,17 +33,18 @@ export const TourSpotlight: React.FC = () => {
 
     const findAndHighlightTarget = () => {
       const target = document.querySelector(currentStep.targetSelector);
+      const waitInterval = isMobile ? MOBILE_WAIT_INTERVAL : WAIT_INTERVAL;
       
       if (target) {
         const rect = target.getBoundingClientRect();
-        const padding = 8;
+        const padding = isMobile ? 6 : 8; // Slightly smaller padding on mobile
         
         // Check if element is visible (has dimensions)
         if (rect.width === 0 || rect.height === 0) {
           // Element exists but not visible, keep waiting
           if (waitAttemptsRef.current < MAX_WAIT_ATTEMPTS) {
             waitAttemptsRef.current++;
-            setTimeout(findAndHighlightTarget, WAIT_INTERVAL);
+            setTimeout(findAndHighlightTarget, waitInterval);
             return;
           }
         }
@@ -55,8 +59,11 @@ export const TourSpotlight: React.FC = () => {
         });
         setIsVisible(true);
 
-        // Scroll element into view if needed (but not if it's the sidebar)
-        if (!currentStep.targetSelector.includes('nav-')) {
+        // Scroll element into view if needed
+        // On mobile, be more careful about scrolling to not conflict with bottom nav
+        const shouldScroll = !currentStep.targetSelector.includes('nav-') && 
+                            !currentStep.targetSelector.includes('mobile-nav-');
+        if (shouldScroll) {
           target.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
@@ -64,23 +71,25 @@ export const TourSpotlight: React.FC = () => {
         if (observerRef.current) {
           observerRef.current.disconnect();
         }
+        const currentPadding = isMobile ? 6 : 8;
         observerRef.current = new ResizeObserver(() => {
           const newRect = target.getBoundingClientRect();
           if (newRect.width > 0 && newRect.height > 0) {
             setTargetRect({
-              top: newRect.top - padding + window.scrollY,
-              left: newRect.left - padding,
-              width: newRect.width + padding * 2,
-              height: newRect.height + padding * 2
+              top: newRect.top - currentPadding + window.scrollY,
+              left: newRect.left - currentPadding,
+              width: newRect.width + currentPadding * 2,
+              height: newRect.height + currentPadding * 2
             });
           }
         });
         observerRef.current.observe(target);
       } else {
         // Target not found - wait and retry
+        const waitInterval = isMobile ? MOBILE_WAIT_INTERVAL : WAIT_INTERVAL;
         if (waitAttemptsRef.current < MAX_WAIT_ATTEMPTS) {
           waitAttemptsRef.current++;
-          setTimeout(findAndHighlightTarget, WAIT_INTERVAL);
+          setTimeout(findAndHighlightTarget, waitInterval);
           return;
         }
         
@@ -96,7 +105,9 @@ export const TourSpotlight: React.FC = () => {
     setElementNotFound(false);
     
     // Small delay to allow DOM/navigation to update
-    const timeout = setTimeout(findAndHighlightTarget, 200);
+    // Mobile needs slightly longer delay for drawer/sheet animations
+    const initialDelay = isMobile ? 300 : 200;
+    const timeout = setTimeout(findAndHighlightTarget, initialDelay);
 
     // Also update on scroll/resize
     const handleUpdate = () => {
@@ -115,7 +126,7 @@ export const TourSpotlight: React.FC = () => {
         observerRef.current.disconnect();
       }
     };
-  }, [isTourActive, currentStep]);
+  }, [isTourActive, currentStep, isMobile]);
 
   if (!isVisible) return null;
 
