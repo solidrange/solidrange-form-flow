@@ -24,6 +24,7 @@ import {
 } from "@/components/ui/sidebar";
 import { BrandLogo } from "@/components/BrandLogo";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useSettings } from "@/contexts/SettingsContext";
 
 interface AppSidebarProps {
   activeTab: string;
@@ -34,6 +35,7 @@ interface AppSidebarProps {
 export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: AppSidebarProps) {
   const { state } = useSidebar();
   const { t, isRTL } = useLanguage();
+  const { showDevelopmentResources } = useSettings();
   const isCollapsed = state === "collapsed";
 
   const navItems = [
@@ -99,7 +101,9 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
+              {navItems
+                .filter((item) => item.id !== 'resources' || showDevelopmentResources)
+                .map((item) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton
                     onClick={item.onClick}
