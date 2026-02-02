@@ -26,18 +26,19 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     xl: 'h-16 w-16'
   };
 
+  // Increased text sizes for better hierarchy - product name should be larger than nav items
   const textSizeClasses = {
-    sm: 'text-sm',
-    md: 'text-lg',
+    sm: 'text-lg',      // Was text-sm, now larger for sidebar
+    md: 'text-xl',      // Was text-lg
     lg: 'text-2xl',
     xl: 'text-3xl'
   };
 
   const solidRangeLogoSizes = {
-    sm: 'h-3',
-    md: 'h-4',
-    lg: 'h-5',
-    xl: 'h-6'
+    sm: 'h-4',          // Slightly larger
+    md: 'h-5',
+    lg: 'h-6',
+    xl: 'h-7'
   };
 
   const DefaultLogo = () => (
@@ -76,10 +77,10 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   };
 
   const solidRangeLogoSizesLarge = {
-    sm: 'h-5',
-    md: 'h-6',
-    lg: 'h-8',
-    xl: 'h-10'
+    sm: 'h-6',          // Slightly larger for better visibility
+    md: 'h-7',
+    lg: 'h-9',
+    xl: 'h-11'
   };
 
   return (
