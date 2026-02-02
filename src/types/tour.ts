@@ -1,5 +1,6 @@
 // Tour System Types
 export type UserRole = 'admin' | 'user';
+export type LayoutMode = 'desktop' | 'mobile' | 'both';
 
 export interface TourStep {
   id: string;
@@ -9,6 +10,7 @@ export interface TourStep {
   route?: string; // Optional route this step should appear on
   position?: 'top' | 'bottom' | 'left' | 'right' | 'center';
   roles: UserRole[]; // Which roles can see this step
+  layout: LayoutMode; // Which layout mode this step applies to
   order: number;
 }
 

@@ -43,6 +43,7 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
     userRole,
     setUserRole,
     tourState,
+    layoutMode,
     getAvailableTours,
     getTourProgress,
     startTour,
@@ -54,6 +55,7 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
 
   const availableTours = getAvailableTours();
   const tips = getTipsForRole(userRole);
+  const isMobile = layoutMode === 'mobile';
   
   // Group tips by category
   const tipsByCategory = tips.reduce((acc, tip) => {
@@ -105,7 +107,10 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-[400px] sm:w-[450px] p-0">
+      <SheetContent className={cn(
+        "p-0",
+        isMobile ? "w-full" : "w-[400px] sm:w-[450px]"
+      )}>
         <SheetHeader className="p-6 pb-0">
           <SheetTitle className="flex items-center gap-2">
             <HelpCircle className="h-5 w-5 text-primary" />
@@ -114,6 +119,16 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
         </SheetHeader>
 
         <div className="p-6 pt-4">
+          {/* Layout Mode Indicator */}
+          <div className="mb-4 flex items-center gap-2">
+            <Badge variant="outline" className="text-xs">
+              {layoutMode === 'mobile' ? '📱 Mobile View' : '🖥️ Desktop View'}
+            </Badge>
+            <span className="text-xs text-muted-foreground">
+              Tours adapt to your current layout
+            </span>
+          </div>
+
           {/* Role Selector */}
           <div className="mb-4">
             <p className="text-sm text-muted-foreground mb-2">Your Role</p>
@@ -122,7 +137,7 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
                 variant={userRole === 'admin' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setUserRole('admin')}
-                className="flex-1"
+                className={cn("flex-1", isMobile && "min-h-[44px]")}
               >
                 <Shield className="h-4 w-4 mr-1" />
                 Admin
@@ -131,7 +146,7 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
                 variant={userRole === 'user' ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setUserRole('user')}
-                className="flex-1"
+                className={cn("flex-1", isMobile && "min-h-[44px]")}
               >
                 <User className="h-4 w-4 mr-1" />
                 User

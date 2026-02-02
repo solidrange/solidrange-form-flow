@@ -1,4 +1,4 @@
-import { Tour, HelpTip, UserRole } from '@/types/tour';
+import { Tour, HelpTip, UserRole, LayoutMode } from '@/types/tour';
 
 // Route mappings for each tab
 export const routeMap: Record<string, string> = {
@@ -19,74 +19,160 @@ export const tours: Tour[] = [
     roles: ['admin', 'user'],
     category: 'complete',
     steps: [
+      // Desktop steps - sidebar navigation
       {
-        id: 'welcome-1',
+        id: 'welcome-1-desktop',
         targetSelector: '[data-tour-id="brand-logo"]',
         title: 'Welcome to SolidForm',
         content: 'This is your enterprise assessment platform by SolidRange. Let\'s take a quick tour of the main features.',
         route: 'dashboard',
         position: 'right',
         roles: ['admin', 'user'],
+        layout: 'desktop',
         order: 1
       },
       {
-        id: 'welcome-2',
+        id: 'welcome-2-desktop',
         targetSelector: '[data-tour-id="nav-dashboard"]',
         title: 'Dashboard',
-        content: 'Your command center! View analytics, submission statistics, and performance metrics.',
+        content: 'Your command center! Click here to view analytics, submission statistics, and performance metrics.',
         route: 'dashboard',
         position: 'right',
         roles: ['admin', 'user'],
+        layout: 'desktop',
         order: 2
       },
       {
-        id: 'welcome-3',
+        id: 'welcome-3-desktop',
         targetSelector: '[data-tour-id="nav-review"]',
         title: 'Review Submissions',
         content: 'Review and manage form submissions. Filter by status, risk level, and take approval actions.',
         route: 'dashboard',
         position: 'right',
         roles: ['admin', 'user'],
+        layout: 'desktop',
         order: 3
       },
       {
-        id: 'welcome-4',
+        id: 'welcome-4-desktop',
         targetSelector: '[data-tour-id="nav-forms"]',
         title: 'Forms Library',
         content: 'Access all your forms - drafts, published, and templates. Organize and manage your form collection.',
         route: 'dashboard',
         position: 'right',
         roles: ['admin', 'user'],
+        layout: 'desktop',
         order: 4
       },
       {
-        id: 'welcome-5',
+        id: 'welcome-5-desktop',
         targetSelector: '[data-tour-id="nav-build"]',
         title: 'Form Builder',
         content: 'Create and customize forms with our drag-and-drop builder. Add fields, logic, and styling.',
         route: 'dashboard',
         position: 'right',
         roles: ['admin', 'user'],
+        layout: 'desktop',
         order: 5
       },
       {
-        id: 'welcome-6',
+        id: 'welcome-6-desktop',
         targetSelector: '[data-tour-id="nav-settings"]',
         title: 'Global Settings',
         content: 'Configure language, branding, and developer options for your SolidForm instance.',
         route: 'dashboard',
         position: 'right',
         roles: ['admin'],
+        layout: 'desktop',
         order: 6
       },
       {
-        id: 'welcome-7',
+        id: 'welcome-7-desktop',
         targetSelector: '[data-tour-id="nav-help"]',
         title: 'Help & Support',
         content: 'Access guided tours, quick tips, and help resources anytime from here.',
         route: 'dashboard',
         position: 'right',
         roles: ['admin', 'user'],
+        layout: 'desktop',
+        order: 7
+      },
+      // Mobile steps - bottom navigation
+      {
+        id: 'welcome-1-mobile',
+        targetSelector: '[data-tour-id="mobile-brand-logo"]',
+        title: 'Welcome to SolidForm',
+        content: 'This is your enterprise assessment platform by SolidRange. Let\'s explore the mobile interface.',
+        route: 'dashboard',
+        position: 'bottom',
+        roles: ['admin', 'user'],
+        layout: 'mobile',
+        order: 1
+      },
+      {
+        id: 'welcome-2-mobile',
+        targetSelector: '[data-tour-id="mobile-nav-dashboard"]',
+        title: 'Dashboard',
+        content: 'Tap here to view your analytics and submission statistics.',
+        route: 'dashboard',
+        position: 'top',
+        roles: ['admin', 'user'],
+        layout: 'mobile',
+        order: 2
+      },
+      {
+        id: 'welcome-3-mobile',
+        targetSelector: '[data-tour-id="mobile-nav-review"]',
+        title: 'Review Submissions',
+        content: 'Tap here to review and manage form submissions on the go.',
+        route: 'dashboard',
+        position: 'top',
+        roles: ['admin', 'user'],
+        layout: 'mobile',
+        order: 3
+      },
+      {
+        id: 'welcome-4-mobile',
+        targetSelector: '[data-tour-id="mobile-nav-forms"]',
+        title: 'Forms Library',
+        content: 'Access all your forms - drafts, published, and templates.',
+        route: 'dashboard',
+        position: 'top',
+        roles: ['admin', 'user'],
+        layout: 'mobile',
+        order: 4
+      },
+      {
+        id: 'welcome-5-mobile',
+        targetSelector: '[data-tour-id="mobile-nav-build"]',
+        title: 'Form Builder',
+        content: 'Tap here to create and customize assessment forms.',
+        route: 'dashboard',
+        position: 'top',
+        roles: ['admin', 'user'],
+        layout: 'mobile',
+        order: 5
+      },
+      {
+        id: 'welcome-6-mobile',
+        targetSelector: '[data-tour-id="mobile-nav-more"]',
+        title: 'More Options',
+        content: 'Tap here to access Settings, Resources, and Help.',
+        route: 'dashboard',
+        position: 'top',
+        roles: ['admin', 'user'],
+        layout: 'mobile',
+        order: 6
+      },
+      {
+        id: 'welcome-7-mobile',
+        targetSelector: '[data-tour-id="mobile-menu-button"]',
+        title: 'Navigation Menu',
+        content: 'Tap the menu icon to open the full navigation drawer for quick access to all sections.',
+        route: 'dashboard',
+        position: 'bottom',
+        roles: ['admin', 'user'],
+        layout: 'mobile',
         order: 7
       }
     ]
@@ -106,6 +192,7 @@ export const tours: Tour[] = [
         route: 'dashboard',
         position: 'bottom',
         roles: ['admin', 'user'],
+        layout: 'both',
         order: 1
       },
       {
@@ -116,6 +203,7 @@ export const tours: Tour[] = [
         route: 'dashboard',
         position: 'top',
         roles: ['admin', 'user'],
+        layout: 'both',
         order: 2
       }
     ]
@@ -127,14 +215,16 @@ export const tours: Tour[] = [
     roles: ['admin', 'user'],
     category: 'forms',
     steps: [
+      // Desktop steps
       {
-        id: 'builder-1',
+        id: 'builder-1-desktop',
         targetSelector: '[data-tour-id="field-palette"]',
         title: 'Field Palette',
         content: 'Choose from various field types: text, numbers, dropdowns, checkboxes, ratings, and more. Click a field to add it to your form.',
         route: 'build-form',
         position: 'right',
         roles: ['admin', 'user'],
+        layout: 'desktop',
         order: 1
       },
       {
@@ -145,6 +235,7 @@ export const tours: Tour[] = [
         route: 'build-form',
         position: 'bottom',
         roles: ['admin', 'user'],
+        layout: 'both',
         order: 2
       },
       {
@@ -155,6 +246,7 @@ export const tours: Tour[] = [
         route: 'build-form',
         position: 'left',
         roles: ['admin', 'user'],
+        layout: 'both',
         order: 3
       },
       {
@@ -165,7 +257,20 @@ export const tours: Tour[] = [
         route: 'build-form',
         position: 'bottom',
         roles: ['admin', 'user'],
+        layout: 'both',
         order: 4
+      },
+      // Mobile-specific step for add field button
+      {
+        id: 'builder-1-mobile',
+        targetSelector: '[data-tour-id="mobile-add-field"]',
+        title: 'Add Fields',
+        content: 'Tap this button to open the field palette and add fields to your form.',
+        route: 'build-form',
+        position: 'top',
+        roles: ['admin', 'user'],
+        layout: 'mobile',
+        order: 1
       }
     ]
   },
@@ -184,6 +289,7 @@ export const tours: Tour[] = [
         route: 'review-submissions',
         position: 'bottom',
         roles: ['admin', 'user'],
+        layout: 'both',
         order: 1
       },
       {
@@ -194,16 +300,29 @@ export const tours: Tour[] = [
         route: 'review-submissions',
         position: 'right',
         roles: ['admin', 'user'],
+        layout: 'both',
         order: 2
       },
       {
-        id: 'sub-3',
+        id: 'sub-3-desktop',
         targetSelector: '[data-tour-id="submission-actions"]',
         title: 'Review & Take Action',
         content: 'View complete submission details and take actions: approve, reject, request changes, or export to PDF/Excel.',
         route: 'review-submissions',
         position: 'left',
         roles: ['admin'],
+        layout: 'desktop',
+        order: 3
+      },
+      {
+        id: 'sub-3-mobile',
+        targetSelector: '[data-tour-id="submission-actions"]',
+        title: 'Review & Take Action',
+        content: 'Tap any submission card to view details. Use the action buttons to approve, reject, or export.',
+        route: 'review-submissions',
+        position: 'top',
+        roles: ['admin'],
+        layout: 'mobile',
         order: 3
       }
     ]
@@ -223,6 +342,7 @@ export const tours: Tour[] = [
         route: 'global-settings',
         position: 'right',
         roles: ['admin'],
+        layout: 'both',
         order: 1
       },
       {
@@ -233,16 +353,18 @@ export const tours: Tour[] = [
         route: 'global-settings',
         position: 'right',
         roles: ['admin'],
+        layout: 'both',
         order: 2
       },
       {
         id: 'set-3',
         targetSelector: '[data-tour-id="developer-settings"]',
         title: 'Developer Settings',
-        content: 'Toggle visibility of development resources and technical documentation. Enable this to access the Resources section in the sidebar.',
+        content: 'Toggle visibility of development resources and technical documentation. Enable this to access the Resources section.',
         route: 'global-settings',
         position: 'right',
         roles: ['admin'],
+        layout: 'both',
         order: 3
       }
     ]
@@ -262,26 +384,40 @@ export const tours: Tour[] = [
         route: 'forms',
         position: 'bottom',
         roles: ['admin', 'user'],
+        layout: 'both',
         order: 1
       },
       {
         id: 'lib-2',
         targetSelector: '[data-tour-id="forms-list"]',
         title: 'Form Cards',
-        content: 'Each card shows the form name, description, category, and status. Click to select a form for editing or viewing.',
+        content: 'Each card shows the form name, description, category, and status. Tap to select a form for editing or viewing.',
         route: 'forms',
         position: 'right',
         roles: ['admin', 'user'],
+        layout: 'both',
         order: 2
       },
       {
-        id: 'lib-3',
+        id: 'lib-3-desktop',
         targetSelector: '[data-tour-id="forms-actions"]',
         title: 'Form Actions',
         content: 'Use the actions menu to edit, duplicate, publish, or delete forms. Published forms can be moved back to drafts for editing.',
         route: 'forms',
         position: 'left',
         roles: ['admin'],
+        layout: 'desktop',
+        order: 3
+      },
+      {
+        id: 'lib-3-mobile',
+        targetSelector: '[data-tour-id="forms-actions"]',
+        title: 'Form Actions',
+        content: 'Tap the action button on any form card to edit, duplicate, publish, or delete it.',
+        route: 'forms',
+        position: 'top',
+        roles: ['admin'],
+        layout: 'mobile',
         order: 3
       }
     ]
@@ -367,9 +503,16 @@ export const getToursForRole = (role: UserRole): Tour[] => {
   return tours.filter(tour => tour.roles.includes(role));
 };
 
-// Get steps for a tour filtered by role
+// Get steps for a tour filtered by role only (legacy support)
 export const getStepsForRole = (tour: Tour, role: UserRole): Tour['steps'] => {
   return tour.steps.filter(step => step.roles.includes(role)).sort((a, b) => a.order - b.order);
+};
+
+// Get steps for a tour filtered by role AND layout
+export const getStepsForRoleAndLayout = (tour: Tour, role: UserRole, layout: 'desktop' | 'mobile'): Tour['steps'] => {
+  return tour.steps
+    .filter(step => step.roles.includes(role) && (step.layout === layout || step.layout === 'both'))
+    .sort((a, b) => a.order - b.order);
 };
 
 // Get tips for a specific role

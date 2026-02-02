@@ -1,7 +1,9 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
-import { TourState, TourAnalytics, Tour, UserRole } from '@/types/tour';
-import { tours, getToursForRole, getStepsForRole, getStepRoute } from '@/data/tourSteps';
+import { TourState, TourAnalytics, Tour, UserRole, LayoutMode } from '@/types/tour';
+import { tours, getToursForRole, getStepsForRole, getStepRoute, getStepsForRoleAndLayout } from '@/data/tourSteps';
 import { toast } from '@/hooks/use-toast';
+
+const MOBILE_BREAKPOINT = 768;
 
 interface TourContextType {
   // State
@@ -11,6 +13,7 @@ interface TourContextType {
   totalSteps: number;
   userRole: UserRole;
   analytics: TourAnalytics[];
+  layoutMode: LayoutMode;
   
   // Actions
   startTour: (tourId: string, onNavigate?: (tab: string) => void) => void;
@@ -62,6 +65,23 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
     return (saved as UserRole) || 'admin';
   });
 
+  // Layout mode detection
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>(() => {
+    if (typeof window === 'undefined') return 'desktop';
+    return window.innerWidth < MOBILE_BREAKPOINT ? 'mobile' : 'desktop';
+  });
+
+  // Listen for viewport changes
+  useEffect(() => {
+    const handleResize = () => {
+      const newMode = window.innerWidth < MOBILE_BREAKPOINT ? 'mobile' : 'desktop';
+      setLayoutMode(newMode);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Navigation callback to change tabs
   const [navigationCallback, setNavigationCallbackState] = useState<((tab: string) => void) | null>(null);
 
@@ -78,13 +98,13 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem(USER_ROLE_KEY, userRole);
   }, [userRole]);
 
-  // Derived state
+  // Derived state - filter steps by role AND layout
   const currentTour = tourState.activeTourId 
     ? tours.find(t => t.id === tourState.activeTourId) || null 
     : null;
     
   const roleFilteredSteps = currentTour 
-    ? getStepsForRole(currentTour, userRole) 
+    ? getStepsForRoleAndLayout(currentTour, userRole, layoutMode as 'desktop' | 'mobile')
     : [];
     
   const currentStep = roleFilteredSteps[tourState.currentStepIndex] || null;
@@ -142,8 +162,18 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
       setNavigationCallbackState(() => onNavigate);
     }
 
-    // Get the first step's route and navigate
-    const steps = getStepsForRole(tour, userRole);
+    // Get the first step's route and navigate - filter by layout
+    const steps = getStepsForRoleAndLayout(tour, userRole, layoutMode as 'desktop' | 'mobile');
+    
+    if (steps.length === 0) {
+      toast({
+        title: 'No steps available',
+        description: 'This tour has no steps for the current layout.',
+        variant: 'destructive'
+      });
+      return;
+    }
+    
     if (steps.length > 0 && steps[0].route && (onNavigate || navigationCallback)) {
       const navFn = onNavigate || navigationCallback;
       navFn?.(steps[0].route);
@@ -171,7 +201,7 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
       title: 'Tour started',
       description: `Starting: ${tour.name}`,
     });
-  }, [userRole, tourState.completedTours, navigationCallback]);
+  }, [userRole, tourState.completedTours, navigationCallback, layoutMode]);
 
   const nextStep = useCallback(() => {
     if (!currentTour) return;
@@ -198,7 +228,7 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
     }
 
     // Navigate to the next step's route if different
-    const nextSteps = getStepsForRole(currentTour, userRole);
+    const nextSteps = getStepsForRoleAndLayout(currentTour, userRole, layoutMode as 'desktop' | 'mobile');
     const nextStepData = nextSteps[nextIndex];
     if (nextStepData?.route && navigationCallback) {
       navigationCallback(nextStepData.route);
@@ -215,7 +245,7 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
         ? { ...a, stepsVisited: [...a.stepsVisited, nextIndex] }
         : a
     ));
-  }, [currentTour, tourState.currentStepIndex, tourState.activeTourId, totalSteps, userRole, navigationCallback]);
+  }, [currentTour, tourState.currentStepIndex, tourState.activeTourId, totalSteps, userRole, navigationCallback, layoutMode]);
 
   const prevStep = useCallback(() => {
     if (tourState.currentStepIndex > 0) {
@@ -223,7 +253,7 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
       
       // Navigate to the previous step's route if different
       if (currentTour) {
-        const steps = getStepsForRole(currentTour, userRole);
+        const steps = getStepsForRoleAndLayout(currentTour, userRole, layoutMode as 'desktop' | 'mobile');
         const prevStepData = steps[prevIndex];
         if (prevStepData?.route && navigationCallback) {
           navigationCallback(prevStepData.route);
@@ -235,7 +265,7 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
         currentStepIndex: prevIndex
       }));
     }
-  }, [tourState.currentStepIndex, currentTour, userRole, navigationCallback]);
+  }, [tourState.currentStepIndex, currentTour, userRole, navigationCallback, layoutMode]);
 
   const skipStep = useCallback(() => {
     // Record skipped step
@@ -326,7 +356,7 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
     const tour = tours.find(t => t.id === tourId);
     if (!tour) return { completed: false, stepsCompleted: 0, totalSteps: 0 };
     
-    const steps = getStepsForRole(tour, userRole);
+    const steps = getStepsForRoleAndLayout(tour, userRole, layoutMode as 'desktop' | 'mobile');
     const completed = tourState.completedTours.includes(tourId);
     const analytic = analytics.find(a => a.tourId === tourId);
     
@@ -335,7 +365,7 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
       stepsCompleted: analytic?.stepsVisited.length || 0,
       totalSteps: steps.length
     };
-  }, [userRole, tourState.completedTours, analytics]);
+  }, [userRole, tourState.completedTours, analytics, layoutMode]);
 
   const getAvailableTours = useCallback(() => {
     return getToursForRole(userRole);
@@ -349,6 +379,7 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
       totalSteps,
       userRole,
       analytics,
+      layoutMode,
       startTour,
       nextStep,
       prevStep,
