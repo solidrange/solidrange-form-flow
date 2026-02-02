@@ -797,12 +797,12 @@ const Index = () => {
         {/* Main Content */}
         <SidebarInset className="flex-1">
           {/* Header - Mobile optimized */}
-          <div className="bg-white border-b shadow-sm sticky top-0 z-40">
+          <div className="bg-background border-b border-border shadow-sm sticky top-0 z-40">
             <div className="flex items-center justify-between h-12 sm:h-14 px-3 sm:px-4">
               <div className={`flex items-center gap-2 min-w-0 flex-1 ${isRTL ? 'flex-row-reverse' : ''}`}>
                 <SidebarTrigger className="shrink-0" />
                 <div className="h-4 w-px bg-border hidden sm:block" />
-                <h1 className={`font-semibold text-base sm:text-lg truncate ${isRTL ? 'text-right' : 'text-left'}`}>
+                <h1 className={`font-semibold text-base sm:text-lg truncate text-foreground ${isRTL ? 'text-right' : 'text-left'}`}>
                   {getPageTitle(activeTab)}
                 </h1>
               </div>
@@ -822,7 +822,7 @@ const Index = () => {
                     </DialogHeader>
                     <div className="space-y-4">
                       <div>
-                        <label className="text-sm font-medium text-gray-700">Form URL</label>
+                        <label className="text-sm font-medium text-foreground">Form URL</label>
                         <div className="flex gap-2 mt-1">
                           <Input 
                             value={`${window.location.origin}/form/${currentFormId || 'current-form'}`} 
@@ -852,7 +852,7 @@ const Index = () => {
           </div>
 
           {/* Page Content - Mobile optimized padding */}
-          <div className="p-3 sm:p-4 lg:p-6">
+          <div className="p-3 sm:p-4 lg:p-6 bg-background min-h-[calc(100vh-3.5rem)]">
             {activeTab === "dashboard" && (
               <Analytics 
                 submissions={submissions} 
@@ -917,8 +917,8 @@ const Index = () => {
               <div className="space-y-6">
                   <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
                     <div className={isRTL ? 'text-right' : 'text-left'}>
-                      <h2 className="text-xl sm:text-2xl font-bold text-gray-900">{t('forms')}</h2>
-                      <p className="text-sm sm:text-base text-gray-600">Manage your draft and published forms</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">{t('forms')}</h2>
+                      <p className="text-sm sm:text-base text-muted-foreground">Manage your draft and published forms</p>
                     </div>
                     <Button onClick={createNewForm} className={`gap-2 self-start sm:self-auto ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Plus className="h-4 w-4" />
@@ -941,9 +941,9 @@ const Index = () => {
                   <TabsContent value="drafts" className="space-y-4">
                     {savedDrafts.length === 0 ? (
                       <div className="text-center py-12">
-                        <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">{t('noForms')}</h3>
-                        <p className="text-gray-600 mb-4">{t('createFirstForm')}</p>
+                        <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-foreground mb-2">{t('noForms')}</h3>
+                        <p className="text-muted-foreground mb-4">{t('createFirstForm')}</p>
                         <Button onClick={createNewForm} className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                           <Plus className="h-4 w-4" />
                           {t('newForm')}
@@ -957,7 +957,7 @@ const Index = () => {
                               <div className="flex items-start justify-between">
                                 <div className="flex-1 min-w-0">
                                   <CardTitle className="text-lg truncate">{draft.title}</CardTitle>
-                                  <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                                     {draft.description || "No description"}
                                   </p>
                                 </div>
@@ -965,7 +965,7 @@ const Index = () => {
                               </div>
                             </CardHeader>
                             <CardContent className="pt-0">
-                              <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                              <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
                                 <span>{draft.fields.length} fields</span>
                                 <span>{new Date(draft.updatedAt).toLocaleDateString()}</span>
                               </div>
@@ -1022,9 +1022,9 @@ const Index = () => {
                   <TabsContent value="published" className="space-y-4">
                     {publishedForms.length === 0 ? (
                       <div className="text-center py-12">
-                        <Globe className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">{t('noForms')}</h3>
-                        <p className="text-gray-600">Publish a form to make it available to respondents</p>
+                        <Globe className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-foreground mb-2">{t('noForms')}</h3>
+                        <p className="text-muted-foreground">Publish a form to make it available to respondents</p>
                       </div>
                     ) : (
                       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -1034,7 +1034,7 @@ const Index = () => {
                               <div className="flex items-start justify-between">
                                 <div className="flex-1 min-w-0">
                                   <CardTitle className="text-lg truncate">{form.title}</CardTitle>
-                                  <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                                     {form.description || "No description"}
                                   </p>
                                 </div>
@@ -1042,7 +1042,7 @@ const Index = () => {
                               </div>
                             </CardHeader>
                             <CardContent className="pt-0">
-                              <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
+                              <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
                                 <span>{form.submissions} submissions</span>
                                 <span>{new Date(form.updatedAt).toLocaleDateString()}</span>
                               </div>
