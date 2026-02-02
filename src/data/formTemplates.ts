@@ -1530,9 +1530,9 @@ export const healthTemplates: FormTemplate[] = [
     fields: [
       { id: '1', type: 'text', label: 'Patient Name', required: true, placeholder: 'Full patient name' },
       { id: '2', type: 'text', label: 'Patient ID', required: true, placeholder: 'Patient ID number' },
-      { id: '3', type: 'text', label: 'Phone Number', required: true, placeholder: '(555) 123-4567' },
+      { id: '3', type: 'text', label: 'Phone Number', required: true, placeholder: '+966 5X XXX XXXX' },
       { id: '4', type: 'select', label: 'Department', required: true, options: ['General Medicine', 'Cardiology', 'Neurology', 'Orthopedics', 'Pediatrics', 'Dermatology', 'Mental Health'] },
-      { id: '5', type: 'select', label: 'Doctor Preference', required: false, options: ['Dr. Smith', 'Dr. Johnson', 'Dr. Williams', 'No preference'] },
+      { id: '5', type: 'select', label: 'Doctor Preference', required: false, options: ['Dr. Al-Rashid', 'Dr. Al-Qahtani', 'Dr. Al-Harbi', 'No preference'] },
       { id: '6', type: 'date', label: 'Preferred Date', required: true },
       { id: '7', type: 'select', label: 'Preferred Time', required: true, options: ['9:00 AM', '10:00 AM', '11:00 AM', '2:00 PM', '3:00 PM', '4:00 PM'] },
       { id: '8', type: 'radio', label: 'Visit Type', required: true, options: ['First visit', 'Follow-up', 'Routine checkup', 'Urgent care'] },

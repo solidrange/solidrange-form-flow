@@ -5,26 +5,26 @@ const baseSubmissions: FormSubmission[] = [
   {
     id: "sub-001",
     formId: "form-vendor-assessment",
-    submittedBy: "Sarah Johnson",
-    submitterEmail: "sarah.johnson@techcorp.com",
-    submitterName: "Sarah Johnson",
-    companyName: "TechCorp Solutions",
+    submittedBy: "Noura Al-Harbi",
+    submitterEmail: "noura.alharbi@najdtech.com.sa",
+    submitterName: "Noura Al-Harbi",
+    companyName: "Najd Technology Co.",
     audience: "vendor",
     submittedAt: new Date("2024-01-15T10:30:00Z"),
     status: "approved",
     approvalType: "fully",
     responses: {
-      "company_name": "TechCorp Solutions",
+      "company_name": "Najd Technology Co.",
       "business_type": "Technology Services",
-      "annual_revenue": "$5M - $10M",
+      "annual_revenue": "SAR 18M - SAR 37M",
       "employee_count": "50-100",
       "data_security_measures": "ISO 27001 certified, SOC 2 Type II compliant",
-      "compliance_certifications": ["ISO 27001", "SOC 2", "GDPR"],
+      "compliance_certifications": ["ISO 27001", "SOC 2", "PDPL"],
       "previous_incidents": "None in the past 3 years",
-      "insurance_coverage": "$2M Cyber Liability Insurance",
+      "insurance_coverage": "SAR 7.5M Cyber Liability Insurance",
       "references": [
-        { company: "Global Finance Corp", contact: "mike.chen@globalfinance.com" },
-        { company: "Healthcare Plus", contact: "lisa.wong@healthcareplus.com" }
+        { company: "Al Rajhi Capital", contact: "khalid.aldossari@alrajhicapital.com.sa" },
+        { company: "Saudi Health Network", contact: "fatima.alsaud@saudihealth.com.sa" }
       ]
     },
     score: {
@@ -32,7 +32,7 @@ const baseSubmissions: FormSubmission[] = [
       maxTotal: 100,
       percentage: 92,
       riskLevel: "low",
-      reviewedBy: "John Reviewer",
+      reviewedBy: "Ahmed Al-Qahtani",
       reviewedAt: new Date("2024-01-16T09:00:00Z"),
       reviewComments: "Excellent security posture and compliance. Strong references. Approved for partnership.",
       breakdown: {
@@ -47,7 +47,7 @@ const baseSubmissions: FormSubmission[] = [
         id: "act-001",
         action: "approved",
         comments: "Excellent security posture and compliance. Strong references. Approved for partnership.",
-        reviewedBy: "John Reviewer",
+        reviewedBy: "Ahmed Al-Qahtani",
         reviewedAt: new Date("2024-01-16T09:00:00Z")
       }
     ],
@@ -73,24 +73,24 @@ const baseSubmissions: FormSubmission[] = [
   {
     id: "sub-002",
     formId: "form-vendor-assessment",
-    submittedBy: "Marcus Rodriguez",
-    submitterEmail: "marcus@startupventures.io",
-    submitterName: "Marcus Rodriguez",
-    companyName: "StartupVentures Inc",
+    submittedBy: "Faisal Al-Otaibi",
+    submitterEmail: "faisal.alotaibi@riyadhventures.com.sa",
+    submitterName: "Faisal Al-Otaibi",
+    companyName: "Riyadh Ventures Ltd",
     audience: "vendor",
     submittedAt: new Date("2024-01-20T14:15:00Z"),
     status: "under_review",
     responses: {
-      "company_name": "StartupVentures Inc",
+      "company_name": "Riyadh Ventures Ltd",
       "business_type": "Software Development",
-      "annual_revenue": "$1M - $5M",
+      "annual_revenue": "SAR 3.7M - SAR 18M",
       "employee_count": "10-25",
       "data_security_measures": "Basic security protocols, working towards SOC 2",
-      "compliance_certifications": ["GDPR"],
+      "compliance_certifications": ["PDPL"],
       "previous_incidents": "Minor data breach resolved in 2023",
-      "insurance_coverage": "$500K Professional Liability",
+      "insurance_coverage": "SAR 1.8M Professional Liability",
       "references": [
-        { company: "Local Bank", contact: "jane.doe@localbank.com" }
+        { company: "Alinma Bank", contact: "omar.alshammari@alinma.com.sa" }
       ]
     },
     score: {
@@ -98,7 +98,7 @@ const baseSubmissions: FormSubmission[] = [
       maxTotal: 100,
       percentage: 68,
       riskLevel: "medium",
-      reviewedBy: "Sarah Analyst",
+      reviewedBy: "Reem Al-Dosari",
       reviewedAt: new Date("2024-01-21T10:30:00Z"),
       reviewComments: "Adequate for small partnership. Recommend security improvements before larger engagement.",
       breakdown: {
@@ -113,7 +113,7 @@ const baseSubmissions: FormSubmission[] = [
         id: "act-002",
         action: "under_review",
         comments: "Adequate for small partnership. Recommend security improvements before larger engagement.",
-        reviewedBy: "Sarah Analyst",
+        reviewedBy: "Reem Al-Dosari",
         reviewedAt: new Date("2024-01-21T10:30:00Z")
       }
     ],
@@ -131,27 +131,27 @@ const baseSubmissions: FormSubmission[] = [
   {
     id: "sub-003",
     formId: "form-vendor-assessment",
-    submittedBy: "Amanda Chen",
-    submitterEmail: "a.chen@globalsecure.com",
-    submitterName: "Amanda Chen",
-    companyName: "GlobalSecure Systems",
+    submittedBy: "Layla Al-Rashid",
+    submitterEmail: "layla.alrashid@alharamainsecure.com.sa",
+    submitterName: "Layla Al-Rashid",
+    companyName: "Al Haramain Secure Systems",
     audience: "vendor",
     submittedAt: new Date("2024-01-25T09:45:00Z"),
     status: "approved",
     approvalType: "fully",
     responses: {
-      "company_name": "GlobalSecure Systems",
+      "company_name": "Al Haramain Secure Systems",
       "business_type": "Cybersecurity Services",
-      "annual_revenue": "$25M+",
+      "annual_revenue": "SAR 93M+",
       "employee_count": "500+",
       "data_security_measures": "Multi-layered security, zero-trust architecture, 24/7 SOC",
-      "compliance_certifications": ["ISO 27001", "SOC 2", "FedRAMP", "PCI DSS"],
+      "compliance_certifications": ["ISO 27001", "SOC 2", "SAMA CSF", "PCI DSS"],
       "previous_incidents": "No security incidents reported",
-      "insurance_coverage": "$10M Cyber Liability + Errors & Omissions",
+      "insurance_coverage": "SAR 37M Cyber Liability + Errors & Omissions",
       "references": [
-        { company: "Fortune 500 Bank", contact: "secure@fortune500bank.com" },
-        { company: "Government Agency", contact: "procurement@gov.agency" },
-        { company: "Healthcare Network", contact: "ciso@healthnet.org" }
+        { company: "Saudi National Bank", contact: "secure@snb.com.sa" },
+        { company: "Ministry of Finance", contact: "procurement@mof.gov.sa" },
+        { company: "King Faisal Hospital", contact: "ciso@kfsh.med.sa" }
       ]
     },
     score: {
@@ -159,7 +159,7 @@ const baseSubmissions: FormSubmission[] = [
       maxTotal: 100,
       percentage: 98,
       riskLevel: "low",
-      reviewedBy: "John Reviewer",
+      reviewedBy: "Ahmed Al-Qahtani",
       reviewedAt: new Date("2024-01-26T08:15:00Z"),
       reviewComments: "Premium vendor with exceptional security posture. Highly recommended for critical projects.",
       breakdown: {
@@ -174,15 +174,15 @@ const baseSubmissions: FormSubmission[] = [
         id: "act-003",
         action: "approved", 
         comments: "Premium vendor with exceptional security posture. Highly recommended for critical projects.",
-        reviewedBy: "John Reviewer",
+        reviewedBy: "Ahmed Al-Qahtani",
         reviewedAt: new Date("2024-01-26T08:15:00Z")
       }
     ],
     attachments: [
       {
         id: "att-004",
-        name: "FedRAMP_Authorization.pdf",
-        url: "/documents/fedramp-auth.pdf",
+        name: "SAMA_CSF_Authorization.pdf",
+        url: "/documents/sama-csf-auth.pdf",
         size: 890000,
         type: "application/pdf",
         uploadedAt: new Date("2024-01-25T09:40:00Z")
@@ -200,17 +200,17 @@ const baseSubmissions: FormSubmission[] = [
   {
     id: "sub-004",
     formId: "form-vendor-assessment",
-    submittedBy: "David Kim",
-    submitterEmail: "dkim@riskycorp.com",
-    submitterName: "David Kim",
-    companyName: "RiskyCorp LLC",
+    submittedBy: "Turki Al-Ghamdi",
+    submitterEmail: "turki.alghamdi@alwatan.com.sa",
+    submitterName: "Turki Al-Ghamdi",
+    companyName: "Al Watan Data LLC",
     audience: "vendor",
     submittedAt: new Date("2024-02-01T16:20:00Z"),
     status: "rejected",
     responses: {
-      "company_name": "RiskyCorp LLC",
+      "company_name": "Al Watan Data LLC",
       "business_type": "Data Processing",
-      "annual_revenue": "$500K - $1M",
+      "annual_revenue": "SAR 1.8M - SAR 3.7M",
       "employee_count": "5-10",
       "data_security_measures": "Basic password protection, no formal policies",
       "compliance_certifications": [],
@@ -223,7 +223,7 @@ const baseSubmissions: FormSubmission[] = [
       maxTotal: 100,
       percentage: 25,
       riskLevel: "critical",
-      reviewedBy: "Risk Team Lead",
+      reviewedBy: "Risk Committee Lead",
       reviewedAt: new Date("2024-02-02T11:00:00Z"),
       reviewComments: "Unacceptable risk level. Multiple security incidents and no compliance measures. Rejected.",
       breakdown: {
@@ -238,7 +238,7 @@ const baseSubmissions: FormSubmission[] = [
         id: "act-004",
         action: "rejected",
         comments: "Unacceptable risk level. Multiple security incidents and no compliance measures. Rejected.",
-        reviewedBy: "Risk Team Lead",
+        reviewedBy: "Risk Committee Lead",
         reviewedAt: new Date("2024-02-02T11:00:00Z")
       }
     ],
@@ -247,9 +247,9 @@ const baseSubmissions: FormSubmission[] = [
   {
     id: "sub-005",
     formId: "form-internal-assessment",
-    submittedBy: "Jennifer Walsh",
-    submitterEmail: "j.walsh@ourcompany.com",
-    submitterName: "Jennifer Walsh",
+    submittedBy: "Maha Al-Zahrani",
+    submitterEmail: "maha.alzahrani@ourcompany.com.sa",
+    submitterName: "Maha Al-Zahrani",
     companyName: "Our Company",
     audience: "internal",
     submittedAt: new Date("2024-02-05T11:00:00Z"),
@@ -269,7 +269,7 @@ const baseSubmissions: FormSubmission[] = [
       maxTotal: 100,
       percentage: 88,
       riskLevel: "low",
-      reviewedBy: "Internal Reviewer",
+      reviewedBy: "Internal Review Team",
       reviewedAt: new Date("2024-02-06T09:30:00Z"),
       reviewComments: "Well-designed internal project with appropriate security controls. Approved.",
       breakdown: {
@@ -284,7 +284,7 @@ const baseSubmissions: FormSubmission[] = [
         id: "act-005",
         action: "approved",
         comments: "Well-designed internal project with appropriate security controls. Approved.",
-        reviewedBy: "Internal Reviewer",
+        reviewedBy: "Internal Review Team",
         reviewedAt: new Date("2024-02-06T09:30:00Z")
       }
     ],
@@ -302,24 +302,31 @@ const baseSubmissions: FormSubmission[] = [
 ];
 
 // Generate additional submissions programmatically
+// Saudi-style company names for vendors
 const companies = [
-  "TechFlow Systems", "DataStream Corp", "CloudFirst Ltd", "SecureBase Inc", "AgileWorks Co",
-  "NextGen Solutions", "SmartBridge Tech", "ProActive Systems", "FlexiCore Ltd", "ScaleUp Ventures",
-  "RapidDeploy Inc", "OptimalPath Co", "StreamlineOps", "CoreLogic Systems", "PowerTech Solutions",
-  "InnovateLab Inc", "QuantumLeap Co", "FutureProof Ltd", "ConnectWise Systems", "DataDriven Corp",
-  "CloudNative Inc", "SecurePath Co", "AgileCore Systems", "TechAdvantage Ltd", "SmartFlow Inc"
+  "Riyadh Financial Services", "Najd Technology Co.", "Al Haramain Logistics", "Arabian Compliance Solutions", "Jeddah Cloud Systems",
+  "NEOM Digital Solutions", "Al Faisaliah Tech", "Dhahran Data Corp", "Makkah Security Group", "Dammam IT Services",
+  "Al Khobar Consulting", "Taif Software House", "Madinah Analytics", "Qassim Tech Ventures", "Abha Digital Labs",
+  "Jubail Industrial IT", "Yanbu Systems Co.", "Tabuk Cloud Services", "Hail Data Solutions", "Jazan Tech Partners",
+  "Al Ahsa Innovations", "Sakaka Digital", "Buraydah Systems", "Hofuf Technology", "Khamis Mushait IT"
 ];
 
 const departments = ["Engineering", "Sales", "Marketing", "Finance", "HR", "Operations", "Legal", "IT"];
-const submitters = ["John Smith", "Sarah Johnson", "Mike Chen", "Lisa Wong", "David Kim", "Emma Davis", "Alex Rodriguez", "Anna Lee"];
+
+// Saudi-style person names (mix of male and female)
+const submitters = [
+  "Ahmed Al-Saud", "Noura Al-Harbi", "Faisal Al-Otaibi", "Reem Al-Qahtani", 
+  "Khalid Al-Dosari", "Fatima Al-Rashid", "Omar Al-Shammari", "Layla Al-Zahrani"
+];
+
 const statuses: Array<"approved" | "rejected" | "under_review"> = ["approved", "rejected", "under_review"];
 const approvalTypes: Array<"fully" | "partially"> = ["fully", "partially"];
 const riskLevels: Array<"low" | "medium" | "high" | "critical"> = ["low", "medium", "high", "critical"];
 
-// External organizations for external submissions
+// Saudi external organizations for external submissions
 const externalOrganizations = [
-  "City Government", "Healthcare Partners", "University Research", "Non-Profit Alliance", "Community Foundation",
-  "Public School District", "Regional Hospital", "Environmental Agency", "Social Services", "Legal Aid Society"
+  "Riyadh Municipality", "King Faisal Hospital", "King Saud University", "Saudi Red Crescent", "Makeen Foundation",
+  "Jeddah Schools District", "King Fahd Medical City", "NECC Environmental", "Saudi Social Development", "Legal Aid Association"
 ];
 
 const externalFormFields = [
@@ -335,9 +342,9 @@ const generateExternalResponses = (orgName: string) => ({
   project_purpose: [
     "Public health data analysis for community wellness programs",
     "Educational research to improve student outcomes",
-    "Environmental monitoring and reporting initiatives", 
-    "Social services optimization and resource allocation",
-    "Community development and planning projects"
+    "Environmental monitoring aligned with Vision 2030", 
+    "Social services optimization for Saudi citizens",
+    "Community development and urban planning projects"
   ][Math.floor(Math.random() * 5)],
   data_requirements: [
     "Aggregated demographic data without personal identifiers",
@@ -346,9 +353,9 @@ const generateExternalResponses = (orgName: string) => ({
     "Public dataset for research and policy development"
   ][Math.floor(Math.random() * 4)],
   privacy_compliance: [
-    "HIPAA compliant data handling procedures",
-    "FERPA educational privacy requirements", 
-    "Local government privacy policies",
+    "PDPL compliant data handling procedures",
+    "MOE educational privacy requirements", 
+    "Government privacy policies and NCA guidelines",
     "Research ethics board approval obtained"
   ][Math.floor(Math.random() * 4)],
   data_sharing_scope: [
@@ -362,7 +369,7 @@ const generateExternalResponses = (orgName: string) => ({
   reporting_frequency: ["Monthly", "Quarterly", "Semi-annually", "Annually"][Math.floor(Math.random() * 4)],
   stakeholder_groups: "Community leaders, government officials, research teams, service providers",
   public_benefit: "Improved public services, evidence-based policy making, community health outcomes",
-  compliance_framework: ["Local government regulations", "Federal privacy laws", "Industry standards", "Research ethics guidelines"][Math.floor(Math.random() * 4)],
+  compliance_framework: ["NCA regulations", "SAMA guidelines", "Industry standards", "Research ethics guidelines"][Math.floor(Math.random() * 4)],
   audit_requirements: "Annual compliance review, security assessment, data usage audit"
 });
 
@@ -383,7 +390,7 @@ const internalFormFields = [
 const generateVendorResponses = (companyName: string) => ({
   company_name: companyName,
   business_type: ["Technology Services", "Software Development", "Consulting", "Cloud Services", "Cybersecurity", "Data Analytics"][Math.floor(Math.random() * 6)],
-  annual_revenue: ["$500K - $1M", "$1M - $5M", "$5M - $10M", "$10M - $25M", "$25M+"][Math.floor(Math.random() * 5)],
+  annual_revenue: ["SAR 1.8M - SAR 3.7M", "SAR 3.7M - SAR 18M", "SAR 18M - SAR 37M", "SAR 37M - SAR 93M", "SAR 93M+"][Math.floor(Math.random() * 5)],
   employee_count: ["1-10", "10-25", "25-50", "50-100", "100-500", "500+"][Math.floor(Math.random() * 6)],
   data_security_measures: [
     "Basic security protocols, firewall protection",
@@ -393,11 +400,11 @@ const generateVendorResponses = (companyName: string) => ({
     "Advanced threat detection, SIEM implementation"
   ][Math.floor(Math.random() * 5)],
   compliance_certifications: [
-    ["GDPR"],
-    ["ISO 27001", "GDPR"],
-    ["SOC 2", "ISO 27001", "GDPR"],
-    ["SOC 2", "ISO 27001", "GDPR", "PCI DSS"],
-    ["SOC 2", "ISO 27001", "GDPR", "PCI DSS", "FedRAMP"]
+    ["PDPL"],
+    ["ISO 27001", "PDPL"],
+    ["SOC 2", "ISO 27001", "PDPL"],
+    ["SOC 2", "ISO 27001", "PDPL", "PCI DSS"],
+    ["SOC 2", "ISO 27001", "PDPL", "PCI DSS", "SAMA CSF"]
   ][Math.floor(Math.random() * 5)],
   previous_incidents: [
     "No security incidents reported",
@@ -408,22 +415,22 @@ const generateVendorResponses = (companyName: string) => ({
   ][Math.floor(Math.random() * 5)],
   insurance_coverage: [
     "None",
-    "$500K Professional Liability",
-    "$1M Cyber Liability Insurance",
-    "$2M Cyber Liability + Errors & Omissions",
-    "$10M Comprehensive Coverage"
+    "SAR 1.8M Professional Liability",
+    "SAR 3.7M Cyber Liability Insurance",
+    "SAR 7.5M Cyber Liability + Errors & Omissions",
+    "SAR 37M Comprehensive Coverage"
   ][Math.floor(Math.random() * 5)],
   primary_contact: `${submitters[Math.floor(Math.random() * submitters.length)]}`,
-  business_address: `${Math.floor(Math.random() * 9999) + 1} Business Ave, Tech City, TC ${Math.floor(Math.random() * 90000) + 10000}`,
+  business_address: `${Math.floor(Math.random() * 9999) + 1} King Fahd Road, Riyadh ${Math.floor(Math.random() * 90000) + 10000}`,
   years_in_business: Math.floor(Math.random() * 20) + 1,
-  key_clients: ["Fortune 500 Companies", "Government Agencies", "Healthcare Organizations", "Financial Institutions"][Math.floor(Math.random() * 4)],
-  service_description: "Comprehensive technology solutions tailored to enterprise needs",
+  key_clients: ["Saudi Aramco", "SABIC", "Saudi Government Entities", "GCC Financial Institutions"][Math.floor(Math.random() * 4)],
+  service_description: "Comprehensive technology solutions tailored to Saudi enterprise needs",
   technology_stack: ["Cloud-native", "Microservices", "AI/ML", "Blockchain"][Math.floor(Math.random() * 4)],
   backup_procedures: "Daily automated backups with 99.9% recovery guarantee",
   disaster_recovery: "RTO: 4 hours, RPO: 1 hour, tested quarterly",
-  privacy_policy: "GDPR compliant privacy policy updated annually",
+  privacy_policy: "PDPL compliant privacy policy updated annually",
   data_retention: "Data retained per regulatory requirements, secure deletion after retention period",
-  third_party_vendors: ["AWS", "Microsoft Azure", "Google Cloud"][Math.floor(Math.random() * 3)]
+  third_party_vendors: ["AWS Middle East", "Microsoft Azure UAE", "Google Cloud Dammam"][Math.floor(Math.random() * 3)]
 });
 
 const generateInternalResponses = (department: string) => ({
@@ -503,7 +510,7 @@ for (let i = 6; i <= 100; i++) {
       maxTotal: 100,
       percentage: score,
       riskLevel,
-      reviewedBy: "System Reviewer",
+      reviewedBy: "Assessment Review Team",
       reviewedAt: reviewDate,
       reviewComments: `Auto-generated review for ${company}`,
       breakdown: {}
@@ -512,7 +519,7 @@ for (let i = 6; i <= 100; i++) {
       id: `act-${i.toString().padStart(3, '0')}`,
       action: status,
       comments: `${status.replace('_', ' ')} - Auto generated`,
-      reviewedBy: "System Reviewer",
+      reviewedBy: "Assessment Review Team",
       reviewedAt: reviewDate
     }],
     attachments: []
