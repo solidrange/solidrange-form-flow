@@ -52,12 +52,21 @@ const fontOptions = [
 ];
 
 export const BrandSettings: React.FC = () => {
-  const { theme } = useTheme();
+  const { resolvedMode } = useTheme();
   const { brand, updateBrand, updateLogo, updateThemeColors, updateFonts, resetToDefaults, getCurrentThemeColors } = useBrand();
   const [tempName, setTempName] = useState(brand.name);
   const [tempTagline, setTempTagline] = useState(brand.tagline || '');
-  const [activeTheme, setActiveTheme] = useState<'light' | 'dark'>('light');
-  const [previewColors, setPreviewColors] = useState(getCurrentThemeColors());
+  // Initialize activeTheme based on actual resolved theme mode
+  const [activeTheme, setActiveTheme] = useState<'light' | 'dark'>(resolvedMode);
+  const [previewColors, setPreviewColors] = useState(() => 
+    resolvedMode === 'light' ? brand.lightTheme.colors : brand.darkTheme.colors
+  );
+
+  // Sync activeTheme with resolved theme when it changes
+  React.useEffect(() => {
+    setActiveTheme(resolvedMode);
+    setPreviewColors(resolvedMode === 'light' ? brand.lightTheme.colors : brand.darkTheme.colors);
+  }, [resolvedMode, brand.lightTheme.colors, brand.darkTheme.colors]);
 
   const handleSaveBasicInfo = () => {
     updateBrand({
@@ -547,25 +556,31 @@ export const BrandSettings: React.FC = () => {
       {/* Accessibility Contrast Check */}
       <Card className="modern-card">
         <CardHeader className="pb-3 sm:pb-4">
-          <CardTitle className="flex items-center gap-2 text-mobile-base">
+          <CardTitle className="flex items-center gap-2 text-mobile-base text-foreground">
             <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5" />
             Accessibility Contrast Check
           </CardTitle>
+          <p className="text-xs text-muted-foreground mt-1">
+            Validating contrast for: <Badge variant="outline" className="text-xs ml-1">
+              {activeTheme === 'light' ? 'Light Mode' : 'Dark Mode'}
+            </Badge>
+          </p>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-4">
+          {/* Current theme contrast check */}
           <ContrastPanel
-            title="WCAG AA Compliance"
+            title={`${activeTheme === 'light' ? 'Light' : 'Dark'} Theme - WCAG AA`}
             colorPairs={[
               {
                 name: 'Body text on background',
-                foreground: previewColors.text?.primary || '224 71% 4%',
-                background: previewColors.background || '0 0% 100%',
+                foreground: previewColors.text?.primary || (activeTheme === 'light' ? '224 71% 4%' : '0 0% 100%'),
+                background: previewColors.background || (activeTheme === 'light' ? '0 0% 100%' : '222 47% 7%'),
                 requirement: 'normal'
               },
               {
                 name: 'Secondary text on background',
-                foreground: previewColors.text?.secondary || '220 9% 35%',
-                background: previewColors.background || '0 0% 100%',
+                foreground: previewColors.text?.secondary || (activeTheme === 'light' ? '220 9% 35%' : '210 10% 75%'),
+                background: previewColors.background || (activeTheme === 'light' ? '0 0% 100%' : '222 47% 7%'),
                 requirement: 'normal'
               },
               {
@@ -576,8 +591,8 @@ export const BrandSettings: React.FC = () => {
               },
               {
                 name: 'Secondary text on surface',
-                foreground: previewColors.text?.secondary || '220 9% 35%',
-                background: previewColors.surface || '0 0% 98%',
+                foreground: previewColors.text?.secondary || (activeTheme === 'light' ? '220 9% 35%' : '210 10% 75%'),
+                background: previewColors.surface || (activeTheme === 'light' ? '0 0% 98%' : '222 30% 12%'),
                 requirement: 'normal'
               },
               {
@@ -588,7 +603,39 @@ export const BrandSettings: React.FC = () => {
               }
             ]}
           />
-          <div className="mt-4 flex gap-2">
+          
+          {/* Validate the OTHER theme too */}
+          <div className="pt-2 border-t">
+            <ContrastPanel
+              title={`${activeTheme === 'light' ? 'Dark' : 'Light'} Theme - WCAG AA`}
+              colorPairs={(() => {
+                const otherTheme = activeTheme === 'light' ? brand.darkTheme.colors : brand.lightTheme.colors;
+                const isLight = activeTheme !== 'light';
+                return [
+                  {
+                    name: 'Body text on background',
+                    foreground: otherTheme.text?.primary || (isLight ? '224 71% 4%' : '0 0% 100%'),
+                    background: otherTheme.background || (isLight ? '0 0% 100%' : '222 47% 7%'),
+                    requirement: 'normal' as const
+                  },
+                  {
+                    name: 'Secondary text on background',
+                    foreground: otherTheme.text?.secondary || (isLight ? '220 9% 35%' : '210 10% 75%'),
+                    background: otherTheme.background || (isLight ? '0 0% 100%' : '222 47% 7%'),
+                    requirement: 'normal' as const
+                  },
+                  {
+                    name: 'Primary button text',
+                    foreground: '0 0% 100%',
+                    background: otherTheme.primary?.main || '208 100% 47%',
+                    requirement: 'normal' as const
+                  }
+                ];
+              })()}
+            />
+          </div>
+          
+          <div className="flex gap-2">
             <Button
               variant="outline"
               size="sm"
@@ -608,12 +655,12 @@ export const BrandSettings: React.FC = () => {
                 updateThemeColors(activeTheme, accessibleColors);
                 toast({
                   title: "Accessible Defaults Applied",
-                  description: "Text and background colors reset to WCAG AA compliant values.",
+                  description: `${activeTheme === 'light' ? 'Light' : 'Dark'} mode colors reset to WCAG AA compliant values.`,
                 });
               }}
               className="flex-1 btn-mobile"
             >
-              Reset to Accessible Defaults
+              Reset {activeTheme === 'light' ? 'Light' : 'Dark'} to Accessible Defaults
             </Button>
           </div>
         </CardContent>
