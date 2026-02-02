@@ -17,7 +17,7 @@ export const GlobalSettings = () => {
   return (
     <div className="space-y-6">
       {/* Language Settings */}
-      <Card className="bg-card text-card-foreground">
+      <Card className="bg-card text-card-foreground" data-tour-id="language-settings">
         <CardHeader>
           <CardTitle className="text-foreground">{t('languageSettings')}</CardTitle>
         </CardHeader>
@@ -41,7 +41,7 @@ export const GlobalSettings = () => {
       </Card>
 
       {/* Brand Identity Settings */}
-      <Card className="bg-card text-card-foreground">
+      <Card className="bg-card text-card-foreground" data-tour-id="brand-settings">
         <CardHeader>
           <CardTitle className="text-foreground">{t('brandIdentity')}</CardTitle>
         </CardHeader>
@@ -51,7 +51,7 @@ export const GlobalSettings = () => {
       </Card>
 
       {/* Developer Settings */}
-      <Card className="bg-card text-card-foreground">
+      <Card className="bg-card text-card-foreground" data-tour-id="developer-settings">
         <CardHeader>
           <CardTitle className="text-foreground">Developer Settings</CardTitle>
         </CardHeader>

@@ -152,8 +152,8 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
   return (
     <div className="space-y-6">
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 animate-fade-in">
-        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 animate-fade-in" data-tour-id="dashboard-stats">
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer"
               onClick={() => onFilterSubmissions?.({})}
         >
           <CardContent className="p-4">
@@ -274,7 +274,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
       </div>
 
       {/* Main Analytics Tabs */}
-      <Tabs defaultValue="overview" className="space-y-4">
+      <Tabs defaultValue="overview" className="space-y-4" data-tour-id="dashboard-charts">
         <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="approvals">Approvals</TabsTrigger>
