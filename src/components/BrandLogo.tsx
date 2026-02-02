@@ -85,7 +85,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   return (
     <div 
       className={cn(
-        'flex flex-col items-start cursor-pointer select-none',
+        'flex flex-col items-center text-center cursor-pointer select-none',
         className
       )}
       onClick={onClick}
