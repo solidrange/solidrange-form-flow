@@ -1,6 +1,7 @@
 /**
- * Color Contrast Utility
+ * Color Contrast Utility - Light Theme Only
  * Computes WCAG contrast ratios and validates accessibility compliance
+ * SolidForms uses a single light theme aligned with SolidRange.com
  */
 
 export interface ContrastResult {
@@ -154,37 +155,24 @@ export const validateTokenPairs = (pairs: TokenPair[]): { pair: TokenPair; resul
 };
 
 /**
- * Get accessible color token defaults
+ * Get accessible color token defaults - Light theme only (SolidRange style)
  */
 export const getAccessibleDefaults = () => ({
-  // Light mode
   light: {
     bgPrimary: '0 0% 100%',
-    bgElevated: '0 0% 98%',
-    textPrimary: '224 71% 4%',
-    textSecondary: '220 9% 35%', // Darkened from 46% for better contrast
-    borderSubtle: '220 9% 88%',
-    colorPrimary: '208 100% 47%',
-    colorPrimarySoft: '208 100% 55%',
+    bgElevated: '210 20% 98%',
+    bgMuted: '210 15% 96%',
+    textPrimary: '220 25% 12%',
+    textSecondary: '220 12% 42%',
+    textMuted: '220 10% 55%',
+    borderSubtle: '220 14% 90%',
+    borderStrong: '220 12% 80%',
+    colorPrimary: '195 85% 41%',
+    colorPrimarySoft: '195 75% 50%',
     colorPrimaryContrast: '0 0% 100%',
-    colorSuccess: '142 76% 36%',
+    colorSuccess: '142 70% 38%',
     colorWarning: '38 92% 50%',
-    colorDestructive: '0 84% 55%', // Darkened from 60.2% for contrast
-    sidebarActive: '208 100% 96%',
-  },
-  // Dark mode
-  dark: {
-    bgPrimary: '222 47% 7%',
-    bgElevated: '222 30% 12%',
-    textPrimary: '0 0% 100%',
-    textSecondary: '210 10% 75%',
-    borderSubtle: '220 15% 30%',
-    colorPrimary: '208 100% 47%',
-    colorPrimarySoft: '208 100% 55%',
-    colorPrimaryContrast: '0 0% 100%',
-    colorSuccess: '142 76% 50%',
-    colorWarning: '38 92% 55%',
-    colorDestructive: '0 84% 60%',
-    sidebarActive: '208 100% 23%',
+    colorDestructive: '0 72% 51%',
+    sidebarActive: '195 85% 95%',
   }
 });

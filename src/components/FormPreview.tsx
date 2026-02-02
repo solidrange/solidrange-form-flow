@@ -69,7 +69,7 @@ export const FormPreview = ({
   // Use global or form-specific branding based on setting
   const brandName = useGlobalBranding ? brand.name : (formSettings?.branding?.brandName || brand.name);
   const brandLogo = useGlobalBranding ? brand.logo : (formSettings?.branding?.logo || brand.logo);
-  const brandColors = useGlobalBranding ? brand.lightTheme.colors : (formSettings?.branding?.colors || brand.lightTheme.colors);
+  const brandColors = useGlobalBranding ? brand.colors : (formSettings?.branding?.colors || brand.colors);
 
   if (isExpired) {
     return (
