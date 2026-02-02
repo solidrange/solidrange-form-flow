@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useBrand } from '@/contexts/BrandContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,9 +10,11 @@ import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, Palette, RotateCcw, Eye, X, Sun, Moon, Type, Info } from 'lucide-react';
+import { Upload, Palette, RotateCcw, Eye, X, Sun, Moon, Type, Info, ShieldCheck } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
 import { toast } from '@/hooks/use-toast';
+import { ContrastPanel } from './ContrastIndicator';
+import { evaluateContrast, clampLightnessForAccessibility, getAccessibleDefaults } from '@/utils/colorContrast';
 
 const colorExplanations = {
   primary: {
@@ -538,6 +540,81 @@ export const BrandSettings: React.FC = () => {
             <p className="text-xs sm:text-sm text-muted-foreground text-center">
               Changes are applied automatically as you modify colors
             </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Accessibility Contrast Check */}
+      <Card className="modern-card">
+        <CardHeader className="pb-3 sm:pb-4">
+          <CardTitle className="flex items-center gap-2 text-mobile-base">
+            <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5" />
+            Accessibility Contrast Check
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ContrastPanel
+            title="WCAG AA Compliance"
+            colorPairs={[
+              {
+                name: 'Body text on background',
+                foreground: previewColors.text?.primary || '224 71% 4%',
+                background: previewColors.background || '0 0% 100%',
+                requirement: 'normal'
+              },
+              {
+                name: 'Secondary text on background',
+                foreground: previewColors.text?.secondary || '220 9% 35%',
+                background: previewColors.background || '0 0% 100%',
+                requirement: 'normal'
+              },
+              {
+                name: 'Primary button text',
+                foreground: '0 0% 100%',
+                background: previewColors.primary?.main || '208 100% 47%',
+                requirement: 'normal'
+              },
+              {
+                name: 'Secondary text on surface',
+                foreground: previewColors.text?.secondary || '220 9% 35%',
+                background: previewColors.surface || '0 0% 98%',
+                requirement: 'normal'
+              },
+              {
+                name: 'Destructive button text',
+                foreground: '0 0% 100%',
+                background: previewColors.button?.destructive || '0 84% 55%',
+                requirement: 'large'
+              }
+            ]}
+          />
+          <div className="mt-4 flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const defaults = getAccessibleDefaults();
+                const themeDefaults = activeTheme === 'light' ? defaults.light : defaults.dark;
+                const accessibleColors = {
+                  ...previewColors,
+                  text: {
+                    primary: themeDefaults.textPrimary,
+                    secondary: themeDefaults.textSecondary
+                  },
+                  background: themeDefaults.bgPrimary,
+                  surface: themeDefaults.bgElevated
+                };
+                setPreviewColors(accessibleColors);
+                updateThemeColors(activeTheme, accessibleColors);
+                toast({
+                  title: "Accessible Defaults Applied",
+                  description: "Text and background colors reset to WCAG AA compliant values.",
+                });
+              }}
+              className="flex-1 btn-mobile"
+            >
+              Reset to Accessible Defaults
+            </Button>
           </div>
         </CardContent>
       </Card>

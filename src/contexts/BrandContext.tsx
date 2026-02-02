@@ -77,13 +77,13 @@ const defaultBrand: BrandIdentity = {
       background: '0 0% 100%',
       surface: '0 0% 98%',
       text: {
-        primary: '224 71.4% 4.1%',
-        secondary: '220 8.9% 46.1%'
+        primary: '224 71% 4%',
+        secondary: '220 9% 35%' // WCAG AA compliant
       },
       button: {
         primary: '208 100% 47%',
         secondary: '220 14.3% 95.9%',
-        destructive: '0 84.2% 60.2%'
+        destructive: '0 84% 55%' // WCAG AA compliant
       }
     }
   },
@@ -99,16 +99,16 @@ const defaultBrand: BrandIdentity = {
         light: '262 83% 80%',
         dark: '262 83% 50%'
       },
-      background: '222.2 84% 4.9%',
-      surface: '217.2 32.6% 17.5%',
+      background: '222 47% 7%',
+      surface: '222 30% 12%',
       text: {
-        primary: '210 40% 98%',
-        secondary: '215 20.2% 65.1%'
+        primary: '0 0% 100%',
+        secondary: '210 10% 75%' // WCAG AA compliant
       },
       button: {
         primary: '208 100% 55%',
         secondary: '217.2 32.6% 17.5%',
-        destructive: '0 62.8% 50.6%'
+        destructive: '0 84% 60%'
       }
     }
   }

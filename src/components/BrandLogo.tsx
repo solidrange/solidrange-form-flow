@@ -71,7 +71,6 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
               textSizeClasses[size],
               'text-foreground leading-tight'
             )}
-            style={{ color: `hsl(${brand.lightTheme.colors.primary.main})` }}
           >
             {brand.name}
           </span>
