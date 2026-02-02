@@ -323,3 +323,45 @@ The most common tour bug is **misaligned content and target**. To prevent this:
 | 1.0.0 | 2026-02-02 | Initial tour system implementation |
 | 1.1.0 | 2026-02-02 | Added verification matrix, governance rules, and data-tour-id registry |
 | 2.0.0 | 2026-02-02 | Added mobile-aware tours: layout detection, mobile-specific steps, responsive overlay |
+| 2.1.0 | 2026-02-02 | Fixed mobile FormBuilder data-tour-ids (mobile-add-field, save-form), verified all desktop tours |
+
+---
+
+## Latest Verification Status
+
+**Last Full Verification**: 2026-02-02
+
+### Desktop Tours (Verified ✅)
+| Tour | Role | Steps | Status |
+|------|------|-------|--------|
+| Welcome to SolidForm | Admin | 7 | ✅ PASS |
+| Welcome to SolidForm | User | 6 | ✅ PASS |
+| Dashboard Overview | Admin/User | 2 | ✅ PASS |
+| Form Builder | Admin/User | 4 (desktop) | ✅ PASS |
+| Submission Review | Admin | 3 | ✅ PASS |
+| Settings & Configuration | Admin | 3 | ✅ PASS |
+| Forms Library | Admin | 3 | ✅ PASS |
+
+### Mobile Tours (Data-Tour-IDs Verified ✅)
+| Tour | Role | Steps | Status |
+|------|------|-------|--------|
+| Welcome to SolidForm | Admin | 7 | ✅ IDs in place |
+| Welcome to SolidForm | User | 6 | ✅ IDs in place |
+| Dashboard Overview | Admin/User | 2 | ✅ Uses `both` layout |
+| Form Builder | Admin/User | 4 (mobile) | ✅ mobile-add-field added |
+| Submission Review | Admin | 3 | ✅ Uses `both` layout |
+| Settings & Configuration | Admin | 3 | ✅ Uses `both` layout |
+| Forms Library | Admin | 3 | ✅ Uses `both` layout |
+
+### Mobile Component Data-Tour-IDs Registry
+| Component | Element | data-tour-id | Status |
+|-----------|---------|--------------|--------|
+| MobileHeader | Menu Button | mobile-menu-button | ✅ |
+| MobileHeader | Brand Title | mobile-brand-logo | ✅ |
+| MobileBottomNav | Dashboard | mobile-nav-dashboard | ✅ |
+| MobileBottomNav | Review | mobile-nav-review | ✅ |
+| MobileBottomNav | Forms | mobile-nav-forms | ✅ |
+| MobileBottomNav | Build | mobile-nav-build | ✅ |
+| MobileBottomNav | More | mobile-nav-more | ✅ |
+| FormBuilder (mobile) | Add Field Button | mobile-add-field | ✅ |
+| FormBuilder (mobile) | Save Button | save-form | ✅ |

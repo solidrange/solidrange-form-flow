@@ -143,6 +143,7 @@ export const FormBuilder = ({
             size="sm"
             onClick={() => setShowFieldPalette(true)}
             className="gap-1.5"
+            data-tour-id="mobile-add-field"
           >
             <Plus className="h-4 w-4" />
             Add Field
@@ -153,6 +154,7 @@ export const FormBuilder = ({
               variant="outline"
               size="sm"
               className="gap-1.5"
+              data-tour-id="save-form"
             >
               <Save className="h-4 w-4" />
               Save
