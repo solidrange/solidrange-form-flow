@@ -1610,3 +1610,73 @@ The color system implementation covers:
 - ✅ Dark mode parity with full variable switching
 - ✅ Accessibility contrast indicators in Brand Settings
 - ✅ Safe range clamping for user-configurable colors
+
+---
+
+## Appendix B: Global Theme Switching
+
+### B.1 Overview
+SolidForm implements a comprehensive Global Theme system that controls the application-wide appearance (System/Light/Dark) with immediate UI updates, persistence, and WCAG-compliant contrast across all modes.
+
+### B.2 Theme Architecture
+
+#### ThemeContext Implementation
+```typescript
+interface ThemeContextType {
+  themeMode: 'system' | 'light' | 'dark';   // User's selected mode
+  resolvedMode: 'light' | 'dark';            // Actual applied theme
+  setThemeMode: (mode: ThemeMode) => void;   // Setter function
+}
+```
+
+#### Theme Resolution Logic
+- `light` → resolvedMode = 'light'
+- `dark` → resolvedMode = 'dark'  
+- `system` → resolvedMode follows `prefers-color-scheme` media query
+
+### B.3 Functional Requirements Implemented
+
+| Requirement | Status |
+|-------------|--------|
+| Global Theme select controls theme globally | ✅ |
+| UI updates immediately without page reload | ✅ |
+| Theme persists across browser sessions | ✅ |
+| System mode honors OS preferences | ✅ |
+| OS preference changes update app theme | ✅ |
+| Both modes use tokenized HSL color system | ✅ |
+| WCAG AA compliance for all key elements | ✅ |
+
+### B.4 User Stories Implemented
+
+1. ✅ Admin can select System/Light/Dark in Global Settings with immediate UI update
+2. ✅ Admin can set custom brand colors for light and dark modes separately
+3. ✅ Admin can run Accessibility Contrast Check for both themes with clear Pass/Fail indicators
+
+### B.5 Key Components Updated
+
+| Component | Changes |
+|-----------|---------|
+| `ThemeContext` | Added `themeMode`, `resolvedMode`, OS preference listener |
+| `GlobalSettings` | Theme icons, active mode indicator, proper token classes |
+| `BrandSettings` | Syncs with resolved theme, validates both light/dark |
+| `AppSidebar` | Uses `--sidebar-*` tokens, active state styling |
+| `BrandLogo` | Uses semantic `text-foreground` instead of hardcoded colors |
+| `ContrastPanel` | Shows validation for both light and dark themes |
+
+### B.6 CSS Token Switching
+
+When `.dark` class is present on `<html>`:
+- All `--bg-*`, `--text-*`, `--border-*` variables switch to dark values
+- `--sidebar-*` variables update for dark sidebar
+- `--color-destructive` adjusts for dark background visibility
+- Brand colors (`--brand-primary`) adjust for dark mode legibility
+
+### B.7 Acceptance Criteria Met
+
+- [x] Changing Global Theme updates visible theme everywhere within 1 second
+- [x] Refreshing the page keeps the selected theme
+- [x] Switching OS theme while in "System" mode updates the app
+- [x] Code search for hardcoded colors in components returns no theming-related uses
+- [x] Toggling `.dark` class correctly flips the entire theme
+- [x] Brand Preview reflects the active theme immediately
+- [x] Contrast validation shows both light and dark theme compliance

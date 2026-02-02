@@ -195,12 +195,8 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
     root.style.setProperty('--brand-secondary-light', currentColors.secondary?.light || defaultBrand.lightTheme.colors.secondary.light);
     root.style.setProperty('--brand-secondary-dark', currentColors.secondary?.dark || defaultBrand.lightTheme.colors.secondary.dark);
     
-    // Apply comprehensive color system
+    // Apply comprehensive color system based on theme
     root.style.setProperty('--primary', currentColors.primary?.main || defaultBrand.lightTheme.colors.primary.main);
-    root.style.setProperty('--background', currentColors.background || defaultBrand.lightTheme.colors.background);
-    root.style.setProperty('--card', currentColors.surface || defaultBrand.lightTheme.colors.surface);
-    root.style.setProperty('--foreground', currentColors.text?.primary || defaultBrand.lightTheme.colors.text.primary);
-    root.style.setProperty('--muted-foreground', currentColors.text?.secondary || defaultBrand.lightTheme.colors.text.secondary);
     
     // Apply fonts with fallbacks
     root.style.setProperty('--font-heading', brand.fonts?.heading || defaultBrand.fonts.heading);
@@ -211,9 +207,16 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
     localStorage.setItem('brand-identity', JSON.stringify(brand));
   }, [brand]);
 
-  // Listen for theme changes and reapply colors
+  // Listen for theme changes and reapply brand colors
   useEffect(() => {
-    const observer = new MutationObserver(() => {
+    const observer = new MutationObserver((mutations) => {
+      // Check if class attribute changed
+      const classChanged = mutations.some(
+        m => m.type === 'attributes' && m.attributeName === 'class'
+      );
+      
+      if (!classChanged) return;
+      
       // Ensure brand is properly initialized before accessing colors
       if (!brand || !brand.lightTheme || !brand.darkTheme) {
         return;
@@ -222,7 +225,7 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
       const currentColors = getCurrentThemeColors();
       const root = document.documentElement;
       
-      // Apply colors with fallbacks
+      // Apply brand colors with fallbacks - these adjust based on light/dark mode
       root.style.setProperty('--brand-primary', currentColors.primary?.main || defaultBrand.lightTheme.colors.primary.main);
       root.style.setProperty('--brand-primary-light', currentColors.primary?.light || defaultBrand.lightTheme.colors.primary.light);
       root.style.setProperty('--brand-primary-dark', currentColors.primary?.dark || defaultBrand.lightTheme.colors.primary.dark);
