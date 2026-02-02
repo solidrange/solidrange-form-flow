@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTour } from '@/contexts/TourContext';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -17,7 +17,8 @@ import {
   BookOpen, 
   Lightbulb,
   User,
-  Shield
+  Shield,
+  MapPin
 } from 'lucide-react';
 import { getTipsForRole } from '@/data/tourSteps';
 import { cn } from '@/lib/utils';
@@ -26,6 +27,16 @@ interface HelpPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
+
+// Category icons for tours
+const categoryIcons: Record<string, React.ReactNode> = {
+  complete: <MapPin className="h-4 w-4" />,
+  navigation: <MapPin className="h-4 w-4" />,
+  forms: <BookOpen className="h-4 w-4" />,
+  submissions: <BookOpen className="h-4 w-4" />,
+  settings: <BookOpen className="h-4 w-4" />,
+  reports: <BookOpen className="h-4 w-4" />
+};
 
 export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
   const {
@@ -51,19 +62,45 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
     return acc;
   }, {} as Record<string, typeof tips>);
 
+  // Group tours by category
+  const toursByCategory = availableTours.reduce((acc, tour) => {
+    if (!acc[tour.category]) acc[tour.category] = [];
+    acc[tour.category].push(tour);
+    return acc;
+  }, {} as Record<string, typeof availableTours>);
+
   const handleStartTour = (tourId: string) => {
     onOpenChange(false);
-    setTimeout(() => startTour(tourId), 300);
+    // Small delay to let the panel close before starting tour
+    setTimeout(() => {
+      startTour(tourId);
+    }, 350);
   };
 
   const handleRestartTour = (tourId: string) => {
     onOpenChange(false);
-    setTimeout(() => restartTour(tourId), 300);
+    setTimeout(() => {
+      restartTour(tourId);
+    }, 350);
   };
 
   const handleResumeTour = () => {
     onOpenChange(false);
-    setTimeout(() => resumeTour(), 300);
+    setTimeout(() => {
+      resumeTour();
+    }, 350);
+  };
+
+  const getCategoryLabel = (category: string): string => {
+    const labels: Record<string, string> = {
+      complete: 'Getting Started',
+      navigation: 'Navigation',
+      forms: 'Forms',
+      submissions: 'Submissions',
+      settings: 'Settings',
+      reports: 'Reports'
+    };
+    return labels[category] || category;
   };
 
   return (
@@ -102,7 +139,7 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
             </div>
             <p className="text-xs text-muted-foreground mt-2">
               {userRole === 'admin' 
-                ? 'Full access to all features, settings, and reports.'
+                ? 'Full access to all features, settings, and administrative functions.'
                 : 'Access to forms, submissions, and basic features.'}
             </p>
           </div>
@@ -124,7 +161,7 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Step {tourState.currentStepIndex + 1} of {currentTour?.steps.length || 0}
+                  {currentTour?.name} - Step {tourState.currentStepIndex + 1}
                 </p>
               </CardContent>
             </Card>
@@ -143,92 +180,104 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
             </TabsList>
 
             <TabsContent value="tours" className="mt-4">
-              <ScrollArea className="h-[calc(100vh-380px)]">
-                <div className="space-y-3 pr-4">
-                  {availableTours.map(tour => {
-                    const progress = getTourProgress(tour.id);
-                    const isInProgress = tourState.activeTourId === tour.id;
-                    
-                    return (
-                      <Card key={tour.id} className={cn(
-                        "transition-all",
-                        progress.completed && "border-green-500/30 bg-green-500/5",
-                        isInProgress && "border-primary/50 bg-primary/5"
-                      )}>
-                        <CardHeader className="pb-2">
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <CardTitle className="text-base flex items-center gap-2">
-                                {tour.name}
-                                {progress.completed && (
-                                  <CheckCircle2 className="h-4 w-4 text-green-500" />
-                                )}
-                              </CardTitle>
-                              <CardDescription className="text-xs mt-1">
-                                {tour.description}
-                              </CardDescription>
-                            </div>
-                            <Badge variant="outline" className="text-xs">
-                              {progress.totalSteps} steps
-                            </Badge>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                          {progress.stepsCompleted > 0 && !progress.completed && (
-                            <div className="mb-3">
-                              <div className="flex justify-between text-xs text-muted-foreground mb-1">
-                                <span>Progress</span>
-                                <span>{progress.stepsCompleted}/{progress.totalSteps}</span>
-                              </div>
-                              <Progress 
-                                value={(progress.stepsCompleted / progress.totalSteps) * 100} 
-                                className="h-1"
-                              />
-                            </div>
-                          )}
+              <ScrollArea className="h-[calc(100vh-400px)]">
+                <div className="space-y-6 pr-4">
+                  {Object.entries(toursByCategory).map(([category, categoryTours]) => (
+                    <div key={category}>
+                      <div className="flex items-center gap-2 mb-3">
+                        {categoryIcons[category]}
+                        <h4 className="text-sm font-semibold text-foreground">
+                          {getCategoryLabel(category)}
+                        </h4>
+                      </div>
+                      <div className="space-y-3">
+                        {categoryTours.map(tour => {
+                          const progress = getTourProgress(tour.id);
+                          const isInProgress = tourState.activeTourId === tour.id;
                           
-                          <div className="flex gap-2">
-                            {progress.completed ? (
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                className="w-full"
-                                onClick={() => handleRestartTour(tour.id)}
-                              >
-                                <RefreshCw className="h-4 w-4 mr-1" />
-                                Restart Tour
-                              </Button>
-                            ) : isInProgress && tourState.isPaused ? (
-                              <Button 
-                                size="sm" 
-                                className="w-full"
-                                onClick={handleResumeTour}
-                              >
-                                <Play className="h-4 w-4 mr-1" />
-                                Resume Tour
-                              </Button>
-                            ) : (
-                              <Button 
-                                size="sm" 
-                                className="w-full"
-                                onClick={() => handleStartTour(tour.id)}
-                                disabled={isTourActive}
-                              >
-                                <Play className="h-4 w-4 mr-1" />
-                                Start Tour
-                              </Button>
-                            )}
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
+                          return (
+                            <Card key={tour.id} className={cn(
+                              "transition-all",
+                              progress.completed && "border-green-500/30 bg-green-500/5",
+                              isInProgress && "border-primary/50 bg-primary/5"
+                            )}>
+                              <CardHeader className="pb-2">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1 min-w-0">
+                                    <CardTitle className="text-base flex items-center gap-2">
+                                      <span className="truncate">{tour.name}</span>
+                                      {progress.completed && (
+                                        <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
+                                      )}
+                                    </CardTitle>
+                                    <CardDescription className="text-xs mt-1">
+                                      {tour.description}
+                                    </CardDescription>
+                                  </div>
+                                  <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
+                                    {progress.totalSteps} steps
+                                  </Badge>
+                                </div>
+                              </CardHeader>
+                              <CardContent className="pt-0">
+                                {progress.stepsCompleted > 0 && !progress.completed && (
+                                  <div className="mb-3">
+                                    <div className="flex justify-between text-xs text-muted-foreground mb-1">
+                                      <span>Progress</span>
+                                      <span>{progress.stepsCompleted}/{progress.totalSteps}</span>
+                                    </div>
+                                    <Progress 
+                                      value={(progress.stepsCompleted / progress.totalSteps) * 100} 
+                                      className="h-1"
+                                    />
+                                  </div>
+                                )}
+                                
+                                <div className="flex gap-2">
+                                  {progress.completed ? (
+                                    <Button 
+                                      variant="outline" 
+                                      size="sm" 
+                                      className="w-full"
+                                      onClick={() => handleRestartTour(tour.id)}
+                                    >
+                                      <RefreshCw className="h-4 w-4 mr-1" />
+                                      Restart Tour
+                                    </Button>
+                                  ) : isInProgress && tourState.isPaused ? (
+                                    <Button 
+                                      size="sm" 
+                                      className="w-full"
+                                      onClick={handleResumeTour}
+                                    >
+                                      <Play className="h-4 w-4 mr-1" />
+                                      Resume Tour
+                                    </Button>
+                                  ) : (
+                                    <Button 
+                                      size="sm" 
+                                      className="w-full"
+                                      onClick={() => handleStartTour(tour.id)}
+                                      disabled={isTourActive && !tourState.isPaused}
+                                    >
+                                      <Play className="h-4 w-4 mr-1" />
+                                      Start Tour
+                                    </Button>
+                                  )}
+                                </div>
+                              </CardContent>
+                            </Card>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </ScrollArea>
             </TabsContent>
 
             <TabsContent value="tips" className="mt-4">
-              <ScrollArea className="h-[calc(100vh-380px)]">
+              <ScrollArea className="h-[calc(100vh-400px)]">
                 <div className="space-y-4 pr-4">
                   {Object.entries(tipsByCategory).map(([category, categoryTips]) => (
                     <div key={category}>
