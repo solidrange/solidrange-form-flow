@@ -7,40 +7,45 @@
 @layer base {
   :root {
     /* ============================================
-       ACCESSIBILITY-SAFE COLOR SYSTEM
+       SOLIDRANGE-STYLE LIGHT THEME
+       Single light theme - no dark mode
        WCAG AA compliant (4.5:1 body, 3:1 large)
        ============================================ */
     
-    /* Core Brand Colors */
-    --color-primary: 208 100% 47%;
-    --color-primary-soft: 208 100% 55%;
+    /* Core Brand Colors - SolidRange inspired teal/blue */
+    --color-primary: 195 85% 41%;
+    --color-primary-soft: 195 75% 50%;
     --color-primary-contrast: 0 0% 100%;
     
     /* Brand identity colors - updated by BrandProvider */
-    --brand-primary: 208 100% 47%;
-    --brand-primary-light: 210 100% 70%;
-    --brand-primary-dark: 208 100% 35%;
-    --brand-secondary: 262 83% 58%;
-    --brand-secondary-light: 262 83% 75%;
-    --brand-secondary-dark: 262 83% 45%;
+    --brand-primary: 195 85% 41%;
+    --brand-primary-light: 195 70% 55%;
+    --brand-primary-dark: 195 85% 32%;
+    --brand-secondary: 215 70% 50%;
+    --brand-secondary-light: 215 65% 65%;
+    --brand-secondary-dark: 215 75% 38%;
     
-    /* Neutral Colors - Light Mode */
+    /* Neutral Colors - Light Theme Only */
     --bg-primary: 0 0% 100%;
-    --bg-elevated: 0 0% 98%;
-    --text-primary: 224 71% 4%;
-    --text-secondary: 220 9% 35%; /* Darkened from 46% for WCAG AA */
-    --border-subtle: 220 9% 88%;
+    --bg-elevated: 210 20% 98%;
+    --bg-muted: 210 15% 96%;
+    --text-primary: 220 25% 12%;
+    --text-secondary: 220 12% 42%;
+    --text-muted: 220 10% 55%;
+    --border-subtle: 220 14% 90%;
+    --border-strong: 220 12% 80%;
     
     /* Semantic Colors */
-    --color-success: 142 76% 36%;
+    --color-success: 142 70% 38%;
     --color-warning: 38 92% 50%;
-    --color-destructive: 0 84% 55%; /* Darkened from 60.2% for contrast */
+    --color-destructive: 0 72% 51%;
     --on-semantic: 0 0% 100%;
     
     /* Sidebar specific */
-    --sidebar-active-bg: 208 100% 96%;
+    --sidebar-active-bg: 195 85% 95%;
     --sidebar-active-text: var(--text-primary);
     --sidebar-active-icon: var(--color-primary);
+    --sidebar-hover-bg: 210 15% 96%;
     
     /* Form-specific brand variables */
     --form-accent: var(--brand-primary);
@@ -51,7 +56,10 @@
     --btn-secondary: var(--brand-secondary);
     --btn-secondary-hover: var(--brand-secondary-dark);
     
-    /* Mapped to shadcn tokens - Light theme */
+    /* Card specific */
+    --card-background: var(--bg-elevated);
+    
+    /* Mapped to shadcn tokens - Light theme only */
     --background: var(--bg-primary);
     --foreground: var(--text-primary);
 
@@ -64,14 +72,14 @@
     --primary: var(--brand-primary);
     --primary-foreground: var(--color-primary-contrast);
 
-    --secondary: 220 14.3% 95.9%;
-    --secondary-foreground: 220.9 39.3% 11%;
+    --secondary: 210 15% 95%;
+    --secondary-foreground: 220 20% 20%;
 
-    --muted: 220 14.3% 95.9%;
+    --muted: 210 15% 96%;
     --muted-foreground: var(--text-secondary);
 
-    --accent: 220 14.3% 95.9%;
-    --accent-foreground: 220.9 39.3% 11%;
+    --accent: 210 15% 95%;
+    --accent-foreground: 220 20% 20%;
 
     --destructive: var(--color-destructive);
     --destructive-foreground: var(--on-semantic);
@@ -92,78 +100,6 @@
     --sidebar-border: var(--border-subtle);
     --sidebar-ring: var(--brand-primary);
   }
-
-  .dark {
-    /* Core Brand Colors - Dark Mode */
-    --color-primary: 208 100% 47%;
-    --color-primary-soft: 208 100% 55%;
-    --color-primary-contrast: 0 0% 100%;
-    
-    /* Brand identity colors - Dark Mode adjustments */
-    --brand-primary: 208 100% 55%;
-    --brand-primary-light: 210 100% 75%;
-    --brand-primary-dark: 208 100% 40%;
-    --brand-secondary: 262 83% 65%;
-    --brand-secondary-light: 262 83% 80%;
-    --brand-secondary-dark: 262 83% 50%;
-    
-    /* Neutral Colors - Dark Mode */
-    --bg-primary: 222 47% 7%;
-    --bg-elevated: 222 30% 12%;
-    --text-primary: 0 0% 100%;
-    --text-secondary: 210 10% 75%;
-    --border-subtle: 220 15% 30%;
-    
-    /* Semantic Colors - Dark Mode (slightly lighter for visibility) */
-    --color-success: 142 76% 50%;
-    --color-warning: 38 92% 55%;
-    --color-destructive: 0 84% 60%;
-    --on-semantic: 0 0% 100%;
-    
-    /* Sidebar specific - Dark Mode */
-    --sidebar-active-bg: 208 100% 23%;
-    --sidebar-active-text: var(--text-primary);
-    --sidebar-active-icon: var(--color-primary-soft);
-    
-    /* Mapped to shadcn tokens - Dark theme */
-    --background: var(--bg-primary);
-    --foreground: var(--text-primary);
-
-    --card: var(--bg-elevated);
-    --card-foreground: var(--text-primary);
-
-    --popover: var(--bg-elevated);
-    --popover-foreground: var(--text-primary);
-
-    --primary: var(--brand-primary);
-    --primary-foreground: var(--color-primary-contrast);
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: var(--text-primary);
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: var(--text-secondary);
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: var(--text-primary);
-
-    --destructive: var(--color-destructive);
-    --destructive-foreground: var(--on-semantic);
-
-    --border: var(--border-subtle);
-    --input: var(--border-subtle);
-    --ring: var(--brand-primary);
-
-    /* Sidebar tokens - Dark Mode */
-    --sidebar-background: var(--bg-elevated);
-    --sidebar-foreground: var(--text-primary);
-    --sidebar-primary: var(--text-primary);
-    --sidebar-primary-foreground: var(--bg-elevated);
-    --sidebar-accent: var(--sidebar-active-bg);
-    --sidebar-accent-foreground: var(--text-primary);
-    --sidebar-border: var(--border-subtle);
-    --sidebar-ring: var(--brand-primary);
-  }
 }
 
 @layer base {
@@ -172,12 +108,10 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans transition-colors duration-300;
+    @apply bg-background text-foreground font-sans;
     font-family: 'Inter', 'DM Sans', system-ui, -apple-system, sans-serif;
-    /* Improve mobile performance */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Prevent horizontal scroll on mobile */
     overflow-x: hidden;
   }
 
@@ -286,12 +220,12 @@
 
   /* Modern glassmorphism effects */
   .glass {
-    @apply backdrop-blur-xl bg-white/90 border border-gray-200/50;
+    @apply backdrop-blur-xl bg-white/90 border border-border;
   }
 
   /* Modern responsive card styling with better contrast */
   .modern-card {
-    @apply bg-white rounded-md sm:rounded-lg lg:rounded-2xl border border-gray-200 
+    @apply bg-card rounded-md sm:rounded-lg lg:rounded-2xl border border-border 
            shadow-sm hover:shadow-md transition-all duration-300;
   }
 
@@ -323,7 +257,8 @@
 
   .kpi-card::before {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent pointer-events-none;
+    @apply absolute inset-0 pointer-events-none;
+    background: linear-gradient(135deg, hsl(var(--brand-primary) / 0.03) 0%, transparent 50%);
   }
 
   /* Enhanced animations for modern feel - Reduced motion on mobile */
@@ -423,12 +358,14 @@
 
   /* Responsive hover effects - Reduced on mobile */
   .hover-lift {
-    @apply transition-all duration-300 sm:hover:-translate-y-1 sm:hover:shadow-lg 
-           sm:hover:shadow-gray-500/25;
+    @apply transition-all duration-300 sm:hover:-translate-y-1 sm:hover:shadow-lg;
   }
 
   .hover-glow {
-    @apply transition-all duration-300 sm:hover:shadow-lg sm:hover:shadow-blue-500/25;
+    @apply transition-all duration-300 sm:hover:shadow-lg;
+    &:hover {
+      box-shadow: 0 10px 40px -10px hsl(var(--brand-primary) / 0.3);
+    }
   }
 
   .hover-scale {
@@ -437,15 +374,15 @@
 
   /* Enhanced mobile-first responsive design */
   .responsive-text {
-    @apply text-xs sm:text-sm lg:text-base text-gray-700 leading-relaxed;
+    @apply text-xs sm:text-sm lg:text-base text-foreground leading-relaxed;
   }
 
   .responsive-heading {
-    @apply text-sm sm:text-base lg:text-lg xl:text-xl text-gray-900 font-semibold leading-tight;
+    @apply text-sm sm:text-base lg:text-lg xl:text-xl text-foreground font-semibold leading-tight;
   }
 
   .responsive-subheading {
-    @apply text-xs sm:text-sm lg:text-base text-gray-600 font-medium leading-snug;
+    @apply text-xs sm:text-sm lg:text-base text-muted-foreground font-medium leading-snug;
   }
 
   /* Improved scrollbar styling */
@@ -455,11 +392,16 @@
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-gray-100 rounded-full;
+    @apply bg-muted rounded-full;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-full hover:bg-gray-400;
+    @apply rounded-full;
+    background-color: hsl(var(--border-strong));
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--text-muted));
   }
 
   /* Mobile-optimized grid layouts */
@@ -478,14 +420,14 @@
 
   /* Enhanced form elements */
   .form-input {
-    @apply bg-white border-gray-300 text-gray-900 placeholder-gray-500
+    @apply bg-background border-border text-foreground placeholder:text-muted-foreground
            focus:border-primary focus:ring-primary/20 text-xs sm:text-sm lg:text-base
            h-8 sm:h-9 lg:h-10 px-2 sm:px-3 rounded-md;
   }
 
   /* Better contrast for interactive elements */
   .interactive-element {
-    @apply text-gray-700 hover:text-gray-900 border-gray-300 hover:border-gray-400
+    @apply text-foreground hover:text-foreground border-border hover:border-primary/50
            transition-colors duration-200 min-h-[36px] sm:min-h-[40px] lg:min-h-[44px] 
            flex items-center;
   }
@@ -520,8 +462,8 @@
 
   /* Enhanced focus states for accessibility */
   .focus-enhanced {
-    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 
-           focus:border-blue-500;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 
+           focus:border-primary;
   }
 
   /* Text size utilities for mobile */
@@ -735,8 +677,8 @@
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   :root {
-    --border: 0 0% 60%;
-    --input: 0 0% 60%;
+    --border-subtle: 220 12% 70%;
+    --border-strong: 220 12% 50%;
   }
 }
 

@@ -1,6 +1,10 @@
-
 import React, { createContext, useContext, useEffect } from 'react';
 import { useBrand } from '@/contexts/BrandContext';
+
+/**
+ * Branding Provider - Light Theme Only
+ * Applies brand colors dynamically for the single light theme
+ */
 
 interface BrandingContextType {
   applyBrandingStyles: (element: HTMLElement) => void;
@@ -28,46 +32,42 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
   const { brand } = useBrand();
 
   useEffect(() => {
-    // Apply dynamic CSS variables for comprehensive theming
     const root = document.documentElement;
-    
-    // Get current theme colors
-    const isDark = document.documentElement.classList.contains('dark');
-    const currentColors = isDark ? brand.darkTheme.colors : brand.lightTheme.colors;
+    const colors = brand.colors;
     
     // Primary color variations
-    root.style.setProperty('--brand-primary', currentColors.primary.main);
-    root.style.setProperty('--brand-primary-light', currentColors.primary.light);
-    root.style.setProperty('--brand-primary-dark', currentColors.primary.dark);
+    root.style.setProperty('--brand-primary', colors.primary.main);
+    root.style.setProperty('--brand-primary-light', colors.primary.light);
+    root.style.setProperty('--brand-primary-dark', colors.primary.dark);
     
     // Secondary color variations
-    root.style.setProperty('--brand-secondary', currentColors.secondary.main);
-    root.style.setProperty('--brand-secondary-light', currentColors.secondary.light);
-    root.style.setProperty('--brand-secondary-dark', currentColors.secondary.dark);
+    root.style.setProperty('--brand-secondary', colors.secondary.main);
+    root.style.setProperty('--brand-secondary-light', colors.secondary.light);
+    root.style.setProperty('--brand-secondary-dark', colors.secondary.dark);
     
     // Override default primary for buttons and interactive elements
-    root.style.setProperty('--primary', currentColors.primary.main);
+    root.style.setProperty('--primary', colors.primary.main);
     
     // Form-specific branding
-    root.style.setProperty('--form-accent', currentColors.primary.main);
-    root.style.setProperty('--form-border', currentColors.primary.light);
-    root.style.setProperty('--form-focus', currentColors.primary.dark);
+    root.style.setProperty('--form-accent', colors.primary.main);
+    root.style.setProperty('--form-border', colors.primary.light);
+    root.style.setProperty('--form-focus', colors.primary.dark);
     
     // Button variations
-    root.style.setProperty('--btn-primary', currentColors.primary.main);
-    root.style.setProperty('--btn-primary-hover', currentColors.primary.dark);
-    root.style.setProperty('--btn-secondary', currentColors.secondary.main);
-    root.style.setProperty('--btn-secondary-hover', currentColors.secondary.dark);
+    root.style.setProperty('--btn-primary', colors.primary.main);
+    root.style.setProperty('--btn-primary-hover', colors.primary.dark);
+    root.style.setProperty('--btn-secondary', colors.secondary.main);
+    root.style.setProperty('--btn-secondary-hover', colors.secondary.dark);
 
     // Create dynamic CSS for branded components
     const brandingCSS = `
-      .brand-primary { background-color: hsl(${currentColors.primary.main}); }
-      .brand-primary-hover:hover { background-color: hsl(${currentColors.primary.dark}); }
-      .brand-secondary { background-color: hsl(${currentColors.secondary.main}); }
-      .brand-secondary-hover:hover { background-color: hsl(${currentColors.secondary.dark}); }
-      .brand-border { border-color: hsl(${currentColors.primary.main}); }
-      .brand-text { color: hsl(${currentColors.primary.main}); }
-      .brand-focus:focus { border-color: hsl(${currentColors.primary.main}); box-shadow: 0 0 0 2px hsl(${currentColors.primary.main} / 0.2); }
+      .brand-primary { background-color: hsl(${colors.primary.main}); }
+      .brand-primary-hover:hover { background-color: hsl(${colors.primary.dark}); }
+      .brand-secondary { background-color: hsl(${colors.secondary.main}); }
+      .brand-secondary-hover:hover { background-color: hsl(${colors.secondary.dark}); }
+      .brand-border { border-color: hsl(${colors.primary.main}); }
+      .brand-text { color: hsl(${colors.primary.main}); }
+      .brand-focus:focus { border-color: hsl(${colors.primary.main}); box-shadow: 0 0 0 2px hsl(${colors.primary.main} / 0.2); }
     `;
 
     // Inject or update style element
@@ -82,10 +82,9 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
   }, [brand]);
 
   const applyBrandingStyles = (element: HTMLElement) => {
-    const isDark = document.documentElement.classList.contains('dark');
-    const currentColors = isDark ? brand.darkTheme.colors : brand.lightTheme.colors;
-    element.style.setProperty('--primary', currentColors.primary.main);
-    element.style.setProperty('--secondary', currentColors.secondary.main);
+    const colors = brand.colors;
+    element.style.setProperty('--primary', colors.primary.main);
+    element.style.setProperty('--secondary', colors.secondary.main);
   };
 
   const getBrandingClasses = () => {
@@ -93,24 +92,19 @@ export const BrandingProvider: React.FC<BrandingProviderProps> = ({ children }) 
   };
 
   const getPrimaryColor = () => {
-    const isDark = document.documentElement.classList.contains('dark');
-    const currentColors = isDark ? brand.darkTheme.colors : brand.lightTheme.colors;
-    return `hsl(${currentColors.primary.main})`;
+    return `hsl(${brand.colors.primary.main})`;
   };
   
   const getSecondaryColor = () => {
-    const isDark = document.documentElement.classList.contains('dark');
-    const currentColors = isDark ? brand.darkTheme.colors : brand.lightTheme.colors;
-    return `hsl(${currentColors.secondary.main})`;
+    return `hsl(${brand.colors.secondary.main})`;
   };
 
   const getBrandingCSS = () => {
-    const isDark = document.documentElement.classList.contains('dark');
-    const currentColors = isDark ? brand.darkTheme.colors : brand.lightTheme.colors;
+    const colors = brand.colors;
     return `
-      --brand-primary: ${currentColors.primary.main};
-      --brand-secondary: ${currentColors.secondary.main};
-      --primary: ${currentColors.primary.main};
+      --brand-primary: ${colors.primary.main};
+      --brand-secondary: ${colors.secondary.main};
+      --primary: ${colors.primary.main};
     `;
   };
 

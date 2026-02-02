@@ -1,5 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
+/**
+ * Brand Context - Light Theme Only
+ * Single theme structure aligned with SolidRange visual style
+ */
+
 export interface BrandColors {
   primary: {
     main: string;
@@ -30,29 +35,25 @@ export interface BrandFonts {
   mono: string;
 }
 
-export interface ThemeBrand {
-  colors: BrandColors;
-}
-
 export interface BrandIdentity {
   name: string;
   logo: string | null;
   tagline?: string;
   fonts: BrandFonts;
-  lightTheme: ThemeBrand;
-  darkTheme: ThemeBrand;
+  colors: BrandColors;
 }
 
 interface BrandContextType {
   brand: BrandIdentity;
   updateBrand: (updates: Partial<BrandIdentity>) => void;
   updateLogo: (logoUrl: string | null) => void;
-  updateThemeColors: (theme: 'light' | 'dark', colors: Partial<BrandColors>) => void;
+  updateColors: (colors: Partial<BrandColors>) => void;
   updateFonts: (fonts: Partial<BrandFonts>) => void;
   resetToDefaults: () => void;
   getCurrentThemeColors: () => BrandColors;
 }
 
+// SolidRange-style light theme defaults
 const defaultBrand: BrandIdentity = {
   name: 'SolidForm',
   logo: null,
@@ -62,54 +63,27 @@ const defaultBrand: BrandIdentity = {
     body: 'Inter',
     mono: 'JetBrains Mono'
   },
-  lightTheme: {
-    colors: {
-      primary: {
-        main: '208 100% 47%',
-        light: '210 100% 70%',
-        dark: '208 100% 35%'
-      },
-      secondary: {
-        main: '262 83% 58%',
-        light: '262 83% 75%',
-        dark: '262 83% 45%'
-      },
-      background: '0 0% 100%',
-      surface: '0 0% 98%',
-      text: {
-        primary: '224 71% 4%',
-        secondary: '220 9% 35%' // WCAG AA compliant
-      },
-      button: {
-        primary: '208 100% 47%',
-        secondary: '220 14.3% 95.9%',
-        destructive: '0 84% 55%' // WCAG AA compliant
-      }
-    }
-  },
-  darkTheme: {
-    colors: {
-      primary: {
-        main: '208 100% 55%',
-        light: '210 100% 75%',
-        dark: '208 100% 40%'
-      },
-      secondary: {
-        main: '262 83% 65%',
-        light: '262 83% 80%',
-        dark: '262 83% 50%'
-      },
-      background: '222 47% 7%',
-      surface: '222 30% 12%',
-      text: {
-        primary: '0 0% 100%',
-        secondary: '210 10% 75%' // WCAG AA compliant
-      },
-      button: {
-        primary: '208 100% 55%',
-        secondary: '217.2 32.6% 17.5%',
-        destructive: '0 84% 60%'
-      }
+  colors: {
+    primary: {
+      main: '195 85% 41%',
+      light: '195 70% 55%',
+      dark: '195 85% 32%'
+    },
+    secondary: {
+      main: '215 70% 50%',
+      light: '215 65% 65%',
+      dark: '215 75% 38%'
+    },
+    background: '0 0% 100%',
+    surface: '210 20% 98%',
+    text: {
+      primary: '220 25% 12%',
+      secondary: '220 12% 42%'
+    },
+    button: {
+      primary: '195 85% 41%',
+      secondary: '210 15% 95%',
+      destructive: '0 72% 51%'
     }
   }
 };
@@ -132,115 +106,56 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
   const [brand, setBrand] = useState<BrandIdentity>(() => {
     const stored = localStorage.getItem('brand-identity');
     if (stored) {
-      const parsedBrand = JSON.parse(stored);
-      // Migrate old brand structure to new theme-based structure
-      if (parsedBrand.colors && !parsedBrand.lightTheme) {
-        return {
-          ...defaultBrand,
-          name: parsedBrand.name || defaultBrand.name,
-          logo: parsedBrand.logo || defaultBrand.logo,
-          tagline: parsedBrand.tagline || defaultBrand.tagline,
-          lightTheme: {
-            colors: {
-              ...defaultBrand.lightTheme.colors,
-              primary: parsedBrand.colors.primary || defaultBrand.lightTheme.colors.primary,
-              secondary: parsedBrand.colors.secondary || defaultBrand.lightTheme.colors.secondary
-            }
-          },
-          darkTheme: {
-            colors: {
-              ...defaultBrand.darkTheme.colors,
-              primary: parsedBrand.colors.primary || defaultBrand.darkTheme.colors.primary,
-              secondary: parsedBrand.colors.secondary || defaultBrand.darkTheme.colors.secondary
-            }
-          }
-        };
+      try {
+        const parsedBrand = JSON.parse(stored);
+        // Migrate old dual-theme structure to single theme
+        if (parsedBrand.lightTheme && !parsedBrand.colors) {
+          return {
+            ...defaultBrand,
+            name: parsedBrand.name || defaultBrand.name,
+            logo: parsedBrand.logo || defaultBrand.logo,
+            tagline: parsedBrand.tagline || defaultBrand.tagline,
+            fonts: parsedBrand.fonts || defaultBrand.fonts,
+            colors: parsedBrand.lightTheme.colors || defaultBrand.colors
+          };
+        }
+        return { ...defaultBrand, ...parsedBrand };
+      } catch (e) {
+        console.warn('Failed to parse stored brand, using defaults');
+        return defaultBrand;
       }
-      return { ...defaultBrand, ...parsedBrand };
     }
     return defaultBrand;
   });
 
   const getCurrentThemeColors = (): BrandColors => {
-    const isDark = document.documentElement.classList.contains('dark');
-    const theme = isDark ? brand.darkTheme : brand.lightTheme;
-    
-    // Ensure theme and colors exist, fallback to default if not
-    if (!theme || !theme.colors) {
-      const fallbackTheme = isDark ? defaultBrand.darkTheme : defaultBrand.lightTheme;
-      return fallbackTheme.colors;
-    }
-    
-    return theme.colors;
+    return brand.colors || defaultBrand.colors;
   };
 
-  // Apply brand colors and fonts to CSS variables when brand changes
+  // Apply brand colors and fonts to CSS variables
   useEffect(() => {
     const root = document.documentElement;
+    const colors = brand.colors || defaultBrand.colors;
     
-    // Ensure brand object is properly initialized
-    if (!brand || !brand.lightTheme || !brand.darkTheme) {
-      console.warn('Brand object not properly initialized, using defaults');
-      setBrand(defaultBrand);
-      return;
-    }
+    // Apply brand colors
+    root.style.setProperty('--brand-primary', colors.primary.main);
+    root.style.setProperty('--brand-primary-light', colors.primary.light);
+    root.style.setProperty('--brand-primary-dark', colors.primary.dark);
+    root.style.setProperty('--brand-secondary', colors.secondary.main);
+    root.style.setProperty('--brand-secondary-light', colors.secondary.light);
+    root.style.setProperty('--brand-secondary-dark', colors.secondary.dark);
     
-    const currentColors = getCurrentThemeColors();
+    // Apply to primary CSS variable
+    root.style.setProperty('--primary', colors.primary.main);
     
-    // Apply brand colors with fallbacks
-    root.style.setProperty('--brand-primary', currentColors.primary?.main || defaultBrand.lightTheme.colors.primary.main);
-    root.style.setProperty('--brand-primary-light', currentColors.primary?.light || defaultBrand.lightTheme.colors.primary.light);
-    root.style.setProperty('--brand-primary-dark', currentColors.primary?.dark || defaultBrand.lightTheme.colors.primary.dark);
-    root.style.setProperty('--brand-secondary', currentColors.secondary?.main || defaultBrand.lightTheme.colors.secondary.main);
-    root.style.setProperty('--brand-secondary-light', currentColors.secondary?.light || defaultBrand.lightTheme.colors.secondary.light);
-    root.style.setProperty('--brand-secondary-dark', currentColors.secondary?.dark || defaultBrand.lightTheme.colors.secondary.dark);
-    
-    // Apply comprehensive color system based on theme
-    root.style.setProperty('--primary', currentColors.primary?.main || defaultBrand.lightTheme.colors.primary.main);
-    
-    // Apply fonts with fallbacks
-    root.style.setProperty('--font-heading', brand.fonts?.heading || defaultBrand.fonts.heading);
-    root.style.setProperty('--font-body', brand.fonts?.body || defaultBrand.fonts.body);
-    root.style.setProperty('--font-mono', brand.fonts?.mono || defaultBrand.fonts.mono);
+    // Apply fonts
+    const fonts = brand.fonts || defaultBrand.fonts;
+    root.style.setProperty('--font-heading', fonts.heading);
+    root.style.setProperty('--font-body', fonts.body);
+    root.style.setProperty('--font-mono', fonts.mono);
     
     // Save to localStorage
     localStorage.setItem('brand-identity', JSON.stringify(brand));
-  }, [brand]);
-
-  // Listen for theme changes and reapply brand colors
-  useEffect(() => {
-    const observer = new MutationObserver((mutations) => {
-      // Check if class attribute changed
-      const classChanged = mutations.some(
-        m => m.type === 'attributes' && m.attributeName === 'class'
-      );
-      
-      if (!classChanged) return;
-      
-      // Ensure brand is properly initialized before accessing colors
-      if (!brand || !brand.lightTheme || !brand.darkTheme) {
-        return;
-      }
-      
-      const currentColors = getCurrentThemeColors();
-      const root = document.documentElement;
-      
-      // Apply brand colors with fallbacks - these adjust based on light/dark mode
-      root.style.setProperty('--brand-primary', currentColors.primary?.main || defaultBrand.lightTheme.colors.primary.main);
-      root.style.setProperty('--brand-primary-light', currentColors.primary?.light || defaultBrand.lightTheme.colors.primary.light);
-      root.style.setProperty('--brand-primary-dark', currentColors.primary?.dark || defaultBrand.lightTheme.colors.primary.dark);
-      root.style.setProperty('--brand-secondary', currentColors.secondary?.main || defaultBrand.lightTheme.colors.secondary.main);
-      root.style.setProperty('--brand-secondary-light', currentColors.secondary?.light || defaultBrand.lightTheme.colors.secondary.light);
-      root.style.setProperty('--brand-secondary-dark', currentColors.secondary?.dark || defaultBrand.lightTheme.colors.secondary.dark);
-      root.style.setProperty('--primary', currentColors.primary?.main || defaultBrand.lightTheme.colors.primary.main);
-    });
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class']
-    });
-
-    return () => observer.disconnect();
   }, [brand]);
 
   const updateBrand = (updates: Partial<BrandIdentity>) => {
@@ -251,25 +166,18 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
     setBrand(prev => ({ ...prev, logo: logoUrl }));
   };
 
-  const updateThemeColors = (theme: 'light' | 'dark', colors: Partial<BrandColors>) => {
-    setBrand(prev => {
-      const themeKey = theme === 'light' ? 'lightTheme' : 'darkTheme';
-      const currentTheme = prev[themeKey];
-      
-      return {
-        ...prev,
-        [themeKey]: {
-          colors: {
-            ...currentTheme.colors,
-            ...colors,
-            primary: colors.primary ? { ...currentTheme.colors.primary, ...colors.primary } : currentTheme.colors.primary,
-            secondary: colors.secondary ? { ...currentTheme.colors.secondary, ...colors.secondary } : currentTheme.colors.secondary,
-            text: colors.text ? { ...currentTheme.colors.text, ...colors.text } : currentTheme.colors.text,
-            button: colors.button ? { ...currentTheme.colors.button, ...colors.button } : currentTheme.colors.button
-          }
-        }
-      };
-    });
+  const updateColors = (colors: Partial<BrandColors>) => {
+    setBrand(prev => ({
+      ...prev,
+      colors: {
+        ...prev.colors,
+        ...colors,
+        primary: colors.primary ? { ...prev.colors.primary, ...colors.primary } : prev.colors.primary,
+        secondary: colors.secondary ? { ...prev.colors.secondary, ...colors.secondary } : prev.colors.secondary,
+        text: colors.text ? { ...prev.colors.text, ...colors.text } : prev.colors.text,
+        button: colors.button ? { ...prev.colors.button, ...colors.button } : prev.colors.button
+      }
+    }));
   };
 
   const updateFonts = (fonts: Partial<BrandFonts>) => {
@@ -280,10 +188,8 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
   };
 
   const resetToDefaults = () => {
-    // Reset to the original default brand
     setBrand(defaultBrand);
     localStorage.removeItem('brand-identity');
-    localStorage.removeItem('brand-identity-default');
   };
 
   return (
@@ -292,7 +198,7 @@ export const BrandProvider: React.FC<BrandProviderProps> = ({ children }) => {
         brand, 
         updateBrand, 
         updateLogo, 
-        updateThemeColors, 
+        updateColors, 
         updateFonts,
         resetToDefaults,
         getCurrentThemeColors

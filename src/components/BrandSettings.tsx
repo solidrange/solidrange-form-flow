@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { useTheme } from '@/contexts/ThemeContext';
 import { useBrand } from '@/contexts/BrandContext';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -8,13 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, Palette, RotateCcw, Eye, X, Sun, Moon, Type, Info, ShieldCheck } from 'lucide-react';
+import { Upload, Palette, RotateCcw, Eye, X, Type, Info, ShieldCheck } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
 import { toast } from '@/hooks/use-toast';
 import { ContrastPanel } from './ContrastIndicator';
-import { evaluateContrast, clampLightnessForAccessibility, getAccessibleDefaults } from '@/utils/colorContrast';
 
 const colorExplanations = {
   primary: {
@@ -52,21 +49,10 @@ const fontOptions = [
 ];
 
 export const BrandSettings: React.FC = () => {
-  const { resolvedMode } = useTheme();
-  const { brand, updateBrand, updateLogo, updateThemeColors, updateFonts, resetToDefaults, getCurrentThemeColors } = useBrand();
+  const { brand, updateBrand, updateLogo, updateColors, updateFonts, resetToDefaults } = useBrand();
   const [tempName, setTempName] = useState(brand.name);
   const [tempTagline, setTempTagline] = useState(brand.tagline || '');
-  // Initialize activeTheme based on actual resolved theme mode
-  const [activeTheme, setActiveTheme] = useState<'light' | 'dark'>(resolvedMode);
-  const [previewColors, setPreviewColors] = useState(() => 
-    resolvedMode === 'light' ? brand.lightTheme.colors : brand.darkTheme.colors
-  );
-
-  // Sync activeTheme with resolved theme when it changes
-  React.useEffect(() => {
-    setActiveTheme(resolvedMode);
-    setPreviewColors(resolvedMode === 'light' ? brand.lightTheme.colors : brand.darkTheme.colors);
-  }, [resolvedMode, brand.lightTheme.colors, brand.darkTheme.colors]);
+  const [previewColors, setPreviewColors] = useState(() => brand.colors);
 
   const handleSaveBasicInfo = () => {
     updateBrand({
@@ -103,11 +89,6 @@ export const BrandSettings: React.FC = () => {
     });
   };
 
-  const handleThemeSwitch = (newTheme: 'light' | 'dark') => {
-    setActiveTheme(newTheme);
-    setPreviewColors(newTheme === 'light' ? brand.lightTheme.colors : brand.darkTheme.colors);
-  };
-
   const handleColorChange = (colorPath: string, value: string) => {
     const hslValue = hexToHsl(value);
     const keys = colorPath.split('.');
@@ -123,8 +104,8 @@ export const BrandSettings: React.FC = () => {
       
       current[keys[keys.length - 1]] = hslValue;
       
-      // Apply changes immediately to the theme
-      updateThemeColors(activeTheme, updated);
+      // Apply changes immediately
+      updateColors(updated);
       
       return updated;
     });
@@ -164,9 +145,8 @@ export const BrandSettings: React.FC = () => {
   };
 
   const hslToHex = (hsl: string): string => {
-    // Handle undefined or invalid input
     if (!hsl || typeof hsl !== 'string') {
-      return '#000000'; // Default to black
+      return '#000000';
     }
     
     const [h, s, l] = hsl.split(' ').map((val, idx) => {
@@ -205,31 +185,29 @@ export const BrandSettings: React.FC = () => {
     resetToDefaults();
     setTempName('SolidForm');
     setTempTagline('Enterprise Assessment Simplified');
-    // Reset to original default colors
-    const originalDefaultColors = {
-      primary: { main: '208 100% 47%', light: '210 100% 70%', dark: '208 100% 35%' },
-      secondary: { main: '262 83% 58%', light: '262 83% 75%', dark: '262 83% 45%' },
+    // Reset to SolidRange-style defaults
+    const defaultColors = {
+      primary: { main: '195 85% 41%', light: '195 70% 55%', dark: '195 85% 32%' },
+      secondary: { main: '215 70% 50%', light: '215 65% 65%', dark: '215 75% 38%' },
       background: '0 0% 100%',
-      surface: '0 0% 98%',
-      text: { primary: '224 71.4% 4.1%', secondary: '220 8.9% 46.1%' },
-      button: { primary: '208 100% 47%', secondary: '220 14.3% 95.9%', destructive: '0 84.2% 60.2%' }
+      surface: '210 20% 98%',
+      text: { primary: '220 25% 12%', secondary: '220 12% 42%' },
+      button: { primary: '195 85% 41%', secondary: '210 15% 95%', destructive: '0 72% 51%' }
     };
-    setPreviewColors(originalDefaultColors);
+    setPreviewColors(defaultColors);
     toast({
       title: "Brand Reset",
-      description: "Your brand has been reset to original defaults.",
+      description: "Your brand has been reset to SolidRange-style defaults.",
     });
   };
 
   const ColorInput = ({ colorPath, label, explanation }: { colorPath: string, label: string, explanation: string }) => {
-    // Safely get the color value with fallback
     const getColorValue = (path: string) => {
       try {
         const value = path.split('.').reduce((obj, key) => obj && obj[key], previewColors);
-        return value || '208 100% 47%'; // Default HSL value
+        return value || '195 85% 41%';
       } catch (error) {
-        console.warn(`Error accessing color path ${path}:`, error);
-        return '208 100% 47%'; // Default HSL value
+        return '195 85% 41%';
       }
     };
     
@@ -241,7 +219,7 @@ export const BrandSettings: React.FC = () => {
           <Label className="text-xs sm:text-sm font-medium">{label}</Label>
           <div className="group relative">
             <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-            <div className="invisible group-hover:visible absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-black text-white text-xs rounded whitespace-nowrap z-50 max-w-xs">
+            <div className="invisible group-hover:visible absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-foreground text-background text-xs rounded whitespace-nowrap z-50 max-w-xs">
               {explanation}
             </div>
           </div>
@@ -405,36 +383,16 @@ export const BrandSettings: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Color Scheme */}
+      {/* Color Scheme - Light Theme Only */}
       <Card className="modern-card">
         <CardHeader className="pb-3 sm:pb-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <CardTitle className="flex items-center gap-2 text-mobile-base">
-              <Palette className="h-4 w-4 sm:h-5 sm:w-5" />
-              Color Scheme
-            </CardTitle>
-            
-            <div className="flex items-center gap-2 bg-muted/50 rounded-lg p-1">
-              <Button
-                variant={activeTheme === 'light' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => handleThemeSwitch('light')}
-                className="flex items-center gap-1 sm:gap-2 btn-mobile"
-              >
-                <Sun className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="text-xs sm:text-sm">Light</span>
-              </Button>
-              <Button
-                variant={activeTheme === 'dark' ? 'default' : 'ghost'}
-                size="sm"
-                onClick={() => handleThemeSwitch('dark')}
-                className="flex items-center gap-1 sm:gap-2 btn-mobile"
-              >
-                <Moon className="h-3 w-3 sm:h-4 sm:w-4" />
-                <span className="text-xs sm:text-sm">Dark</span>
-              </Button>
-            </div>
-          </div>
+          <CardTitle className="flex items-center gap-2 text-mobile-base">
+            <Palette className="h-4 w-4 sm:h-5 sm:w-5" />
+            Color Scheme
+          </CardTitle>
+          <p className="text-xs text-muted-foreground mt-1">
+            SolidForms uses a light theme aligned with SolidRange.com visual style
+          </p>
         </CardHeader>
         <CardContent className="space-y-4 sm:space-y-6">
           {/* Primary Colors */}
@@ -561,106 +519,70 @@ export const BrandSettings: React.FC = () => {
             Accessibility Contrast Check
           </CardTitle>
           <p className="text-xs text-muted-foreground mt-1">
-            Validating contrast for: <Badge variant="outline" className="text-xs ml-1">
-              {activeTheme === 'light' ? 'Light Mode' : 'Dark Mode'}
-            </Badge>
+            Validating contrast for light theme - WCAG AA compliance
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
-          {/* Current theme contrast check */}
           <ContrastPanel
-            title={`${activeTheme === 'light' ? 'Light' : 'Dark'} Theme - WCAG AA`}
+            title="Light Theme - WCAG AA"
             colorPairs={[
               {
                 name: 'Body text on background',
-                foreground: previewColors.text?.primary || (activeTheme === 'light' ? '224 71% 4%' : '0 0% 100%'),
-                background: previewColors.background || (activeTheme === 'light' ? '0 0% 100%' : '222 47% 7%'),
+                foreground: previewColors.text?.primary || '220 25% 12%',
+                background: previewColors.background || '0 0% 100%',
                 requirement: 'normal'
               },
               {
                 name: 'Secondary text on background',
-                foreground: previewColors.text?.secondary || (activeTheme === 'light' ? '220 9% 35%' : '210 10% 75%'),
-                background: previewColors.background || (activeTheme === 'light' ? '0 0% 100%' : '222 47% 7%'),
+                foreground: previewColors.text?.secondary || '220 12% 42%',
+                background: previewColors.background || '0 0% 100%',
                 requirement: 'normal'
               },
               {
                 name: 'Primary button text',
                 foreground: '0 0% 100%',
-                background: previewColors.primary?.main || '208 100% 47%',
+                background: previewColors.primary?.main || '195 85% 41%',
                 requirement: 'normal'
               },
               {
                 name: 'Secondary text on surface',
-                foreground: previewColors.text?.secondary || (activeTheme === 'light' ? '220 9% 35%' : '210 10% 75%'),
-                background: previewColors.surface || (activeTheme === 'light' ? '0 0% 98%' : '222 30% 12%'),
+                foreground: previewColors.text?.secondary || '220 12% 42%',
+                background: previewColors.surface || '210 20% 98%',
                 requirement: 'normal'
               },
               {
                 name: 'Destructive button text',
                 foreground: '0 0% 100%',
-                background: previewColors.button?.destructive || '0 84% 55%',
+                background: previewColors.button?.destructive || '0 72% 51%',
                 requirement: 'large'
               }
             ]}
           />
-          
-          {/* Validate the OTHER theme too */}
-          <div className="pt-2 border-t">
-            <ContrastPanel
-              title={`${activeTheme === 'light' ? 'Dark' : 'Light'} Theme - WCAG AA`}
-              colorPairs={(() => {
-                const otherTheme = activeTheme === 'light' ? brand.darkTheme.colors : brand.lightTheme.colors;
-                const isLight = activeTheme !== 'light';
-                return [
-                  {
-                    name: 'Body text on background',
-                    foreground: otherTheme.text?.primary || (isLight ? '224 71% 4%' : '0 0% 100%'),
-                    background: otherTheme.background || (isLight ? '0 0% 100%' : '222 47% 7%'),
-                    requirement: 'normal' as const
-                  },
-                  {
-                    name: 'Secondary text on background',
-                    foreground: otherTheme.text?.secondary || (isLight ? '220 9% 35%' : '210 10% 75%'),
-                    background: otherTheme.background || (isLight ? '0 0% 100%' : '222 47% 7%'),
-                    requirement: 'normal' as const
-                  },
-                  {
-                    name: 'Primary button text',
-                    foreground: '0 0% 100%',
-                    background: otherTheme.primary?.main || '208 100% 47%',
-                    requirement: 'normal' as const
-                  }
-                ];
-              })()}
-            />
-          </div>
           
           <div className="flex gap-2">
             <Button
               variant="outline"
               size="sm"
               onClick={() => {
-                const defaults = getAccessibleDefaults();
-                const themeDefaults = activeTheme === 'light' ? defaults.light : defaults.dark;
                 const accessibleColors = {
                   ...previewColors,
                   text: {
-                    primary: themeDefaults.textPrimary,
-                    secondary: themeDefaults.textSecondary
+                    primary: '220 25% 12%',
+                    secondary: '220 12% 42%'
                   },
-                  background: themeDefaults.bgPrimary,
-                  surface: themeDefaults.bgElevated
+                  background: '0 0% 100%',
+                  surface: '210 20% 98%'
                 };
                 setPreviewColors(accessibleColors);
-                updateThemeColors(activeTheme, accessibleColors);
+                updateColors(accessibleColors);
                 toast({
                   title: "Accessible Defaults Applied",
-                  description: `${activeTheme === 'light' ? 'Light' : 'Dark'} mode colors reset to WCAG AA compliant values.`,
+                  description: "Colors reset to WCAG AA compliant values.",
                 });
               }}
               className="flex-1 btn-mobile"
             >
-              Reset {activeTheme === 'light' ? 'Light' : 'Dark'} to Accessible Defaults
+              Reset to Accessible Defaults
             </Button>
           </div>
         </CardContent>
@@ -676,7 +598,7 @@ export const BrandSettings: React.FC = () => {
         </CardHeader>
         <CardContent>
           <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4">
-            This will reset all brand settings to their default values.
+            This will reset all brand settings to SolidRange-style defaults.
           </p>
           <Button variant="destructive" onClick={handleReset} className="w-full btn-mobile">
             Reset to Defaults

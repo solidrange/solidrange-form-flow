@@ -39,7 +39,7 @@ export const FormSettingsPanel = ({ form, onUpdateForm, isPublished }: FormSetti
         enabled: true,
         brandName: brand.name,
         logo: brand.logo,
-        colors: brand.lightTheme.colors,
+        colors: brand.colors,
         showLogo: true,
         showBrandColors: true,
         useGlobalBranding: true
@@ -53,7 +53,7 @@ export const FormSettingsPanel = ({ form, onUpdateForm, isPublished }: FormSetti
   // Get effective branding values (global or custom)
   const effectiveBrandName = isUsingGlobalBranding ? brand.name : (form.settings.branding?.brandName || brand.name);
   const effectiveLogo = isUsingGlobalBranding ? brand.logo : (form.settings.branding?.logo || brand.logo);
-  const effectiveColors = isUsingGlobalBranding ? brand.lightTheme.colors : (form.settings.branding?.colors || brand.lightTheme.colors);
+  const effectiveColors = isUsingGlobalBranding ? brand.colors : (form.settings.branding?.colors || brand.colors);
 
   const DraftStateWarning = () => (
     <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
