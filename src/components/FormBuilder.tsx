@@ -132,7 +132,7 @@ export const FormBuilder = ({
       <ResizablePanelGroup direction="horizontal" className="flex-1">
         {/* Left Sidebar - Field Palette */}
         <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
-          <div className="h-full border-r border-border bg-card overflow-y-auto">
+          <div className="h-full border-r border-border bg-card overflow-y-auto" data-tour-id="field-palette">
             <div className="p-4">
               <FieldPalette onAddField={onAddField} />
             </div>
@@ -145,7 +145,7 @@ export const FormBuilder = ({
         <ResizablePanel defaultSize={selectedFieldId ? 50 : 75} minSize={40}>
           <div className="h-full flex flex-col">
             {/* Form Header */}
-            <div className="p-6 border-b bg-gray-50">
+            <div className="p-6 border-b bg-gray-50" data-tour-id="form-title">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex-1">
                   <Input
@@ -177,6 +177,7 @@ export const FormBuilder = ({
                     variant="outline"
                     size="sm"
                     className="gap-2"
+                    data-tour-id="save-form"
                   >
                     <Save className="h-4 w-4" />
                     Save
@@ -237,7 +238,7 @@ export const FormBuilder = ({
             </div>
 
             {/* Form Fields */}
-            <div className="flex-1 p-6 overflow-y-auto">
+            <div className="flex-1 p-6 overflow-y-auto" data-tour-id="form-canvas">
               <FormCanvas
                 fields={formFields}
                 selectedField={selectedFieldId}

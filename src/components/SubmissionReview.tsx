@@ -460,7 +460,7 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
   return (
     <div className="space-y-4 animate-fade-in">
       {/* Header with Search and Filters */}
-      <div className="space-y-4">
+      <div className="space-y-4" data-tour-id="submission-filters">
         <h1 className="text-2xl font-bold">Submissions ({sortedSubmissions.length})</h1>
         
         {/* Search Bar */}
@@ -648,7 +648,7 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
       {/* Main Content */}
       <div className="flex flex-col lg:grid lg:grid-cols-12 gap-2 sm:gap-4 lg:gap-6 h-auto lg:h-[calc(100vh-400px)]">
         {/* Submissions List */}
-        <div className="lg:col-span-4 order-1 lg:order-1 animate-slide-in-left">
+        <div className="lg:col-span-4 order-1 lg:order-1 animate-slide-in-left" data-tour-id="submission-list">
           <SubmissionsList
             submissions={sortedSubmissions}
             form={form}
@@ -658,7 +658,7 @@ export const SubmissionReview = ({ submissions, form, initialFilters, onUpdateSu
         </div>
 
         {/* Submission Details */}
-        <div className="lg:col-span-8 order-2 lg:order-2 animate-slide-in-right">
+        <div className="lg:col-span-8 order-2 lg:order-2 animate-slide-in-right" data-tour-id="submission-actions">
           {selectedSub ? (
             <Card className="h-full hover:shadow-modern-lg transition-all duration-300">
               <CardHeader className="pb-2 sm:pb-3">

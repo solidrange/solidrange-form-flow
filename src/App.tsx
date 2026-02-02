@@ -32,6 +32,7 @@ import { BrandProvider } from "@/contexts/BrandContext";  // Brand identity syst
 import { BrandingProvider } from "@/components/BrandingProvider";  // Brand styling system
 import { LanguageProvider } from "@/contexts/LanguageContext";  // Language system
 import { SettingsProvider } from "@/contexts/SettingsContext";  // Settings system
+import { TourProvider } from "@/components/tour/TourProvider";  // Tour system
 import Index from "./pages/Index";      // Main Form Builder page
 import NotFound from "./pages/NotFound"; // 404 error page
 
@@ -59,27 +60,29 @@ const App: React.FC = () => (
       <BrandingProvider>
         <LanguageProvider>
           <SettingsProvider>
-            <ThemeProvider>
-              <TooltipProvider>
-              <div className="relative min-h-screen">
-                {/* Notification systems - these show popup messages to users */}
-                <Toaster />
-                <Sonner />
-                
-                {/* Page routing system - decides which page to show based on URL */}
-                <BrowserRouter>
-                  <Routes>
-                    {/* Main page: Form Builder dashboard */}
-                    <Route path="/" element={<Index />} />
-                    
-                    {/* Catch-all route: Show "Not Found" page for any invalid URL */}
-                    {/* IMPORTANT: This must be the last route */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </BrowserRouter>
-              </div>
-            </TooltipProvider>
-          </ThemeProvider>
+            <TourProvider>
+              <ThemeProvider>
+                <TooltipProvider>
+                <div className="relative min-h-screen">
+                  {/* Notification systems - these show popup messages to users */}
+                  <Toaster />
+                  <Sonner />
+                  
+                  {/* Page routing system - decides which page to show based on URL */}
+                  <BrowserRouter>
+                    <Routes>
+                      {/* Main page: Form Builder dashboard */}
+                      <Route path="/" element={<Index />} />
+                      
+                      {/* Catch-all route: Show "Not Found" page for any invalid URL */}
+                      {/* IMPORTANT: This must be the last route */}
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </BrowserRouter>
+                </div>
+              </TooltipProvider>
+            </ThemeProvider>
+          </TourProvider>
         </SettingsProvider>
       </LanguageProvider>
     </BrandingProvider>
