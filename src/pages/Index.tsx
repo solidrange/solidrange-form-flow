@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FormBuilder } from "@/components/FormBuilder";
 import { FormPreview } from "@/components/FormPreview";
+import { useTour } from "@/contexts/TourContext";
 import { FormLibrary } from "@/components/FormLibrary";
 import { FormManagementDialog } from "@/components/FormManagementDialog";
 import Analytics from "@/components/Analytics";
@@ -54,10 +55,18 @@ import {
 const Index = () => {
   const { t, isRTL } = useLanguage();
   const isMobile = useIsMobile();
+  const { setNavigationCallback } = useTour();
   
   // Tab navigation state
   const [activeTab, setActiveTab] = useState("dashboard");
   const [activeBuildTab, setActiveBuildTab] = useState("builder");
+
+  // Register navigation callback for tour system
+  useEffect(() => {
+    setNavigationCallback(setActiveTab);
+    return () => setNavigationCallback(null);
+  }, [setNavigationCallback]);
+  
   const [submissionFilters, setSubmissionFilters] = useState<{
     status?: string;
     approvalType?: string;
@@ -926,7 +935,7 @@ const Index = () => {
                     </Button>
                   </div>
 
-                <Tabs defaultValue="drafts" className="w-full">
+                <Tabs defaultValue="drafts" className="w-full" data-tour-id="forms-tabs">
                   <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="drafts" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
@@ -938,7 +947,7 @@ const Index = () => {
                     </TabsTrigger>
                   </TabsList>
 
-                  <TabsContent value="drafts" className="space-y-4">
+                  <TabsContent value="drafts" className="space-y-4" data-tour-id="forms-list">
                     {savedDrafts.length === 0 ? (
                       <div className="text-center py-12">
                         <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
@@ -969,8 +978,8 @@ const Index = () => {
                                 <span>{draft.fields.length} fields</span>
                                 <span>{new Date(draft.updatedAt).toLocaleDateString()}</span>
                               </div>
-                              <div className="flex gap-2">
-                                  <Button 
+                              <div className="flex gap-2" data-tour-id="forms-actions">
+                                  <Button
                                     size="sm" 
                                     onClick={() => {
                                       loadForm(draft);

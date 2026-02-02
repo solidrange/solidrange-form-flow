@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { TourState, TourAnalytics, Tour, UserRole } from '@/types/tour';
-import { tours, getToursForRole, getStepsForRole } from '@/data/tourSteps';
+import { tours, getToursForRole, getStepsForRole, getStepRoute } from '@/data/tourSteps';
 import { toast } from '@/hooks/use-toast';
 
 interface TourContextType {
@@ -13,7 +13,7 @@ interface TourContextType {
   analytics: TourAnalytics[];
   
   // Actions
-  startTour: (tourId: string) => void;
+  startTour: (tourId: string, onNavigate?: (tab: string) => void) => void;
   nextStep: () => void;
   prevStep: () => void;
   skipStep: () => void;
@@ -23,6 +23,7 @@ interface TourContextType {
   restartTour: (tourId: string) => void;
   setUserRole: (role: UserRole) => void;
   submitFeedback: (tourId: string, feedback: 'positive' | 'negative') => void;
+  setNavigationCallback: (callback: ((tab: string) => void) | null) => void;
   
   // Queries
   isTourActive: boolean;
@@ -61,6 +62,9 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
     return (saved as UserRole) || 'admin';
   });
 
+  // Navigation callback to change tabs
+  const [navigationCallback, setNavigationCallbackState] = useState<((tab: string) => void) | null>(null);
+
   // Persist state changes
   useEffect(() => {
     localStorage.setItem(TOUR_STATE_KEY, JSON.stringify(tourState));
@@ -87,11 +91,34 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
   const totalSteps = roleFilteredSteps.length;
   const isTourActive = !!tourState.activeTourId && !tourState.isPaused;
 
+  // Navigate to required route when step changes
+  useEffect(() => {
+    if (isTourActive && currentStep && navigationCallback) {
+      const requiredRoute = getStepRoute(currentStep);
+      if (requiredRoute) {
+        // Small delay to allow UI to update
+        setTimeout(() => {
+          navigationCallback(requiredRoute);
+        }, 100);
+      }
+    }
+  }, [isTourActive, currentStep, navigationCallback]);
+
+  const setNavigationCallback = useCallback((callback: ((tab: string) => void) | null) => {
+    setNavigationCallbackState(() => callback);
+  }, []);
+
   const setUserRole = useCallback((role: UserRole) => {
     setUserRoleState(role);
     // If a tour is active, end it when role changes
     if (tourState.activeTourId) {
-      endTour(false);
+      setTourState(prev => ({
+        ...prev,
+        activeTourId: null,
+        currentStepIndex: 0,
+        isPaused: false,
+        startedAt: null
+      }));
       toast({
         title: 'Tour ended',
         description: 'Role changed during tour. Please restart the tour.',
@@ -99,7 +126,7 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [tourState.activeTourId]);
 
-  const startTour = useCallback((tourId: string) => {
+  const startTour = useCallback((tourId: string, onNavigate?: (tab: string) => void) => {
     const tour = tours.find(t => t.id === tourId);
     if (!tour || !tour.roles.includes(userRole)) {
       toast({
@@ -108,6 +135,18 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
         variant: 'destructive'
       });
       return;
+    }
+
+    // Store navigation callback if provided
+    if (onNavigate) {
+      setNavigationCallbackState(() => onNavigate);
+    }
+
+    // Get the first step's route and navigate
+    const steps = getStepsForRole(tour, userRole);
+    if (steps.length > 0 && steps[0].route && (onNavigate || navigationCallback)) {
+      const navFn = onNavigate || navigationCallback;
+      navFn?.(steps[0].route);
     }
 
     setTourState({
@@ -132,15 +171,37 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
       title: 'Tour started',
       description: `Starting: ${tour.name}`,
     });
-  }, [userRole, tourState.completedTours]);
+  }, [userRole, tourState.completedTours, navigationCallback]);
 
   const nextStep = useCallback(() => {
     if (!currentTour) return;
     
     const nextIndex = tourState.currentStepIndex + 1;
     if (nextIndex >= totalSteps) {
-      endTour(true);
+      // Complete the tour
+      setTourState(prev => ({
+        ...defaultTourState,
+        completedTours: [...new Set([...prev.completedTours, tourState.activeTourId!])]
+      }));
+
+      setAnalytics(prev => prev.map(a => 
+        a.tourId === tourState.activeTourId 
+          ? { ...a, completedAt: new Date().toISOString(), completed: true }
+          : a
+      ));
+
+      toast({
+        title: 'Tour completed! 🎉',
+        description: 'Great job! You can restart this tour anytime from the Help panel.',
+      });
       return;
+    }
+
+    // Navigate to the next step's route if different
+    const nextSteps = getStepsForRole(currentTour, userRole);
+    const nextStepData = nextSteps[nextIndex];
+    if (nextStepData?.route && navigationCallback) {
+      navigationCallback(nextStepData.route);
     }
 
     setTourState(prev => ({
@@ -154,16 +215,27 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
         ? { ...a, stepsVisited: [...a.stepsVisited, nextIndex] }
         : a
     ));
-  }, [currentTour, tourState.currentStepIndex, tourState.activeTourId, totalSteps]);
+  }, [currentTour, tourState.currentStepIndex, tourState.activeTourId, totalSteps, userRole, navigationCallback]);
 
   const prevStep = useCallback(() => {
     if (tourState.currentStepIndex > 0) {
+      const prevIndex = tourState.currentStepIndex - 1;
+      
+      // Navigate to the previous step's route if different
+      if (currentTour) {
+        const steps = getStepsForRole(currentTour, userRole);
+        const prevStepData = steps[prevIndex];
+        if (prevStepData?.route && navigationCallback) {
+          navigationCallback(prevStepData.route);
+        }
+      }
+
       setTourState(prev => ({
         ...prev,
-        currentStepIndex: prev.currentStepIndex - 1
+        currentStepIndex: prevIndex
       }));
     }
-  }, [tourState.currentStepIndex]);
+  }, [tourState.currentStepIndex, currentTour, userRole, navigationCallback]);
 
   const skipStep = useCallback(() => {
     // Record skipped step
@@ -184,12 +256,17 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const resumeTour = useCallback(() => {
+    // Navigate to the current step's route
+    if (currentStep?.route && navigationCallback) {
+      navigationCallback(currentStep.route);
+    }
+    
     setTourState(prev => ({ ...prev, isPaused: false }));
     toast({
       title: 'Tour resumed',
       description: 'Continuing where you left off.',
     });
-  }, []);
+  }, [currentStep, navigationCallback]);
 
   const endTour = useCallback((completed: boolean = false) => {
     if (completed && tourState.activeTourId) {
@@ -282,6 +359,7 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
       restartTour,
       setUserRole,
       submitFeedback,
+      setNavigationCallback,
       isTourActive,
       canAccessTour,
       getTourProgress,

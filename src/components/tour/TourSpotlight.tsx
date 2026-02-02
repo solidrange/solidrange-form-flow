@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useTour } from '@/contexts/TourContext';
-import { cn } from '@/lib/utils';
 
 interface SpotlightRect {
   top: number;
@@ -9,16 +8,23 @@ interface SpotlightRect {
   height: number;
 }
 
+const MAX_WAIT_ATTEMPTS = 20;
+const WAIT_INTERVAL = 150;
+
 export const TourSpotlight: React.FC = () => {
   const { isTourActive, currentStep } = useTour();
   const [targetRect, setTargetRect] = useState<SpotlightRect | null>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [elementNotFound, setElementNotFound] = useState(false);
   const observerRef = useRef<ResizeObserver | null>(null);
+  const waitAttemptsRef = useRef(0);
 
   useEffect(() => {
     if (!isTourActive || !currentStep) {
       setIsVisible(false);
       setTargetRect(null);
+      setElementNotFound(false);
+      waitAttemptsRef.current = 0;
       return;
     }
 
@@ -29,6 +35,18 @@ export const TourSpotlight: React.FC = () => {
         const rect = target.getBoundingClientRect();
         const padding = 8;
         
+        // Check if element is visible (has dimensions)
+        if (rect.width === 0 || rect.height === 0) {
+          // Element exists but not visible, keep waiting
+          if (waitAttemptsRef.current < MAX_WAIT_ATTEMPTS) {
+            waitAttemptsRef.current++;
+            setTimeout(findAndHighlightTarget, WAIT_INTERVAL);
+            return;
+          }
+        }
+        
+        waitAttemptsRef.current = 0;
+        setElementNotFound(false);
         setTargetRect({
           top: rect.top - padding + window.scrollY,
           left: rect.left - padding,
@@ -37,8 +55,10 @@ export const TourSpotlight: React.FC = () => {
         });
         setIsVisible(true);
 
-        // Scroll element into view if needed
-        target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Scroll element into view if needed (but not if it's the sidebar)
+        if (!currentStep.targetSelector.includes('nav-')) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
 
         // Set up resize observer
         if (observerRef.current) {
@@ -46,26 +66,44 @@ export const TourSpotlight: React.FC = () => {
         }
         observerRef.current = new ResizeObserver(() => {
           const newRect = target.getBoundingClientRect();
-          setTargetRect({
-            top: newRect.top - padding + window.scrollY,
-            left: newRect.left - padding,
-            width: newRect.width + padding * 2,
-            height: newRect.height + padding * 2
-          });
+          if (newRect.width > 0 && newRect.height > 0) {
+            setTargetRect({
+              top: newRect.top - padding + window.scrollY,
+              left: newRect.left - padding,
+              width: newRect.width + padding * 2,
+              height: newRect.height + padding * 2
+            });
+          }
         });
         observerRef.current.observe(target);
       } else {
-        // Target not found - show centered overlay
+        // Target not found - wait and retry
+        if (waitAttemptsRef.current < MAX_WAIT_ATTEMPTS) {
+          waitAttemptsRef.current++;
+          setTimeout(findAndHighlightTarget, WAIT_INTERVAL);
+          return;
+        }
+        
+        // Max attempts reached - show centered overlay with warning
         setTargetRect(null);
+        setElementNotFound(true);
         setIsVisible(true);
       }
     };
 
-    // Small delay to allow DOM to update
-    const timeout = setTimeout(findAndHighlightTarget, 100);
+    // Reset attempts when step changes
+    waitAttemptsRef.current = 0;
+    setElementNotFound(false);
+    
+    // Small delay to allow DOM/navigation to update
+    const timeout = setTimeout(findAndHighlightTarget, 200);
 
     // Also update on scroll/resize
-    const handleUpdate = () => findAndHighlightTarget();
+    const handleUpdate = () => {
+      if (waitAttemptsRef.current === 0) {
+        findAndHighlightTarget();
+      }
+    };
     window.addEventListener('scroll', handleUpdate);
     window.addEventListener('resize', handleUpdate);
 
@@ -114,16 +152,31 @@ export const TourSpotlight: React.FC = () => {
       {/* Highlight ring */}
       {targetRect && (
         <div
-          className="absolute border-2 border-primary rounded-lg animate-pulse"
+          className="absolute border-2 border-primary rounded-lg transition-all duration-300"
           style={{
             top: targetRect.top,
             left: targetRect.left,
             width: targetRect.width,
             height: targetRect.height,
-            boxShadow: '0 0 20px rgba(var(--primary), 0.5)'
+            boxShadow: '0 0 0 4px rgba(var(--primary), 0.3), 0 0 20px rgba(var(--primary), 0.4)',
+            animation: 'pulse 2s infinite'
           }}
         />
       )}
+
+      {/* Element not found indicator */}
+      {elementNotFound && !targetRect && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 bg-amber-500/90 text-white px-4 py-2 rounded-lg text-sm">
+          Element not found on this page
+        </div>
+      )}
+
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
+        }
+      `}</style>
     </div>
   );
 };
