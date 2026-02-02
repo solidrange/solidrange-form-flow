@@ -1,11 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { BrandSettings } from "./BrandSettings";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useSettings } from "@/contexts/SettingsContext";
 
 export const GlobalSettings = () => {
   const { language, setLanguage, t } = useLanguage();
+  const { showDevelopmentResources, setShowDevelopmentResources } = useSettings();
 
   const handleLanguageChange = (lang: 'en' | 'ar') => {
     setLanguage(lang);
@@ -44,6 +47,27 @@ export const GlobalSettings = () => {
         </CardHeader>
         <CardContent>
           <BrandSettings />
+        </CardContent>
+      </Card>
+
+      {/* Developer Settings */}
+      <Card className="bg-card text-card-foreground">
+        <CardHeader>
+          <CardTitle className="text-foreground">Developer Settings</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="space-y-0.5">
+              <Label className="text-foreground">Show Development Resources</Label>
+              <p className="text-xs text-muted-foreground">
+                Enable access to technical documentation and development resources in the sidebar.
+              </p>
+            </div>
+            <Switch
+              checked={showDevelopmentResources}
+              onCheckedChange={setShowDevelopmentResources}
+            />
+          </div>
         </CardContent>
       </Card>
     </div>
