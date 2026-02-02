@@ -132,7 +132,7 @@ export const FormBuilder = ({
       <ResizablePanelGroup direction="horizontal" className="flex-1">
         {/* Left Sidebar - Field Palette */}
         <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
-          <div className="h-full border-r bg-white overflow-y-auto">
+          <div className="h-full border-r border-border bg-card overflow-y-auto">
             <div className="p-4">
               <FieldPalette onAddField={onAddField} />
             </div>
@@ -257,7 +257,7 @@ export const FormBuilder = ({
           <>
             <ResizableHandle withHandle />
             <ResizablePanel defaultSize={25} minSize={20} maxSize={35}>
-              <div className="h-full border-l bg-white">
+              <div className="h-full border-l border-border bg-card">
                 <FieldEditor
                   selectedField={selectedFieldId ? formFields.find(f => f.id === selectedFieldId) || null : null}
                   onUpdateField={onUpdateField}
