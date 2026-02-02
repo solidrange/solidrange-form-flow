@@ -150,124 +150,124 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
     .slice(0, 10);
 
   return (
-    <div className="space-y-6">
-      {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 animate-fade-in" data-tour-id="dashboard-stats">
-        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer"
+    <div className="space-y-4 md:space-y-6">
+      {/* Overview Cards - Mobile: 2 cols, Tablet: 3 cols, Desktop: 6 cols */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3 lg:gap-4 animate-fade-in" data-tour-id="dashboard-stats">
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer touch-manipulation"
               onClick={() => onFilterSubmissions?.({})}
         >
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-muted-foreground">Total Submissions</p>
-                <p className="text-2xl font-bold text-foreground">{totalSubmissions}</p>
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Total</p>
+                <p className="text-lg sm:text-2xl font-bold text-foreground">{totalSubmissions}</p>
               </div>
               <div className="flex-shrink-0">
-                <FileText className="h-8 w-8 text-blue-500" />
+                <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
               </div>
             </div>
             <div className="mt-2">
-              <Progress value={100} className="h-2" />
+              <Progress value={100} className="h-1.5 sm:h-2" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer touch-manipulation"
               style={{ animationDelay: '0.1s' }}
               onClick={() => onFilterSubmissions?.({ status: 'approved' })}
         >
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-muted-foreground">Approved</p>
-                <p className="text-2xl font-bold text-green-600">{approvedSubmissions}</p>
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Approved</p>
+                <p className="text-lg sm:text-2xl font-bold text-green-600">{approvedSubmissions}</p>
               </div>
               <div className="flex-shrink-0">
-                <CheckCircle className="h-8 w-8 text-green-500" />
+                <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-500" />
               </div>
             </div>
             <div className="mt-2">
-              <Progress value={approvalRate} className="h-2" />
+              <Progress value={approvalRate} className="h-1.5 sm:h-2" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer touch-manipulation" 
               style={{ animationDelay: '0.2s' }}
               onClick={() => onFilterSubmissions?.({ status: 'approved', approvalType: 'fully' })}
         >
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-muted-foreground">Fully Approved</p>
-                <p className="text-2xl font-bold text-emerald-600">{fullyApprovedSubmissions}</p>
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Fully OK</p>
+                <p className="text-lg sm:text-2xl font-bold text-emerald-600">{fullyApprovedSubmissions}</p>
               </div>
               <div className="flex-shrink-0">
-                <Award className="h-8 w-8 text-emerald-500" />
+                <Award className="h-6 w-6 sm:h-8 sm:w-8 text-emerald-500" />
               </div>
             </div>
             <div className="mt-2">
-              <Progress value={fullApprovalRate} className="h-2" />
+              <Progress value={fullApprovalRate} className="h-1.5 sm:h-2" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer touch-manipulation" 
               style={{ animationDelay: '0.3s' }}
               onClick={() => onFilterSubmissions?.({ status: 'approved', approvalType: 'partially' })}
         >
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-muted-foreground">Partially Approved</p>
-                <p className="text-2xl font-bold text-orange-600">{partiallyApprovedSubmissions}</p>
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Partial</p>
+                <p className="text-lg sm:text-2xl font-bold text-orange-600">{partiallyApprovedSubmissions}</p>
               </div>
               <div className="flex-shrink-0">
-                <Shield className="h-8 w-8 text-orange-500" />
+                <Shield className="h-6 w-6 sm:h-8 sm:w-8 text-orange-500" />
               </div>
             </div>
             <div className="mt-2">
-              <Progress value={100 - fullApprovalRate} className="h-2" />
+              <Progress value={100 - fullApprovalRate} className="h-1.5 sm:h-2" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer touch-manipulation" 
               style={{ animationDelay: '0.4s' }}
               onClick={() => onFilterSubmissions?.({ status: 'rejected' })}
         >
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-muted-foreground">Rejected</p>
-                <p className="text-2xl font-bold text-red-600">{rejectedSubmissions}</p>
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Rejected</p>
+                <p className="text-lg sm:text-2xl font-bold text-red-600">{rejectedSubmissions}</p>
               </div>
               <div className="flex-shrink-0">
-                <XCircle className="h-8 w-8 text-red-500" />
+                <XCircle className="h-6 w-6 sm:h-8 sm:w-8 text-red-500" />
               </div>
             </div>
             <div className="mt-2">
-              <Progress value={rejectionRate} className="h-2" />
+              <Progress value={rejectionRate} className="h-1.5 sm:h-2" />
             </div>
           </CardContent>
         </Card>
 
-        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer" 
+        <Card className="hover:shadow-modern-lg transition-all duration-300 animate-scale-in cursor-pointer touch-manipulation" 
               style={{ animationDelay: '0.5s' }}
               onClick={() => onFilterSubmissions?.({ status: 'under_review' })}
         >
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex-1">
-                <p className="text-sm font-medium text-muted-foreground">Pending Review</p>
-                <p className="text-2xl font-bold text-foreground">{pendingSubmissions}</p>
+          <CardContent className="p-3 sm:p-4">
+            <div className="flex items-center justify-between mb-2 sm:mb-3">
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm font-medium text-muted-foreground truncate">Pending</p>
+                <p className="text-lg sm:text-2xl font-bold text-foreground">{pendingSubmissions}</p>
               </div>
               <div className="flex-shrink-0">
-                <Clock className="h-8 w-8 text-orange-500 animate-pulse" />
+                <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-orange-500 animate-pulse" />
               </div>
             </div>
             <div className="mt-2">
-              <Progress value={(pendingSubmissions / totalSubmissions) * 100} className="h-2" />
+              <Progress value={(pendingSubmissions / totalSubmissions) * 100} className="h-1.5 sm:h-2" />
             </div>
           </CardContent>
         </Card>
@@ -275,18 +275,21 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
 
       {/* Main Analytics Tabs */}
       <Tabs defaultValue="overview" className="space-y-4" data-tour-id="dashboard-charts">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="approvals">Approvals</TabsTrigger>
-          <TabsTrigger value="submissions">Submissions</TabsTrigger>
-          <TabsTrigger value="risk">Risk Analysis</TabsTrigger>
-          <TabsTrigger value="performance">Performance</TabsTrigger>
-          <TabsTrigger value="trends">Trends</TabsTrigger>
-        </TabsList>
+        {/* Mobile: Horizontal scrolling tabs */}
+        <div className="overflow-x-auto -mx-3 px-3 sm:mx-0 sm:px-0">
+          <TabsList className="inline-flex w-max sm:grid sm:w-full sm:grid-cols-6 min-w-full">
+            <TabsTrigger value="overview" className="text-xs sm:text-sm whitespace-nowrap px-3 sm:px-4">Overview</TabsTrigger>
+            <TabsTrigger value="approvals" className="text-xs sm:text-sm whitespace-nowrap px-3 sm:px-4">Approvals</TabsTrigger>
+            <TabsTrigger value="submissions" className="text-xs sm:text-sm whitespace-nowrap px-3 sm:px-4">Submissions</TabsTrigger>
+            <TabsTrigger value="risk" className="text-xs sm:text-sm whitespace-nowrap px-3 sm:px-4">Risk</TabsTrigger>
+            <TabsTrigger value="performance" className="text-xs sm:text-sm whitespace-nowrap px-3 sm:px-4">Performance</TabsTrigger>
+            <TabsTrigger value="trends" className="text-xs sm:text-sm whitespace-nowrap px-3 sm:px-4">Trends</TabsTrigger>
+          </TabsList>
+        </div>
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             {/* Submission Status Distribution */}
             <Card>
               <CardHeader>

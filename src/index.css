@@ -753,3 +753,75 @@
     @apply z-50;
   }
 }
+
+/* Safe area support for mobile devices with notches */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+/* Mobile bottom navigation styles */
+@layer components {
+  .mobile-nav-item {
+    @apply flex-1 flex flex-col items-center justify-center gap-0.5 px-2 py-2
+           transition-colors duration-200 touch-manipulation
+           min-h-[44px] min-w-[44px];
+  }
+
+  .mobile-nav-item-active {
+    @apply text-primary;
+  }
+
+  .mobile-nav-item-inactive {
+    @apply text-muted-foreground hover:text-foreground;
+  }
+
+  /* Mobile card list item */
+  .mobile-list-item {
+    @apply flex items-center gap-3 p-3 rounded-lg
+           transition-colors duration-200 touch-manipulation
+           min-h-[56px] active:bg-muted;
+  }
+
+  /* Mobile action button */
+  .mobile-action-btn {
+    @apply h-10 w-10 flex items-center justify-center rounded-lg 
+           hover:bg-muted active:bg-muted/80 touch-manipulation
+           transition-colors duration-200;
+  }
+
+  /* Mobile sheet handle */
+  .mobile-sheet-handle {
+    @apply w-10 h-1 bg-muted-foreground/20 rounded-full mx-auto mb-4;
+  }
+}
+
+/* Prevent body scroll when mobile nav is open */
+body.mobile-nav-open {
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* Mobile-optimized animations - reduce motion for performance */
+@media (max-width: 768px) {
+  .animate-fade-in,
+  .animate-slide-up,
+  .animate-scale-in,
+  .animate-bounce-in {
+    animation-duration: 0.15s;
+  }
+}
+
+/* Reduce motion preference support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
