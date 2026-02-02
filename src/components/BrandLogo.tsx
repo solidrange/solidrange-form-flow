@@ -93,22 +93,23 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       )}
       
       {showText && (
-        <div className="flex flex-col">
+        <div className="flex flex-col items-start">
+          {/* Product name on top */}
           {renderStyledName()}
+          
+          {/* SolidRange parent company logo */}
+          <img 
+            src={solidRangeLogo} 
+            alt="SolidRange" 
+            className={cn(solidRangeLogoSizes[size], 'w-auto object-contain mt-0.5')}
+          />
+          
+          {/* Tagline at the bottom */}
           {brand.tagline && (
-            <span className="text-xs text-muted-foreground leading-tight">
+            <span className="text-[10px] text-muted-foreground leading-tight mt-1">
               {brand.tagline}
             </span>
           )}
-          {/* SolidRange parent company logo */}
-          <div className="flex items-center gap-1 mt-0.5">
-            <span className="text-[10px] text-muted-foreground">a product of</span>
-            <img 
-              src={solidRangeLogo} 
-              alt="SolidRange" 
-              className={cn(solidRangeLogoSizes[size], 'w-auto object-contain')}
-            />
-          </div>
         </div>
       )}
     </div>
