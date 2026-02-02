@@ -1,6 +1,7 @@
 import React from 'react';
 import { useBrand } from '@/contexts/BrandContext';
 import { cn } from '@/lib/utils';
+import solidRangeLogo from '@/assets/solidrange-logo.svg';
 
 interface BrandLogoProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -25,10 +26,17 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   };
 
   const textSizeClasses = {
-    sm: 'text-sm font-semibold',
-    md: 'text-lg font-bold',
-    lg: 'text-2xl font-bold',
-    xl: 'text-3xl font-bold'
+    sm: 'text-sm',
+    md: 'text-lg',
+    lg: 'text-2xl',
+    xl: 'text-3xl'
+  };
+
+  const solidRangeLogoSizes = {
+    sm: 'h-3',
+    md: 'h-4',
+    lg: 'h-5',
+    xl: 'h-6'
   };
 
   const DefaultLogo = () => (
@@ -45,6 +53,26 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       {brand.name.charAt(0).toUpperCase()}
     </div>
   );
+
+  // Parse the brand name to style "Solid" regular and "Form/Range" bold
+  const renderStyledName = () => {
+    const name = brand.name;
+    if (name.toLowerCase().startsWith('solid')) {
+      const prefix = name.slice(0, 5); // "Solid"
+      const suffix = name.slice(5); // "Form" or "Range" etc.
+      return (
+        <span className={cn(textSizeClasses[size], 'text-foreground leading-tight')}>
+          <span className="font-normal">{prefix}</span>
+          <span className="font-bold">{suffix}</span>
+        </span>
+      );
+    }
+    return (
+      <span className={cn(textSizeClasses[size], 'font-bold text-foreground leading-tight')}>
+        {name}
+      </span>
+    );
+  };
 
   return (
     <div 
@@ -66,19 +94,21 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       
       {showText && (
         <div className="flex flex-col">
-          <span 
-            className={cn(
-              textSizeClasses[size],
-              'text-foreground leading-tight'
-            )}
-          >
-            {brand.name}
-          </span>
+          {renderStyledName()}
           {brand.tagline && (
             <span className="text-xs text-muted-foreground leading-tight">
               {brand.tagline}
             </span>
           )}
+          {/* SolidRange parent company logo */}
+          <div className="flex items-center gap-1 mt-0.5">
+            <span className="text-[10px] text-muted-foreground">a product of</span>
+            <img 
+              src={solidRangeLogo} 
+              alt="SolidRange" 
+              className={cn(solidRangeLogoSizes[size], 'w-auto object-contain')}
+            />
+          </div>
         </div>
       )}
     </div>
