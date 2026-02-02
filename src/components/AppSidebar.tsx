@@ -83,10 +83,10 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
   ];
 
   return (
-    <Sidebar collapsible="icon" className={`border-r ${isRTL ? 'sidebar-border-fix' : ''}`}>
-      <SidebarContent>
+    <Sidebar collapsible="icon" className={`border-r border-sidebar-border ${isRTL ? 'sidebar-border-fix' : ''}`}>
+      <SidebarContent className="bg-sidebar text-sidebar-foreground">
         {/* Brand Logo - Mobile optimized */}
-        <div className="p-3 sm:p-4 border-b">
+        <div className="p-3 sm:p-4 border-b border-sidebar-border">
           <BrandLogo 
             size="sm" 
             showText={!isCollapsed} 
@@ -104,11 +104,17 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
                   <SidebarMenuButton
                     onClick={item.onClick}
                     isActive={activeTab === item.id}
-                    className={`w-full min-h-[44px] touch-manipulation ${
+                    className={`w-full min-h-[44px] touch-manipulation transition-colors ${
                       isRTL ? 'flex-row-reverse' : 'justify-start'
+                    } ${
+                      activeTab === item.id 
+                        ? 'bg-sidebar-accent text-sidebar-accent-foreground' 
+                        : 'hover:bg-sidebar-accent/50'
                     }`}
                   >
-                    <item.icon className={`h-4 w-4 shrink-0`} />
+                    <item.icon className={`h-4 w-4 shrink-0 ${
+                      activeTab === item.id ? 'text-primary' : ''
+                    }`} />
                     {!isCollapsed && (
                       <>
                         <span className={`text-sm sm:text-base truncate ${isRTL ? 'text-right' : 'text-left'}`}>
@@ -116,14 +122,14 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
                         </span>
                         {item.badge && (
                           <div className={`shrink-0 ${isRTL ? 'mr-auto' : 'ml-auto'}`}>
-                            <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                            <div className="w-2 h-2 bg-destructive rounded-full"></div>
                           </div>
                         )}
                       </>
                     )}
                     {isCollapsed && item.badge && (
                       <div className={`absolute -top-1 ${isRTL ? '-left-1' : '-right-1'}`}>
-                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                        <div className="w-2 h-2 bg-destructive rounded-full"></div>
                       </div>
                     )}
                   </SidebarMenuButton>
@@ -134,7 +140,7 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
         </SidebarGroup>
         
         {/* Version info at bottom */}
-        <div className="mt-auto p-3 border-t">
+        <div className="mt-auto p-3 border-t border-sidebar-border">
           <div className="text-center">
             <span className="text-xs text-muted-foreground">
               V1.0.0
