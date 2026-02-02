@@ -7,45 +7,61 @@
 @layer base {
   :root {
     /* ============================================
-       SOLIDRANGE-STYLE LIGHT THEME
+       SOLIDRANGE.COM ALIGNED DESIGN SYSTEM
        Single light theme - no dark mode
+       Matches solidrange.com visual identity
        WCAG AA compliant (4.5:1 body, 3:1 large)
        ============================================ */
     
-    /* Core Brand Colors - SolidRange inspired teal/blue */
-    --color-primary: 195 85% 41%;
-    --color-primary-soft: 195 75% 50%;
+    /* Core Brand Colors - SolidRange exact palette */
+    /* Primary: Teal/Cyan blue from SolidRange logo and CTA */
+    --color-primary: 199 89% 48%;
+    --color-primary-soft: 199 80% 58%;
     --color-primary-contrast: 0 0% 100%;
     
-    /* Brand identity colors - updated by BrandProvider */
-    --brand-primary: 195 85% 41%;
-    --brand-primary-light: 195 70% 55%;
-    --brand-primary-dark: 195 85% 32%;
-    --brand-secondary: 215 70% 50%;
-    --brand-secondary-light: 215 65% 65%;
-    --brand-secondary-dark: 215 75% 38%;
+    /* Brand identity colors - SolidRange aligned */
+    --brand-primary: 199 89% 48%;
+    --brand-primary-light: 199 75% 58%;
+    --brand-primary-dark: 199 89% 38%;
     
-    /* Neutral Colors - Light Theme Only */
+    /* Secondary: Navy blue from SolidRange dark sections */
+    --brand-secondary: 213 50% 23%;
+    --brand-secondary-light: 213 45% 35%;
+    --brand-secondary-dark: 213 55% 18%;
+    
+    /* Accent: Green from SolidRange highlights ("Automate", "Mitigate", "Pass") */
+    --accent-green: 145 63% 42%;
+    --accent-green-light: 145 55% 52%;
+    --accent-yellow: 45 93% 47%;
+    --accent-red: 0 84% 60%;
+    
+    /* Neutral Colors - SolidRange clean white style */
     --bg-primary: 0 0% 100%;
-    --bg-elevated: 210 20% 98%;
-    --bg-muted: 210 15% 96%;
-    --text-primary: 220 25% 12%;
-    --text-secondary: 220 12% 42%;
-    --text-muted: 220 10% 55%;
-    --border-subtle: 220 14% 90%;
-    --border-strong: 220 12% 80%;
+    --bg-elevated: 210 33% 98%;
+    --bg-muted: 210 20% 96%;
+    --bg-section: 213 50% 23%;
     
-    /* Semantic Colors */
-    --color-success: 142 70% 38%;
-    --color-warning: 38 92% 50%;
-    --color-destructive: 0 72% 51%;
+    /* Text Colors - SolidRange dark navy text */
+    --text-primary: 213 50% 15%;
+    --text-secondary: 213 25% 40%;
+    --text-muted: 213 15% 55%;
+    --text-on-dark: 0 0% 100%;
+    
+    /* Border Colors */
+    --border-subtle: 213 20% 92%;
+    --border-strong: 213 15% 82%;
+    
+    /* Semantic Colors - Enhanced for visibility */
+    --color-success: 145 63% 42%;
+    --color-warning: 45 93% 47%;
+    --color-destructive: 0 84% 60%;
     --on-semantic: 0 0% 100%;
     
-    /* Sidebar specific */
-    --sidebar-active-bg: 195 85% 95%;
+    /* Sidebar specific - SolidRange nav style */
+    --sidebar-active-bg: 199 89% 95%;
     --sidebar-active-text: var(--text-primary);
     --sidebar-active-icon: var(--color-primary);
-    --sidebar-hover-bg: 210 15% 96%;
+    --sidebar-hover-bg: 210 20% 96%;
     
     /* Form-specific brand variables */
     --form-accent: var(--brand-primary);
@@ -59,7 +75,7 @@
     /* Card specific */
     --card-background: var(--bg-elevated);
     
-    /* Mapped to shadcn tokens - Light theme only */
+    /* Mapped to shadcn tokens - SolidRange aligned */
     --background: var(--bg-primary);
     --foreground: var(--text-primary);
 
@@ -72,14 +88,14 @@
     --primary: var(--brand-primary);
     --primary-foreground: var(--color-primary-contrast);
 
-    --secondary: 210 15% 95%;
-    --secondary-foreground: 220 20% 20%;
+    --secondary: 210 20% 96%;
+    --secondary-foreground: 213 50% 20%;
 
-    --muted: 210 15% 96%;
+    --muted: 210 20% 96%;
     --muted-foreground: var(--text-secondary);
 
-    --accent: 210 15% 95%;
-    --accent-foreground: 220 20% 20%;
+    --accent: 210 20% 96%;
+    --accent-foreground: 213 50% 20%;
 
     --destructive: var(--color-destructive);
     --destructive-foreground: var(--on-semantic);
@@ -88,10 +104,10 @@
     --input: var(--border-subtle);
     --ring: var(--brand-primary);
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Sidebar tokens */
-    --sidebar-background: var(--bg-elevated);
+    /* Sidebar tokens - cleaner style */
+    --sidebar-background: var(--bg-primary);
     --sidebar-foreground: var(--text-primary);
     --sidebar-primary: var(--text-primary);
     --sidebar-primary-foreground: var(--bg-primary);

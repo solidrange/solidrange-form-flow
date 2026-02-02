@@ -53,7 +53,7 @@ interface BrandContextType {
   getCurrentThemeColors: () => BrandColors;
 }
 
-// SolidRange-style light theme defaults
+// SolidRange.com aligned light theme defaults
 const defaultBrand: BrandIdentity = {
   name: 'SolidForm',
   logo: null,
@@ -65,25 +65,25 @@ const defaultBrand: BrandIdentity = {
   },
   colors: {
     primary: {
-      main: '195 85% 41%',
-      light: '195 70% 55%',
-      dark: '195 85% 32%'
+      main: '199 89% 48%',      // SolidRange teal/cyan blue
+      light: '199 75% 58%',
+      dark: '199 89% 38%'
     },
     secondary: {
-      main: '215 70% 50%',
-      light: '215 65% 65%',
-      dark: '215 75% 38%'
+      main: '213 50% 23%',      // SolidRange navy blue
+      light: '213 45% 35%',
+      dark: '213 55% 18%'
     },
     background: '0 0% 100%',
-    surface: '210 20% 98%',
+    surface: '210 33% 98%',
     text: {
-      primary: '220 25% 12%',
-      secondary: '220 12% 42%'
+      primary: '213 50% 15%',   // Dark navy for headings
+      secondary: '213 25% 40%'
     },
     button: {
-      primary: '195 85% 41%',
-      secondary: '210 15% 95%',
-      destructive: '0 72% 51%'
+      primary: '199 89% 48%',
+      secondary: '210 20% 96%',
+      destructive: '0 84% 60%'
     }
   }
 };
