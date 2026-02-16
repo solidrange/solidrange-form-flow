@@ -9,7 +9,6 @@ export const routeMap: Record<string, string> = {
   'resources': 'resources'
 };
 
-// Complete tour for full application walkthrough
 export const tours: Tour[] = [
   {
     id: 'welcome-tour',
@@ -42,13 +41,24 @@ export const tours: Tour[] = [
         order: 2
       },
       {
-        id: 'welcome-3-desktop',
+        id: 'welcome-3-desktop-admin',
         targetSelector: '[data-tour-id="nav-forms"]',
         title: 'Forms',
         content: 'Access all your forms - drafts, published, and templates. Create new forms and view submissions for each published form.',
         route: 'dashboard',
         position: 'right',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
+        layout: 'desktop',
+        order: 3
+      },
+      {
+        id: 'welcome-3-desktop-user',
+        targetSelector: '[data-tour-id="nav-forms"]',
+        title: 'Assigned Forms',
+        content: 'View forms assigned to you for completion. Click "Fill Form" on any assigned form to start filling it out.',
+        route: 'dashboard',
+        position: 'right',
+        roles: ['user'],
         layout: 'desktop',
         order: 3
       },
@@ -85,7 +95,7 @@ export const tours: Tour[] = [
         layout: 'desktop',
         order: 6
       },
-      // Mobile steps - bottom navigation
+      // Mobile steps
       {
         id: 'welcome-1-mobile',
         targetSelector: '[data-tour-id="mobile-brand-logo"]',
@@ -109,13 +119,24 @@ export const tours: Tour[] = [
         order: 2
       },
       {
-        id: 'welcome-3-mobile',
+        id: 'welcome-3-mobile-admin',
         targetSelector: '[data-tour-id="mobile-nav-forms"]',
         title: 'Forms',
         content: 'Tap here to access all your forms, create new ones, and view submissions for published forms.',
         route: 'dashboard',
         position: 'top',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
+        layout: 'mobile',
+        order: 3
+      },
+      {
+        id: 'welcome-3-mobile-user',
+        targetSelector: '[data-tour-id="mobile-nav-forms"]',
+        title: 'Assigned Forms',
+        content: 'Tap here to see forms assigned to you. Tap "Fill Form" to start completing an assessment.',
+        route: 'dashboard',
+        position: 'top',
+        roles: ['user'],
         layout: 'mobile',
         order: 3
       },
@@ -137,7 +158,18 @@ export const tours: Tour[] = [
         content: 'Tap here to access Settings, Help, and Developer Resources.',
         route: 'dashboard',
         position: 'top',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
+        layout: 'mobile',
+        order: 5
+      },
+      {
+        id: 'welcome-5-mobile-user',
+        targetSelector: '[data-tour-id="mobile-nav-more"]',
+        title: 'More Options',
+        content: 'Tap here to access Help and sign out.',
+        route: 'dashboard',
+        position: 'top',
+        roles: ['user'],
         layout: 'mobile',
         order: 5
       },
@@ -188,11 +220,10 @@ export const tours: Tour[] = [
   {
     id: 'form-builder-tour',
     name: 'Form Builder',
-    description: 'Learn how to create and customize assessment forms from the Forms page.',
-    roles: ['admin', 'user'],
+    description: 'Learn how to create and customize assessment forms.',
+    roles: ['admin'],
     category: 'forms',
     steps: [
-      // Desktop steps
       {
         id: 'builder-1-desktop',
         targetSelector: '[data-tour-id="field-palette"]',
@@ -200,7 +231,7 @@ export const tours: Tour[] = [
         content: 'Choose from various field types: text, numbers, dropdowns, checkboxes, ratings, and more. Click a field to add it to your form.',
         route: 'build-form',
         position: 'right',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'desktop',
         order: 1
       },
@@ -211,7 +242,7 @@ export const tours: Tour[] = [
         content: 'Give your form a clear, descriptive title. Add a description to help respondents understand the purpose.',
         route: 'build-form',
         position: 'bottom',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'both',
         order: 2
       },
@@ -222,7 +253,7 @@ export const tours: Tour[] = [
         content: 'This is where your form takes shape. Fields appear here as you add them. Click any field to edit its properties.',
         route: 'build-form',
         position: 'left',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'both',
         order: 3
       },
@@ -233,11 +264,10 @@ export const tours: Tour[] = [
         content: 'Save your form as a draft or publish it. After saving, you\'ll return to the Forms page where you can manage all your forms.',
         route: 'build-form',
         position: 'bottom',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'both',
         order: 4
       },
-      // Mobile-specific step for add field button
       {
         id: 'builder-1-mobile',
         targetSelector: '[data-tour-id="mobile-add-field"]',
@@ -245,9 +275,40 @@ export const tours: Tour[] = [
         content: 'Tap this button to open the field palette and add fields to your form.',
         route: 'build-form',
         position: 'top',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'mobile',
         order: 1
+      }
+    ]
+  },
+  {
+    id: 'filling-forms-tour',
+    name: 'Filling Assigned Forms',
+    description: 'Learn how to find and fill out forms assigned to you.',
+    roles: ['user'],
+    category: 'forms',
+    steps: [
+      {
+        id: 'fill-1',
+        targetSelector: '[data-tour-id="assigned-forms"]',
+        title: 'Your Assigned Forms',
+        content: 'All forms assigned to you appear here. Each card shows the form name, description, and number of fields.',
+        route: 'forms',
+        position: 'bottom',
+        roles: ['user'],
+        layout: 'both',
+        order: 1
+      },
+      {
+        id: 'fill-2',
+        targetSelector: '[data-tour-id="assigned-forms"]',
+        title: 'Fill a Form',
+        content: 'Click the "Fill Form" button on any card to open the form and start entering your responses.',
+        route: 'forms',
+        position: 'bottom',
+        roles: ['user'],
+        layout: 'both',
+        order: 2
       }
     ]
   },
@@ -255,7 +316,7 @@ export const tours: Tour[] = [
     id: 'submissions-tour',
     name: 'Form Submissions',
     description: 'Learn how to review submissions for each published form.',
-    roles: ['admin', 'user'],
+    roles: ['admin'],
     category: 'submissions',
     steps: [
       {
@@ -265,7 +326,7 @@ export const tours: Tour[] = [
         content: 'Navigate to the Forms page and select the Published tab to see your active forms. Each published form has a Submissions button.',
         route: 'forms',
         position: 'bottom',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'both',
         order: 1
       },
@@ -276,7 +337,7 @@ export const tours: Tour[] = [
         content: 'Use the search bar and filters to find specific submissions. Filter by status, risk level, audience, or approval type.',
         route: 'form-submissions',
         position: 'bottom',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'both',
         order: 2
       },
@@ -287,7 +348,7 @@ export const tours: Tour[] = [
         content: 'Browse all submissions for this form. Each card shows key details like company, status, score, and risk level. Click to view full details.',
         route: 'form-submissions',
         position: 'right',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'both',
         order: 3
       },
@@ -361,17 +422,17 @@ export const tours: Tour[] = [
     id: 'forms-library-tour',
     name: 'Forms Library',
     description: 'Learn how to manage your forms collection and access per-form submissions.',
-    roles: ['admin', 'user'],
+    roles: ['admin'],
     category: 'forms',
     steps: [
       {
         id: 'lib-1',
         targetSelector: '[data-tour-id="forms-tabs"]',
         title: 'Forms Organization',
-        content: 'Your forms are organized into three sections: Templates (reusable starting points), Drafts (work in progress), and Published (active forms accepting submissions).',
+        content: 'Your forms are organized into two sections: Drafts (work in progress) and Published (active forms accepting submissions). Use the Templates button to start from a template.',
         route: 'forms',
         position: 'bottom',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'both',
         order: 1
       },
@@ -382,7 +443,7 @@ export const tours: Tour[] = [
         content: 'Each card shows the form name, description, category, and status. Published forms have a Submissions button to review responses.',
         route: 'forms',
         position: 'right',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'both',
         order: 2
       },
@@ -390,7 +451,7 @@ export const tours: Tour[] = [
         id: 'lib-3-desktop',
         targetSelector: '[data-tour-id="forms-actions"]',
         title: 'Form Actions',
-        content: 'Use the actions menu to edit, duplicate, publish, or delete forms. Published forms show a Submissions button to review responses.',
+        content: 'Use the actions to edit, publish, or delete forms. Published forms show Share, Manage, Submissions, and Draft buttons.',
         route: 'forms',
         position: 'left',
         roles: ['admin'],
@@ -401,7 +462,7 @@ export const tours: Tour[] = [
         id: 'lib-3-mobile',
         targetSelector: '[data-tour-id="forms-actions"]',
         title: 'Form Actions',
-        content: 'Tap the action button on any form card to edit, duplicate, publish, or delete it. Published forms have a Submissions button.',
+        content: 'Tap the action buttons on any form card to edit, publish, or delete it. Published forms have a Submissions button.',
         route: 'forms',
         position: 'top',
         roles: ['admin'],
@@ -439,28 +500,28 @@ export const helpTips: HelpTip[] = [
     title: 'Keyboard Shortcuts',
     content: 'Press Ctrl+S to quickly save your form. Press Esc to close dialogs.',
     category: 'productivity',
-    roles: ['admin', 'user']
+    roles: ['admin']
   },
   {
     id: 'tip-2',
     title: 'Drag & Drop Fields',
     content: 'Click on any field type in the palette to add it to your form canvas.',
     category: 'forms',
-    roles: ['admin', 'user']
+    roles: ['admin']
   },
   {
     id: 'tip-3',
     title: 'Field Properties',
     content: 'Click any field on the canvas to open the editor panel and customize its properties.',
     category: 'forms',
-    roles: ['admin', 'user']
+    roles: ['admin']
   },
   {
     id: 'tip-4',
     title: 'Save as Template',
     content: 'After building a form, save it as a template to reuse the structure for future assessments.',
     category: 'forms',
-    roles: ['admin', 'user']
+    roles: ['admin']
   },
   {
     id: 'tip-5',
@@ -481,7 +542,7 @@ export const helpTips: HelpTip[] = [
     title: 'Per-Form Submissions',
     content: 'View submissions for each published form by clicking the Submissions button on any published form card in the Forms page.',
     category: 'submissions',
-    roles: ['admin', 'user']
+    roles: ['admin']
   },
   {
     id: 'tip-8',
@@ -495,7 +556,7 @@ export const helpTips: HelpTip[] = [
     title: 'Risk Levels',
     content: 'Submissions are automatically categorized by risk: Low (green), Medium (amber), High (orange), Critical (red).',
     category: 'submissions',
-    roles: ['admin', 'user']
+    roles: ['admin']
   },
   {
     id: 'tip-10',
@@ -516,6 +577,28 @@ export const helpTips: HelpTip[] = [
     title: 'Form Workflow',
     content: 'After saving or publishing a form, you\'ll return to the Forms page. Published forms show a Submissions button for reviewing responses.',
     category: 'forms',
+    roles: ['admin']
+  },
+  // User-specific tips
+  {
+    id: 'tip-13',
+    title: 'Assigned Forms',
+    content: 'Your assigned forms appear on the Forms page. Click "Fill Form" to start completing an assessment.',
+    category: 'forms',
+    roles: ['user']
+  },
+  {
+    id: 'tip-14',
+    title: 'Submitting Responses',
+    content: 'Complete all required fields and click "Submit Response" to send your completed form.',
+    category: 'forms',
+    roles: ['user']
+  },
+  {
+    id: 'tip-15',
+    title: 'Login & Logout',
+    content: 'Use the Sign Out button in the sidebar or More menu to switch accounts or log out.',
+    category: 'productivity',
     roles: ['admin', 'user']
   }
 ];

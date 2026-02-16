@@ -28,7 +28,8 @@ import {
   Edit,
   ArrowLeft,
   Mail,
-  Folder
+  Folder,
+  LogOut
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -46,6 +47,7 @@ import { GlobalSettings } from "@/components/GlobalSettings";
 import { Resources } from "@/components/Resources";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   SidebarProvider,
   SidebarTrigger,
@@ -57,7 +59,16 @@ import { HelpPanel } from "@/components/tour/HelpPanel";
 const Index = () => {
   const { t, isRTL } = useLanguage();
   const isMobile = useIsMobile();
-  const { setNavigationCallback } = useTour();
+  const { setNavigationCallback, setUserRole } = useTour();
+  const { currentUser, logout } = useAuth();
+  const isAdmin = currentUser?.role === 'admin';
+
+  // Sync tour role with auth role
+  useEffect(() => {
+    if (currentUser) {
+      setUserRole(currentUser.role);
+    }
+  }, [currentUser, setUserRole]);
   
   // Tab navigation state
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -794,8 +805,9 @@ const Index = () => {
   const getPageTitle = (tabId: string): string => {
     const titleMap: Record<string, string> = {
       'dashboard': t('dashboard'),
-      'forms': t('forms'),
+      'forms': isAdmin ? t('forms') : 'Assigned Forms',
       'form-submissions': viewingSubmissionsForForm ? `${viewingSubmissionsForForm.title} - Submissions` : 'Submissions',
+      'fill-form': viewingSubmissionsForForm ? `Fill: ${viewingSubmissionsForForm.title}` : 'Fill Form',
       'build-form': t('build'),
       'build-form-templates': 'Form Templates',
       'reports': 'Reports',
@@ -955,120 +967,231 @@ const Index = () => {
               <div className="space-y-6">
                   <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 ${isRTL ? 'sm:flex-row-reverse' : ''}`}>
                     <div className={isRTL ? 'text-right' : 'text-left'}>
-                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">{t('forms')}</h2>
-                      <p className="text-sm sm:text-base text-muted-foreground">Manage your draft and published forms</p>
+                      <h2 className="text-xl sm:text-2xl font-bold text-foreground">{isAdmin ? t('forms') : 'Assigned Forms'}</h2>
+                      <p className="text-sm sm:text-base text-muted-foreground">
+                        {isAdmin ? 'Manage your draft and published forms' : 'Forms assigned to you for completion'}
+                      </p>
                     </div>
-                    <div className={`flex gap-2 self-start sm:self-auto ${isRTL ? 'flex-row-reverse' : ''}`}>
-                      <Button onClick={createNewForm} className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                        <Plus className="h-4 w-4" />
-                        <span className="text-sm sm:text-base">{t('newForm')}</span>
-                      </Button>
-                      <Button variant="outline" onClick={() => setActiveTab("build-form-templates")} className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                        <BookOpen className="h-4 w-4" />
-                        <span className="text-sm sm:text-base">Templates</span>
-                      </Button>
-                    </div>
-                  </div>
-
-                <Tabs defaultValue="drafts" className="w-full" data-tour-id="forms-tabs">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="drafts" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
-                      <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="truncate">{t('drafts')} ({savedDrafts.length})</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="published" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
-                      <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="truncate">{t('published')} ({publishedForms.length})</span>
-                    </TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="drafts" className="space-y-4" data-tour-id="forms-list">
-                    {savedDrafts.length === 0 ? (
-                      <div className="text-center py-12">
-                        <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-foreground mb-2">{t('noForms')}</h3>
-                        <p className="text-muted-foreground mb-4">{t('createFirstForm')}</p>
+                    {isAdmin && (
+                      <div className={`flex gap-2 self-start sm:self-auto ${isRTL ? 'flex-row-reverse' : ''}`}>
                         <Button onClick={createNewForm} className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                           <Plus className="h-4 w-4" />
-                          {t('newForm')}
+                          <span className="text-sm sm:text-base">{t('newForm')}</span>
+                        </Button>
+                        <Button variant="outline" onClick={() => setActiveTab("build-form-templates")} className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                          <BookOpen className="h-4 w-4" />
+                          <span className="text-sm sm:text-base">Templates</span>
                         </Button>
                       </div>
-                    ) : (
-                      <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        {savedDrafts.map((draft) => (
-                          <Card key={draft.id} className="hover:shadow-md transition-shadow">
-                            <CardHeader className="pb-2">
-                              <div className="flex items-start justify-between">
-                                <div className="flex-1 min-w-0">
-                                  <CardTitle className="text-lg truncate">{draft.title}</CardTitle>
-                                  <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                                    {draft.description || "No description"}
-                                  </p>
-                                </div>
-                                <Badge variant="secondary">{t('draftStatus')}</Badge>
-                              </div>
-                            </CardHeader>
-                            <CardContent className="pt-0">
-                              <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
-                                <span>{draft.fields.length} fields</span>
-                                <span>{new Date(draft.updatedAt).toLocaleDateString()}</span>
-                              </div>
-                              <div className="flex gap-2" data-tour-id="forms-actions">
-                                  <Button
-                                    size="sm" 
-                                    onClick={() => {
-                                      loadForm(draft);
-                                      setActiveTab("build-form");
-                                    }}
-                                    className={`flex-1 gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}
-                                  >
-                                    <Edit className="h-3 w-3" />
-                                    {t('edit')}
-                                  </Button>
-                                  <Button 
-                                    size="sm" 
-                                    variant="outline"
-                                    onClick={() => handlePublishForm(draft)}
-                                    className={`flex-1 gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}
-                                  >
-                                    <Globe className="h-3 w-3" />
-                                    {t('publishForm')}
-                                  </Button>
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <Button size="sm" variant="outline" className="px-2">
-                                      <Trash2 className="h-3 w-3" />
-                                    </Button>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Delete Draft</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        Are you sure you want to delete "{draft.title}"? This action cannot be undone.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction onClick={() => handleDeleteDraft(draft.id)}>
-                                        Delete
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
                     )}
-                  </TabsContent>
+                  </div>
 
-                  <TabsContent value="published" className="space-y-4">
+                {isAdmin ? (
+                  <Tabs defaultValue="drafts" className="w-full" data-tour-id="forms-tabs">
+                    <TabsList className="grid w-full grid-cols-2">
+                      <TabsTrigger value="drafts" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <span className="truncate">{t('drafts')} ({savedDrafts.length})</span>
+                      </TabsTrigger>
+                      <TabsTrigger value="published" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <span className="truncate">{t('published')} ({publishedForms.length})</span>
+                      </TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="drafts" className="space-y-4" data-tour-id="forms-list">
+                      {savedDrafts.length === 0 ? (
+                        <div className="text-center py-12">
+                          <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                          <h3 className="text-lg font-medium text-foreground mb-2">{t('noForms')}</h3>
+                          <p className="text-muted-foreground mb-4">{t('createFirstForm')}</p>
+                          <Button onClick={createNewForm} className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                            <Plus className="h-4 w-4" />
+                            {t('newForm')}
+                          </Button>
+                        </div>
+                      ) : (
+                        <div className="grid gap-3 sm:gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                          {savedDrafts.map((draft) => (
+                            <Card key={draft.id} className="hover:shadow-md transition-shadow">
+                              <CardHeader className="pb-2">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1 min-w-0">
+                                    <CardTitle className="text-lg truncate">{draft.title}</CardTitle>
+                                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                                      {draft.description || "No description"}
+                                    </p>
+                                  </div>
+                                  <Badge variant="secondary">{t('draftStatus')}</Badge>
+                                </div>
+                              </CardHeader>
+                              <CardContent className="pt-0">
+                                <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                                  <span>{draft.fields.length} fields</span>
+                                  <span>{new Date(draft.updatedAt).toLocaleDateString()}</span>
+                                </div>
+                                <div className="flex gap-2" data-tour-id="forms-actions">
+                                    <Button
+                                      size="sm" 
+                                      onClick={() => {
+                                        loadForm(draft);
+                                        setActiveTab("build-form");
+                                      }}
+                                      className={`flex-1 gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}
+                                    >
+                                      <Edit className="h-3 w-3" />
+                                      {t('edit')}
+                                    </Button>
+                                    <Button 
+                                      size="sm" 
+                                      variant="outline"
+                                      onClick={() => handlePublishForm(draft)}
+                                      className={`flex-1 gap-1 ${isRTL ? 'flex-row-reverse' : ''}`}
+                                    >
+                                      <Globe className="h-3 w-3" />
+                                      {t('publishForm')}
+                                    </Button>
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button size="sm" variant="outline" className="px-2">
+                                        <Trash2 className="h-3 w-3" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Delete Draft</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Are you sure you want to delete "{draft.title}"? This action cannot be undone.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDeleteDraft(draft.id)}>
+                                          Delete
+                                        </AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      )}
+                    </TabsContent>
+
+                    <TabsContent value="published" className="space-y-4">
+                      {publishedForms.length === 0 ? (
+                        <div className="text-center py-12">
+                          <Globe className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                          <h3 className="text-lg font-medium text-foreground mb-2">{t('noForms')}</h3>
+                          <p className="text-muted-foreground">Publish a form to make it available to respondents</p>
+                        </div>
+                      ) : (
+                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                          {publishedForms.map((form) => (
+                            <Card key={form.id} className="hover:shadow-md transition-shadow">
+                              <CardHeader className="pb-2">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1 min-w-0">
+                                    <CardTitle className="text-lg truncate">{form.title}</CardTitle>
+                                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                                      {form.description || "No description"}
+                                    </p>
+                                  </div>
+                                  <Badge variant="default">{t('publishedStatus')}</Badge>
+                                </div>
+                              </CardHeader>
+                              <CardContent className="pt-0">
+                                <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                                  <span>{form.submissions} submissions</span>
+                                  <span>{new Date(form.updatedAt).toLocaleDateString()}</span>
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                  <Dialog>
+                                    <DialogTrigger asChild>
+                                      <Button size="sm" variant="outline" className="flex-1 gap-1">
+                                        <ExternalLink className="h-3 w-3" />
+                                        Share
+                                      </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                      <DialogHeader>
+                                        <DialogTitle>Share Form</DialogTitle>
+                                      </DialogHeader>
+                                      <div className="space-y-4">
+                                        <div>
+                                          <label className="text-sm font-medium">Form URL</label>
+                                          <div className="flex gap-2 mt-1">
+                                            <Input value={generateFormUrl(form.id)} readOnly className="flex-1" />
+                                            <Button size="sm" onClick={() => handleCopyToClipboard(generateFormUrl(form.id), "URL")}>Copy</Button>
+                                          </div>
+                                        </div>
+                                        <div>
+                                          <label className="text-sm font-medium">Embed Code</label>
+                                          <div className="flex gap-2 mt-1">
+                                            <Input value={generateEmbedCode(form.id)} readOnly className="flex-1" />
+                                            <Button size="sm" onClick={() => handleCopyToClipboard(generateEmbedCode(form.id), "Embed code")}>Copy</Button>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </DialogContent>
+                                  </Dialog>
+
+                                  <Button size="sm" variant="outline" onClick={() => setSelectedFormForManagement(form)} className="flex-1 gap-1">
+                                    <Mail className="h-3 w-3" />
+                                    Manage
+                                  </Button>
+
+                                  <Button 
+                                    size="sm" variant="default"
+                                    onClick={() => { setViewingSubmissionsForForm(form); setActiveTab("form-submissions"); }}
+                                    className="flex-1 gap-1"
+                                  >
+                                    <ClipboardList className="h-3 w-3" />
+                                    Submissions
+                                  </Button>
+
+                                  <Button size="sm" variant="outline" onClick={() => handleMoveToDraft(form)} className="gap-1">
+                                    <ArrowLeft className="h-3 w-3" />
+                                    Draft
+                                  </Button>
+
+                                  <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                      <Button size="sm" variant="outline" className="px-2">
+                                        <Trash2 className="h-3 w-3" />
+                                      </Button>
+                                    </AlertDialogTrigger>
+                                    <AlertDialogContent>
+                                      <AlertDialogHeader>
+                                        <AlertDialogTitle>Delete Published Form</AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                          Are you sure you want to delete "{form.title}"? This will permanently remove the form and all its submissions.
+                                        </AlertDialogDescription>
+                                      </AlertDialogHeader>
+                                      <AlertDialogFooter>
+                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                        <AlertDialogAction onClick={() => handleDeletePublished(form.id)}>Delete</AlertDialogAction>
+                                      </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                  </AlertDialog>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      )}
+                    </TabsContent>
+                  </Tabs>
+                ) : (
+                  /* User role: show published forms with Fill Form button */
+                  <div className="space-y-4" data-tour-id="assigned-forms">
                     {publishedForms.length === 0 ? (
                       <div className="text-center py-12">
-                        <Globe className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-foreground mb-2">{t('noForms')}</h3>
-                        <p className="text-muted-foreground">Publish a form to make it available to respondents</p>
+                        <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                        <h3 className="text-lg font-medium text-foreground mb-2">No Assigned Forms</h3>
+                        <p className="text-muted-foreground">You don't have any forms assigned to you yet.</p>
                       </div>
                     ) : (
                       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -1082,129 +1205,59 @@ const Index = () => {
                                     {form.description || "No description"}
                                   </p>
                                 </div>
-                                <Badge variant="default">{t('publishedStatus')}</Badge>
+                                <Badge variant="default">Assigned</Badge>
                               </div>
                             </CardHeader>
                             <CardContent className="pt-0">
                               <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
-                                <span>{form.submissions} submissions</span>
+                                <span>{form.fields.length} fields</span>
                                 <span>{new Date(form.updatedAt).toLocaleDateString()}</span>
                               </div>
-                              <div className="flex flex-wrap gap-2">
-                                <Dialog>
-                                  <DialogTrigger asChild>
-                                    <Button size="sm" variant="outline" className="flex-1 gap-1">
-                                      <ExternalLink className="h-3 w-3" />
-                                      Share
-                                    </Button>
-                                  </DialogTrigger>
-                                  <DialogContent>
-                                    <DialogHeader>
-                                      <DialogTitle>Share Form</DialogTitle>
-                                    </DialogHeader>
-                                    <div className="space-y-4">
-                                      <div>
-                                        <label className="text-sm font-medium">Form URL</label>
-                                        <div className="flex gap-2 mt-1">
-                                          <Input 
-                                            value={generateFormUrl(form.id)} 
-                                            readOnly 
-                                            className="flex-1"
-                                          />
-                                          <Button 
-                                            size="sm" 
-                                            onClick={() => handleCopyToClipboard(generateFormUrl(form.id), "URL")}
-                                          >
-                                            Copy
-                                          </Button>
-                                        </div>
-                                      </div>
-                                      <div>
-                                        <label className="text-sm font-medium">Embed Code</label>
-                                        <div className="flex gap-2 mt-1">
-                                          <Input 
-                                            value={generateEmbedCode(form.id)} 
-                                            readOnly 
-                                            className="flex-1"
-                                          />
-                                          <Button 
-                                            size="sm" 
-                                            onClick={() => handleCopyToClipboard(generateEmbedCode(form.id), "Embed code")}
-                                          >
-                                            Copy
-                                          </Button>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </DialogContent>
-                                </Dialog>
-
-                                <Button 
-                                  size="sm" 
-                                  variant="outline"
-                                  onClick={() => setSelectedFormForManagement(form)}
-                                  className="flex-1 gap-1"
-                                >
-                                  <Mail className="h-3 w-3" />
-                                  Manage
-                                </Button>
-
-                                <Button 
-                                  size="sm" 
-                                  variant="default"
-                                  onClick={() => {
-                                    setViewingSubmissionsForForm(form);
-                                    setActiveTab("form-submissions");
-                                  }}
-                                  className="flex-1 gap-1"
-                                >
-                                  <ClipboardList className="h-3 w-3" />
-                                  Submissions
-                                </Button>
-
-                                <Button 
-                                  size="sm" 
-                                  variant="outline"
-                                  onClick={() => handleMoveToDraft(form)}
-                                  className="gap-1"
-                                >
-                                  <ArrowLeft className="h-3 w-3" />
-                                  Draft
-                                </Button>
-
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <Button size="sm" variant="outline" className="px-2">
-                                      <Trash2 className="h-3 w-3" />
-                                    </Button>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>Delete Published Form</AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        Are you sure you want to delete "{form.title}"? This will permanently remove the form and all its submissions. This action cannot be undone.
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                      <AlertDialogAction onClick={() => handleDeletePublished(form.id)}>
-                                        Delete
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              </div>
+                              <Button 
+                                size="sm" className="w-full gap-1"
+                                onClick={() => { setViewingSubmissionsForForm(form); setActiveTab("fill-form"); }}
+                              >
+                                <Edit className="h-3 w-3" />
+                                Fill Form
+                              </Button>
                             </CardContent>
                           </Card>
                         ))}
                       </div>
                     )}
-                  </TabsContent>
-                </Tabs>
+                  </div>
+                )}
               </div>
             )}
 
-            {activeTab === "build-form-templates" && (
+            {/* Fill Form view for user role */}
+            {activeTab === "fill-form" && viewingSubmissionsForForm && (
+              <div className="space-y-4">
+                <Button variant="ghost" onClick={() => { setActiveTab("forms"); setViewingSubmissionsForForm(null); }} className="gap-2 mb-2">
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to Forms
+                </Button>
+                <FormPreview
+                  formFields={viewingSubmissionsForForm.fields}
+                  formTitle={viewingSubmissionsForForm.title}
+                  formDescription={viewingSubmissionsForForm.description}
+                  formSettings={viewingSubmissionsForForm.settings}
+                  attachments={viewingSubmissionsForForm.attachments || []}
+                />
+                <div className="flex justify-end">
+                  <Button onClick={() => {
+                    toast({ title: "Form Submitted", description: "Your response has been recorded successfully." });
+                    setActiveTab("forms");
+                    setViewingSubmissionsForForm(null);
+                  }} className="gap-2">
+                    <Send className="h-4 w-4" />
+                    Submit Response
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            {isAdmin && activeTab === "build-form-templates" && (
               <div className="space-y-4">
                 <Button variant="ghost" onClick={() => setActiveTab("forms")} className="gap-2 mb-2">
                   <ArrowLeft className="h-4 w-4" />
@@ -1214,7 +1267,7 @@ const Index = () => {
               </div>
             )}
 
-            {activeTab === "build-form" && (
+            {isAdmin && activeTab === "build-form" && (
               <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-4 mb-4 sm:mb-6 h-10 sm:h-auto">
                   {buildTabs.map((tab) => (
@@ -1319,11 +1372,11 @@ const Index = () => {
               </Tabs>
             )}
 
-            {activeTab === "resources" && (
+            {isAdmin && activeTab === "resources" && (
               <Resources />
             )}
 
-            {activeTab === "global-settings" && (
+            {isAdmin && activeTab === "global-settings" && (
               <GlobalSettings />
             )}
           </div>
