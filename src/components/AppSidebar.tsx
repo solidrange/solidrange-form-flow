@@ -4,7 +4,7 @@ import {
   BarChart3, 
   ClipboardList, 
   Folder, 
-  
+  Wrench, 
   Settings,
   FileText,
   HelpCircle
@@ -37,7 +37,7 @@ const tourIdMap: Record<string, string> = {
   'dashboard': 'nav-dashboard',
   'review-submissions': 'nav-review',
   'forms': 'nav-forms',
-  
+  'build-form': 'nav-build',
   'global-settings': 'nav-settings',
   'resources': 'nav-resources'
 };
@@ -71,6 +71,13 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
       icon: Folder,
       onClick: () => onTabChange("forms"),
       badge: hasUnpublishedDrafts
+    },
+    {
+      id: "build-form",
+      label: t("build"),
+      mobileLabel: t("build"),
+      icon: Wrench,
+      onClick: () => onTabChange("build-form")
     },
     {
       id: "resources",
