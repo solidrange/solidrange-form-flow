@@ -28,8 +28,8 @@ export const isTemplateNameExists = (name: string): boolean => {
   );
 };
 
-// Function to get all templates (built-in + custom)
-export const getAllTemplates = (): FormTemplate[] => {
+// Function to get all standard (built-in) templates
+export const getStandardTemplates = (): FormTemplate[] => {
   return [
     ...governmentTemplates,
     ...insuranceTemplates,
@@ -40,6 +40,13 @@ export const getAllTemplates = (): FormTemplate[] => {
     ...startupsTemplates,
     ...smeTemplates,
     ...multiSectorTemplates,
+  ];
+};
+
+// Function to get all templates (built-in + custom)
+export const getAllTemplates = (): FormTemplate[] => {
+  return [
+    ...getStandardTemplates(),
     ...customTemplates
   ];
 };

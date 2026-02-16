@@ -6,11 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Search, Building2, Shield, Zap, Heart, Activity, Smartphone, Lightbulb, Briefcase, Globe, Eye, Trash2 } from 'lucide-react';
 import { BrandedButton } from './BrandedButton';
-import { getAllTemplates, deleteCustomTemplate, isCustomTemplate } from '@/data/formTemplates';
+import { getAllTemplates, deleteCustomTemplate, isCustomTemplate, getCustomTemplates, getStandardTemplates } from '@/data/formTemplates';
 import { MultiSelectFilter } from './MultiSelectFilter';
 import { FormTemplatePreview } from './FormTemplatePreview';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { toast } from '@/hooks/use-toast';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface FormLibraryProps {
   onUseTemplate: (template: FormTemplate) => void;
@@ -41,11 +42,20 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedSectors, setSelectedSectors] = useState<string[]>([]);
+  const [templateType, setTemplateType] = useState<'all' | 'standard' | 'custom'>('all');
   const [previewTemplate, setPreviewTemplate] = useState<FormTemplate | null>(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0); // To force re-render after delete
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  const allTemplates = getAllTemplates();
+  const allTemplates = useMemo(() => {
+    if (templateType === 'standard') return getStandardTemplates();
+    if (templateType === 'custom') return getCustomTemplates();
+    return getAllTemplates();
+  }, [templateType, refreshKey]);
+  
+  const customCount = getCustomTemplates().length;
+  const standardCount = getStandardTemplates().length;
+  
   console.log('FormLibrary: Available templates:', allTemplates.length);
 
   const handleDeleteTemplate = (templateId: string, templateName: string) => {
@@ -166,6 +176,15 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
         <h2 className="text-2xl font-bold mb-2">Form Templates</h2>
         <p className="text-muted-foreground">Choose from pre-built templates to get started quickly</p>
       </div>
+
+      {/* Template Type Tabs */}
+      <Tabs value={templateType} onValueChange={(v) => setTemplateType(v as 'all' | 'standard' | 'custom')}>
+        <TabsList>
+          <TabsTrigger value="all">All ({standardCount + customCount})</TabsTrigger>
+          <TabsTrigger value="standard">Standard ({standardCount})</TabsTrigger>
+          <TabsTrigger value="custom">Custom ({customCount})</TabsTrigger>
+        </TabsList>
+      </Tabs>
 
       {/* Filters */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
