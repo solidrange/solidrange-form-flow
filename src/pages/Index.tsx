@@ -982,14 +982,20 @@ const Index = () => {
                       <h2 className="text-xl sm:text-2xl font-bold text-foreground">{t('forms')}</h2>
                       <p className="text-sm sm:text-base text-muted-foreground">Manage your draft and published forms</p>
                     </div>
-                    <Button onClick={createNewForm} className={`gap-2 self-start sm:self-auto ${isRTL ? 'flex-row-reverse' : ''}`}>
-                      <Plus className="h-4 w-4" />
-                      <span className="text-sm sm:text-base">{t('newForm')}</span>
-                    </Button>
+                    <div className={`flex gap-2 self-start sm:self-auto ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <Button onClick={createNewForm} className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <Plus className="h-4 w-4" />
+                        <span className="text-sm sm:text-base">{t('newForm')}</span>
+                      </Button>
+                      <Button variant="outline" onClick={() => setActiveTab("build-form-templates")} className={`gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <BookOpen className="h-4 w-4" />
+                        <span className="text-sm sm:text-base">Templates</span>
+                      </Button>
+                    </div>
                   </div>
 
                 <Tabs defaultValue="drafts" className="w-full" data-tour-id="forms-tabs">
-                  <TabsList className="grid w-full grid-cols-3">
+                  <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="drafts" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                       <span className="truncate">{t('drafts')} ({savedDrafts.length})</span>
@@ -997,10 +1003,6 @@ const Index = () => {
                     <TabsTrigger value="published" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
                       <span className="truncate">{t('published')} ({publishedForms.length})</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="templates" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
-                      <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <span className="truncate">Templates</span>
                     </TabsTrigger>
                   </TabsList>
 
@@ -1209,10 +1211,17 @@ const Index = () => {
                       </div>
                     )}
                   </TabsContent>
-                  <TabsContent value="templates">
-                    <FormLibrary onUseTemplate={useTemplate} />
-                  </TabsContent>
                 </Tabs>
+              </div>
+            )}
+
+            {activeTab === "build-form-templates" && (
+              <div className="space-y-4">
+                <Button variant="ghost" onClick={() => setActiveTab("forms")} className="gap-2 mb-2">
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to Forms
+                </Button>
+                <FormLibrary onUseTemplate={useTemplate} />
               </div>
             )}
 
