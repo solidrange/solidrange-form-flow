@@ -49,20 +49,13 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
   const isCollapsed = state === "collapsed";
   const [helpPanelOpen, setHelpPanelOpen] = useState(false);
 
-  const navItems = [
+  const primaryNavItems = [
     {
       id: "dashboard",
       label: t("dashboard"),
       mobileLabel: t("home"),
       icon: BarChart3,
       onClick: () => onTabChange("dashboard")
-    },
-    {
-      id: "review-submissions",
-      label: t("review"),
-      mobileLabel: t("review"),
-      icon: ClipboardList,
-      onClick: () => onTabChange("review-submissions")
     },
     {
       id: "forms",
@@ -73,11 +66,11 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
       badge: hasUnpublishedDrafts
     },
     {
-      id: "resources",
-      label: "Resources",
-      mobileLabel: "Resources",
-      icon: FileText,
-      onClick: () => onTabChange("resources")
+      id: "reports",
+      label: "Reports",
+      mobileLabel: "Reports",
+      icon: ClipboardList,
+      onClick: () => onTabChange("reports")
     },
     {
       id: "global-settings",
@@ -85,6 +78,16 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
       mobileLabel: t("settings"),
       icon: Settings,
       onClick: () => onTabChange("global-settings")
+    }
+  ];
+
+  const devNavItems = [
+    {
+      id: "resources",
+      label: "Resources",
+      mobileLabel: "Resources",
+      icon: FileText,
+      onClick: () => onTabChange("resources")
     }
   ];
 
@@ -106,9 +109,7 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
-                {navItems
-                  .filter((item) => item.id !== 'resources' || showDevelopmentResources)
-                  .map((item) => (
+                {primaryNavItems.map((item) => (
                   <SidebarMenuItem key={item.id}>
                     <SidebarMenuButton
                       onClick={item.onClick}
@@ -163,6 +164,33 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
                     )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+
+                {/* Developer Resources - shown below Help when enabled */}
+                {showDevelopmentResources && devNavItems.map((item) => (
+                  <SidebarMenuItem key={item.id}>
+                    <SidebarMenuButton
+                      onClick={item.onClick}
+                      isActive={activeTab === item.id}
+                      data-tour-id={tourIdMap[item.id]}
+                      className={`w-full min-h-[44px] touch-manipulation transition-colors ${
+                        isRTL ? 'flex-row-reverse' : 'justify-start'
+                      } ${
+                        activeTab === item.id 
+                          ? 'bg-sidebar-accent text-sidebar-accent-foreground' 
+                          : 'hover:bg-sidebar-accent/50'
+                      }`}
+                    >
+                      <item.icon className={`h-4 w-4 shrink-0 ${
+                        activeTab === item.id ? 'text-primary' : ''
+                      }`} />
+                      {!isCollapsed && (
+                        <span className={`text-sm sm:text-base truncate ${isRTL ? 'text-right' : 'text-left'}`}>
+                          {item.label}
+                        </span>
+                      )}
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

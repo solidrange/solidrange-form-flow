@@ -43,14 +43,17 @@ export function MobileNavDrawer({
 
   const navItems = [
     { id: "dashboard", icon: BarChart3, label: t("dashboard") },
-    { id: "review-submissions", icon: ClipboardList, label: t("review") },
     { id: "forms", icon: Folder, label: t("forms"), badge: hasUnpublishedDrafts },
+    { id: "reports", icon: ClipboardList, label: "Reports" },
   ];
 
   const secondaryItems = [
-    ...(showDevelopmentResources ? [{ id: "resources", icon: FileText, label: "Resources" }] : []),
     { id: "global-settings", icon: Settings, label: t("settings") },
   ];
+
+  const devItems = showDevelopmentResources ? [
+    { id: "resources", icon: FileText, label: "Resources" },
+  ] : [];
 
   const handleNavClick = (tabId: string) => {
     onTabChange(tabId);
@@ -170,6 +173,36 @@ export function MobileNavDrawer({
                 Help
               </span>
             </button>
+
+            {/* Developer Resources - below Help */}
+            {devItems.map((item) => {
+              const isActive = activeTab === item.id;
+              const Icon = item.icon;
+              
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleNavClick(item.id)}
+                  className={cn(
+                    "w-full flex items-center gap-3 px-3 py-3 rounded-lg",
+                    "transition-colors duration-200 touch-manipulation",
+                    "min-h-[48px]",
+                    isRTL && "flex-row-reverse",
+                    isActive 
+                      ? "bg-primary/10 text-primary" 
+                      : "text-foreground hover:bg-muted"
+                  )}
+                >
+                  <Icon className="h-5 w-5 shrink-0" />
+                  <span className={cn(
+                    "text-sm font-medium flex-1",
+                    isRTL ? "text-right" : "text-left"
+                  )}>
+                    {item.label}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </nav>
 
