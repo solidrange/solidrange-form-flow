@@ -4,13 +4,14 @@ import {
   BarChart3, 
   ClipboardList, 
   Folder, 
-  Wrench, 
   Settings,
   FileText,
-  HelpCircle
+  HelpCircle,
+  LogOut,
+  User,
+  Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
   Sidebar,
   SidebarContent,
@@ -24,6 +25,7 @@ import {
 import { BrandLogo } from "@/components/BrandLogo";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { HelpPanel } from "@/components/tour/HelpPanel";
 
 interface AppSidebarProps {
@@ -32,12 +34,10 @@ interface AppSidebarProps {
   hasUnpublishedDrafts: boolean;
 }
 
-// Map nav item IDs to tour data attributes
 const tourIdMap: Record<string, string> = {
   'dashboard': 'nav-dashboard',
-  'review-submissions': 'nav-review',
   'forms': 'nav-forms',
-  'build-form': 'nav-build',
+  'reports': 'nav-reports',
   'global-settings': 'nav-settings',
   'resources': 'nav-resources'
 };
@@ -46,56 +46,45 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
   const { state } = useSidebar();
   const { t, isRTL } = useLanguage();
   const { showDevelopmentResources } = useSettings();
+  const { currentUser, logout } = useAuth();
   const isCollapsed = state === "collapsed";
   const [helpPanelOpen, setHelpPanelOpen] = useState(false);
+
+  const isAdmin = currentUser?.role === 'admin';
 
   const primaryNavItems = [
     {
       id: "dashboard",
       label: t("dashboard"),
-      mobileLabel: t("home"),
       icon: BarChart3,
       onClick: () => onTabChange("dashboard")
     },
     {
       id: "forms",
       label: t("forms"),
-      mobileLabel: t("forms"),
       icon: Folder,
       onClick: () => onTabChange("forms"),
-      badge: hasUnpublishedDrafts
+      badge: isAdmin && hasUnpublishedDrafts
     },
     {
       id: "reports",
       label: "Reports",
-      mobileLabel: "Reports",
       icon: ClipboardList,
       onClick: () => onTabChange("reports")
     },
-    {
+    // Settings only for admin
+    ...(isAdmin ? [{
       id: "global-settings",
       label: t("settings"),
-      mobileLabel: t("settings"),
       icon: Settings,
       onClick: () => onTabChange("global-settings")
-    }
-  ];
-
-  const devNavItems = [
-    {
-      id: "resources",
-      label: "Resources",
-      mobileLabel: "Resources",
-      icon: FileText,
-      onClick: () => onTabChange("resources")
-    }
+    }] : [])
   ];
 
   return (
     <>
       <Sidebar collapsible="icon" className={`border-r border-sidebar-border ${isRTL ? 'sidebar-border-fix' : ''}`}>
         <SidebarContent className="bg-sidebar text-sidebar-foreground">
-          {/* Brand Logo - Mobile optimized */}
           <div className="p-3 sm:p-4 border-b border-sidebar-border" data-tour-id="brand-logo">
             <BrandLogo 
               size="sm" 
@@ -105,7 +94,6 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
             />
           </div>
 
-          {/* Navigation Menu - Mobile optimized */}
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
@@ -147,7 +135,7 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
                   </SidebarMenuItem>
                 ))}
 
-                {/* Help & Tour Button */}
+                {/* Help */}
                 <SidebarMenuItem>
                   <SidebarMenuButton
                     onClick={() => setHelpPanelOpen(true)}
@@ -165,48 +153,73 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
                   </SidebarMenuButton>
                 </SidebarMenuItem>
 
-                {/* Developer Resources - shown below Help when enabled */}
-                {showDevelopmentResources && devNavItems.map((item) => (
-                  <SidebarMenuItem key={item.id}>
+                {/* Dev Resources - below Help, admin only */}
+                {isAdmin && showDevelopmentResources && (
+                  <SidebarMenuItem>
                     <SidebarMenuButton
-                      onClick={item.onClick}
-                      isActive={activeTab === item.id}
-                      data-tour-id={tourIdMap[item.id]}
+                      onClick={() => onTabChange("resources")}
+                      isActive={activeTab === "resources"}
+                      data-tour-id={tourIdMap["resources"]}
                       className={`w-full min-h-[44px] touch-manipulation transition-colors ${
                         isRTL ? 'flex-row-reverse' : 'justify-start'
                       } ${
-                        activeTab === item.id 
+                        activeTab === "resources"
                           ? 'bg-sidebar-accent text-sidebar-accent-foreground' 
                           : 'hover:bg-sidebar-accent/50'
                       }`}
                     >
-                      <item.icon className={`h-4 w-4 shrink-0 ${
-                        activeTab === item.id ? 'text-primary' : ''
+                      <FileText className={`h-4 w-4 shrink-0 ${
+                        activeTab === "resources" ? 'text-primary' : ''
                       }`} />
                       {!isCollapsed && (
                         <span className={`text-sm sm:text-base truncate ${isRTL ? 'text-right' : 'text-left'}`}>
-                          {item.label}
+                          Resources
                         </span>
                       )}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                ))}
+                )}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
           
-          {/* Version info at bottom */}
-          <div className="mt-auto p-3 border-t border-sidebar-border">
-            <div className="text-center">
-              <span className="text-xs text-muted-foreground">
-                V1.0.0
-              </span>
+          {/* User info + Logout at bottom */}
+          <div className="mt-auto border-t border-sidebar-border">
+            {!isCollapsed && currentUser && (
+              <div className="p-3 space-y-2">
+                <div className="flex items-center gap-2">
+                  {currentUser.role === 'admin' ? (
+                    <Shield className="h-4 w-4 text-primary shrink-0" />
+                  ) : (
+                    <User className="h-4 w-4 text-primary shrink-0" />
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-foreground truncate">{currentUser.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{currentUser.email}</p>
+                  </div>
+                </div>
+                <Button variant="ghost" size="sm" onClick={logout} className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground">
+                  <LogOut className="h-4 w-4" />
+                  Sign Out
+                </Button>
+              </div>
+            )}
+            {isCollapsed && (
+              <div className="p-2">
+                <Button variant="ghost" size="icon" onClick={logout} className="w-full" title="Sign Out">
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+            <div className="p-3 pt-0">
+              <div className="text-center">
+                <span className="text-xs text-muted-foreground">V1.0.0</span>
+              </div>
             </div>
           </div>
         </SidebarContent>
       </Sidebar>
 
-      {/* Help Panel */}
       <HelpPanel open={helpPanelOpen} onOpenChange={setHelpPanelOpen} />
     </>
   );

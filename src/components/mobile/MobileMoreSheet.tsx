@@ -2,6 +2,7 @@ import {
   Settings,
   FileText,
   HelpCircle,
+  LogOut,
 } from "lucide-react";
 import {
   Sheet,
@@ -12,6 +13,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface MobileMoreSheetProps {
   open: boolean;
@@ -30,11 +32,15 @@ export function MobileMoreSheet({
 }: MobileMoreSheetProps) {
   const { t, isRTL } = useLanguage();
   const { showDevelopmentResources } = useSettings();
+  const { currentUser, logout } = useAuth();
+
+  const isAdmin = currentUser?.role === 'admin';
 
   const items = [
-    ...(showDevelopmentResources ? [{ id: "resources", icon: FileText, label: "Resources" }] : []),
-    { id: "global-settings", icon: Settings, label: t("settings") },
+    ...(isAdmin && showDevelopmentResources ? [{ id: "resources", icon: FileText, label: "Resources" }] : []),
+    ...(isAdmin ? [{ id: "global-settings", icon: Settings, label: t("settings") }] : []),
     { id: "help", icon: HelpCircle, label: "Help & Tour", action: onHelpClick },
+    { id: "logout", icon: LogOut, label: "Sign Out", action: () => logout() },
   ];
 
   const handleItemClick = (item: typeof items[0]) => {
@@ -48,15 +54,9 @@ export function MobileMoreSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent 
-        side="bottom" 
-        className="rounded-t-2xl max-h-[50vh]"
-      >
+      <SheetContent side="bottom" className="rounded-t-2xl max-h-[50vh]">
         <SheetHeader className="pb-4">
-          <SheetTitle className={cn(
-            "text-base",
-            isRTL ? "text-right" : "text-left"
-          )}>
+          <SheetTitle className={cn("text-base", isRTL ? "text-right" : "text-left")}>
             More Options
           </SheetTitle>
         </SheetHeader>
@@ -65,33 +65,20 @@ export function MobileMoreSheet({
           {items.map((item) => {
             const isActive = activeTab === item.id;
             const Icon = item.icon;
-            
             return (
               <button
                 key={item.id}
                 onClick={() => handleItemClick(item)}
                 className={cn(
-                  "w-full flex items-center gap-4 px-4 py-4 rounded-xl",
-                  "transition-colors duration-200 touch-manipulation",
-                  "min-h-[56px]",
+                  "w-full flex items-center gap-4 px-4 py-4 rounded-xl transition-colors duration-200 touch-manipulation min-h-[56px]",
                   isRTL && "flex-row-reverse",
-                  isActive 
-                    ? "bg-primary/10 text-primary" 
-                    : "text-foreground hover:bg-muted active:bg-muted"
+                  isActive ? "bg-primary/10 text-primary" : "text-foreground hover:bg-muted active:bg-muted"
                 )}
               >
-                <div className={cn(
-                  "w-10 h-10 rounded-full flex items-center justify-center",
-                  isActive ? "bg-primary/20" : "bg-muted"
-                )}>
+                <div className={cn("w-10 h-10 rounded-full flex items-center justify-center", isActive ? "bg-primary/20" : "bg-muted")}>
                   <Icon className="h-5 w-5" />
                 </div>
-                <span className={cn(
-                  "text-base font-medium flex-1",
-                  isRTL ? "text-right" : "text-left"
-                )}>
-                  {item.label}
-                </span>
+                <span className={cn("text-base font-medium flex-1", isRTL ? "text-right" : "text-left")}>{item.label}</span>
               </button>
             );
           })}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useTour } from '@/contexts/TourContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,7 +29,6 @@ interface HelpPanelProps {
   onOpenChange: (open: boolean) => void;
 }
 
-// Category icons for tours
 const categoryIcons: Record<string, React.ReactNode> = {
   complete: <MapPin className="h-4 w-4" />,
   navigation: <MapPin className="h-4 w-4" />,
@@ -53,18 +53,19 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
     currentTour
   } = useTour();
 
+  const { currentUser } = useAuth();
+  const isAdmin = currentUser?.role === 'admin';
+
   const availableTours = getAvailableTours();
   const tips = getTipsForRole(userRole);
   const isMobile = layoutMode === 'mobile';
   
-  // Group tips by category
   const tipsByCategory = tips.reduce((acc, tip) => {
     if (!acc[tip.category]) acc[tip.category] = [];
     acc[tip.category].push(tip);
     return acc;
   }, {} as Record<string, typeof tips>);
 
-  // Group tours by category
   const toursByCategory = availableTours.reduce((acc, tour) => {
     if (!acc[tour.category]) acc[tour.category] = [];
     acc[tour.category].push(tour);
@@ -73,24 +74,17 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
 
   const handleStartTour = (tourId: string) => {
     onOpenChange(false);
-    // Small delay to let the panel close before starting tour
-    setTimeout(() => {
-      startTour(tourId);
-    }, 350);
+    setTimeout(() => { startTour(tourId); }, 350);
   };
 
   const handleRestartTour = (tourId: string) => {
     onOpenChange(false);
-    setTimeout(() => {
-      restartTour(tourId);
-    }, 350);
+    setTimeout(() => { restartTour(tourId); }, 350);
   };
 
   const handleResumeTour = () => {
     onOpenChange(false);
-    setTimeout(() => {
-      resumeTour();
-    }, 350);
+    setTimeout(() => { resumeTour(); }, 350);
   };
 
   const getCategoryLabel = (category: string): string => {
@@ -107,10 +101,7 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className={cn(
-        "p-0",
-        isMobile ? "w-full" : "w-[400px] sm:w-[450px]"
-      )}>
+      <SheetContent className={cn("p-0", isMobile ? "w-full" : "w-[400px] sm:w-[450px]")}>
         <SheetHeader className="p-6 pb-0">
           <SheetTitle className="flex items-center gap-2">
             <HelpCircle className="h-5 w-5 text-primary" />
@@ -124,38 +115,43 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
             <Badge variant="outline" className="text-xs">
               {layoutMode === 'mobile' ? '📱 Mobile View' : '🖥️ Desktop View'}
             </Badge>
-            <span className="text-xs text-muted-foreground">
-              Tours adapt to your current layout
-            </span>
+            <span className="text-xs text-muted-foreground">Tours adapt to your current layout</span>
           </div>
 
-          {/* Role Selector */}
+          {/* Role Display - auto-set from auth, only admin can switch for testing */}
           <div className="mb-4">
             <p className="text-sm text-muted-foreground mb-2">Your Role</p>
-            <div className="flex gap-2">
-              <Button
-                variant={userRole === 'admin' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setUserRole('admin')}
-                className={cn("flex-1", isMobile && "min-h-[44px]")}
-              >
-                <Shield className="h-4 w-4 mr-1" />
-                Admin
-              </Button>
-              <Button
-                variant={userRole === 'user' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setUserRole('user')}
-                className={cn("flex-1", isMobile && "min-h-[44px]")}
-              >
-                <User className="h-4 w-4 mr-1" />
-                User
-              </Button>
-            </div>
+            {isAdmin ? (
+              <div className="flex gap-2">
+                <Button
+                  variant={userRole === 'admin' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setUserRole('admin')}
+                  className={cn("flex-1", isMobile && "min-h-[44px]")}
+                >
+                  <Shield className="h-4 w-4 mr-1" />
+                  Admin
+                </Button>
+                <Button
+                  variant={userRole === 'user' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setUserRole('user')}
+                  className={cn("flex-1", isMobile && "min-h-[44px]")}
+                >
+                  <User className="h-4 w-4 mr-1" />
+                  User
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 p-2 rounded-lg bg-muted/50">
+                <User className="h-4 w-4 text-primary" />
+                <span className="text-sm font-medium text-foreground">User</span>
+              </div>
+            )}
             <p className="text-xs text-muted-foreground mt-2">
               {userRole === 'admin' 
-                ? 'Full access to all features, settings, and administrative functions.'
-                : 'Access to forms, submissions, and basic features.'}
+                ? 'Full access: create forms, manage submissions, configure settings, and view reports.'
+                : 'Fill assigned forms, view reports, and access help resources.'}
             </p>
           </div>
 
@@ -201,9 +197,7 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
                     <div key={category}>
                       <div className="flex items-center gap-2 mb-3">
                         {categoryIcons[category]}
-                        <h4 className="text-sm font-semibold text-foreground">
-                          {getCategoryLabel(category)}
-                        </h4>
+                        <h4 className="text-sm font-semibold text-foreground">{getCategoryLabel(category)}</h4>
                       </div>
                       <div className="space-y-3">
                         {categoryTours.map(tour => {
@@ -221,17 +215,11 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
                                   <div className="flex-1 min-w-0">
                                     <CardTitle className="text-base flex items-center gap-2">
                                       <span className="truncate">{tour.name}</span>
-                                      {progress.completed && (
-                                        <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />
-                                      )}
+                                      {progress.completed && <CheckCircle2 className="h-4 w-4 text-green-500 flex-shrink-0" />}
                                     </CardTitle>
-                                    <CardDescription className="text-xs mt-1">
-                                      {tour.description}
-                                    </CardDescription>
+                                    <CardDescription className="text-xs mt-1">{tour.description}</CardDescription>
                                   </div>
-                                  <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">
-                                    {progress.totalSteps} steps
-                                  </Badge>
+                                  <Badge variant="outline" className="text-xs ml-2 flex-shrink-0">{progress.totalSteps} steps</Badge>
                                 </div>
                               </CardHeader>
                               <CardContent className="pt-0">
@@ -241,40 +229,22 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
                                       <span>Progress</span>
                                       <span>{progress.stepsCompleted}/{progress.totalSteps}</span>
                                     </div>
-                                    <Progress 
-                                      value={(progress.stepsCompleted / progress.totalSteps) * 100} 
-                                      className="h-1"
-                                    />
+                                    <Progress value={(progress.stepsCompleted / progress.totalSteps) * 100} className="h-1" />
                                   </div>
                                 )}
-                                
                                 <div className="flex gap-2">
                                   {progress.completed ? (
-                                    <Button 
-                                      variant="outline" 
-                                      size="sm" 
-                                      className="w-full"
-                                      onClick={() => handleRestartTour(tour.id)}
-                                    >
+                                    <Button variant="outline" size="sm" className="w-full" onClick={() => handleRestartTour(tour.id)}>
                                       <RefreshCw className="h-4 w-4 mr-1" />
                                       Restart Tour
                                     </Button>
                                   ) : isInProgress && tourState.isPaused ? (
-                                    <Button 
-                                      size="sm" 
-                                      className="w-full"
-                                      onClick={handleResumeTour}
-                                    >
+                                    <Button size="sm" className="w-full" onClick={handleResumeTour}>
                                       <Play className="h-4 w-4 mr-1" />
                                       Resume Tour
                                     </Button>
                                   ) : (
-                                    <Button 
-                                      size="sm" 
-                                      className="w-full"
-                                      onClick={() => handleStartTour(tour.id)}
-                                      disabled={isTourActive && !tourState.isPaused}
-                                    >
+                                    <Button size="sm" className="w-full" onClick={() => handleStartTour(tour.id)} disabled={isTourActive && !tourState.isPaused}>
                                       <Play className="h-4 w-4 mr-1" />
                                       Start Tour
                                     </Button>
@@ -296,9 +266,7 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
                 <div className="space-y-4 pr-4">
                   {Object.entries(tipsByCategory).map(([category, categoryTips]) => (
                     <div key={category}>
-                      <h4 className="text-sm font-medium capitalize mb-2 text-muted-foreground">
-                        {category}
-                      </h4>
+                      <h4 className="text-sm font-medium capitalize mb-2 text-muted-foreground">{category}</h4>
                       <div className="space-y-2">
                         {categoryTips.map(tip => (
                           <Card key={tip.id} className="bg-muted/30">
