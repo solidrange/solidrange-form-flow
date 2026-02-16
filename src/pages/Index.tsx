@@ -746,7 +746,6 @@ const Index = () => {
   // Create mobile-friendly tabs array for build section
   const buildTabs = [
     { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" />, mobileLabel: "Build" },
-    { id: "library", label: "Templates", icon: <Folder className="h-4 w-4" />, mobileLabel: "Tmpl" },
     { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" />, mobileLabel: "View" },
     { id: "settings", label: "Settings", icon: <Settings className="h-4 w-4" />, mobileLabel: "Set" }
   ];
@@ -989,7 +988,7 @@ const Index = () => {
                   </div>
 
                 <Tabs defaultValue="drafts" className="w-full" data-tour-id="forms-tabs">
-                  <TabsList className="grid w-full grid-cols-2">
+                  <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="drafts" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                       <span className="truncate">{t('drafts')} ({savedDrafts.length})</span>
@@ -997,6 +996,10 @@ const Index = () => {
                     <TabsTrigger value="published" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
                       <span className="truncate">{t('published')} ({publishedForms.length})</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="templates" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <Folder className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="truncate">Templates</span>
                     </TabsTrigger>
                   </TabsList>
 
@@ -1205,13 +1208,19 @@ const Index = () => {
                       </div>
                     )}
                   </TabsContent>
+
+                  <TabsContent value="templates">
+                    <FormLibrary 
+                      onUseTemplate={useTemplate}
+                    />
+                  </TabsContent>
                 </Tabs>
               </div>
             )}
 
             {activeTab === "build-form" && (
               <Tabs value={activeBuildTab} onValueChange={setActiveBuildTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-4 mb-4 sm:mb-6 h-10 sm:h-auto">
+                <TabsList className="grid w-full grid-cols-3 mb-4 sm:mb-6 h-10 sm:h-auto">
                   {buildTabs.map((tab) => (
                     <TabsTrigger 
                       key={tab.id} 
@@ -1256,11 +1265,6 @@ const Index = () => {
                   />
                 </TabsContent>
 
-                <TabsContent value="library">
-                  <FormLibrary 
-                    onUseTemplate={useTemplate}
-                  />
-                </TabsContent>
 
                 <TabsContent value="preview">
                   <FormPreview
