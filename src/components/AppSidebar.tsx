@@ -53,25 +53,25 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
   const isAdmin = currentUser?.role === 'admin';
 
   const primaryNavItems = [
-    {
+    ...(isAdmin ? [{
       id: "dashboard",
       label: t("dashboard"),
       icon: BarChart3,
       onClick: () => onTabChange("dashboard")
-    },
+    }] : []),
     {
       id: "forms",
-      label: t("forms"),
+      label: isAdmin ? t("forms") : "Assigned Forms",
       icon: Folder,
       onClick: () => onTabChange("forms"),
       badge: isAdmin && hasUnpublishedDrafts
     },
-    {
+    ...(isAdmin ? [{
       id: "reports",
       label: "Reports",
       icon: ClipboardList,
       onClick: () => onTabChange("reports")
-    },
+    }] : []),
     // Settings only for admin
     ...(isAdmin ? [{
       id: "global-settings",

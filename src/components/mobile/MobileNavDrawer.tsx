@@ -48,9 +48,9 @@ export function MobileNavDrawer({
   const isAdmin = currentUser?.role === 'admin';
 
   const navItems = [
-    { id: "dashboard", icon: BarChart3, label: t("dashboard") },
-    { id: "forms", icon: Folder, label: t("forms"), badge: isAdmin && hasUnpublishedDrafts },
-    { id: "reports", icon: ClipboardList, label: "Reports" },
+    ...(isAdmin ? [{ id: "dashboard", icon: BarChart3, label: t("dashboard") }] : []),
+    { id: "forms", icon: Folder, label: isAdmin ? t("forms") : "Assigned Forms", badge: isAdmin && hasUnpublishedDrafts },
+    ...(isAdmin ? [{ id: "reports", icon: ClipboardList, label: "Reports" }] : []),
   ];
 
   const secondaryItems = isAdmin ? [
