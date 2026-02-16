@@ -46,21 +46,27 @@ interface AnalyticsProps {
     riskLevel?: string;
     audience?: string;
   }) => void;
+  isAdmin?: boolean;
 }
 
-const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
+const Analytics = ({ submissions, onFilterSubmissions, isAdmin = true }: AnalyticsProps) => {
+  // For users, filter to only show their personal submissions (demo: show subset)
+  const displaySubmissions = isAdmin ? submissions : submissions.filter(s => 
+    s.submittedBy?.toLowerCase().includes('user') || 
+    s.companyName?.toLowerCase().includes('acme')
+  ).slice(0, 8);
   const [selectedTimeRange, setSelectedTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d');
 
   // Calculate analytics metrics based on actual sample data
-  const totalSubmissions = submissions.length; // Now 130 total submissions
-  const approvedSubmissions = submissions.filter(s => s.status === 'approved').length;
-  const rejectedSubmissions = submissions.filter(s => s.status === 'rejected').length;
-  const pendingSubmissions = submissions.filter(s => s.status === 'under_review').length;
-  const submittedSubmissions = submissions.filter(s => s.status === 'submitted').length;
+  const totalSubmissions = displaySubmissions.length;
+  const approvedSubmissions = displaySubmissions.filter(s => s.status === 'approved').length;
+  const rejectedSubmissions = displaySubmissions.filter(s => s.status === 'rejected').length;
+  const pendingSubmissions = displaySubmissions.filter(s => s.status === 'under_review').length;
+  const submittedSubmissions = displaySubmissions.filter(s => s.status === 'submitted').length;
 
   // Approval type analytics - only count approved submissions
-  const fullyApprovedSubmissions = submissions.filter(s => s.status === 'approved' && s.approvalType === 'fully').length;
-  const partiallyApprovedSubmissions = submissions.filter(s => s.status === 'approved' && s.approvalType === 'partially').length;
+  const fullyApprovedSubmissions = displaySubmissions.filter(s => s.status === 'approved' && s.approvalType === 'fully').length;
+  const partiallyApprovedSubmissions = displaySubmissions.filter(s => s.status === 'approved' && s.approvalType === 'partially').length;
 
   // Calculate rates based on actual data
   const approvalRate = totalSubmissions > 0 ? (approvedSubmissions / totalSubmissions) * 100 : 0;
@@ -68,29 +74,26 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
   const fullApprovalRate = approvedSubmissions > 0 ? (fullyApprovedSubmissions / approvedSubmissions) * 100 : 0;
 
   // Risk level analytics - count all submissions with scores
-  const riskLevels = submissions.reduce((acc, sub) => {
+  const riskLevels = displaySubmissions.reduce((acc, sub) => {
     const risk = sub.score?.riskLevel || 'medium';
     acc[risk] = (acc[risk] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-  // Dynamic calculation based on actual data
 
   // Audience analytics
-  const audienceTypes = submissions.reduce((acc, sub) => {
+  const audienceTypes = displaySubmissions.reduce((acc, sub) => {
     acc[sub.audience] = (acc[sub.audience] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
-  // Dynamic calculation: vendor: ~50, internal: ~40, external: ~40
 
   // Average scores - calculate from actual data
-  const submissionsWithScores = submissions.filter(s => s.score?.percentage);
+  const submissionsWithScores = displaySubmissions.filter(s => s.score?.percentage);
   const avgScore = submissionsWithScores.length > 0 
     ? submissionsWithScores.reduce((acc, sub) => acc + (sub.score?.percentage || 0), 0) / submissionsWithScores.length
     : 0;
-  // Dynamic average based on actual submissions
 
   // Monthly submission trends - accurate month calculation
-  const monthlyData = submissions.reduce((acc, sub) => {
+  const monthlyData = displaySubmissions.reduce((acc, sub) => {
     const date = new Date(sub.submittedAt);
     const month = date.toLocaleString('default', { month: 'short', year: '2-digit' });
     const existing = acc.find(item => item.month === month);
@@ -127,7 +130,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
   ].filter(item => item.value > 0);
 
   // Top performing companies
-  const companyScores = submissions.reduce((acc, sub) => {
+  const companyScores = displaySubmissions.reduce((acc, sub) => {
     if (sub.companyName && sub.score) {
       if (!acc[sub.companyName]) {
         acc[sub.companyName] = { total: 0, count: 0, scores: [] };
@@ -523,7 +526,7 @@ const Analytics = ({ submissions, onFilterSubmissions }: AnalyticsProps) => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {submissions.slice(0, 5).map((submission) => (
+                  {displaySubmissions.slice(0, 5).map((submission) => (
                     <div key={submission.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                       <div>
                         <p className="font-medium text-sm">{submission.companyName || submission.submitterName}</p>

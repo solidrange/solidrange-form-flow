@@ -804,13 +804,13 @@ const Index = () => {
   // Function to get properly formatted page titles
   const getPageTitle = (tabId: string): string => {
     const titleMap: Record<string, string> = {
-      'dashboard': t('dashboard'),
+      'dashboard': isAdmin ? t('dashboard') : 'My Dashboard',
       'forms': isAdmin ? t('forms') : 'Assigned Forms',
       'form-submissions': viewingSubmissionsForForm ? `${viewingSubmissionsForForm.title} - Submissions` : 'Submissions',
       'fill-form': viewingSubmissionsForForm ? `Fill: ${viewingSubmissionsForForm.title}` : 'Fill Form',
       'build-form': t('build'),
       'build-form-templates': 'Form Templates',
-      'reports': 'Reports',
+      'reports': isAdmin ? 'Reports' : 'My Reports',
       'global-settings': t('settings'),
       'resources': 'Resources'
     };
@@ -935,11 +935,12 @@ const Index = () => {
               <Analytics 
                 submissions={submissions} 
                 onFilterSubmissions={handleFilterSubmissions}
+                isAdmin={isAdmin}
               />
             )}
 
             {activeTab === "reports" && (
-              <ReportGeneration submissions={submissions} />
+              <ReportGeneration submissions={submissions} isAdmin={isAdmin} />
             )}
 
             {activeTab === "form-submissions" && viewingSubmissionsForForm && (
