@@ -398,6 +398,7 @@ const Index = () => {
     }
     
     setShowSaveOptionsDialog(false);
+    setActiveTab("forms");
     
     toast({
       title: "Draft Saved",
@@ -487,15 +488,13 @@ const Index = () => {
         setCurrentFormId(formId);
       }
       
-      // After publishing, create a new blank form so user can continue building
-      setTimeout(() => {
-        createNewForm();
-      }, 100);
     }
+    
+    setActiveTab("forms");
     
     toast({
       title: "Form Published",
-      description: "Your form has been published successfully. You can now build a new form.",
+      description: "Your form has been published successfully.",
     });
   };
 
