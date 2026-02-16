@@ -18,8 +18,8 @@ interface MobileBottomNavProps {
 
 const navItems = [
   { id: "dashboard", icon: BarChart3, labelKey: "home" },
-  { id: "review-submissions", icon: ClipboardList, labelKey: "review" },
   { id: "forms", icon: Folder, labelKey: "forms" },
+  { id: "reports", icon: ClipboardList, labelKey: "reports" },
 ];
 
 export function MobileBottomNav({ 

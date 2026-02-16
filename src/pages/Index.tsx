@@ -739,7 +739,7 @@ const Index = () => {
     audience?: string;
   }) => {
     setSubmissionFilters(filters);
-    setActiveTab("review-submissions");
+    setActiveTab("reports");
   };
 
   // Create mobile-friendly tabs array for build section
@@ -787,14 +787,18 @@ const Index = () => {
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const [helpPanelOpen, setHelpPanelOpen] = useState(false);
 
+  // State for viewing submissions of a specific form
+  const [viewingSubmissionsForForm, setViewingSubmissionsForForm] = useState<Form | null>(null);
+
   // Function to get properly formatted page titles
   const getPageTitle = (tabId: string): string => {
     const titleMap: Record<string, string> = {
       'dashboard': t('dashboard'),
-      'review-submissions': t('review'),
       'forms': t('forms'),
+      'form-submissions': viewingSubmissionsForForm ? `${viewingSubmissionsForForm.title} - Submissions` : 'Submissions',
       'build-form': t('build'),
       'build-form-templates': 'Form Templates',
+      'reports': 'Reports',
       'global-settings': t('settings'),
       'resources': 'Resources'
     };
@@ -922,57 +926,29 @@ const Index = () => {
               />
             )}
 
-            {activeTab === "review-submissions" && (
-              <Tabs defaultValue="submissions" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-4 h-10 sm:h-auto">
-                  <TabsTrigger value="submissions" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-1.5 sm:py-2">
-                    <FileText className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>Submissions</span>
-                  </TabsTrigger>
-                  <TabsTrigger value="reports" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm py-1.5 sm:py-2">
-                    <ClipboardList className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <span>Reports</span>
-                  </TabsTrigger>
-                </TabsList>
+            {activeTab === "reports" && (
+              <ReportGeneration submissions={submissions} />
+            )}
 
-                <TabsContent value="submissions">
-                  <SubmissionReview
-                    submissions={submissions}
-                    form={{
-                      id: currentFormId || 'current-form',
-                      title: formTitle,
-                      description: formDescription,
-                      fields: formFields,
-                      settings: formSettings,
-                      createdAt: new Date(),
-                      updatedAt: new Date(),
-                      status: getCurrentFormStatus() || 'draft',
-                      submissions: submissions.length,
-                      analytics: {
-                        views: 0,
-                        submissions: submissions.length,
-                        completionRate: 0,
-                        emailsSent: 0,
-                        emailsCompleted: 0,
-                        averageCompletionTime: 0,
-                        dropoffRate: 0
-                      }
-                    }}
-                    initialFilters={submissionFilters}
-                    onUpdateSubmission={(id, updates) => {
-                      console.log('Updating submission:', id, updates);
-                      toast({
-                        title: "Submission Updated",
-                        description: "The submission has been updated successfully.",
-                      });
-                    }}
-                  />
-                </TabsContent>
-
-                <TabsContent value="reports">
-                  <ReportGeneration submissions={submissions} />
-                </TabsContent>
-              </Tabs>
+            {activeTab === "form-submissions" && viewingSubmissionsForForm && (
+              <div className="space-y-4">
+                <Button variant="ghost" onClick={() => { setActiveTab("forms"); setViewingSubmissionsForForm(null); }} className="gap-2 mb-2">
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to Forms
+                </Button>
+                <SubmissionReview
+                  submissions={submissions}
+                  form={viewingSubmissionsForForm}
+                  initialFilters={submissionFilters}
+                  onUpdateSubmission={(id, updates) => {
+                    console.log('Updating submission:', id, updates);
+                    toast({
+                      title: "Submission Updated",
+                      description: "The submission has been updated successfully.",
+                    });
+                  }}
+                />
+              </div>
             )}
 
             {activeTab === "forms" && (
@@ -1114,7 +1090,7 @@ const Index = () => {
                                 <span>{form.submissions} submissions</span>
                                 <span>{new Date(form.updatedAt).toLocaleDateString()}</span>
                               </div>
-                              <div className="flex gap-2">
+                              <div className="flex flex-wrap gap-2">
                                 <Dialog>
                                   <DialogTrigger asChild>
                                     <Button size="sm" variant="outline" className="flex-1 gap-1">
@@ -1171,6 +1147,19 @@ const Index = () => {
                                 >
                                   <Mail className="h-3 w-3" />
                                   Manage
+                                </Button>
+
+                                <Button 
+                                  size="sm" 
+                                  variant="default"
+                                  onClick={() => {
+                                    setViewingSubmissionsForForm(form);
+                                    setActiveTab("form-submissions");
+                                  }}
+                                  className="flex-1 gap-1"
+                                >
+                                  <ClipboardList className="h-3 w-3" />
+                                  Submissions
                                 </Button>
 
                                 <Button 
