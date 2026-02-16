@@ -1005,7 +1005,7 @@ const Index = () => {
 
                 {isAdmin ? (
                   <Tabs defaultValue="drafts" className="w-full" data-tour-id="forms-tabs">
-                    <TabsList className="grid w-full grid-cols-2">
+                    <TabsList className="grid w-full grid-cols-3">
                       <TabsTrigger value="drafts" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
                         <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                         <span className="truncate">{t('drafts')} ({savedDrafts.length})</span>
@@ -1013,6 +1013,10 @@ const Index = () => {
                       <TabsTrigger value="published" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
                         <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
                         <span className="truncate">{t('published')} ({publishedForms.length})</span>
+                      </TabsTrigger>
+                      <TabsTrigger value="assigned" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
+                        <ClipboardList className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <span className="truncate">Assigned ({publishedForms.length})</span>
                       </TabsTrigger>
                     </TabsList>
 
@@ -1194,6 +1198,47 @@ const Index = () => {
                                     </AlertDialogContent>
                                   </AlertDialog>
                                 </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      )}
+                    </TabsContent>
+
+                    <TabsContent value="assigned" className="space-y-4">
+                      {publishedForms.length === 0 ? (
+                        <div className="text-center py-12">
+                          <ClipboardList className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                          <h3 className="text-lg font-medium text-foreground mb-2">No Assigned Forms</h3>
+                          <p className="text-muted-foreground">Forms assigned to you for completion will appear here.</p>
+                        </div>
+                      ) : (
+                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                          {publishedForms.map((form) => (
+                            <Card key={form.id} className="hover:shadow-md transition-shadow">
+                              <CardHeader className="pb-2">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1 min-w-0">
+                                    <CardTitle className="text-lg truncate">{form.title}</CardTitle>
+                                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                                      {form.description || "No description"}
+                                    </p>
+                                  </div>
+                                  <Badge variant="outline" className="border-primary text-primary">Assigned to Me</Badge>
+                                </div>
+                              </CardHeader>
+                              <CardContent className="pt-0">
+                                <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                                  <span>{form.fields.length} fields</span>
+                                  <span>{new Date(form.updatedAt).toLocaleDateString()}</span>
+                                </div>
+                                <Button 
+                                  size="sm" className="w-full gap-1"
+                                  onClick={() => { setViewingSubmissionsForForm(form); setActiveTab("fill-form"); }}
+                                >
+                                  <Edit className="h-3 w-3" />
+                                  Fill Form
+                                </Button>
                               </CardContent>
                             </Card>
                           ))}
