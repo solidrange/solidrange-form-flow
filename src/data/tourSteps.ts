@@ -36,7 +36,18 @@ export const tours: Tour[] = [
         content: 'Your command center! Click here to view analytics, submission statistics, and performance metrics.',
         route: 'dashboard',
         position: 'right',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
+        layout: 'desktop',
+        order: 2
+      },
+      {
+        id: 'welcome-2-desktop-user',
+        targetSelector: '[data-tour-id="nav-dashboard"]',
+        title: 'My Dashboard',
+        content: 'View your personal activity: forms assigned to you, your submission history, and personal performance metrics.',
+        route: 'dashboard',
+        position: 'right',
+        roles: ['user'],
         layout: 'desktop',
         order: 2
       },
@@ -63,13 +74,24 @@ export const tours: Tour[] = [
         order: 3
       },
       {
-        id: 'welcome-4-desktop',
+        id: 'welcome-4-desktop-admin',
         targetSelector: '[data-tour-id="nav-reports"]',
         title: 'Reports',
-        content: 'Generate and customize reports from your form submissions. Export data and visualize trends.',
+        content: 'Generate and customize reports from all form submissions. Create custom reports, export data, and visualize trends across the organization.',
         route: 'dashboard',
         position: 'right',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
+        layout: 'desktop',
+        order: 4
+      },
+      {
+        id: 'welcome-4-desktop-user',
+        targetSelector: '[data-tour-id="nav-reports"]',
+        title: 'My Reports',
+        content: 'View reports based on your personal submissions and activity. Download quick reports of your completed forms.',
+        route: 'dashboard',
+        position: 'right',
+        roles: ['user'],
         layout: 'desktop',
         order: 4
       },
@@ -114,7 +136,18 @@ export const tours: Tour[] = [
         content: 'Tap here to view your analytics and submission statistics.',
         route: 'dashboard',
         position: 'top',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
+        layout: 'mobile',
+        order: 2
+      },
+      {
+        id: 'welcome-2-mobile-user',
+        targetSelector: '[data-tour-id="mobile-nav-dashboard"]',
+        title: 'My Dashboard',
+        content: 'Tap here to view your personal activity and submission history.',
+        route: 'dashboard',
+        position: 'top',
+        roles: ['user'],
         layout: 'mobile',
         order: 2
       },
@@ -144,10 +177,21 @@ export const tours: Tour[] = [
         id: 'welcome-4-mobile',
         targetSelector: '[data-tour-id="mobile-nav-reports"]',
         title: 'Reports',
-        content: 'Tap here to generate and view reports from your form data.',
+        content: 'Tap here to generate and view all organization reports from your form data.',
         route: 'dashboard',
         position: 'top',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
+        layout: 'mobile',
+        order: 4
+      },
+      {
+        id: 'welcome-4-mobile-user',
+        targetSelector: '[data-tour-id="mobile-nav-reports"]',
+        title: 'My Reports',
+        content: 'Tap here to view reports based on your personal submissions.',
+        route: 'dashboard',
+        position: 'top',
+        roles: ['user'],
         layout: 'mobile',
         order: 4
       },
@@ -190,7 +234,7 @@ export const tours: Tour[] = [
     id: 'dashboard-tour',
     name: 'Dashboard Overview',
     description: 'Learn how to use the analytics dashboard effectively.',
-    roles: ['admin', 'user'],
+    roles: ['admin'],
     category: 'navigation',
     steps: [
       {
@@ -200,7 +244,7 @@ export const tours: Tour[] = [
         content: 'See your key metrics at a glance - total submissions, approval rates, and risk levels. Click any card to filter submissions.',
         route: 'dashboard',
         position: 'bottom',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'both',
         order: 1
       },
@@ -211,7 +255,38 @@ export const tours: Tour[] = [
         content: 'Visual insights into your form performance. Use the tabs to explore different views: Overview, Approvals, Risk Analysis, and Trends.',
         route: 'dashboard',
         position: 'top',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
+        layout: 'both',
+        order: 2
+      }
+    ]
+  },
+  {
+    id: 'my-dashboard-tour',
+    name: 'My Dashboard',
+    description: 'Learn how to view your personal activity and submissions.',
+    roles: ['user'],
+    category: 'navigation',
+    steps: [
+      {
+        id: 'my-dash-1',
+        targetSelector: '[data-tour-id="dashboard-stats"]',
+        title: 'Your Personal Stats',
+        content: 'See your personal metrics: forms you\'ve completed, your submission statuses, and your scores.',
+        route: 'dashboard',
+        position: 'bottom',
+        roles: ['user'],
+        layout: 'both',
+        order: 1
+      },
+      {
+        id: 'my-dash-2',
+        targetSelector: '[data-tour-id="dashboard-charts"]',
+        title: 'Your Activity',
+        content: 'Visual overview of your personal submission history and performance over time.',
+        route: 'dashboard',
+        position: 'top',
+        roles: ['user'],
         layout: 'both',
         order: 2
       }
@@ -474,18 +549,38 @@ export const tours: Tour[] = [
   {
     id: 'reports-tour',
     name: 'Reports & Analytics',
-    description: 'Learn how to generate and customize reports from form data.',
-    roles: ['admin', 'user'],
+    description: 'Generate and customize comprehensive reports from all form data.',
+    roles: ['admin'],
     category: 'reports',
     steps: [
       {
         id: 'rep-1',
         targetSelector: '[data-tour-id="reports-section"]',
         title: 'Report Generation',
-        content: 'Generate comprehensive reports from your form submission data. Customize report format, date ranges, and included metrics.',
+        content: 'Generate comprehensive reports from all form submission data. Create custom reports, customize format, date ranges, and included metrics.',
         route: 'reports',
         position: 'bottom',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
+        layout: 'both',
+        order: 1
+      }
+    ]
+  },
+  {
+    id: 'my-reports-tour',
+    name: 'My Reports',
+    description: 'View and download reports based on your personal submissions.',
+    roles: ['user'],
+    category: 'reports',
+    steps: [
+      {
+        id: 'my-rep-1',
+        targetSelector: '[data-tour-id="reports-section"]',
+        title: 'Your Personal Reports',
+        content: 'View reports based on your own submissions. Download quick reports showing your completed forms and scores. Custom report creation is available to admins only.',
+        route: 'reports',
+        position: 'bottom',
+        roles: ['user'],
         layout: 'both',
         order: 1
       }
@@ -549,7 +644,7 @@ export const helpTips: HelpTip[] = [
     title: 'Export Data',
     content: 'Export submissions to Excel or PDF for offline analysis and reporting.',
     category: 'reports',
-    roles: ['admin', 'user']
+    roles: ['admin']
   },
   {
     id: 'tip-9',
@@ -567,10 +662,10 @@ export const helpTips: HelpTip[] = [
   },
   {
     id: 'tip-11',
-    title: 'Reports Section',
-    content: 'Access the Reports section from the sidebar to generate customized reports from your form submission data.',
+    title: 'All Reports',
+    content: 'Access the Reports section to generate customized reports from all form submission data. Create custom reports with specific filters and sections.',
     category: 'reports',
-    roles: ['admin', 'user']
+    roles: ['admin']
   },
   {
     id: 'tip-12',
@@ -600,6 +695,27 @@ export const helpTips: HelpTip[] = [
     content: 'Use the Sign Out button in the sidebar or More menu to switch accounts or log out.',
     category: 'productivity',
     roles: ['admin', 'user']
+  },
+  {
+    id: 'tip-16',
+    title: 'My Dashboard',
+    content: 'Your dashboard shows only your personal activity: forms assigned to you and your submission history.',
+    category: 'navigation',
+    roles: ['user']
+  },
+  {
+    id: 'tip-17',
+    title: 'My Reports',
+    content: 'The Reports section shows data from your personal submissions only. Quick reports are available; custom report creation is admin-only.',
+    category: 'reports',
+    roles: ['user']
+  },
+  {
+    id: 'tip-18',
+    title: 'Custom Reports',
+    content: 'As an admin, you can create fully customized reports with specific sections, filters, and chart types.',
+    category: 'reports',
+    roles: ['admin']
   }
 ];
 

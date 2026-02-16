@@ -39,9 +39,15 @@ import { useBranding } from "./BrandingProvider";
 
 interface ReportGenerationProps {
   submissions: any[];
+  isAdmin?: boolean;
 }
 
-export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
+export const ReportGeneration = ({ submissions, isAdmin = true }: ReportGenerationProps) => {
+  // For users, filter to only their personal submissions
+  const displaySubmissions = isAdmin ? submissions : submissions.filter((s: any) => 
+    s.submittedBy?.toLowerCase().includes('user') || 
+    s.companyName?.toLowerCase().includes('acme')
+  ).slice(0, 8);
   const { brand } = useBrand();
   const brandingContext = useBranding();
   
@@ -503,7 +509,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
           };
       }
 
-      const generator = new ReportGenerator(submissions, quickConfig);
+      const generator = new ReportGenerator(displaySubmissions, quickConfig);
       await generator.generate();
       
       console.log(`${type} report generated successfully!`);
@@ -533,7 +539,7 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
       // Import the ReportGenerator
       const { ReportGenerator } = await import('@/utils/reportGenerator');
       
-      const generator = new ReportGenerator(submissions, reportConfig);
+      const generator = new ReportGenerator(displaySubmissions, reportConfig);
       await generator.generate();
       
       console.log("Custom report generated successfully!");
@@ -553,27 +559,31 @@ export const ReportGeneration = ({ submissions }: ReportGenerationProps) => {
 
   // Calculate statistics for quick reports
   const stats = {
-    total: submissions.length,
-    approved: submissions.filter(s => s.status === 'approved').length,
-    rejected: submissions.filter(s => s.status === 'rejected').length,
-    underReview: submissions.filter(s => s.status === 'under_review').length,
-    highRisk: submissions.filter(s => s.score?.riskLevel === 'high' || s.score?.riskLevel === 'critical').length,
-    avgScore: submissions.length > 0 ? Math.round(submissions.reduce((sum, s) => sum + (s.score?.percentage || 0), 0) / submissions.length) : 0
+    total: displaySubmissions.length,
+    approved: displaySubmissions.filter(s => s.status === 'approved').length,
+    rejected: displaySubmissions.filter(s => s.status === 'rejected').length,
+    underReview: displaySubmissions.filter(s => s.status === 'under_review').length,
+    highRisk: displaySubmissions.filter(s => s.score?.riskLevel === 'high' || s.score?.riskLevel === 'critical').length,
+    avgScore: displaySubmissions.length > 0 ? Math.round(displaySubmissions.reduce((sum: number, s: any) => sum + (s.score?.percentage || 0), 0) / displaySubmissions.length) : 0
   };
 
   return (
-      <div className="space-y-6 animate-fade-in">
+      <div className="space-y-6 animate-fade-in" data-tour-id="reports-section">
         <div className="animate-slide-up">
           <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-            Report Generation
+            {isAdmin ? 'Report Generation' : 'My Reports'}
           </h2>
-          <p className="text-muted-foreground">Generate comprehensive reports and analytics for your form submissions.</p>
+          <p className="text-muted-foreground">
+            {isAdmin 
+              ? 'Generate comprehensive reports and analytics for your form submissions.'
+              : 'View reports based on your personal submissions and activity.'}
+          </p>
         </div>
 
       <Tabs defaultValue="quick" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className={isAdmin ? "grid w-full grid-cols-2" : "w-full"}>
           <TabsTrigger value="quick">Quick Reports</TabsTrigger>
-          <TabsTrigger value="custom">Custom Reports</TabsTrigger>
+          {isAdmin && <TabsTrigger value="custom">Custom Reports</TabsTrigger>}
         </TabsList>
 
         <TabsContent value="quick" className="space-y-6">

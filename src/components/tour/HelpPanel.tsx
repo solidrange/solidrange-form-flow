@@ -150,8 +150,8 @@ export const HelpPanel: React.FC<HelpPanelProps> = ({ open, onOpenChange }) => {
             )}
             <p className="text-xs text-muted-foreground mt-2">
               {userRole === 'admin' 
-                ? 'Full access: create forms, manage submissions, configure settings, and view reports.'
-                : 'Fill assigned forms, view reports, and access help resources.'}
+                ? 'Full access: create forms, manage submissions, configure settings, generate all reports, and create custom reports.'
+                : 'Fill assigned forms, view your personal dashboard and reports, and access help resources. Custom reports and settings are admin-only.'}
             </p>
           </div>
 
