@@ -53,8 +53,8 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
     return getAllTemplates();
   }, [templateType, refreshKey]);
   
-  const customCount = getCustomTemplates().length;
-  const standardCount = getStandardTemplates().length;
+  const customCount = useMemo(() => getCustomTemplates().length, [refreshKey]);
+  const standardCount = useMemo(() => getStandardTemplates().length, [refreshKey]);
   
   console.log('FormLibrary: Available templates:', allTemplates.length);
 
@@ -104,14 +104,13 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
       const matchesSector = selectedSectors.length === 0 || 
                           selectedSectors.includes('all') || 
                           (() => {
-                            // Handle both string and string[] types for template.sector
                             const templateSectors = Array.isArray(template.sector) ? template.sector : [template.sector];
                             return templateSectors.some(sector => selectedSectors.includes(sector));
                           })();
       
       return matchesSearch && matchesCategory && matchesSector;
     });
-  }, [searchTerm, selectedCategories, selectedSectors, refreshKey]);
+  }, [allTemplates, searchTerm, selectedCategories, selectedSectors]);
 
   // Group templates by sector for display - ensuring no duplicates
   const templatesBySector = useMemo(() => {
