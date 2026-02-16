@@ -129,21 +129,24 @@ export const TourProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const setUserRole = useCallback((role: UserRole) => {
-    setUserRoleState(role);
-    // If a tour is active, end it when role changes
-    if (tourState.activeTourId) {
-      setTourState(prev => ({
-        ...prev,
-        activeTourId: null,
-        currentStepIndex: 0,
-        isPaused: false,
-        startedAt: null
-      }));
-      toast({
-        title: 'Tour ended',
-        description: 'Role changed during tour. Please restart the tour.',
-      });
-    }
+    setUserRoleState(prev => {
+      if (prev === role) return prev; // No change, skip
+      // If a tour is active and role actually changed, end it
+      if (tourState.activeTourId) {
+        setTourState(s => ({
+          ...s,
+          activeTourId: null,
+          currentStepIndex: 0,
+          isPaused: false,
+          startedAt: null
+        }));
+        toast({
+          title: 'Tour ended',
+          description: 'Role changed during tour. Please restart the tour.',
+        });
+      }
+      return role;
+    });
   }, [tourState.activeTourId]);
 
   const startTour = useCallback((tourId: string, onNavigate?: (tab: string) => void) => {
