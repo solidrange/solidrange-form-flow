@@ -17,37 +17,26 @@ export const tours: Tour[] = [
     roles: ['admin', 'user'],
     category: 'complete',
     steps: [
-      // Desktop steps - sidebar navigation
+      // Admin Desktop steps
       {
-        id: 'welcome-1-desktop',
+        id: 'welcome-1-desktop-admin',
         targetSelector: '[data-tour-id="brand-logo"]',
         title: 'Welcome to SolidForm',
         content: 'This is your enterprise assessment platform by SolidRange. Let\'s take a quick tour of the main features.',
         route: 'dashboard',
         position: 'right',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'desktop',
         order: 1
       },
       {
-        id: 'welcome-2-desktop',
+        id: 'welcome-2-desktop-admin',
         targetSelector: '[data-tour-id="nav-dashboard"]',
         title: 'Dashboard',
-        content: 'Your command center! Click here to view analytics, submission statistics, and performance metrics.',
+        content: 'Your command center! View analytics, submission statistics, and performance metrics across all forms.',
         route: 'dashboard',
         position: 'right',
         roles: ['admin'],
-        layout: 'desktop',
-        order: 2
-      },
-      {
-        id: 'welcome-2-desktop-user',
-        targetSelector: '[data-tour-id="nav-dashboard"]',
-        title: 'My Dashboard',
-        content: 'View your personal activity: forms assigned to you, your submission history, and personal performance metrics.',
-        route: 'dashboard',
-        position: 'right',
-        roles: ['user'],
         layout: 'desktop',
         order: 2
       },
@@ -55,21 +44,10 @@ export const tours: Tour[] = [
         id: 'welcome-3-desktop-admin',
         targetSelector: '[data-tour-id="nav-forms"]',
         title: 'Forms',
-        content: 'Access all your forms - drafts, published, and templates. Create new forms and view submissions for each published form.',
+        content: 'Access all your forms - drafts, published, and templates. Create new forms, distribute them, and view submissions.',
         route: 'dashboard',
         position: 'right',
         roles: ['admin'],
-        layout: 'desktop',
-        order: 3
-      },
-      {
-        id: 'welcome-3-desktop-user',
-        targetSelector: '[data-tour-id="nav-forms"]',
-        title: 'Assigned Forms',
-        content: 'View forms assigned to you for completion. Click "Fill Form" on any assigned form to start filling it out.',
-        route: 'dashboard',
-        position: 'right',
-        roles: ['user'],
         layout: 'desktop',
         order: 3
       },
@@ -77,7 +55,7 @@ export const tours: Tour[] = [
         id: 'welcome-4-desktop-admin',
         targetSelector: '[data-tour-id="nav-reports"]',
         title: 'Reports',
-        content: 'Generate and customize reports from all form submissions. Create custom reports, export data, and visualize trends across the organization.',
+        content: 'Generate and customize reports from all form submissions. Create custom reports, export data, and visualize trends.',
         route: 'dashboard',
         position: 'right',
         roles: ['admin'],
@@ -85,18 +63,7 @@ export const tours: Tour[] = [
         order: 4
       },
       {
-        id: 'welcome-4-desktop-user',
-        targetSelector: '[data-tour-id="nav-reports"]',
-        title: 'My Reports',
-        content: 'View reports based on your personal submissions and activity. Download quick reports of your completed forms.',
-        route: 'dashboard',
-        position: 'right',
-        roles: ['user'],
-        layout: 'desktop',
-        order: 4
-      },
-      {
-        id: 'welcome-5-desktop',
+        id: 'welcome-5-desktop-admin',
         targetSelector: '[data-tour-id="nav-settings"]',
         title: 'Global Settings',
         content: 'Configure language, branding, and developer options for your SolidForm instance.',
@@ -107,47 +74,70 @@ export const tours: Tour[] = [
         order: 5
       },
       {
-        id: 'welcome-6-desktop',
+        id: 'welcome-6-desktop-admin',
         targetSelector: '[data-tour-id="nav-help"]',
         title: 'Help & Support',
         content: 'Access guided tours, quick tips, and help resources anytime from here.',
         route: 'dashboard',
         position: 'right',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'desktop',
         order: 6
       },
-      // Mobile steps
+      // User Desktop steps - no dashboard, no reports
       {
-        id: 'welcome-1-mobile',
+        id: 'welcome-1-desktop-user',
+        targetSelector: '[data-tour-id="brand-logo"]',
+        title: 'Welcome to SolidForm',
+        content: 'Welcome! SolidForm is where you\'ll find and complete forms assigned to you. Let\'s take a quick look.',
+        route: 'forms',
+        position: 'right',
+        roles: ['user'],
+        layout: 'desktop',
+        order: 1
+      },
+      {
+        id: 'welcome-2-desktop-user',
+        targetSelector: '[data-tour-id="nav-forms"]',
+        title: 'Assigned Forms',
+        content: 'This is your main area. View all forms assigned to you and click "Fill Form" to start completing them.',
+        route: 'forms',
+        position: 'right',
+        roles: ['user'],
+        layout: 'desktop',
+        order: 2
+      },
+      {
+        id: 'welcome-3-desktop-user',
+        targetSelector: '[data-tour-id="nav-help"]',
+        title: 'Help & Support',
+        content: 'Access guided tours, quick tips, and help resources anytime from here.',
+        route: 'forms',
+        position: 'right',
+        roles: ['user'],
+        layout: 'desktop',
+        order: 3
+      },
+      // Admin Mobile steps
+      {
+        id: 'welcome-1-mobile-admin',
         targetSelector: '[data-tour-id="mobile-brand-logo"]',
         title: 'Welcome to SolidForm',
         content: 'This is your enterprise assessment platform by SolidRange. Let\'s explore the mobile interface.',
         route: 'dashboard',
         position: 'bottom',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'mobile',
         order: 1
       },
       {
-        id: 'welcome-2-mobile',
+        id: 'welcome-2-mobile-admin',
         targetSelector: '[data-tour-id="mobile-nav-dashboard"]',
         title: 'Dashboard',
         content: 'Tap here to view your analytics and submission statistics.',
         route: 'dashboard',
         position: 'top',
         roles: ['admin'],
-        layout: 'mobile',
-        order: 2
-      },
-      {
-        id: 'welcome-2-mobile-user',
-        targetSelector: '[data-tour-id="mobile-nav-dashboard"]',
-        title: 'My Dashboard',
-        content: 'Tap here to view your personal activity and submission history.',
-        route: 'dashboard',
-        position: 'top',
-        roles: ['user'],
         layout: 'mobile',
         order: 2
       },
@@ -163,18 +153,7 @@ export const tours: Tour[] = [
         order: 3
       },
       {
-        id: 'welcome-3-mobile-user',
-        targetSelector: '[data-tour-id="mobile-nav-forms"]',
-        title: 'Assigned Forms',
-        content: 'Tap here to see forms assigned to you. Tap "Fill Form" to start completing an assessment.',
-        route: 'dashboard',
-        position: 'top',
-        roles: ['user'],
-        layout: 'mobile',
-        order: 3
-      },
-      {
-        id: 'welcome-4-mobile',
+        id: 'welcome-4-mobile-admin',
         targetSelector: '[data-tour-id="mobile-nav-reports"]',
         title: 'Reports',
         content: 'Tap here to generate and view all organization reports from your form data.',
@@ -185,18 +164,7 @@ export const tours: Tour[] = [
         order: 4
       },
       {
-        id: 'welcome-4-mobile-user',
-        targetSelector: '[data-tour-id="mobile-nav-reports"]',
-        title: 'My Reports',
-        content: 'Tap here to view reports based on your personal submissions.',
-        route: 'dashboard',
-        position: 'top',
-        roles: ['user'],
-        layout: 'mobile',
-        order: 4
-      },
-      {
-        id: 'welcome-5-mobile',
+        id: 'welcome-5-mobile-admin',
         targetSelector: '[data-tour-id="mobile-nav-more"]',
         title: 'More Options',
         content: 'Tap here to access Settings, Help, and Developer Resources.',
@@ -207,26 +175,60 @@ export const tours: Tour[] = [
         order: 5
       },
       {
-        id: 'welcome-5-mobile-user',
-        targetSelector: '[data-tour-id="mobile-nav-more"]',
-        title: 'More Options',
-        content: 'Tap here to access Help and sign out.',
-        route: 'dashboard',
-        position: 'top',
-        roles: ['user'],
-        layout: 'mobile',
-        order: 5
-      },
-      {
-        id: 'welcome-6-mobile',
+        id: 'welcome-6-mobile-admin',
         targetSelector: '[data-tour-id="mobile-menu-button"]',
         title: 'Navigation Menu',
         content: 'Tap the menu icon to open the full navigation drawer for quick access to all sections.',
         route: 'dashboard',
         position: 'bottom',
-        roles: ['admin', 'user'],
+        roles: ['admin'],
         layout: 'mobile',
         order: 6
+      },
+      // User Mobile steps - no dashboard, no reports
+      {
+        id: 'welcome-1-mobile-user',
+        targetSelector: '[data-tour-id="mobile-brand-logo"]',
+        title: 'Welcome to SolidForm',
+        content: 'Welcome! Let\'s explore the mobile interface and find your assigned forms.',
+        route: 'forms',
+        position: 'bottom',
+        roles: ['user'],
+        layout: 'mobile',
+        order: 1
+      },
+      {
+        id: 'welcome-2-mobile-user',
+        targetSelector: '[data-tour-id="mobile-nav-forms"]',
+        title: 'Assigned Forms',
+        content: 'Tap here to see forms assigned to you. Tap "Fill Form" to start completing an assessment.',
+        route: 'forms',
+        position: 'top',
+        roles: ['user'],
+        layout: 'mobile',
+        order: 2
+      },
+      {
+        id: 'welcome-3-mobile-user',
+        targetSelector: '[data-tour-id="mobile-nav-more"]',
+        title: 'More Options',
+        content: 'Tap here to access Help and sign out.',
+        route: 'forms',
+        position: 'top',
+        roles: ['user'],
+        layout: 'mobile',
+        order: 3
+      },
+      {
+        id: 'welcome-4-mobile-user',
+        targetSelector: '[data-tour-id="mobile-menu-button"]',
+        title: 'Navigation Menu',
+        content: 'Tap the menu icon to open the full navigation drawer.',
+        route: 'forms',
+        position: 'bottom',
+        roles: ['user'],
+        layout: 'mobile',
+        order: 4
       }
     ]
   },
@@ -256,37 +258,6 @@ export const tours: Tour[] = [
         route: 'dashboard',
         position: 'top',
         roles: ['admin'],
-        layout: 'both',
-        order: 2
-      }
-    ]
-  },
-  {
-    id: 'my-dashboard-tour',
-    name: 'My Dashboard',
-    description: 'Learn how to view your personal activity and submissions.',
-    roles: ['user'],
-    category: 'navigation',
-    steps: [
-      {
-        id: 'my-dash-1',
-        targetSelector: '[data-tour-id="dashboard-stats"]',
-        title: 'Your Personal Stats',
-        content: 'See your personal metrics: forms you\'ve completed, your submission statuses, and your scores.',
-        route: 'dashboard',
-        position: 'bottom',
-        roles: ['user'],
-        layout: 'both',
-        order: 1
-      },
-      {
-        id: 'my-dash-2',
-        targetSelector: '[data-tour-id="dashboard-charts"]',
-        title: 'Your Activity',
-        content: 'Visual overview of your personal submission history and performance over time.',
-        route: 'dashboard',
-        position: 'top',
-        roles: ['user'],
         layout: 'both',
         order: 2
       }
@@ -336,7 +307,7 @@ export const tours: Tour[] = [
         id: 'builder-4',
         targetSelector: '[data-tour-id="save-form"]',
         title: 'Save Your Work',
-        content: 'Save your form as a draft or publish it. After saving, you\'ll return to the Forms page where you can manage all your forms.',
+        content: 'Save your form as a draft or publish it. When publishing, you can distribute the form to ADFS groups or email recipients.',
         route: 'build-form',
         position: 'bottom',
         roles: ['admin'],
@@ -565,26 +536,6 @@ export const tours: Tour[] = [
         order: 1
       }
     ]
-  },
-  {
-    id: 'my-reports-tour',
-    name: 'My Reports',
-    description: 'View and download reports based on your personal submissions.',
-    roles: ['user'],
-    category: 'reports',
-    steps: [
-      {
-        id: 'my-rep-1',
-        targetSelector: '[data-tour-id="reports-section"]',
-        title: 'Your Personal Reports',
-        content: 'View reports based on your own submissions. Download quick reports showing your completed forms and scores. Custom report creation is available to admins only.',
-        route: 'reports',
-        position: 'bottom',
-        roles: ['user'],
-        layout: 'both',
-        order: 1
-      }
-    ]
   }
 ];
 
@@ -698,20 +649,13 @@ export const helpTips: HelpTip[] = [
   },
   {
     id: 'tip-16',
-    title: 'My Dashboard',
-    content: 'Your dashboard shows only your personal activity: forms assigned to you and your submission history.',
-    category: 'navigation',
-    roles: ['user']
+    title: 'Form Distribution',
+    content: 'When publishing a form, you can distribute it to ADFS groups or enter/upload a list of email recipients.',
+    category: 'forms',
+    roles: ['admin']
   },
   {
     id: 'tip-17',
-    title: 'My Reports',
-    content: 'The Reports section shows data from your personal submissions only. Quick reports are available; custom report creation is admin-only.',
-    category: 'reports',
-    roles: ['user']
-  },
-  {
-    id: 'tip-18',
     title: 'Custom Reports',
     content: 'As an admin, you can create fully customized reports with specific sections, filters, and chart types.',
     category: 'reports',

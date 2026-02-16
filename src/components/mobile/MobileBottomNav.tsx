@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface MobileBottomNavProps {
   activeTab: string;
@@ -16,12 +17,6 @@ interface MobileBottomNavProps {
   onMoreClick: () => void;
 }
 
-const navItems = [
-  { id: "dashboard", icon: BarChart3, labelKey: "home" },
-  { id: "forms", icon: Folder, labelKey: "forms" },
-  { id: "reports", icon: ClipboardList, labelKey: "reports" },
-];
-
 export function MobileBottomNav({ 
   activeTab, 
   onTabChange, 
@@ -29,6 +24,14 @@ export function MobileBottomNav({
   onMoreClick 
 }: MobileBottomNavProps) {
   const { t, isRTL } = useLanguage();
+  const { currentUser } = useAuth();
+  const isAdmin = currentUser?.role === 'admin';
+
+  const navItems = [
+    ...(isAdmin ? [{ id: "dashboard", icon: BarChart3, labelKey: "home" }] : []),
+    { id: "forms", icon: Folder, labelKey: "forms" },
+    ...(isAdmin ? [{ id: "reports", icon: ClipboardList, labelKey: "reports" }] : []),
+  ];
 
   return (
     <nav 
@@ -47,7 +50,7 @@ export function MobileBottomNav({
           const isActive = activeTab === item.id;
           const Icon = item.icon;
           const showBadge = item.id === "forms" && hasUnpublishedDrafts;
-          const tourId = `mobile-nav-${item.id === "review-submissions" ? "review" : item.id}`;
+          const tourId = `mobile-nav-${item.id}`;
           
           return (
             <button
@@ -86,7 +89,7 @@ export function MobileBottomNav({
           );
         })}
         
-        {/* More button for Settings & Resources */}
+        {/* More button */}
         <button
           onClick={onMoreClick}
           data-tour-id="mobile-nav-more"

@@ -11,6 +11,7 @@ import { SaveTemplateDialog } from "@/components/SaveTemplateDialog";
 import { SaveOptionsDialog } from "@/components/SaveOptionsDialog";
 import { SubmissionReview } from "@/components/SubmissionReview";
 import { ReportGeneration } from "@/components/ReportGeneration";
+import { PublishDistributionDialog, DistributionConfig } from "@/components/PublishDistributionDialog";
 import { AppSidebar } from "@/components/AppSidebar";
 import { 
   Settings, 
@@ -71,7 +72,7 @@ const Index = () => {
   }, [currentUser, setUserRole]);
   
   // Tab navigation state
-  const [activeTab, setActiveTab] = useState("dashboard");
+  const [activeTab, setActiveTab] = useState(isAdmin ? "dashboard" : "forms");
   const [activeBuildTab, setActiveBuildTab] = useState("builder");
 
   // Register navigation callback for tour system
@@ -454,6 +455,14 @@ const Index = () => {
       return;
     }
 
+    // Show distribution dialog before publishing
+    setPendingPublishForm(formToPublish);
+    setShowPublishDistribution(true);
+  };
+
+  const executePublish = (distribution: DistributionConfig) => {
+    const formToPublish = pendingPublishForm;
+
     if (formToPublish) {
       // Publishing from drafts tab
       const publishedForm = { 
@@ -491,21 +500,26 @@ const Index = () => {
       };
       
       if (currentFormId) {
-        // Remove from drafts if it was there and add to published
         setSavedDrafts(prev => prev.filter(draft => draft.id !== currentFormId));
         setPublishedForms(prev => [...prev.filter(form => form.id !== currentFormId), formData]);
       } else {
         setPublishedForms(prev => [...prev, formData]);
         setCurrentFormId(formId);
       }
-      
     }
     
+    setPendingPublishForm(undefined);
     setActiveTab("forms");
+
+    const distMsg = distribution.method === 'adfs' 
+      ? ` Distributed to ADFS group.`
+      : distribution.method === 'email' 
+        ? ` Distributed to ${distribution.emails.length} recipient(s).`
+        : '';
     
     toast({
       title: "Form Published",
-      description: "Your form has been published successfully.",
+      description: `Your form has been published successfully.${distMsg}`,
     });
   };
 
@@ -797,6 +811,8 @@ const Index = () => {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [mobileMoreOpen, setMobileMoreOpen] = useState(false);
   const [helpPanelOpen, setHelpPanelOpen] = useState(false);
+  const [showPublishDistribution, setShowPublishDistribution] = useState(false);
+  const [pendingPublishForm, setPendingPublishForm] = useState<Form | undefined>(undefined);
 
   // State for viewing submissions of a specific form
   const [viewingSubmissionsForForm, setViewingSubmissionsForForm] = useState<Form | null>(null);
@@ -804,13 +820,13 @@ const Index = () => {
   // Function to get properly formatted page titles
   const getPageTitle = (tabId: string): string => {
     const titleMap: Record<string, string> = {
-      'dashboard': isAdmin ? t('dashboard') : 'My Dashboard',
+      'dashboard': t('dashboard'),
       'forms': isAdmin ? t('forms') : 'Assigned Forms',
       'form-submissions': viewingSubmissionsForForm ? `${viewingSubmissionsForForm.title} - Submissions` : 'Submissions',
       'fill-form': viewingSubmissionsForForm ? `Fill: ${viewingSubmissionsForForm.title}` : 'Fill Form',
       'build-form': t('build'),
       'build-form-templates': 'Form Templates',
-      'reports': isAdmin ? 'Reports' : 'My Reports',
+      'reports': 'Reports',
       'global-settings': t('settings'),
       'resources': 'Resources'
     };
@@ -931,7 +947,7 @@ const Index = () => {
 
           {/* Page Content - Mobile optimized with bottom nav padding */}
           <div className="p-3 sm:p-4 lg:p-6 bg-background flex-1 pb-20 md:pb-6">
-            {activeTab === "dashboard" && (
+            {isAdmin && activeTab === "dashboard" && (
               <Analytics 
                 submissions={submissions} 
                 onFilterSubmissions={handleFilterSubmissions}
@@ -939,7 +955,7 @@ const Index = () => {
               />
             )}
 
-            {activeTab === "reports" && (
+            {isAdmin && activeTab === "reports" && (
               <ReportGeneration submissions={submissions} isAdmin={isAdmin} />
             )}
 
@@ -1382,6 +1398,16 @@ const Index = () => {
             )}
           </div>
         </SidebarInset>
+
+        {/* Publish Distribution Dialog */}
+        {showPublishDistribution && (
+          <PublishDistributionDialog
+            isOpen={showPublishDistribution}
+            onClose={() => { setShowPublishDistribution(false); setPendingPublishForm(undefined); }}
+            onPublish={executePublish}
+            formTitle={pendingPublishForm?.title || formTitle}
+          />
+        )}
 
         {/* Save Options Dialog */}
         {showSaveOptionsDialog && (
