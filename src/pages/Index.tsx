@@ -989,7 +989,7 @@ const Index = () => {
                   </div>
 
                 <Tabs defaultValue="drafts" className="w-full" data-tour-id="forms-tabs">
-                  <TabsList className="grid w-full grid-cols-2">
+                  <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="drafts" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                       <span className="truncate">{t('drafts')} ({savedDrafts.length})</span>
@@ -997,6 +997,10 @@ const Index = () => {
                     <TabsTrigger value="published" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <Globe className="h-3 w-3 sm:h-4 sm:w-4" />
                       <span className="truncate">{t('published')} ({publishedForms.length})</span>
+                    </TabsTrigger>
+                    <TabsTrigger value="templates" className={`flex items-center gap-1 sm:gap-2 text-xs sm:text-sm ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <span className="truncate">Templates</span>
                     </TabsTrigger>
                   </TabsList>
 
@@ -1204,6 +1208,9 @@ const Index = () => {
                         ))}
                       </div>
                     )}
+                  </TabsContent>
+                  <TabsContent value="templates">
+                    <FormLibrary onUseTemplate={useTemplate} />
                   </TabsContent>
                 </Tabs>
               </div>

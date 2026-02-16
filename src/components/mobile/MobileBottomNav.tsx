@@ -20,7 +20,6 @@ const navItems = [
   { id: "dashboard", icon: BarChart3, labelKey: "home" },
   { id: "review-submissions", icon: ClipboardList, labelKey: "review" },
   { id: "forms", icon: Folder, labelKey: "forms" },
-  { id: "build-form", icon: Wrench, labelKey: "build" },
 ];
 
 export function MobileBottomNav({ 
