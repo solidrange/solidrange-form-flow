@@ -3,9 +3,8 @@ import { Tour, HelpTip, UserRole, LayoutMode } from '@/types/tour';
 // Route mappings for each tab
 export const routeMap: Record<string, string> = {
   'dashboard': 'dashboard',
-  'review-submissions': 'review-submissions',
   'forms': 'forms',
-  'build-form': 'build-form',
+  'reports': 'reports',
   'global-settings': 'global-settings',
   'resources': 'resources'
 };
@@ -44,9 +43,9 @@ export const tours: Tour[] = [
       },
       {
         id: 'welcome-3-desktop',
-        targetSelector: '[data-tour-id="nav-review"]',
-        title: 'Review Submissions',
-        content: 'Review and manage form submissions. Filter by status, risk level, and take approval actions.',
+        targetSelector: '[data-tour-id="nav-forms"]',
+        title: 'Forms',
+        content: 'Access all your forms - drafts, published, and templates. Create new forms and view submissions for each published form.',
         route: 'dashboard',
         position: 'right',
         roles: ['admin', 'user'],
@@ -55,9 +54,9 @@ export const tours: Tour[] = [
       },
       {
         id: 'welcome-4-desktop',
-        targetSelector: '[data-tour-id="nav-forms"]',
-        title: 'Forms Library',
-        content: 'Access all your forms - drafts, published, and templates. Organize and manage your form collection.',
+        targetSelector: '[data-tour-id="nav-reports"]',
+        title: 'Reports',
+        content: 'Generate and customize reports from your form submissions. Export data and visualize trends.',
         route: 'dashboard',
         position: 'right',
         roles: ['admin', 'user'],
@@ -66,17 +65,6 @@ export const tours: Tour[] = [
       },
       {
         id: 'welcome-5-desktop',
-        targetSelector: '[data-tour-id="nav-build"]',
-        title: 'Form Builder',
-        content: 'Create and customize forms with our drag-and-drop builder. Add fields, logic, and styling.',
-        route: 'dashboard',
-        position: 'right',
-        roles: ['admin', 'user'],
-        layout: 'desktop',
-        order: 5
-      },
-      {
-        id: 'welcome-6-desktop',
         targetSelector: '[data-tour-id="nav-settings"]',
         title: 'Global Settings',
         content: 'Configure language, branding, and developer options for your SolidForm instance.',
@@ -84,10 +72,10 @@ export const tours: Tour[] = [
         position: 'right',
         roles: ['admin'],
         layout: 'desktop',
-        order: 6
+        order: 5
       },
       {
-        id: 'welcome-7-desktop',
+        id: 'welcome-6-desktop',
         targetSelector: '[data-tour-id="nav-help"]',
         title: 'Help & Support',
         content: 'Access guided tours, quick tips, and help resources anytime from here.',
@@ -95,7 +83,7 @@ export const tours: Tour[] = [
         position: 'right',
         roles: ['admin', 'user'],
         layout: 'desktop',
-        order: 7
+        order: 6
       },
       // Mobile steps - bottom navigation
       {
@@ -122,9 +110,9 @@ export const tours: Tour[] = [
       },
       {
         id: 'welcome-3-mobile',
-        targetSelector: '[data-tour-id="mobile-nav-review"]',
-        title: 'Review Submissions',
-        content: 'Tap here to review and manage form submissions on the go.',
+        targetSelector: '[data-tour-id="mobile-nav-forms"]',
+        title: 'Forms',
+        content: 'Tap here to access all your forms, create new ones, and view submissions for published forms.',
         route: 'dashboard',
         position: 'top',
         roles: ['admin', 'user'],
@@ -133,9 +121,9 @@ export const tours: Tour[] = [
       },
       {
         id: 'welcome-4-mobile',
-        targetSelector: '[data-tour-id="mobile-nav-forms"]',
-        title: 'Forms Library',
-        content: 'Access all your forms - drafts, published, and templates.',
+        targetSelector: '[data-tour-id="mobile-nav-reports"]',
+        title: 'Reports',
+        content: 'Tap here to generate and view reports from your form data.',
         route: 'dashboard',
         position: 'top',
         roles: ['admin', 'user'],
@@ -144,9 +132,9 @@ export const tours: Tour[] = [
       },
       {
         id: 'welcome-5-mobile',
-        targetSelector: '[data-tour-id="mobile-nav-build"]',
-        title: 'Form Builder',
-        content: 'Tap here to create and customize assessment forms.',
+        targetSelector: '[data-tour-id="mobile-nav-more"]',
+        title: 'More Options',
+        content: 'Tap here to access Settings, Help, and Developer Resources.',
         route: 'dashboard',
         position: 'top',
         roles: ['admin', 'user'],
@@ -155,17 +143,6 @@ export const tours: Tour[] = [
       },
       {
         id: 'welcome-6-mobile',
-        targetSelector: '[data-tour-id="mobile-nav-more"]',
-        title: 'More Options',
-        content: 'Tap here to access Settings, Resources, and Help.',
-        route: 'dashboard',
-        position: 'top',
-        roles: ['admin', 'user'],
-        layout: 'mobile',
-        order: 6
-      },
-      {
-        id: 'welcome-7-mobile',
         targetSelector: '[data-tour-id="mobile-menu-button"]',
         title: 'Navigation Menu',
         content: 'Tap the menu icon to open the full navigation drawer for quick access to all sections.',
@@ -173,7 +150,7 @@ export const tours: Tour[] = [
         position: 'bottom',
         roles: ['admin', 'user'],
         layout: 'mobile',
-        order: 7
+        order: 6
       }
     ]
   },
@@ -211,7 +188,7 @@ export const tours: Tour[] = [
   {
     id: 'form-builder-tour',
     name: 'Form Builder',
-    description: 'Learn how to create and customize assessment forms.',
+    description: 'Learn how to create and customize assessment forms from the Forms page.',
     roles: ['admin', 'user'],
     category: 'forms',
     steps: [
@@ -253,7 +230,7 @@ export const tours: Tour[] = [
         id: 'builder-4',
         targetSelector: '[data-tour-id="save-form"]',
         title: 'Save Your Work',
-        content: 'Save your form as a draft or template. You can also save it to the form library for reuse.',
+        content: 'Save your form as a draft or publish it. After saving, you\'ll return to the Forms page where you can manage all your forms.',
         route: 'build-form',
         position: 'bottom',
         roles: ['admin', 'user'],
@@ -276,54 +253,65 @@ export const tours: Tour[] = [
   },
   {
     id: 'submissions-tour',
-    name: 'Submission Review',
-    description: 'Learn how to review and manage form submissions.',
+    name: 'Form Submissions',
+    description: 'Learn how to review submissions for each published form.',
     roles: ['admin', 'user'],
     category: 'submissions',
     steps: [
       {
-        id: 'sub-1',
-        targetSelector: '[data-tour-id="submission-filters"]',
-        title: 'Filter & Search',
-        content: 'Use the search bar and filters to find specific submissions. Filter by status, risk level, audience, or approval type.',
-        route: 'review-submissions',
+        id: 'sub-0',
+        targetSelector: '[data-tour-id="forms-tabs"]',
+        title: 'Find Published Forms',
+        content: 'Navigate to the Forms page and select the Published tab to see your active forms. Each published form has a Submissions button.',
+        route: 'forms',
         position: 'bottom',
         roles: ['admin', 'user'],
         layout: 'both',
         order: 1
       },
       {
-        id: 'sub-2',
-        targetSelector: '[data-tour-id="submission-list"]',
-        title: 'Submission List',
-        content: 'Browse all submissions here. Each card shows key details like company, status, score, and risk level. Click to view full details.',
-        route: 'review-submissions',
-        position: 'right',
+        id: 'sub-1',
+        targetSelector: '[data-tour-id="submission-filters"]',
+        title: 'Filter & Search',
+        content: 'Use the search bar and filters to find specific submissions. Filter by status, risk level, audience, or approval type.',
+        route: 'form-submissions',
+        position: 'bottom',
         roles: ['admin', 'user'],
         layout: 'both',
         order: 2
+      },
+      {
+        id: 'sub-2',
+        targetSelector: '[data-tour-id="submission-list"]',
+        title: 'Submission List',
+        content: 'Browse all submissions for this form. Each card shows key details like company, status, score, and risk level. Click to view full details.',
+        route: 'form-submissions',
+        position: 'right',
+        roles: ['admin', 'user'],
+        layout: 'both',
+        order: 3
       },
       {
         id: 'sub-3-desktop',
         targetSelector: '[data-tour-id="submission-actions"]',
         title: 'Review & Take Action',
         content: 'View complete submission details and take actions: approve, reject, request changes, or export to PDF/Excel.',
-        route: 'review-submissions',
+        route: 'form-submissions',
         position: 'left',
         roles: ['admin'],
         layout: 'desktop',
-        order: 3
+        order: 4
       },
       {
         id: 'sub-3-mobile',
         targetSelector: '[data-tour-id="submission-actions"]',
         title: 'Review & Take Action',
         content: 'Tap any submission card to view details. Use the action buttons to approve, reject, or export.',
-        route: 'review-submissions',
+        route: 'form-submissions',
         position: 'top',
         roles: ['admin'],
         layout: 'mobile',
-        order: 3
+        order: 4
       }
     ]
   },
@@ -360,7 +348,7 @@ export const tours: Tour[] = [
         id: 'set-3',
         targetSelector: '[data-tour-id="developer-settings"]',
         title: 'Developer Settings',
-        content: 'Toggle visibility of development resources and technical documentation. Enable this to access the Resources section.',
+        content: 'Toggle visibility of development resources and technical documentation. Enable this to access the Resources section below Help.',
         route: 'global-settings',
         position: 'right',
         roles: ['admin'],
@@ -372,7 +360,7 @@ export const tours: Tour[] = [
   {
     id: 'forms-library-tour',
     name: 'Forms Library',
-    description: 'Learn how to manage your forms collection.',
+    description: 'Learn how to manage your forms collection and access per-form submissions.',
     roles: ['admin', 'user'],
     category: 'forms',
     steps: [
@@ -380,7 +368,7 @@ export const tours: Tour[] = [
         id: 'lib-1',
         targetSelector: '[data-tour-id="forms-tabs"]',
         title: 'Forms Organization',
-        content: 'Your forms are organized into three sections: Templates (reusable starting points), Drafts (work in progress), and Published (active forms).',
+        content: 'Your forms are organized into three sections: Templates (reusable starting points), Drafts (work in progress), and Published (active forms accepting submissions).',
         route: 'forms',
         position: 'bottom',
         roles: ['admin', 'user'],
@@ -391,7 +379,7 @@ export const tours: Tour[] = [
         id: 'lib-2',
         targetSelector: '[data-tour-id="forms-list"]',
         title: 'Form Cards',
-        content: 'Each card shows the form name, description, category, and status. Tap to select a form for editing or viewing.',
+        content: 'Each card shows the form name, description, category, and status. Published forms have a Submissions button to review responses.',
         route: 'forms',
         position: 'right',
         roles: ['admin', 'user'],
@@ -402,7 +390,7 @@ export const tours: Tour[] = [
         id: 'lib-3-desktop',
         targetSelector: '[data-tour-id="forms-actions"]',
         title: 'Form Actions',
-        content: 'Use the actions menu to edit, duplicate, publish, or delete forms. Published forms can be moved back to drafts for editing.',
+        content: 'Use the actions menu to edit, duplicate, publish, or delete forms. Published forms show a Submissions button to review responses.',
         route: 'forms',
         position: 'left',
         roles: ['admin'],
@@ -413,12 +401,32 @@ export const tours: Tour[] = [
         id: 'lib-3-mobile',
         targetSelector: '[data-tour-id="forms-actions"]',
         title: 'Form Actions',
-        content: 'Tap the action button on any form card to edit, duplicate, publish, or delete it.',
+        content: 'Tap the action button on any form card to edit, duplicate, publish, or delete it. Published forms have a Submissions button.',
         route: 'forms',
         position: 'top',
         roles: ['admin'],
         layout: 'mobile',
         order: 3
+      }
+    ]
+  },
+  {
+    id: 'reports-tour',
+    name: 'Reports & Analytics',
+    description: 'Learn how to generate and customize reports from form data.',
+    roles: ['admin', 'user'],
+    category: 'reports',
+    steps: [
+      {
+        id: 'rep-1',
+        targetSelector: '[data-tour-id="reports-section"]',
+        title: 'Report Generation',
+        content: 'Generate comprehensive reports from your form submission data. Customize report format, date ranges, and included metrics.',
+        route: 'reports',
+        position: 'bottom',
+        roles: ['admin', 'user'],
+        layout: 'both',
+        order: 1
       }
     ]
   }
@@ -470,8 +478,8 @@ export const helpTips: HelpTip[] = [
   },
   {
     id: 'tip-7',
-    title: 'Dashboard Filters',
-    content: 'Click any statistic card on the dashboard to filter submissions by that criteria.',
+    title: 'Per-Form Submissions',
+    content: 'View submissions for each published form by clicking the Submissions button on any published form card in the Forms page.',
     category: 'submissions',
     roles: ['admin', 'user']
   },
@@ -492,9 +500,23 @@ export const helpTips: HelpTip[] = [
   {
     id: 'tip-10',
     title: 'Developer Resources',
-    content: 'Enable "Show Development Resources" in Settings to access technical documentation.',
+    content: 'Enable "Show Development Resources" in Settings to access technical documentation below the Help section.',
     category: 'advanced',
     roles: ['admin']
+  },
+  {
+    id: 'tip-11',
+    title: 'Reports Section',
+    content: 'Access the Reports section from the sidebar to generate customized reports from your form submission data.',
+    category: 'reports',
+    roles: ['admin', 'user']
+  },
+  {
+    id: 'tip-12',
+    title: 'Form Workflow',
+    content: 'After saving or publishing a form, you\'ll return to the Forms page. Published forms show a Submissions button for reviewing responses.',
+    category: 'forms',
+    roles: ['admin', 'user']
   }
 ];
 
