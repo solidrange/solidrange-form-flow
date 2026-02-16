@@ -795,7 +795,7 @@ const Index = () => {
       'review-submissions': t('review'),
       'forms': t('forms'),
       'build-form': t('build'),
-      'build-form-templates': 'Templates',
+      'build-form-templates': 'Form Templates',
       'global-settings': t('settings'),
       'resources': 'Resources'
     };
