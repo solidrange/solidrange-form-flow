@@ -163,7 +163,7 @@ export const FormLibrary: React.FC<FormLibraryProps> = ({ onUseTemplate }) => {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold mb-2">Form Library</h2>
+        <h2 className="text-2xl font-bold mb-2">Form Templates</h2>
         <p className="text-muted-foreground">Choose from pre-built templates to get started quickly</p>
       </div>
 

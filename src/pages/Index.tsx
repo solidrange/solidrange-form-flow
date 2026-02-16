@@ -746,7 +746,7 @@ const Index = () => {
   // Create mobile-friendly tabs array for build section
   const buildTabs = [
     { id: "builder", label: "Builder", icon: <Plus className="h-4 w-4" />, mobileLabel: "Build" },
-    { id: "library", label: "Library", icon: <Folder className="h-4 w-4" />, mobileLabel: "Lib" },
+    { id: "library", label: "Templates", icon: <Folder className="h-4 w-4" />, mobileLabel: "Tmpl" },
     { id: "preview", label: "Preview", icon: <Eye className="h-4 w-4" />, mobileLabel: "View" },
     { id: "settings", label: "Settings", icon: <Settings className="h-4 w-4" />, mobileLabel: "Set" }
   ];
