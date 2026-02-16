@@ -48,6 +48,31 @@ graph TB
     style AN fill:#ff9800,color:#fff
 </lov-mermaid>
 
+## 🔐 Role-Based Access Control (RBAC)
+
+The system supports two user roles with distinct access levels:
+
+### Admin Role (admin@solidform.com / admin123)
+- **Full access**: Dashboard, Forms (Drafts/Published/Assigned), Reports, Global Settings, Help
+- **Can create**, edit, publish, and distribute forms via ADFS groups or email lists
+- **Can view** submissions, generate custom reports, configure branding and language
+- **Assigned tab**: Admins can also fill forms assigned to them
+- **Guided tours**: Welcome (6 steps), Dashboard, Form Builder, Submissions, Settings, Forms Library, Reports
+
+### User Role (user@solidform.com / user123)
+- **Limited access**: Forms (Assigned tab only), Help
+- **Can view** and fill assigned forms, submit responses
+- **Cannot access**: Dashboard, Reports, Settings, form creation/editing
+- **Guided tours**: Welcome (4 steps focused on Assigned section), Filling Assigned Forms (3 steps)
+
+### Form Distribution
+When publishing a form, admins can choose distribution method:
+- **Public**: No specific distribution
+- **ADFS Group**: Select from organizational directory groups
+- **Email List**: Manually enter, paste, or upload CSV/TXT of recipient emails
+
+---
+
 ## 🚀 Core Features
 
 ### 🎯 **Advanced Form Builder**

@@ -84,7 +84,7 @@ export const tours: Tour[] = [
         layout: 'desktop',
         order: 6
       },
-      // User Desktop steps - no dashboard, no reports
+      // User Desktop steps - only assigned forms and help
       {
         id: 'welcome-1-desktop-user',
         targetSelector: '[data-tour-id="brand-logo"]',
@@ -100,7 +100,7 @@ export const tours: Tour[] = [
         id: 'welcome-2-desktop-user',
         targetSelector: '[data-tour-id="nav-forms"]',
         title: 'Assigned Forms',
-        content: 'This is your main area. View all forms assigned to you and click "Fill Form" to start completing them.',
+        content: 'This is your main area. Navigate here to see all forms assigned to you. Click the "Assigned" tab to find forms waiting for your response.',
         route: 'forms',
         position: 'right',
         roles: ['user'],
@@ -109,6 +109,17 @@ export const tours: Tour[] = [
       },
       {
         id: 'welcome-3-desktop-user',
+        targetSelector: '[data-tour-id="assigned-forms"]',
+        title: 'Fill Your Assigned Forms',
+        content: 'Your assigned forms appear here. Each card shows the form name, description, and number of fields. Click "Fill Form" to start completing an assessment.',
+        route: 'forms',
+        position: 'bottom',
+        roles: ['user'],
+        layout: 'desktop',
+        order: 3
+      },
+      {
+        id: 'welcome-4-desktop-user',
         targetSelector: '[data-tour-id="nav-help"]',
         title: 'Help & Support',
         content: 'Access guided tours, quick tips, and help resources anytime from here.',
@@ -116,7 +127,7 @@ export const tours: Tour[] = [
         position: 'right',
         roles: ['user'],
         layout: 'desktop',
-        order: 3
+        order: 4
       },
       // Admin Mobile steps
       {
@@ -185,7 +196,7 @@ export const tours: Tour[] = [
         layout: 'mobile',
         order: 6
       },
-      // User Mobile steps - no dashboard, no reports
+      // User Mobile steps - only assigned forms and help
       {
         id: 'welcome-1-mobile-user',
         targetSelector: '[data-tour-id="mobile-brand-logo"]',
@@ -201,7 +212,7 @@ export const tours: Tour[] = [
         id: 'welcome-2-mobile-user',
         targetSelector: '[data-tour-id="mobile-nav-forms"]',
         title: 'Assigned Forms',
-        content: 'Tap here to see forms assigned to you. Tap "Fill Form" to start completing an assessment.',
+        content: 'Tap here to see forms assigned to you. Navigate to the "Assigned" tab and tap "Fill Form" to start completing an assessment.',
         route: 'forms',
         position: 'top',
         roles: ['user'],
@@ -210,22 +221,22 @@ export const tours: Tour[] = [
       },
       {
         id: 'welcome-3-mobile-user',
-        targetSelector: '[data-tour-id="mobile-nav-more"]',
-        title: 'More Options',
-        content: 'Tap here to access Help and sign out.',
+        targetSelector: '[data-tour-id="assigned-forms"]',
+        title: 'Your Forms to Complete',
+        content: 'All forms assigned to you are listed here. Each card shows the form details. Tap "Fill Form" to begin.',
         route: 'forms',
-        position: 'top',
+        position: 'bottom',
         roles: ['user'],
         layout: 'mobile',
         order: 3
       },
       {
         id: 'welcome-4-mobile-user',
-        targetSelector: '[data-tour-id="mobile-menu-button"]',
-        title: 'Navigation Menu',
-        content: 'Tap the menu icon to open the full navigation drawer.',
+        targetSelector: '[data-tour-id="mobile-nav-more"]',
+        title: 'More Options',
+        content: 'Tap here to access Help and sign out.',
         route: 'forms',
-        position: 'bottom',
+        position: 'top',
         roles: ['user'],
         layout: 'mobile',
         order: 4
@@ -330,15 +341,15 @@ export const tours: Tour[] = [
   {
     id: 'filling-forms-tour',
     name: 'Filling Assigned Forms',
-    description: 'Learn how to find and fill out forms assigned to you.',
+    description: 'Learn how to find the Assigned tab and fill out forms assigned to you.',
     roles: ['user'],
     category: 'forms',
     steps: [
       {
         id: 'fill-1',
-        targetSelector: '[data-tour-id="assigned-forms"]',
-        title: 'Your Assigned Forms',
-        content: 'All forms assigned to you appear here. Each card shows the form name, description, and number of fields.',
+        targetSelector: '[data-tour-id="forms-tabs"]',
+        title: 'Navigate to Assigned Tab',
+        content: 'Click the "Assigned" tab to see all forms that have been assigned to you for completion.',
         route: 'forms',
         position: 'bottom',
         roles: ['user'],
@@ -348,13 +359,24 @@ export const tours: Tour[] = [
       {
         id: 'fill-2',
         targetSelector: '[data-tour-id="assigned-forms"]',
-        title: 'Fill a Form',
-        content: 'Click the "Fill Form" button on any card to open the form and start entering your responses.',
+        title: 'Your Assigned Forms',
+        content: 'All forms assigned to you appear here. Each card shows the form name, description, and number of fields.',
         route: 'forms',
         position: 'bottom',
         roles: ['user'],
         layout: 'both',
         order: 2
+      },
+      {
+        id: 'fill-3',
+        targetSelector: '[data-tour-id="assigned-forms"]',
+        title: 'Fill a Form',
+        content: 'Click the "Fill Form" button on any card to open the form. Complete all required fields and click "Submit Response" when done.',
+        route: 'forms',
+        position: 'bottom',
+        roles: ['user'],
+        layout: 'both',
+        order: 3
       }
     ]
   },
@@ -628,8 +650,8 @@ export const helpTips: HelpTip[] = [
   // User-specific tips
   {
     id: 'tip-13',
-    title: 'Assigned Forms',
-    content: 'Your assigned forms appear on the Forms page. Click "Fill Form" to start completing an assessment.',
+    title: 'Finding Your Assigned Forms',
+    content: 'Navigate to the Forms page and click the "Assigned" tab to see all forms assigned to you. Click "Fill Form" to start completing an assessment.',
     category: 'forms',
     roles: ['user']
   },

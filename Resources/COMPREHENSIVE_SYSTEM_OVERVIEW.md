@@ -66,6 +66,27 @@ graph TB
 
 ---
 
+## Role-Based Access Control (RBAC)
+
+The system implements role-based access with two tiers:
+
+### Admin Role
+- **Full access**: Dashboard (analytics), Forms (Drafts/Published/Assigned tabs), Reports (Quick + Custom), Global Settings (Language/Branding/Developer), Help
+- **Form lifecycle**: Create → Edit → Publish (with ADFS/email distribution) → View Submissions → Generate Reports
+- **Assigned tab**: Admins can also fill forms assigned to themselves
+
+### User Role  
+- **Limited access**: Forms (Assigned tab only), Help
+- **Workflow**: View assigned forms → Fill Form → Submit Response
+- **No access to**: Dashboard, Reports, Settings, form creation/editing/publishing
+
+### Guided Tours
+- **Admin tours**: Welcome (6 steps), Dashboard, Form Builder, Submissions, Settings, Forms Library, Reports
+- **User tours**: Welcome (4 steps focused on Assigned section), Filling Assigned Forms (3 steps with Assigned tab guidance)
+- Tours are role-filtered and layout-aware (desktop/mobile)
+
+---
+
 ## System Components Deep Dive
 
 ### Core Application Structure
