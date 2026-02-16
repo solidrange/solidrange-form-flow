@@ -73,13 +73,6 @@ export function AppSidebar({ activeTab, onTabChange, hasUnpublishedDrafts }: App
       badge: hasUnpublishedDrafts
     },
     {
-      id: "build-form",
-      label: t("build"),
-      mobileLabel: t("build"),
-      icon: Wrench,
-      onClick: () => onTabChange("build-form")
-    },
-    {
       id: "resources",
       label: "Resources",
       mobileLabel: "Resources",

@@ -45,7 +45,6 @@ export function MobileNavDrawer({
     { id: "dashboard", icon: BarChart3, label: t("dashboard") },
     { id: "review-submissions", icon: ClipboardList, label: t("review") },
     { id: "forms", icon: Folder, label: t("forms"), badge: hasUnpublishedDrafts },
-    { id: "build-form", icon: Wrench, label: t("build") },
   ];
 
   const secondaryItems = [
